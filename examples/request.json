@@ -1,0 +1,5 @@
+{
+  "document": "X initially requested a budget of 300 million. The initial request was later revised. X received final approval for 320 million. Y received final approval for 250 million.\n\nThe cafeteria opens at 8 AM. The office parking policy changed in April.\n\nThe final approval amounts replace earlier draft budgets.",
+  "question": "How much larger is X's final approved budget than Y's?",
+  "max_new_tokens": 128
+}
