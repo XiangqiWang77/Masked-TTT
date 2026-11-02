@@ -1,7 +1,7 @@
 """Load a frozen Qwen3 backbone; make all request-specific state disposable."""
 
 from contextlib import nullcontext
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import os
 import time
 
@@ -27,9 +27,22 @@ class Backbone:
     config: TTTConfig
 
     def __post_init__(self):
-        if self.model.config.model_type != "qwen3" or self.model.model.has_sliding_layers:
-            raise ValueError("This implementation supports Qwen3 with full attention layers")
+        kind = self.model.config.model_type
+        if kind not in ("qwen3", "olmo3", "gpt_oss"):
+            raise ValueError("Supported backbones: Qwen3, OLMo3, GPT-OSS")
+        if kind == "qwen3" and self.model.model.has_sliding_layers:
+            raise ValueError("The Qwen3 port uses full-attention checkpoints")
         self.model.eval().requires_grad_(False)
+        if kind in ("olmo3", "gpt_oss"):
+            from .architectures import install_hybrid_attention
+
+            install_hybrid_attention(self.model.model)
+        if kind == "gpt_oss":
+            from .architectures import FinalChannelTokenizer, install_sparse_experts
+
+            if not isinstance(self.tokenizer, FinalChannelTokenizer):
+                self.tokenizer = FinalChannelTokenizer(self.tokenizer)
+            install_sparse_experts(self.model.model)
         self.device = next(self.model.parameters()).device
         self.cfg = dict(
             max_context=self.config.max_context,
@@ -44,7 +57,9 @@ class Backbone:
         self.budget = Budget()
 
     @classmethod
-    def load(cls, model_path, config=None, *, device="cuda:0", local_files_only=False):
+    def load(
+        cls, model_path, config=None, *, device="cuda:0", local_files_only=False, shard_gpus=1
+    ):
         config = config or TTTConfig()
         target = torch.device(device)
         if target.type == "cuda":
@@ -59,21 +74,56 @@ class Backbone:
             torch.utils.deterministic.fill_uninitialized_memory = False
         tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=local_files_only)
         model_config = AutoConfig.from_pretrained(model_path, local_files_only=local_files_only)
-        model_config.max_position_embeddings = config.max_context
-        model_config.rope_scaling = None
+        # Preserve each checkpoint's native RoPE/YARN and context contract.
+        if model_config.model_type == "qwen3":
+            model_config.max_position_embeddings = config.max_context
+            model_config.rope_scaling = None
+        else:
+            config = replace(
+                config, max_context=min(config.max_context, model_config.max_position_embeddings)
+            )
+        device_map = {"": str(target)}
+        if shard_gpus > 1:
+            if target.type != "cuda" or shard_gpus > torch.cuda.device_count():
+                raise ValueError("Requested model shards are not allocated")
+            if model_config.model_type == "qwen3":
+                raise ValueError("Qwen3 uses its validated single-device runtime")
+            rotary = (
+                "model.rotary_embs" if model_config.model_type == "olmo3" else "model.rotary_emb"
+            )
+            device_map = {"model.embed_tokens": 0, rotary: 0, "model.norm": 0, "lm_head": 0}
+            for i in range(model_config.num_hidden_layers):
+                device_map[f"model.layers.{i}"] = i * shard_gpus // model_config.num_hidden_layers
+        options = {}
+        if model_config.model_type == "gpt_oss":
+            from transformers import Mxfp4Config
+
+            # Frozen expert weights are dequantized once; input gradients remain
+            # available on A40/L40S as well as newer GPUs.
+            options["quantization_config"] = Mxfp4Config(dequantize=True)
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             config=model_config,
             torch_dtype=torch.bfloat16 if target.type == "cuda" else torch.float32,
-            device_map={"": str(target)},
-            attn_implementation="flash_attention_2" if target.type == "cuda" else "eager",
+            device_map=device_map,
+            attn_implementation=(
+                "flash_attention_2"
+                if target.type == "cuda" and model_config.model_type != "gpt_oss"
+                else "eager"
+            ),
             local_files_only=local_files_only,
+            **options,
         )
+        if model_config.model_type in ("olmo3", "gpt_oss"):
+            from accelerate.hooks import remove_hook_from_module
+
+            remove_hook_from_module(model, recurse=True)
         return cls(model, tokenizer, config)
 
     def synchronize(self):
         if self.device.type == "cuda":
-            torch.cuda.synchronize(self.device)
+            for device in {p.device for p in self.model.parameters()}:
+                torch.cuda.synchronize(device)
 
     def device_context(self):
         return torch.cuda.device(self.device) if self.device.type == "cuda" else nullcontext()

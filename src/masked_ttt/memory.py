@@ -29,7 +29,9 @@ class KVReadMemory(nn.Module):
         super().__init__()
         self.layers = config.num_hidden_layers
         self.heads = config.num_key_value_heads
-        self.dim = config.head_dim
+        self.dim = getattr(config, "head_dim", config.hidden_size // config.num_attention_heads)
+        types = getattr(config, "layer_types", ["full_attention"] * self.layers)
+        self.adapted_layers = [i for i, kind in enumerate(types) if kind == "full_attention"]
         if not 1 <= rank <= self.dim:
             raise ValueError("Native value rank must be between1 and head_dim")
         if value_parameterization != "per_chunk":
@@ -95,6 +97,8 @@ class KVReadMemory(nn.Module):
         index = self.chunk_index[: min(length, self.document_length)]
         mask = self.selected_positions[: len(index)]
         values = self.gain[layer][:, index.clamp_min(0)] * mask[None]
+        if layer not in self.adapted_layers:
+            values = values * 0
         return F.pad(values, (0, max(0, length - self.document_length)))
 
     def values(self, layer, native):
@@ -113,18 +117,18 @@ class KVReadMemory(nn.Module):
         if not count:
             return native + self.value_coefficients[layer].sum() * 0.0
         banks = self.source_banks[count - 1] + 1
-        positions = self.bank_positions[:banks]
+        positions = self.bank_positions[:banks].to(native.device)
         visible = (positions >= 0) & (positions < n)
         gathered = native[..., positions.clamp(min=0, max=n - 1), :]
-        basis = self.value_basis[layer][None, :, None]
-        coefficients = self.value_coefficients[layer, :, :banks][None]
+        basis = self.value_basis[layer].to(native.device)[None, :, None]
+        coefficients = self.value_coefficients[layer, :, :banks].to(native.device)[None]
         delta = gathered.float() @ basis.float() @ coefficients.float()
         radius = self.value_radius * gathered.float().norm(dim=-1, keepdim=True)
         ratio = (radius / delta.norm(dim=-1, keepdim=True).clamp_min(1e-12)).clamp(max=1.0)
         delta = torch.where(visible[None, None, :, :, None], delta * ratio, torch.zeros_like(delta))
         flat = delta.flatten(-3, -2).to(native.dtype)
-        selected_delta = flat.index_select(-2, self.bank_scatter_slots[:count])
-        source = self.bank_source_indices[:count]
+        selected_delta = flat.index_select(-2, self.bank_scatter_slots[:count].to(native.device))
+        source = self.bank_source_indices[:count].to(native.device)
         updated = native[..., :n, :].index_copy(-2, source, native[..., source, :] + selected_delta)
         return torch.cat((updated, native[..., n:, :]), dim=-2)
 
@@ -134,7 +138,8 @@ class KVReadMemory(nn.Module):
         self.value_layers.zero_()
         self.value_layers[list(layers)] = True
         for layer in layers:
-            x = cache.layers[layer].values[0, :, self.selected_positions].float()
+            native = cache.layers[layer].values
+            x = native[0, :, self.selected_positions.to(native.device)].float()
             covariance = x.transpose(-1, -2) @ x / max(1, x.shape[-2])
             (_, vectors) = torch.linalg.eigh(covariance)
             basis = vectors[..., -self.value_basis.shape[-1] :]
@@ -217,5 +222,6 @@ class KVReadMemory(nn.Module):
         probabilities = scores.masked_fill(~visible[None, None], float("-inf")).softmax(-1)
         weights = probabilities.mean((0, 1, 2))[: self.document_length]
         self.attention_records[layer] = dict(
-            weights=weights, selected_mass=float(weights[self.selected_positions].sum())
+            weights=weights,
+            selected_mass=float(weights[self.selected_positions.to(weights.device)].sum()),
         )

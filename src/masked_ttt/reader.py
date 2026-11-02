@@ -18,6 +18,11 @@ class MemoryReader:
         self.reader = SimpleNamespace(
             model=private_module_tree(engine.model.model), lm_head=engine.model.lm_head
         )
+        if engine.model.config.model_type in ("olmo3", "gpt_oss"):
+            from .architectures import install_hybrid_attention
+
+            install_hybrid_attention(self.reader.model, memory)
+            return
         for block in self.reader.model.layers:
             attn = block.self_attn
             native = attn.forward
@@ -91,8 +96,10 @@ class MemoryReader:
             del branch._document_storage_owner
         d = self.memory.dim
         for layer, item in enumerate(branch.layers):
+            if layer not in self.memory.adapted_layers:
+                continue
             (k, v) = (item.keys, item.values)
-            bias = self.memory.biases(layer, k.shape[-2])
+            bias = self.memory.biases(layer, k.shape[-2]).to(k.device)
             component = bias.to(k.dtype)[None, ..., None] * math.sqrt(d)
             padded = (d + 1 + 31) // 32 * 32
             item.keys = F.pad(torch.cat((k, component), -1), (0, padded - d - 1))
@@ -150,6 +157,10 @@ def checkpointed_incremental_logits(engine, reader, cache, suffix, targets, targ
                 if len(keys) > 1:
                     item.keys = torch.cat(keys, -2)
                     item.values = torch.cat(vals, -2)
+                if getattr(item, "is_sliding", False):
+                    item.keys = item.keys[..., -item.sliding_window + 1 :, :]
+                    item.values = item.values[..., -item.sliding_window + 1 :, :]
+                    item.cumulative_length = step_position
             output = private_forward(reader.reader, step_tokens, step_position, branch)
             additions = tuple(
                 x[..., -len(step_tokens) :, :].clone()

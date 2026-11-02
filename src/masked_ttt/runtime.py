@@ -30,6 +30,10 @@ def private_module_tree(module):
 
 
 def private_forward(model, tokens, start, cache):
+    if model.model.config.model_type in ("olmo3", "gpt_oss"):
+        from .architectures import hybrid_forward
+
+        return hybrid_forward(model.model, tokens, start, cache)
     positions = torch.arange(start, start + tokens.numel(), device=tokens.device)
     # Auxiliary memory has physical cache slots, but does not add text tokens
     # to the request. Preserve the original Question/generation RoPE positions.

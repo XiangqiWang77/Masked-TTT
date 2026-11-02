@@ -2,7 +2,7 @@
 
 import copy
 import torch
-from transformers.cache_utils import DynamicCache, DynamicLayer
+from transformers.cache_utils import DynamicCache, DynamicLayer, DynamicSlidingWindowLayer
 
 
 class AppendOnlyDocumentCache(DynamicCache):
@@ -10,8 +10,10 @@ class AppendOnlyDocumentCache(DynamicCache):
         super().__init__(config=config)
         if not isinstance(capacity, int) or isinstance(capacity, bool) or capacity < 1:
             raise ValueError("Document cache capacity must be a positive integer")
-        if any((type(layer) is not DynamicLayer for layer in self.layers)):
-            raise ValueError("Append-only document cache requires full attention layers")
+        if any(
+            type(layer) not in (DynamicLayer, DynamicSlidingWindowLayer) for layer in self.layers
+        ):
+            raise ValueError("Unsupported native cache layer")
         self.capacity = capacity
         self.storage = [None] * len(self.layers)
         self._source_identity_token = object()
@@ -21,6 +23,8 @@ class AppendOnlyDocumentCache(DynamicCache):
         if torch.is_grad_enabled() or key_states.requires_grad or value_states.requires_grad:
             raise ValueError("Only frozen foreground document states may be appended")
         layer = self.layers[layer_idx]
+        if isinstance(layer, DynamicSlidingWindowLayer):
+            return layer.update(key_states, value_states, cache_kwargs)
         (start, size) = (layer.get_seq_length(), key_states.shape[-2])
         if key_states.ndim != 4 or key_states.shape != value_states.shape or size < 1:
             raise ValueError("Invalid document key/value shape")
@@ -57,7 +61,14 @@ class AppendOnlyDocumentCache(DynamicCache):
         branch.layers = []
         for layer in self.layers:
             item = copy.copy(layer)
-            (item.keys, item.values) = (layer.keys[..., :length, :], layer.values[..., :length, :])
+            if isinstance(layer, DynamicSlidingWindowLayer):
+                if layer.get_seq_length() != length:
+                    raise ValueError("A rolling layer can only publish its current prefix")
+            else:
+                (item.keys, item.values) = (
+                    layer.keys[..., :length, :],
+                    layer.values[..., :length, :],
+                )
             branch.layers.append(item)
         branch._document_storage_owner = self
         branch._source_identity_token = self._source_identity_token
@@ -86,10 +97,17 @@ def fork_prefix(cache, length):
     branch.layers = []
     for layer in cache.layers:
         # DynamicLayer.update uses out-of-place torch.cat, not indexed writes.
-        if type(layer) is not DynamicLayer or layer.get_seq_length() < length:
-            raise TypeError("Only full-attention DynamicLayer prefixes are supported")
+        if (
+            type(layer) not in (DynamicLayer, DynamicSlidingWindowLayer)
+            or layer.get_seq_length() < length
+        ):
+            raise TypeError("Unsupported prefix cache")
         item = copy.copy(layer)
-        item.keys = layer.keys[..., :length, :]
-        item.values = layer.values[..., :length, :]
+        if isinstance(layer, DynamicSlidingWindowLayer):
+            if layer.get_seq_length() != length:
+                raise ValueError("Cannot reconstruct an evicted sliding prefix")
+        else:
+            item.keys = layer.keys[..., :length, :]
+            item.values = layer.values[..., :length, :]
         branch.layers.append(item)
     return branch

@@ -60,8 +60,8 @@ positions receive no document-chunk bias or value correction.
 
 ## Install and run
 
-Python 3.10+, a matching CUDA/PyTorch installation, and a full-attention Qwen3 model
-are required for the production path. The extraction was checked with PyTorch
+Python 3.10+ and a matching CUDA/PyTorch installation are required. Backbones include
+full-attention Qwen3, OLMo3, and GPT-OSS. The extraction was checked with PyTorch
 2.9.1 and Transformers 4.57.6. The included small-model tests run on CPU.
 
 ```bash
@@ -94,6 +94,30 @@ method = MaskedTTT(backbone)
 result = method.answer(Request(document=document, question=question))
 print(result["prediction"])
 ```
+
+For repeated evaluations, compute source relevance once and use the shared JSON
+selector. It maps the same source-character spans to each backbone's tokenizer;
+a missing or mismatched score file raises an error and never calls the API.
+
+```python
+from masked_ttt import FrozenJSONSelector
+
+method = MaskedTTT(backbone, FrozenJSONSelector("/path/to/shared_scores"))
+result = method.answer(Request(document=document, question=question, prompt=original_prompt))
+```
+
+The CLI equivalent is `--score-json-dir /path/to/shared_scores`; no credential is
+needed on the GPU worker. JSON records use the `masked-ttt-source-scores-v1` schema
+in [`frozen_scores.py`](src/masked_ttt/frozen_scores.py).
+
+OLMo3 and GPT-OSS retain native rotary embeddings and sliding attention. Adaptation
+is placed only in their global attention layers, whose document cache is immutable:
+layers 3, 7, …, 31 in OLMo-3-7B, and layers 1, 3, …, 23 in GPT-OSS-20B. Local
+layers keep their native rolling cache. GPT-OSS learned attention sinks are preserved.
+GPT-OSS uses its final answer channel for both teacher and student, and its frozen
+MXFP4 weights are dequantized to BF16 for backward propagation through the reader.
+Use `--shard-gpus 2` when distributing that model across two allocated GPUs; the
+packed checkpoint's inference memory footprint does not describe this BF16 path.
 
 ## Defaults
 
@@ -132,7 +156,10 @@ Within the context limit, all original chunks remain visible to the student.
 
 `timing.ttft_seconds` includes tokenization, selection, teacher generation, source
 checks, optimization, and the first final token. Model loading and queue time are
-excluded. Selection cache hits and each major phase are reported separately.
+excluded. Selection cache hits and each major phase are reported separately. When
+using shared JSON, offline scoring time and cost are reported separately and are
+excluded from online TTFT. Compare cold end-to-end and cached online timing only
+under matching preprocessing conditions.
 
 ## Validation
 
@@ -150,3 +177,7 @@ teacher tokens/distributions, and selection payloads matched on a small CPU Qwen
 fixture. See [`extraction_validation.json`](docs/extraction_validation.json) and
 [`source_provenance.json`](docs/source_provenance.json). These are implementation
 checks; this repository contains the method, tests, and an example request.
+
+Small OLMo3/GPT-OSS tests additionally compare native logits, causal rolling caches,
+zero-state equivalence, and checkpointed adaptation gradients. Full-checkpoint GPU
+evaluation runs an allocation-local numerical and gradient preflight before cases.

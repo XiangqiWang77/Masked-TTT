@@ -73,13 +73,18 @@ class MaskedTTT:
             private_forward(reader.reader, suffix, length, fork_prefix(cache, length))
             memory.capture_attention = False
             layers = sorted(
-                range(memory.layers),
+                memory.adapted_layers,
                 key=lambda layer: (-memory.attention_records[layer]["selected_mass"], layer),
             )
             memory.prepare_value_basis(cache, layers)
             memory.attention_records = {}
 
-        checkpointed = len(layout.ids) >= engine.config.checkpoint_at_tokens
+        checkpointed = len(
+            layout.ids
+        ) >= engine.config.checkpoint_at_tokens or engine.model.config.model_type in (
+            "olmo3",
+            "gpt_oss",
+        )
 
         def evaluate():
             if torch.is_grad_enabled():
@@ -165,7 +170,7 @@ class MaskedTTT:
                 steps=steps,
                 accepted_steps=sum(r["accepted"] for r in steps),
                 diagnostics=diagnostics,
-                adapted_layers=list(range(memory.layers)),
+                adapted_layers=memory.adapted_layers,
                 checkpointed_layers=checkpointed,
             ),
             timing=dict(
@@ -175,9 +180,14 @@ class MaskedTTT:
                 support_seconds=support_seconds,
                 adaptation_seconds=adaptation_seconds,
                 total_seconds=time.perf_counter() - started,
+                selection_backend=prepared.metadata.get("backend", "online_decisions"),
+                offline_selection_seconds=prepared.metadata.get("offline_scoring_seconds", 0),
+                offline_selection_cost_usd=prepared.metadata.get("offline_scoring_cost_usd", 0),
+                offline_selection_in_ttft=False,
                 scope=(
-                    "Full online request including selection, teacher, checks, adaptation and fresh "
-                    "question through the first final token; excludes model loading and queue time"
+                    "Online request including selection JSON loading or live selection, teacher, checks, "
+                    "adaptation and fresh question through the first final token; excludes model loading, "
+                    "queue time, and previously completed shared offline selection"
                 ),
             ),
             backbone_unchanged=True,

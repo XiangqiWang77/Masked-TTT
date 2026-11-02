@@ -1,9 +1,32 @@
-"""Masked TTT: selected-context supervision, full-context KV adaptation."""
+"""Masked TTT; CPU selection utilities do not import model-compute libraries."""
 
-from .config import DecisionConfig, TTTConfig
-from .model import Backbone
-from .pipeline import MaskedTTT
-from .request import Request
-from .selection import OpenAIChunkSelector
+from importlib import import_module
 
-__all__ = ["Backbone", "DecisionConfig", "MaskedTTT", "OpenAIChunkSelector", "Request", "TTTConfig"]
+_EXPORTS = {
+    "DecisionConfig": "config",
+    "TTTConfig": "config",
+    "Backbone": "model",
+    "MaskedTTT": "pipeline",
+    "Request": "request",
+    "OpenAIChunkSelector": "selection",
+    "FrozenJSONSelector": "frozen_scores",
+}
+
+
+def __getattr__(name):
+    if name not in _EXPORTS:
+        raise AttributeError(name)
+    value = getattr(import_module("." + _EXPORTS[name], __name__), name)
+    globals()[name] = value
+    return value
+
+
+__all__ = [
+    "Backbone",
+    "DecisionConfig",
+    "MaskedTTT",
+    "OpenAIChunkSelector",
+    "FrozenJSONSelector",
+    "Request",
+    "TTTConfig",
+]

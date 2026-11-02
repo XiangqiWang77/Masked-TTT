@@ -1,13 +1,19 @@
 """Method settings, with the submitted Selective SD defaults."""
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from pathlib import Path
 import math
+from typing import TYPE_CHECKING
 
-from .optimizer import UpdateOptions
+if TYPE_CHECKING:
+    from .optimizer import UpdateOptions
 
 
 def default_update_options():
+    from .optimizer import UpdateOptions
+
     return UpdateOptions(
         native_KL_budget=None,
         direction_preconditioner="adam",
@@ -77,8 +83,8 @@ class DecisionConfig:
     timeout_seconds: float = 45.0
 
     def __post_init__(self):
-        if not 0 < self.max_cost_usd <= 15:
-            raise ValueError("Decision API cost ceiling must be in (0, 15] USD")
+        if not 0 < self.max_cost_usd <= 50:
+            raise ValueError("Decision API cost ceiling must be in (0, 50] USD")
         if not 1 <= self.batch_size <= 400 or not 1 <= self.workers <= 8:
             raise ValueError("Invalid Decisions batch size or worker count")
         if not 0 < self.timeout_seconds <= 45:

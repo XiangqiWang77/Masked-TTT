@@ -384,8 +384,8 @@ class DecisionCostLedger:
     """
 
     def __init__(self, path, cap=5):
-        if not isinstance(cap, (int, float)) or isinstance(cap, bool) or not 0 < cap <= 15:
-            raise ValueError("The authorized Decisions API budget is at most $15")
+        if not isinstance(cap, (int, float)) or isinstance(cap, bool) or not 0 < cap <= 50:
+            raise ValueError("The authorized Decisions API budget is at most $50")
         self.path = Path(path).expanduser().resolve()
         self.cap = float(cap)
         self.path.parent.mkdir(parents=True, exist_ok=True)
