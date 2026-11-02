@@ -41,13 +41,19 @@ def load_scores(directory, document, question):
     spans = data["source_spans"]
     if len(spans) != len(data["records"]) or len(spans) != len(data["chunk_sha256"]):
         raise ValueError("Incomplete frozen chunk scores")
-    previous = 0
+    previous_start, previous_end = -1, 0
     for (start, end), digest in zip(spans, data["chunk_sha256"]):
-        if not 0 <= start < end <= len(document) or start < previous:
-            raise ValueError("Invalid or overlapping frozen source ranges")
+        if not 0 <= start < end <= len(document) or start <= previous_start or end <= previous_end:
+            raise ValueError("Invalid or nonmonotone frozen source ranges")
+        if start < previous_end:
+            # Byte-fallback tokens can straddle a chunk boundary inside one
+            # Unicode character. Their disjoint token slots legitimately map
+            # to the same character offset. Preserve the scored text exactly.
+            if previous_end - start != 1 or len(document[start].encode("utf-8")) <= 1:
+                raise ValueError("Invalid overlapping frozen source ranges")
         if text_sha(document[start:end]) != digest:
             raise ValueError("The frozen source passage changed")
-        previous = end
+        previous_start, previous_end = start, end
     select_top_fraction(data["records"], 0.1)
     data["json_path"] = str(path)
     data["json_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()

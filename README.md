@@ -98,6 +98,9 @@ print(result["prediction"])
 For repeated evaluations, compute source relevance once and use the shared JSON
 selector. It maps the same source-character spans to each backbone's tokenizer;
 a missing or mismatched score file raises an error and never calls the API.
+At a byte-fallback boundary, adjacent canonical token chunks can share the offset
+of one multibyte character. The loader preserves these original scored passages;
+each native token slot still belongs to exactly one adaptation chunk.
 
 ```python
 from masked_ttt import FrozenJSONSelector
