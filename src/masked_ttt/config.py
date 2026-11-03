@@ -22,6 +22,7 @@ class TTTConfig:
     self_question_count: int = 2
     self_question_max_tokens: int = 192
     self_question_verify_tokens: int = 16
+    practice_boundary_fallback: bool = False
     guard_enabled: bool = True
     guard_minimum_confidence: float = 0.65
     guard_minimum_label_mass: float = 0.20
@@ -58,6 +59,8 @@ class TTTConfig:
             raise ValueError("steps must be a nonnegative integer")
         if type(self.self_question_count) is not int or not 0 <= self.self_question_count <= 4:
             raise ValueError('self_question_count must be between 0 and 4')
+        if type(self.practice_boundary_fallback) is not bool:
+            raise ValueError('practice_boundary_fallback must be boolean')
         if type(self.guard_enabled) is not bool or type(self.standalone_cartridge_enabled) is not bool:
             raise ValueError('guard and standalone settings must be boolean')
         for name in ('guard_minimum_confidence','guard_minimum_label_mass'):
