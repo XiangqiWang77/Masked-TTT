@@ -1,5 +1,7 @@
 # Query Cartridges: Learning to Read Long Contexts with Masked Test-Time Training
 
+> 本分支以 [OLMo 的原始 ICL 自蒸馏配置](docs/OLMO_ICL_SELF_DISTILLATION.zh-CN.md) 为准。下文还保留了历史对照与后续候选的说明；这些候选不属于本分支的训练路径。
+
 ## 一句话：让模型为当前问题学会如何读文档
 
 给定一篇长文档和一个问题，Query Cartridges 先选出少量可能相关的片段，用这些片段构造一个聚焦的 ICL Teacher，并让同一个模型围绕原问题和少量原文支持的小问题进行自我学习。学习过程中，模型的基础权重保持冻结；我们只更新当前请求中、选中片段的 KV 读取状态。**最终答案由独立 Cartridge 生成：它只包含选中片段的 KV 和学到的读取状态，回答时不读取全文 KV。**

@@ -8,6 +8,12 @@ full-context student jointly adapts two request-local reading corrections:
 chunk-level attention allocation and a low-rank value-read adjustment. Model
 weights and the original document KV remain immutable.
 
+This branch preserves the archived implementation used in the OLMo BABILONG
+run. The recorded profile is available at
+[examples/olmo_babilong_icl_sd.json](examples/olmo_babilong_icl_sd.json).
+The [Chinese method description](docs/OLMO_ICL_SELF_DISTILLATION.zh-CN.md)
+explains the two cache paths, the paired results, and their scope.
+
 The trained state supports two explicitly different answer paths:
 
 * **Full KV + Query Cartridge:** answer from the working-document cache with
@@ -74,7 +80,8 @@ The saved score directory contains `case_to_score_file.json` and `scores/`.
 ```bash
 masked-ttt --model /path/to/model --request request.json \
   --score-json-dir /path/to/shared_scores --case-id YOUR_CASE_ID \
-  --context-reserve-tokens 1024 --local-files-only --output result.json
+  --config-json examples/olmo_babilong_icl_sd.json \
+  --local-files-only --output result.json
 ```
 
 The full answer is `prediction`; the independent selected-KV result is
