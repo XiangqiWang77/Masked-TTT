@@ -74,6 +74,11 @@ separately so that the compared cache scope is clear.
 
 Install with `pip install -e '.[test]'` and a compatible FlashAttention build.
 The saved score directory contains `case_to_score_file.json` and `scores/`.
+The [shared source-score archive](https://github.com/XiangqiWang77/AsyncStack-TTT/tree/data/shared-source-scores-20261102)
+contains cached scores for the 1,000 BABILONG cases and the retained
+LongBench-v2 cases; the original dataset documents are still required. The
+Qwen V5 profile selects its 30% from the saved per-chunk scores, without a new
+Decision API request.
 
 ```bash
 masked-ttt --model /path/to/model --request request.json \
