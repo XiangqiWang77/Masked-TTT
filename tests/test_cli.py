@@ -23,6 +23,9 @@ def test_recorded_qwen_v5_config_is_loaded_without_changing_defaults():
     config=load_method_config(path,keep_fraction=None,steps=None)
     effective=asdict(config)
     assert effective.pop('practice_boundary_fallback') is False
+    assert effective.pop('matched_cache_probe') is False
+    assert effective.pop('matched_cache_direct') is False
+    assert effective.pop('matched_cache_final_suffix')=='original'
     assert effective==saved
     assert (config.keep_fraction,config.steps,config.student_rollout_tokens)==(.3,4,32)
     assert config.teacher_judge_policy=='grounded_veto' and config.teacher_veto_against_native
@@ -61,6 +64,9 @@ def test_cli_passes_recorded_config_to_backbone(tmp_path,monkeypatch):
     main()
     effective=asdict(seen['config'])
     assert effective.pop('practice_boundary_fallback') is False
+    assert effective.pop('matched_cache_probe') is False
+    assert effective.pop('matched_cache_direct') is False
+    assert effective.pop('matched_cache_final_suffix')=='original'
     assert effective==json.loads(path.read_text())
     assert seen['case']=='sample' and json.loads(output.read_text())['prediction']=='done'
 
@@ -74,3 +80,11 @@ def test_cached_selection_requires_an_explicit_case_id(tmp_path,monkeypatch,caps
         main()
     assert error.value.code==2
     assert '--case-id is required' in capsys.readouterr().err
+
+
+def test_gpt_selected_cache_candidate_is_explicit_and_loadable():
+    path=Path(__file__).resolve().parents[1]/'examples/gpt_oss_babilong_selected_cache_candidate.json'
+    config=load_method_config(path)
+    assert config.keep_fraction==.3 and config.practice_boundary_fallback
+    assert config.matched_cache_direct and not config.matched_cache_probe
+    assert config.matched_cache_final_suffix=='original'

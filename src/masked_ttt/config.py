@@ -38,6 +38,9 @@ class TTTConfig:
     guard_minimum_confidence: float = 0.65
     guard_minimum_label_mass: float = 0.20
     standalone_cartridge_enabled: bool = True
+    matched_cache_probe: bool = False
+    matched_cache_direct: bool = False
+    matched_cache_final_suffix: str = 'original'
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
@@ -75,6 +78,18 @@ class TTTConfig:
             raise ValueError('self_question_count must be between 0 and 4')
         if type(self.guard_enabled) is not bool or type(self.standalone_cartridge_enabled) is not bool:
             raise ValueError('guard and standalone settings must be boolean')
+        if type(self.matched_cache_probe) is not bool:
+            raise ValueError('matched_cache_probe must be boolean')
+        if self.matched_cache_probe and not self.standalone_cartridge_enabled:
+            raise ValueError('The matched-cache probe needs the original standalone output')
+        if type(self.matched_cache_direct) is not bool:
+            raise ValueError('matched_cache_direct must be boolean')
+        if self.matched_cache_direct and (self.matched_cache_probe or not self.standalone_cartridge_enabled):
+            raise ValueError('Direct selected-cache mode requires standalone generation without the paired probe')
+        if self.matched_cache_final_suffix not in ('original','teacher_format','practice_gated_format'):
+            raise ValueError('Choose a supported direct-cache output policy')
+        if self.matched_cache_final_suffix!='original' and not self.matched_cache_direct:
+            raise ValueError('A formatted final suffix requires direct selected-cache mode')
         if self.guard_policy not in ('consensus','veto','student'):
             raise ValueError('Unsupported global answer-selection policy')
         if self.teacher_judge_policy not in ('off','support_required','grounded_veto'):

@@ -8,7 +8,10 @@ import time
 import torch
 
 from .batched_sd import batched_teacher_logits
+from .answer_selection import select_answer_arm
+from .architectures import global_layers
 from .memory import KVReadMemory
+from .matched_cache_study import train_selected_cache
 from .memory_accounting import (cache_tensors,cuda_allocated,cuda_peak,module_tensors,
                                 optimizer_storage_bytes,storage_bytes)
 from .model import Budget
@@ -105,18 +108,6 @@ class MaskedTTT:
                     rejections={'unusable_practice_prefix':1},reason=str(exc),
                     reference_answers_used=False,student_answer_hint_used=False)
 
-        memory = KVReadMemory(
-            engine.model.config,
-            layout.chunks,
-            selected,
-            length,
-            rank=engine.config.value_rank,
-            value_radius=engine.config.value_radius,
-            gain_bound=engine.config.gain_bound,
-            sink_tokens=engine.config.sink_tokens,
-            seed=engine.config.seed,
-        ).to(engine.device)
-        reader = MemoryReader(engine, memory)
         main_path=dict(name='main',student_suffix=suffix,teacher=teacher,
                        question=working.question)
         paths=([main_path] if use_teacher_signal else [])+practice_paths
@@ -130,6 +121,77 @@ class MaskedTTT:
             verified_practice_paths=len(practice_paths),
             reference_answers_used=False),LLM_self_judge_enabled=engine.config.guard_enabled,
             reason='Selection applies to teacher source and trainable KV positions')
+        if engine.config.matched_cache_direct:
+            # The selected document cache is the same object for adaptation and
+            # answer generation. The teacher signal and self-study paths are
+            # exactly those used by the paired study, without the redundant
+            # preliminary optimization on full-document KV.
+            matched=train_selected_cache(engine,teacher_reader,teacher,layout,selected,
+                                         suffix,paths,working,use_teacher_signal)
+            if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in cache_stamp):
+                raise AssertionError('The original document cache was changed')
+            engine.assert_frozen(weights_before)
+            chosen=select_answer_arm(engine.config.matched_cache_final_suffix,len(practice_paths),
+                                     len(matched['steps']),bool(usable and use_teacher_signal))
+            selected_answer=matched[chosen]
+            source_bytes=storage_bytes(cache_tensors(teacher.document_cache))
+            selected_bytes=matched['storage']['selected_kv_bytes']
+            adapter_bytes=matched['storage']['adapter_bytes']
+            standalone=dict(prediction=selected_answer['prediction'],selected_output_arm=chosen,
+                generated_token_ids=selected_answer['generated_token_ids'],teacher_answer_in_final_prompt=False,
+                memory=dict(source_selected_kv_bytes=source_bytes,materialized_selected_kv_bytes=selected_bytes,
+                    cartridge_adapter_bytes=adapter_bytes,standalone_cartridge_bytes=selected_bytes+adapter_bytes,
+                    document_tokens=matched['selected_document_tokens'],selected_chunks=matched['selected_chunks'],
+                    raw_full_document_kv_used_at_decode=False,
+                    selected_kv_representation='independently_prefilled_selected_text',
+                    includes_generation_suffix_kv=False))
+            updates=[dict(step,accepted=True) for step in matched['steps']]
+            return dict(prediction=standalone['prediction'],generated_token_ids=standalone['generated_token_ids'],
+                finish_reason=('eos' if standalone['generated_token_ids'][-1] in engine.eos_ids else 'length'),
+                teacher=teacher.metadata(),teacher_judgment=teacher_judgment,self_study=self_study,
+                self_judge=dict(native_prediction=native_prediction,adapted_prediction=standalone['prediction'],
+                                final_choice='standalone_cartridge'),
+                standalone_cartridge=standalone,matched_cache_study=matched,
+                memory=dict(unit='bytes',model_resident_gpu_bytes=model_resident_bytes,
+                    full_document_kv_bytes=original_kv_bytes,
+                    paired_run_peak_gpu_allocated_bytes=cuda_peak(engine.device),
+                    gpu_peak_includes_model_and_training=True,
+                    standalone_peak_is_not_measured_separately=True,
+                    cache_sizes_exclude_question_and_generated_suffix=True),
+                selection=prepared.metadata,support=support,
+                training=dict(objective='on-policy KL(teacher || student)',
+                    initial_kl=updates[0]['teacher_KL_before'] if updates else None,final_kl=None,
+                    steps=updates,accepted_steps=len(updates),optimizer='Adam',
+                    teacher_cap=engine.config.teacher_max_new_tokens,
+                    student_rollout_limit=engine.config.student_rollout_tokens,
+                    teacher_target_scope=engine.config.teacher_target_scope,
+                    student_rollouts_refreshed_each_step=True,teacher_conditioned_on_student_prefix=True,
+                    verified_practice_questions=len(practice_paths),
+                    teacher_main_signal_used=bool(usable and use_teacher_signal),
+                    adapted_layers=global_layers(engine.model.config),checkpointed_layers=True,
+                    causal_batched_teacher_forcing=True,training_cache='selected_document'),
+                timing=dict(ttft_seconds=None,prefill_seconds=prefill_seconds,
+                    teacher_seconds=teacher.elapsed_seconds,adaptation_and_decoding_seconds=matched['elapsed_seconds'],
+                    total_seconds=time.perf_counter()-started,
+                    scope='Complete request until all paired outputs; individual TTFT is not measured',
+                    selection_backend=prepared.metadata.get('backend','online_decisions'),
+                    offline_selection_seconds=prepared.metadata.get('offline_scoring_seconds',0),
+                    offline_selection_cost_usd=prepared.metadata.get('offline_scoring_cost_usd',0),
+                    offline_selection_in_ttft=False),
+                backbone_unchanged=True,original_document_KV_unchanged=True,
+                final_question_recomputed=True,teacher_answer_in_final_prompt=False)
+        memory = KVReadMemory(
+            engine.model.config,
+            layout.chunks,
+            selected,
+            length,
+            rank=engine.config.value_rank,
+            value_radius=engine.config.value_radius,
+            gain_bound=engine.config.gain_bound,
+            sink_tokens=engine.config.sink_tokens,
+            seed=engine.config.seed,
+        ).to(engine.device)
+        reader = MemoryReader(engine, memory)
         began=time.perf_counter()
         if usable:
             memory.prepare_value_basis(cache,memory.adapted_layers)
@@ -258,6 +320,9 @@ class MaskedTTT:
         full_plus_adapter_bytes=storage_bytes(cache_tensors(cache)+module_tensors(memory))
         standalone=(answer_standalone(engine,layout,selected,teacher,memory,working.max_new_tokens)
                     if engine.config.standalone_cartridge_enabled else None)
+        matched_cache=(train_selected_cache(engine,teacher_reader,teacher,layout,selected,
+                       suffix,paths,working,use_teacher_signal)
+                       if engine.config.matched_cache_probe else None)
         engine.synchronize()
         total_peak_bytes=cuda_peak(engine.device)
 
@@ -276,6 +341,7 @@ class MaskedTTT:
             self_judge=dict(guard,native_prediction=native_prediction,
                             adapted_prediction=adapted_prediction),
             standalone_cartridge=standalone,
+            matched_cache_study=matched_cache,
             memory=dict(
                 unit='bytes',model_resident_gpu_bytes=model_resident_bytes,
                 full_document_kv_bytes=original_kv_bytes,

@@ -27,6 +27,16 @@ memory requirement. Unlike the reusable virtual caches in
 [Cartridges](https://arxiv.org/abs/2506.06266), these states are constructed for
 one request and discarded afterwards.
 
+An optional **selected-cache training** path optimizes the independently
+prefilled selected KV directly and generates from that same cache. It shares
+one request-local update across the original question and any verified
+practice questions. The full document is still prefetched for the existing
+Teacher judgment, while the final cartridge does not read that full KV.
+`matched_cache_probe=True` runs an additional paired study alongside the
+original full-context path; `matched_cache_direct=True` runs only the
+selected-cache update and returns its independent answer as `prediction`.
+The GPT-OSS evaluation of this candidate is in progress.
+
 ## Procedure
 
 1. Load the saved Decision API scores for the document and question. Select
@@ -106,6 +116,17 @@ judgment and optimizer settings. Explicit command-line options override the
 corresponding JSON values. The same local backbone, request formatting and
 cached Decision scores are needed to reproduce the experiment; exact outputs
 can still depend on the execution environment.
+
+For the GPT-OSS selected-cache development candidate, use
+`--config-json examples/gpt_oss_babilong_selected_cache_candidate.json`.
+The candidate keeps the practice token-boundary fix enabled. Its output policy
+is explicitly configurable as `original`, `teacher_format`, or
+`practice_gated_format`. The gated policy selects the trained answer only
+when the optimizer actually used an independently verified practice question;
+otherwise it returns the zero-update answer using the same Teacher-format
+instruction. No Teacher answer or evaluation reference is inserted into the
+student prompt. Development results determine which policy, if any, is used
+on the held-out cases.
 
 The original implementation used for the earlier 10% Qwen, OLMo and GPT-OSS
 base experiments remains available at the Git tag `babilong-v1`. The current
