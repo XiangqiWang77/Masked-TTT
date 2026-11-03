@@ -1,134 +1,91 @@
-# Constructing Cartridges at Inference via Masked Test-Time Training
+# Query Cartridges: Learning to Read Long Contexts with Masked Test-Time Training
 
-**Select evidence for learning; keep the working document for answering.**
+Query Cartridges adapts a frozen language model to one long-context question.
+Question-conditioned Decision scores select a small number of document chunks.
+A frozen, selected-context ICL teacher supplies on-policy next-token
+distributions and proposes short source-grounded practice questions. The
+full-context student jointly adapts two request-local reading corrections:
+chunk-level attention allocation and a low-rank value-read adjustment. Model
+weights and the original document KV remain immutable.
 
-Masked TTT adapts a frozen language model to one long-context question. A
-Decision API score selects a small set of source chunks. The same frozen model
-answers from those chunks as an in-context teacher. A student reads the full
-working document and learns from the teacher's next-token distributions by
-updating request-local attention allocation and value-read corrections. The
-student then answers independently and discards the corrections.
+The trained state supports two explicitly different answer paths:
 
-We call these request-local, selected-position reading corrections an
-**inference-time cartridge**. Their purpose is to improve the current answer:
-the student retains its working-document KV cache and reads it with the learned
-state. This differs from the compact, reusable virtual caches in the original
-[Cartridges](https://arxiv.org/abs/2506.06266) work.
+* **Full KV + Query Cartridge:** answer from the working-document cache with
+  the trained corrections. A frozen full-context judge compares the native and
+  adapted answers in both orders; an inconclusive comparison retains the native
+  answer.
+* **Standalone Query Cartridge:** answer without reading the full-document KV.
+  It contains an independently prefetched selected-chunk KV together with the
+  trained corrections, materialized for decoding. Its answer is evaluated
+  separately from the full-context path.
 
-[中文方法说明](docs/METHOD.zh-CN.md) · [Implementation](docs/IMPLEMENTATION.md)
+The standalone cartridge is a real selected-KV cache, not just a small set of
+parameters. It is constructed after full-context adaptation; consequently its
+smaller decoding state does not by itself establish a lower training-time peak
+memory requirement. Unlike the reusable virtual caches in
+[Cartridges](https://arxiv.org/abs/2506.06266), these states are constructed for
+one request and discarded afterwards.
 
-```mermaid
-flowchart LR
-    D[Document and question] --> S[Cached Decision scores]
-    S --> E[Selected chunks]
-    E --> T[Focused ICL teacher]
-    D --> K[Full working-document KV]
-    T --> L[Answer-distribution KL]
-    K --> L
-    L --> U[Build request-local cartridge]
-    K --> U
-    U --> A[Recompute question and answer]
-```
+## Procedure
 
-## Method
+1. Load the saved Decision API scores for the document and question. Select
+   the top 10% of source chunks in their original order.
+2. Prefill the complete working document once. Separately prefill the selected
+   text for the ICL teacher; obtain its answer for the baseline comparison.
+3. Ask the teacher for up to two short factual practice questions, answers and
+   exact source quotations. Keep only proposals whose quotation occurs in a
+   selected chunk and whose answer agrees with a separate frozen-model answer
+   based on that quotation alone. This is a consistency check, not a guarantee
+   of logical entailment; evaluation references are never used here.
+4. Generate short current-student prefixes for the original and verified
+   practice questions. Score each identical prefix with the focused teacher and
+   minimize full-vocabulary forward KL on the student path. All exercises share
+   the same selected-position attention and value-read state.
+5. Discard training suffixes and independently generate the original answer.
+   The full-context judge sees both the adapted and native answers, reads the
+   working document and can retain the native answer. Also generate an
+   independent answer with the standalone selected-KV cartridge.
 
-1. **Select.** Rank source chunks using question-conditioned Decision scores;
-   by default, use the top 10%. Cached scores are loaded by case ID and are
-   reused across backbones. The selection is not an answer label.
-2. **Build the teacher.** The frozen backbone reads the selected chunks in
-   document order, with the original question and a concise-answer instruction.
-   It also generates an answer for the ICL baseline, and keeps the selected
-   document cache available for scoring student prefixes.
-3. **Adapt.** Prefill the complete working document once and keep its original
-   KV cache immutable. Optimize a chunk-level attention-score correction and a
-   low-rank value-read correction, jointly, only at selected positions. The
-   student generates a short rollout from its current state. The teacher scores
-   the same prefixes with full-vocabulary probabilities, and the student
-   minimizes $\mathrm{KL}(p_T\|p_S)$. The rollout is refreshed after each
-   update. Original model weights remain frozen.
-4. **Answer.** Freeze the corrections, discard the training suffix, recompute
-   the original question and generate the student's own answer. All per-request
-   state is then discarded.
+At a selected document location $u$ in chunk $c$, the adapted read is
 
-For selected document position $u$ in chunk $c$, the read operation is
+$$z_{t,u}=q_t^\top k_{u,0}/\sqrt{d_h}+m_u g_c,\qquad
+o_t=\sum_u \operatorname{softmax}(z_t)_u\left(v_{u,0}+
+m_u\operatorname{clip}_{0.15\lVert v_{u,0}\rVert}((v_{u,0}U)B_c)\right).$$
 
-$$
-z_{t,u}=q_t^\top k_{u,0}/\sqrt{d_h}+m_u g_c,\qquad
-o_t=\sum_u \operatorname{softmax}(z_t)_u
-\left(v_{u,0}+m_u\operatorname{clip}_{0.15\lVert v_{u,0}\rVert}
-((v_{u,0}U)B_c)\right).
-$$
+The mask $m_u$ limits trainable changes to selected document positions; the
+fixed basis $U$ is computed from their cached values. Full-attention layers
+are adapted and sliding-attention layers retain their native behavior.
 
-Here $m_u$ marks selected positions; $U$ is a fixed per-layer, per-KV-head
-basis computed from selected values, while $g$ and $B$ are trained jointly.
-No cached key or value is overwritten. Full-attention layers are adapted;
-sliding-attention layers retain their native behavior.
+## Memory accounting
 
-The current implementation uses the original question and fresh student
-answer prefixes for on-policy distillation. Automatically creating additional
-self-questions is a possible extension and is not part of these runs.
+Each result records the backing storage of the full document KV, the
+request-local adapter, optimizer state, and the materialized decode cache.
+Standalone cartridge size includes both selected KV and its adapter. Shared
+tensor views are counted once. A GPU peak records the full paired experiment
+and includes model weights and training; it is not presented as a separately
+measured standalone peak. Source and question/output suffix KV are identified
+separately so that the compared cache scope is clear.
 
-The shipped profile uses a 32-token ICL teacher cap, up to 8 student rollout
-tokens and two Adam steps, and for a
-recognized multiple-choice answer may continue up to eight steps until its
-answer-position KL is at most 0.5. Other answers use all available student-prefix
-positions and two steps. There is **no separate LLM judge, source NTP,
-centering, or output-answer routing** in this profile. Earlier experiments used
-different trajectories or selective filters and must be reported as separate
-configurations. This online student-trajectory implementation is a new
-candidate and does not reuse the earlier teacher-prefix accuracy as its own.
+## Run
 
-If a document exceeds a backbone's native context window, the cached selector
-constructs a source-prioritized working document and records its source mapping.
-For inputs that fit, every original chunk remains readable by the student.
-
-## Install
-
-```bash
-pip install -e '.[test]'
-# Install a compatible FlashAttention build for the target CUDA hardware.
-```
-
-The tested cluster environment uses PyTorch 2.9.1 with CUDA 12.8,
-Transformers 4.57.6 and FlashAttention 2.8.3. Qwen3-4B, OLMo-3-7B and
-GPT-OSS-20B backbones are supported by the implementation; the currently
-submitted benchmark jobs are tracked separately from this repository.
-
-## Run with cached decisions
-
-The JSON request contains `document`, `question`, and optionally `prompt`,
-`answer_prefix` and `max_new_tokens`. The case ID must match the saved
-score index and the original question.
+Install with `pip install -e '.[test]'` and a compatible FlashAttention build.
+The saved score directory contains `case_to_score_file.json` and `scores/`.
 
 ```bash
 masked-ttt --model /path/to/model --request request.json \
   --score-json-dir /path/to/shared_scores --case-id YOUR_CASE_ID \
-  --context-reserve-tokens 1024 \
-  --local-files-only --output result.json
+  --context-reserve-tokens 1024 --local-files-only --output result.json
 ```
 
-The score directory contains `case_to_score_file.json` and `scores/`. The
-shared benchmark score bundle is available on the
-[data branch](https://github.com/XiangqiWang77/AsyncStack-TTT/tree/data/shared-source-scores-20261102).
-To score a new request online, pass `--online-decisions` instead; this uses
-the configured Decision API credentials and budget.
-
-The example reserves at least 1,024 tokens for the generated answer. The
-implementation also reserves the request's `max_new_tokens` if it is larger;
-the default reserve is 4,096 when the option is omitted.
-
-`timing.ttft_seconds` measures cached-score loading, teacher inference,
-adaptation, question recomputation and the first final token. It excludes model
-loading, queueing and previously completed offline Decision scoring; those
-selection costs are recorded separately. Compare methods on the same cases,
-hardware and timing scope.
+The full answer is `prediction`; the independent selected-KV result is
+`standalone_cartridge.prediction`. The `self_study`, `self_judge`, `training`,
+and `memory` fields record the actual request path. If a document exceeds a
+backbone's native window, the cached selector constructs a source-prioritized
+working document and records its source mapping.
 
 ## Verify
 
-```bash
-pytest -q
-```
-
-Tests cover causal teacher forcing, selected-only gradients, zero-state
-equivalence, immutable document KV, fresh question recomputation, cached-score
-identity and full/sliding attention backbones.
+Run `pytest -q`. Evaluation compares paired answers with the same task-aware
+metric, reports gains and losses relative to each baseline, and reports
+document KV and cartridge storage separately. Earlier OPD-only and
+teacher-prefix runs are different configurations, not results of this method.

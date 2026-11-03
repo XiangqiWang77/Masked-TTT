@@ -137,6 +137,7 @@ def test_simple_selected_sd_keeps_backbone_and_recomputes_question(monkeypatch):
     config._attn_implementation='eager'
     options=TTTConfig(chunk_tokens=16,max_context=1024,context_reserve_tokens=128,value_rank=2,
                       steps=2,teacher_max_new_tokens=3,prefill_chunk_tokens=64,
+                      self_question_count=0,guard_enabled=False,
                       teacher_response_instruction='Return only the final answer.')
     engine=Backbone(Qwen3ForCausalLM(config).eval(),ByteTokenizer(),options)
     class Selector:

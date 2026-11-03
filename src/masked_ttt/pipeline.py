@@ -8,12 +8,17 @@ import torch
 
 from .batched_sd import batched_teacher_logits
 from .memory import KVReadMemory
+from .memory_accounting import (cache_tensors,cuda_allocated,cuda_peak,module_tensors,
+                                optimizer_storage_bytes,storage_bytes)
 from .model import Budget
 from .on_policy import student_rollout
 from .optimizer import distribution_kl
+from .output_guard_runtime import guard_answers
 from .reader import MemoryReader
 from .runtime import private_forward, private_module_tree
 from .selection import OpenAIChunkSelector
+from .self_study_runtime import generate_from_cache,generate_self_study
+from .standalone import answer_standalone
 from .teacher import build_teacher, prefill_document, score_student_prefix
 from .teacher_targeting import choice_positions
 
@@ -30,6 +35,8 @@ class MaskedTTT:
         engine = copy(self.backbone)
         engine.budget = Budget(time_budget_seconds)
         engine.synchronize()
+        if engine.device.type=='cuda':torch.cuda.reset_peak_memory_stats(engine.device)
+        model_resident_bytes=cuda_allocated(engine.device)
         weights_before = engine.weight_stamp()
         prepared = self.selector.prepare(engine, request)
         working, layout, selected = prepared.request, prepared.layout, prepared.selected
@@ -49,10 +56,25 @@ class MaskedTTT:
             engine, engine.model, layout.ids, layout.initial, [c[-1] + 1 for c in layout.chunks]
         )
         prefill_seconds = time.perf_counter() - began
+        original_kv_bytes=storage_bytes(cache_tensors(cache))
         cache_stamp = [
             (x, x._version, x.data_ptr()) for item in cache.layers for x in (item.keys, item.values)
         ]
+        native_tokens=native_prediction=None
+        if engine.config.guard_enabled:
+            native_tokens,native_prediction=generate_from_cache(
+                engine,teacher_reader,cache,length,suffix,working.max_new_tokens)
         teacher = build_teacher(engine, teacher_reader, working, layout, selected)
+        try:
+            practice_paths,self_study=generate_self_study(
+                engine,teacher_reader,teacher,working,layout,selected)
+        except ValueError as exc:
+            # A non-reusable token boundary is an explicit no-practice case;
+            # no altered document cache is silently substituted.
+            practice_paths=[]
+            self_study=dict(generated_tokens=0,parsed=0,verified=0,checks=[],
+                rejections={'unusable_practice_prefix':1},reason=str(exc),
+                reference_answers_used=False,student_answer_hint_used=False)
 
         memory = KVReadMemory(
             engine.model.config,
@@ -69,44 +91,50 @@ class MaskedTTT:
         usable=engine.config.steps>0
         support=dict(decision=dict(state='selected_signal' if usable else 'empty_teacher',
             planned_steps=engine.config.steps if usable else 0,apply_update=usable,
-            reference_answers_used=False),LLM_self_judge_enabled=False,
+            reference_answers_used=False),LLM_self_judge_enabled=engine.config.guard_enabled,
             reason='Selection applies to teacher source and trainable KV positions')
         began=time.perf_counter()
         if usable:
             memory.prepare_value_basis(cache,memory.adapted_layers)
             memory.value_enabled=True
         engine.synchronize();setup_seconds=time.perf_counter()-began
-        initial_kl=final_kl=None;steps=[];positions=[]
+        initial_kl=final_kl=None;steps=[];positions=[];optimizer_bytes=0
         use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
         teacher_version=teacher.probabilities._version
         began=time.perf_counter()
         if usable:
             memory.native_mode=False
+            paths=[dict(name='main',student_suffix=suffix,teacher=teacher,
+                        question=working.question)]+practice_paths
+            required_steps=engine.config.steps+len(practice_paths)
             params=(memory.gain,memory.value_coefficients)
             optimizer=torch.optim.Adam([
                 dict(params=[params[0]],lr=engine.config.gain_learning_rate),
                 dict(params=[params[1]],lr=engine.config.value_learning_rate)],foreach=False)
             try:
-                max_steps=engine.config.max_answer_steps if use_choice else engine.config.steps
+                max_steps=max(required_steps,engine.config.max_answer_steps) if use_choice else required_steps
                 for index in range(max_steps):
                     engine.budget.check();optimizer.zero_grad(set_to_none=True)
+                    path=paths[index%len(paths)] if index<required_steps else paths[0]
+                    current_suffix,current_teacher=path['student_suffix'],path['teacher']
                     # Refresh from the current student on every update. The teacher
                     # then scores exactly these prefixes, never its own answer.
-                    rollout=student_rollout(engine,reader,cache,suffix,
+                    rollout=student_rollout(engine,reader,cache,current_suffix,
                         min(working.max_new_tokens,engine.config.student_rollout_tokens))
-                    teacher_probs=score_student_prefix(engine,teacher_reader,teacher,rollout)
-                    positions=choice_positions(engine.tokenizer,rollout.tolist()) if use_choice else []
+                    teacher_probs=score_student_prefix(engine,teacher_reader,current_teacher,rollout)
+                    main_choice=use_choice and path['name']=='main'
+                    positions=choice_positions(engine.tokenizer,rollout.tolist()) if main_choice else []
                     target_positions=(torch.tensor(positions,device=rollout.device,dtype=torch.long)
                                       if positions else None)
                     target=(teacher_probs.index_select(0,target_positions) if positions else teacher_probs)
                     with torch.enable_grad():
-                        logits=batched_teacher_logits(engine,reader,cache,suffix,rollout,
+                        logits=batched_teacher_logits(engine,reader,cache,current_suffix,rollout,
                                                       target_positions=target_positions)
                         loss=distribution_kl(logits,target)
                         if not bool(torch.isfinite(loss)):
                             raise FloatingPointError('Nonfinite teacher KL')
                         before=float(loss.detach())
-                        if index>=engine.config.steps and (not positions or before<=engine.config.answer_KL_stop):
+                        if index>=required_steps and (not positions or before<=engine.config.answer_KL_stop):
                             final_kl=before
                             del logits,loss
                             break
@@ -120,14 +148,16 @@ class MaskedTTT:
                                                              error_if_nonfinite=True))
                     if initial_kl is None:initial_kl=before
                     optimizer.step();memory.constrain()
+                    optimizer_bytes=max(optimizer_bytes,optimizer_storage_bytes(optimizer))
                     steps.append(dict(step=index+1,accepted=True,teacher_KL_before=before,
+                        question_path=path['name'],
                         student_rollout_tokens=rollout.tolist(),
                         target_positions=positions or list(range(len(rollout))),
                         gain_gradient_norm=norms[0],value_gradient_norm=norms[1],gradient_norm=total))
                 if final_kl is None:
                     with torch.no_grad():
                         final_kl=float(distribution_kl(
-                            batched_teacher_logits(engine,reader,cache,suffix,rollout,
+                            batched_teacher_logits(engine,reader,cache,current_suffix,rollout,
                                                    target_positions=target_positions),target))
                 if not bool(torch.isfinite(torch.tensor(final_kl))):
                     raise FloatingPointError('Nonfinite final teacher KL')
@@ -146,10 +176,13 @@ class MaskedTTT:
         # Every question/answer position used for training is recomputed below.
         with torch.no_grad():
             branch = reader.compiled_branch(cache)
+            full_materialized_kv_bytes=storage_bytes(cache_tensors(branch))
+            full_decode_state_bytes=storage_bytes(cache_tensors(cache)+cache_tensors(branch)+
+                                                   module_tensors(memory))
             output = private_forward(reader.reader, suffix, length, branch)
             generated = [int(engine.model.lm_head(output.last_hidden_state[0, -1:])[0].argmax())]
             engine.synchronize()
-            ttft = time.perf_counter() - started
+            candidate_first_token_seconds = time.perf_counter() - started
             while len(generated) < working.max_new_tokens and generated[-1] not in engine.eos_ids:
                 engine.budget.check()
                 output = private_forward(
@@ -163,6 +196,27 @@ class MaskedTTT:
                 )
             engine.synchronize()
 
+        adapted_prediction=engine.tokenizer.decode(generated,skip_special_tokens=True)
+        if engine.config.guard_enabled:
+            guard=guard_answers(engine,teacher_reader,cache,layout,working,native_prediction,adapted_prediction)
+            if not guard['use_adapted']:
+                generated=native_tokens
+            # The final answer cannot be streamed until comparison completes.
+            engine.synchronize();ttft=time.perf_counter()-started
+        else:
+            guard=dict(use_adapted=True,reason='guard_disabled',reviews=[],seconds=0.,
+                       reference_answers_used=False)
+            ttft=candidate_first_token_seconds
+
+        engine.synchronize()
+        guarded_peak_bytes=cuda_peak(engine.device)
+        adapter_bytes=storage_bytes(module_tensors(memory))
+        full_plus_adapter_bytes=storage_bytes(cache_tensors(cache)+module_tensors(memory))
+        standalone=(answer_standalone(engine,layout,selected,teacher,memory,working.max_new_tokens)
+                    if engine.config.standalone_cartridge_enabled else None)
+        engine.synchronize()
+        total_peak_bytes=cuda_peak(engine.device)
+
         if any(
             x._version != version or x.data_ptr() != pointer for x, version, pointer in cache_stamp
         ):
@@ -173,6 +227,24 @@ class MaskedTTT:
             generated_token_ids=generated,
             finish_reason="eos" if generated[-1] in engine.eos_ids else "length",
             teacher=teacher.metadata(),
+            self_study=self_study,
+            self_judge=dict(guard,native_prediction=native_prediction,
+                            adapted_prediction=adapted_prediction),
+            standalone_cartridge=standalone,
+            memory=dict(
+                unit='bytes',model_resident_gpu_bytes=model_resident_bytes,
+                full_document_kv_bytes=original_kv_bytes,
+                full_adapter_bytes=adapter_bytes,
+                full_kv_plus_adapter_bytes=full_plus_adapter_bytes,
+                full_materialized_decode_kv_bytes=full_materialized_kv_bytes,
+                full_decode_state_including_original_kv_bytes=full_decode_state_bytes,
+                optimizer_state_peak_bytes=optimizer_bytes,
+                full_request_peak_gpu_allocated_bytes=guarded_peak_bytes,
+                paired_run_peak_gpu_allocated_bytes=total_peak_bytes,
+                gpu_peak_includes_model_and_training=True,
+                standalone_peak_is_not_measured_separately=True,
+                cache_sizes_exclude_question_and_generated_suffix=True,
+            ),
             selection=prepared.metadata,
             support=support,
             training=dict(
@@ -189,6 +261,8 @@ class MaskedTTT:
                 student_rollouts_refreshed_each_step=True,
                 teacher_conditioned_on_student_prefix=True,
                 kl_initial_and_final_may_use_different_student_prefixes=True,
+                kl_initial_and_final_may_use_different_questions=bool(practice_paths),
+                verified_practice_questions=len(practice_paths),
                 adaptive_max_answer_steps=engine.config.max_answer_steps,
                 adaptive_answer_KL_stop=engine.config.answer_KL_stop,
                 adapted_layers=memory.adapted_layers,
@@ -206,14 +280,16 @@ class MaskedTTT:
                 ),
                 support_seconds=0.0,adapter_setup_seconds=setup_seconds,
                 adaptation_seconds=adaptation_seconds,
+                candidate_first_token_seconds=candidate_first_token_seconds,
+                full_context_guard_seconds=guard['seconds'],
                 total_seconds=time.perf_counter() - started,
                 selection_backend=prepared.metadata.get("backend", "online_decisions"),
                 offline_selection_seconds=prepared.metadata.get("offline_scoring_seconds", 0),
                 offline_selection_cost_usd=prepared.metadata.get("offline_scoring_cost_usd", 0),
                 offline_selection_in_ttft=False,
                 scope=(
-                    "Online request including selection JSON loading or live selection, teacher, "
-                    "adaptation and fresh question through the first final token; excludes model loading, "
+                    "Online request including selection, native answer, Teacher, self-study, adaptation, "
+                    "candidate generation and full-context guard through the first final token; excludes model loading, "
                     "queue time, and previously completed shared offline selection"
                 ),
             ),

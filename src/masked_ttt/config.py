@@ -19,6 +19,13 @@ class TTTConfig:
     sink_tokens: int = 4
     teacher_max_new_tokens: int = 32
     student_rollout_tokens: int = 8
+    self_question_count: int = 2
+    self_question_max_tokens: int = 192
+    self_question_verify_tokens: int = 16
+    guard_enabled: bool = True
+    guard_minimum_confidence: float = 0.65
+    guard_minimum_label_mass: float = 0.20
+    standalone_cartridge_enabled: bool = True
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
@@ -37,6 +44,8 @@ class TTTConfig:
             "value_rank",
             "teacher_max_new_tokens",
             "student_rollout_tokens",
+            "self_question_max_tokens",
+            "self_question_verify_tokens",
         ):
             if type(getattr(self, name)) is not int or getattr(self, name) < 1:
                 raise ValueError(f"{name} must be a positive integer")
@@ -44,6 +53,14 @@ class TTTConfig:
             raise ValueError("Invalid chunk or context budget")
         if type(self.steps) is not int or self.steps < 0:
             raise ValueError("steps must be a nonnegative integer")
+        if type(self.self_question_count) is not int or not 0 <= self.self_question_count <= 4:
+            raise ValueError('self_question_count must be between 0 and 4')
+        if type(self.guard_enabled) is not bool or type(self.standalone_cartridge_enabled) is not bool:
+            raise ValueError('guard and standalone settings must be boolean')
+        for name in ('guard_minimum_confidence','guard_minimum_label_mass'):
+            value=getattr(self,name)
+            if type(value) not in (float,int) or not math.isfinite(value) or not 0<=value<=1:
+                raise ValueError(name+' must be in [0, 1]')
         if (
             type(self.keep_fraction) not in (float, int)
             or not 0 < self.keep_fraction <= 1

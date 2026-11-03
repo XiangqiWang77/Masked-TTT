@@ -24,6 +24,7 @@ class TeacherSignal:
     document_cache: object = None
     question_tokens: torch.Tensor = None
     document_end: int = 0
+    document_ids: tuple = ()
 
     def metadata(self):
         return dict(
@@ -112,6 +113,7 @@ def build_teacher(backbone, reader, request, layout, selected):
         cache,
         suffix,
         plan.document_end,
+        tuple(plan.ids[:plan.document_end]),
     )
 
 
