@@ -1,4 +1,4 @@
-# Masked TTT via Selective Self-Distillation
+# Constructing Cartridges at Inference via Masked Test-Time Training
 
 **Select evidence for learning; keep the working document for answering.**
 
@@ -8,6 +8,12 @@ answers from those chunks as an in-context teacher. A student reads the full
 working document and learns from the teacher's next-token distributions by
 updating request-local attention allocation and value-read corrections. The
 student then answers independently and discards the corrections.
+
+We call these request-local, selected-position reading corrections an
+**inference-time cartridge**. Their purpose is to improve the current answer:
+the student retains its working-document KV cache and reads it with the learned
+state. This differs from the compact, reusable virtual caches in the original
+[Cartridges](https://arxiv.org/abs/2506.06266) work.
 
 [中文方法说明](docs/METHOD.zh-CN.md) · [Implementation](docs/IMPLEMENTATION.md)
 
@@ -19,7 +25,7 @@ flowchart LR
     D --> K[Full working-document KV]
     T --> L[Answer-distribution KL]
     K --> L
-    L --> U[Joint selected KV-read update]
+    L --> U[Build request-local cartridge]
     K --> U
     U --> A[Recompute question and answer]
 ```
@@ -57,6 +63,10 @@ Here $m_u$ marks selected positions; $U$ is a fixed per-layer, per-KV-head
 basis computed from selected values, while $g$ and $B$ are trained jointly.
 No cached key or value is overwritten. Full-attention layers are adapted;
 sliding-attention layers retain their native behavior.
+
+The current implementation uses the original question and fresh student
+answer prefixes for on-policy distillation. Automatically creating additional
+self-questions is a possible extension and is not part of these runs.
 
 The shipped profile uses a 32-token ICL teacher cap, up to 8 student rollout
 tokens and two Adam steps, and for a
