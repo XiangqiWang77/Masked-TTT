@@ -16,7 +16,7 @@
 
 ## 2. 构造聚焦 ICL Teacher
 
-冻结模型只看选中的原文、原问题和原有任务格式。Teacher 生成一个短回答前缀，并记录每个位置的完整下一 token 概率分布。目标在训练期间固定，不接收梯度。
+冻结模型只看选中的原文、原问题和原有任务格式。它生成一个短回答用于 ICL 对照；训练时则根据 Student 当前生成的前缀，给出完整的下一 token 概率分布。Teacher 不接收梯度。
 
 例如，Teacher 对两个候选值分别给出 0.7 和 0.25，Student 使用的是整份分布，而不只是第一名。这个分布包含了 Teacher 对候选答案的相对偏好和不确定性。
 
@@ -47,19 +47,19 @@ $$
 
 ## 4. 用自蒸馏联合更新
 
-Student 在全文条件下，沿 Teacher 的同一回答前缀预测下一个 token。每个答案位置计算
+Student 在全文条件下先生成一个短回答前缀 $\hat y_S$；Teacher 和 Student 分别在这个**相同的 Student 前缀**下预测下一个 token。每个答案位置计算
 
 $$
 \mathcal L_{\mathrm{SD}}
 =\operatorname{mean}_{i}\mathrm{KL}\left(
-p_T(\cdot\mid E,Q,y_{<i})\;\Vert\;
-p_S(\cdot\mid D,Q,y_{<i})
+p_T(\cdot\mid E,Q,\hat y_{S,<i})\;\Vert\;
+p_S(\cdot\mid D,Q,\hat y_{S,<i})
 \right).
 $$
 
 同一次反向传播同时更新读取分配和内容修正。基础模型虽不更新，但梯度仍穿过它的计算路径传到这两组临时参数。训练严格因果：预测第 $i$ 个答案 token 时，只能看到前 $i-1$ 个答案 token。
 
-当前默认是 2 步 Adam。对于能识别答案选项的选择题，训练聚焦 Teacher 选项对应的位置，并可在 KL 仍大时继续到最多 8 步；其他回答使用 Teacher 前缀上的全部位置。
+每一步更新后重新生成 Student 前缀，因此监督随当前 Student 的回答路径变化，这是 on-policy distillation（OPD）。默认前缀最多 8 token、2 步 Adam；能识别答案选项的选择题可继续到最多 8 步。每步只对选中位置训练同一份临时读取状态。
 
 这里的 **selective SD** 指“只用选中 chunk 构造监督，并只修改这些位置的读取”。它不是一个额外的逐题 Judge。我们测试过轻量筛选候选，但没有把未经验证的筛选器加入当前全量运行。
 
@@ -75,4 +75,4 @@ $$
 - **内部适配**：Teacher 信号改变的是后续读取文档的方式，Student 自己生成答案，因此结果可以与 Teacher 不同。
 - **效率**：Teacher 只处理选中的材料，训练只使用短回答前缀与少量更新。学生仍需要读取工作文档，因此总成本还取决于全文长度和实现。
 
-历史 Qwen BABILONG 999 题实验中，另一版带筛选的设置比 ICL Teacher 高 3.20 个百分点。当前仓库的快速设置省去了当时的额外 Judge，质量和 TTFT 正在用配对实验分别衡量；这两个配置不应混为一谈。
+历史 Qwen BABILONG 999 题实验中，另一版带筛选的设置比 ICL Teacher 高 3.20 个百分点。当前 OPD 是新的设置，需要独立衡量质量和 TTFT，不能直接套用历史数值。

@@ -1,4 +1,4 @@
-"""Selected-text ICL teacher -> batched joint KV SD -> fresh full-context answer."""
+"""Selected-text ICL teacher -> on-policy joint KV SD -> fresh answer."""
 
 from copy import copy
 from types import SimpleNamespace
@@ -9,11 +9,12 @@ import torch
 from .batched_sd import batched_teacher_logits
 from .memory import KVReadMemory
 from .model import Budget
+from .on_policy import student_rollout
 from .optimizer import distribution_kl
 from .reader import MemoryReader
 from .runtime import private_forward, private_module_tree
 from .selection import OpenAIChunkSelector
-from .teacher import build_teacher, prefill_document
+from .teacher import build_teacher, prefill_document, score_student_prefix
 from .teacher_targeting import choice_positions
 
 
@@ -64,7 +65,7 @@ class MaskedTTT:
             seed=engine.config.seed,
         ).to(engine.device)
         reader = MemoryReader(engine, memory)
-        usable=bool(teacher.prediction.strip()) and engine.config.steps>0
+        usable=engine.config.steps>0
         support=dict(decision=dict(state='selected_signal' if usable else 'empty_teacher',
             planned_steps=engine.config.steps if usable else 0,apply_update=usable,
             reference_answers_used=False),LLM_self_judge_enabled=False,
@@ -74,12 +75,8 @@ class MaskedTTT:
             memory.prepare_value_basis(cache,memory.adapted_layers)
             memory.value_enabled=True
         engine.synchronize();setup_seconds=time.perf_counter()-began
-        initial_kl=final_kl=None;steps=[]
+        initial_kl=final_kl=None;steps=[];positions=[]
         use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
-        positions=choice_positions(engine.tokenizer,teacher.tokens.tolist()) if use_choice else []
-        target_positions=(torch.tensor(positions,device=teacher.tokens.device,dtype=torch.long) if positions else None)
-        target=(teacher.probabilities.detach().index_select(0,target_positions) if positions
-                else teacher.probabilities.detach())
         teacher_version=teacher.probabilities._version
         began=time.perf_counter()
         if usable:
@@ -89,17 +86,26 @@ class MaskedTTT:
                 dict(params=[params[0]],lr=engine.config.gain_learning_rate),
                 dict(params=[params[1]],lr=engine.config.value_learning_rate)],foreach=False)
             try:
-                max_steps=engine.config.max_answer_steps if positions else engine.config.steps
+                max_steps=engine.config.max_answer_steps if use_choice else engine.config.steps
                 for index in range(max_steps):
                     engine.budget.check();optimizer.zero_grad(set_to_none=True)
+                    # Refresh from the current student on every update. The teacher
+                    # then scores exactly these prefixes, never its own answer.
+                    rollout=student_rollout(engine,reader,cache,suffix,
+                        min(working.max_new_tokens,engine.config.student_rollout_tokens))
+                    teacher_probs=score_student_prefix(engine,teacher_reader,teacher,rollout)
+                    positions=choice_positions(engine.tokenizer,rollout.tolist()) if use_choice else []
+                    target_positions=(torch.tensor(positions,device=rollout.device,dtype=torch.long)
+                                      if positions else None)
+                    target=(teacher_probs.index_select(0,target_positions) if positions else teacher_probs)
                     with torch.enable_grad():
-                        logits=batched_teacher_logits(engine,reader,cache,suffix,teacher.tokens,
+                        logits=batched_teacher_logits(engine,reader,cache,suffix,rollout,
                                                       target_positions=target_positions)
                         loss=distribution_kl(logits,target)
                         if not bool(torch.isfinite(loss)):
                             raise FloatingPointError('Nonfinite teacher KL')
                         before=float(loss.detach())
-                        if index>=engine.config.steps and before<=engine.config.answer_KL_stop:
+                        if index>=engine.config.steps and (not positions or before<=engine.config.answer_KL_stop):
                             final_kl=before
                             del logits,loss
                             break
@@ -114,11 +120,13 @@ class MaskedTTT:
                     if initial_kl is None:initial_kl=before
                     optimizer.step();memory.constrain()
                     steps.append(dict(step=index+1,accepted=True,teacher_KL_before=before,
+                        student_rollout_tokens=rollout.tolist(),
+                        target_positions=positions or list(range(len(rollout))),
                         gain_gradient_norm=norms[0],value_gradient_norm=norms[1],gradient_norm=total))
                 if final_kl is None:
                     with torch.no_grad():
                         final_kl=float(distribution_kl(
-                            batched_teacher_logits(engine,reader,cache,suffix,teacher.tokens,
+                            batched_teacher_logits(engine,reader,cache,suffix,rollout,
                                                    target_positions=target_positions),target))
                 if not bool(torch.isfinite(torch.tensor(final_kl))):
                     raise FloatingPointError('Nonfinite final teacher KL')
@@ -167,7 +175,7 @@ class MaskedTTT:
             selection=prepared.metadata,
             support=support,
             training=dict(
-                objective="KL(teacher || student)",
+                objective="on-policy KL(teacher || student)",
                 initial_kl=initial_kl,
                 final_kl=final_kl,
                 steps=steps,
@@ -175,7 +183,11 @@ class MaskedTTT:
                 optimizer='Adam',teacher_cap=engine.config.teacher_max_new_tokens,
                 teacher_prefix_truncated=not teacher.complete,
                 teacher_target_scope=engine.config.teacher_target_scope,
-                teacher_target_positions=positions or list(range(len(teacher.tokens))),
+                teacher_target_positions=positions or list(range(len(rollout))) if usable else [],
+                student_rollout_limit=engine.config.student_rollout_tokens,
+                student_rollouts_refreshed_each_step=True,
+                teacher_conditioned_on_student_prefix=True,
+                kl_initial_and_final_may_use_different_student_prefixes=True,
                 adaptive_max_answer_steps=engine.config.max_answer_steps,
                 adaptive_answer_KL_stop=engine.config.answer_KL_stop,
                 adapted_layers=memory.adapted_layers,

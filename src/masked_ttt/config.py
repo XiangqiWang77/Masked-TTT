@@ -18,6 +18,7 @@ class TTTConfig:
     gain_bound: float = 6.0
     sink_tokens: int = 4
     teacher_max_new_tokens: int = 32
+    student_rollout_tokens: int = 8
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
@@ -35,6 +36,7 @@ class TTTConfig:
             "prefill_chunk_tokens",
             "value_rank",
             "teacher_max_new_tokens",
+            "student_rollout_tokens",
         ):
             if type(getattr(self, name)) is not int or getattr(self, name) < 1:
                 raise ValueError(f"{name} must be a positive integer")

@@ -6,11 +6,11 @@
    and maps the original character spans into the current model's tokenization.
    It has no API fallback. `OpenAIChunkSelector` is a separate online path.
 2. `teacher.py` rebuilds a fresh selected-only document input. The teacher
-   distributions and answer prefix are fixed during optimization.
+   cache is reused; each update scores the current student-generated prefix.
 3. `pipeline.py` stores the native working-document cache, constructs
    request-local `KVReadMemory`, trains selected reads and generates a
    fresh final answer.
-4. `batched_sd.py` evaluates the whole question plus teacher prefix in a
+4. `batched_sd.py` evaluates the whole question plus the student prefix in a
    causal batch. Layer checkpointing bounds activation storage during backward.
 5. `memory.py` stores selected-chunk score biases and low-rank value
    coefficients. The base cache and model parameters remain unchanged.
@@ -39,7 +39,8 @@ read by the student when it fits in the backbone's context window.
 |---|---|
 | Source selection | top 10% of cached question-conditioned scores |
 | Teacher | one selected-context generation, maximum 32 tokens |
-| Teacher objective | full-vocabulary forward KL on answer positions |
+| Teacher objective | full-vocabulary forward KL on current student prefixes |
+| Student rollout | greedy, refreshed each step, at most 8 tokens |
 | Base updates | 2 joint Adam steps |
 | Choice-answer adaptation | up to 8 steps; stop when KL ≤ 0.5 |
 | Learning rates | 0.01 for score bias; 0.0001 for value coefficients |
@@ -47,7 +48,7 @@ read by the student when it fits in the backbone's context window.
 | Backbone | frozen |
 | Training suffix | discarded before final generation |
 
-For non-choice questions, all teacher-prefix positions are used and only the
+For non-choice questions, all student-prefix positions are used and only the
 base update budget applies. A choice position is used only when the question
 format and teacher output make it identifiable. This profile does not invoke a
 separate teacher judge or perform NTP.
@@ -61,7 +62,6 @@ loading, scheduler queueing and the previously completed shared Decision API
 preprocessing. The precomputed scoring time and estimated cost are separate
 fields, so cached online and cold request costs can be reported separately.
 
-The OLMo/GPT-OSS benchmark runtime uses this module path. The running Qwen3 job
-uses a separate legacy backend with the same stated fast profile; it is not a
-byte-for-byte copy of this package. This repository contains the shared method
-implementation rather than cluster orchestration or evaluation labels.
+Earlier teacher-prefix jobs used a different runtime and are not OPD results.
+This repository contains the method implementation rather than cluster
+orchestration or evaluation labels.

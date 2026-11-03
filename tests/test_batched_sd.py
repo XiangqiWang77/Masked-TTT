@@ -8,11 +8,12 @@ from transformers import (Qwen3Config,Qwen3ForCausalLM,Olmo3Config,Olmo3ForCausa
 
 from masked_ttt import Backbone,TTTConfig,MaskedTTT,Request
 from masked_ttt.batched_sd import batched_teacher_logits
-from masked_ttt.cache import AppendOnlyDocumentCache
+from masked_ttt.cache import AppendOnlyDocumentCache,fork_prefix
 from masked_ttt.checkpointing import layer_checkpointed_logits
 from masked_ttt.memory import KVReadMemory
 from masked_ttt.reader import MemoryReader,matched_incremental_logits
 from masked_ttt.runtime import private_forward
+from masked_ttt.teacher import TeacherSignal,score_student_prefix
 from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
 
@@ -94,6 +95,27 @@ def test_answer_position_uses_the_same_causal_logits_and_gradients(setup):
     for a,b in zip(actual,expected):torch.testing.assert_close(a,b,atol=3e-6,rtol=5e-4)
 
 
+def test_teacher_scores_student_prefix_causally_and_matches_incremental(setup):
+    engine,cache,memory,reader=setup
+    native=SimpleNamespace(model=engine.model.model,lm_head=engine.model.lm_head)
+    suffix=torch.tensor([20,21,22]);trajectory=torch.tensor([30,31,32])
+    teacher=TeacherSignal(trajectory,torch.empty(0),'',False,0.,0.,0,False,
+                          cache,suffix,memory.document_length)
+    with torch.no_grad():
+        scored=score_student_prefix(engine,native,teacher,trajectory)
+        altered=score_student_prefix(engine,native,teacher,torch.tensor([30,55,56]))
+        branch=fork_prefix(cache,memory.document_length)
+        output=private_forward(native,suffix,memory.document_length,branch)
+        values=[]
+        for index in range(len(trajectory)):
+            values.append(engine.model.lm_head(output.last_hidden_state[0,-1:]).float().softmax(-1))
+            if index+1<len(trajectory):
+                output=private_forward(native,trajectory[index:index+1],
+                    memory.document_length+len(suffix)+index,branch)
+    torch.testing.assert_close(scored,torch.cat(values),atol=3e-6,rtol=3e-5)
+    torch.testing.assert_close(scored[:2],altered[:2],atol=1e-7,rtol=1e-6)
+
+
 class ByteTokenizer:
     eos_token_id=2
     def apply_chat_template(self,messages,**kwargs):
@@ -127,6 +149,14 @@ def test_simple_selected_sd_keeps_backbone_and_recomputes_question(monkeypatch):
     def observe(reader,tokens,start,branch):
         calls.append((tokens.clone(),start));return forward(reader,tokens,start,branch)
     monkeypatch.setattr(pipeline,'private_forward',observe)
+    rollout_calls=[];real_rollout=pipeline.student_rollout
+    def watch_rollout(*args,**kwargs):
+        tokens=real_rollout(*args,**kwargs);rollout_calls.append(tokens.clone());return tokens
+    monkeypatch.setattr(pipeline,'student_rollout',watch_rollout)
+    scored=[];real_score=pipeline.score_student_prefix
+    def watch_score(engine,reader,teacher,tokens):
+        scored.append(tokens.clone());return real_score(engine,reader,teacher,tokens)
+    monkeypatch.setattr(pipeline,'score_student_prefix',watch_score)
     before=[p.detach().clone() for p in engine.model.parameters()]
     method=MaskedTTT(engine,Selector());result=method.answer(request)
     json.dumps(result,allow_nan=False)
@@ -134,6 +164,12 @@ def test_simple_selected_sd_keeps_backbone_and_recomputes_question(monkeypatch):
     assert all(step['gain_gradient_norm']>0 and step['value_gradient_norm']>0
                for step in result['training']['steps'])
     assert result['training']['causal_batched_teacher_forcing']
+    assert result['training']['student_rollouts_refreshed_each_step']
+    assert result['training']['teacher_conditioned_on_student_prefix']
+    assert len(rollout_calls)==len(scored)==len(result['training']['steps'])==2
+    for rollout,teacher_tokens,step in zip(rollout_calls,scored,result['training']['steps']):
+        torch.testing.assert_close(rollout,teacher_tokens,atol=0,rtol=0)
+        assert step['student_rollout_tokens']==rollout.tolist()
     assert not result['support']['LLM_self_judge_enabled']
     assert result['teacher']['fresh_selected_context'] and result['teacher']['target_fixed']
     assert result['teacher']['response_instruction_applied']

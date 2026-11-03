@@ -31,13 +31,15 @@ flowchart LR
    reused across backbones. The selection is not an answer label.
 2. **Build the teacher.** The frozen backbone reads the selected chunks in
    document order, with the original question and a concise-answer instruction.
-   It generates a short answer prefix and retains its full-vocabulary
-   distributions. Its targets are fixed during the update.
+   It also generates an answer for the ICL baseline, and keeps the selected
+   document cache available for scoring student prefixes.
 3. **Adapt.** Prefill the complete working document once and keep its original
    KV cache immutable. Optimize a chunk-level attention-score correction and a
    low-rank value-read correction, jointly, only at selected positions. The
-   student is teacher-forced on the same answer prefix and minimizes
-   $\mathrm{KL}(p_T\|p_S)$. Original model weights remain frozen.
+   student generates a short rollout from its current state. The teacher scores
+   the same prefixes with full-vocabulary probabilities, and the student
+   minimizes $\mathrm{KL}(p_T\|p_S)$. The rollout is refreshed after each
+   update. Original model weights remain frozen.
 4. **Answer.** Freeze the corrections, discard the training suffix, recompute
    the original question and generate the student's own answer. All per-request
    state is then discarded.
@@ -56,12 +58,15 @@ basis computed from selected values, while $g$ and $B$ are trained jointly.
 No cached key or value is overwritten. Full-attention layers are adapted;
 sliding-attention layers retain their native behavior.
 
-The shipped profile uses a 32-token teacher cap, two Adam steps, and for a
+The shipped profile uses a 32-token ICL teacher cap, up to 8 student rollout
+tokens and two Adam steps, and for a
 recognized multiple-choice answer may continue up to eight steps until its
-answer-position KL is at most 0.5. Other answers use all available teacher-prefix
+answer-position KL is at most 0.5. Other answers use all available student-prefix
 positions and two steps. There is **no separate LLM judge, source NTP,
 centering, or output-answer routing** in this profile. Earlier experiments used
-different selective filters and must be reported as separate configurations.
+different trajectories or selective filters and must be reported as separate
+configurations. This online student-trajectory implementation is a new
+candidate and does not reuse the earlier teacher-prefix accuracy as its own.
 
 If a document exceeds a backbone's native context window, the cached selector
 constructs a source-prioritized working document and records its source mapping.

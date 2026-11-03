@@ -21,6 +21,9 @@ class TeacherSignal:
     first_token_seconds: float
     prompt_tokens: int
     instruction_applied: bool = False
+    document_cache: object = None
+    question_tokens: torch.Tensor = None
+    document_end: int = 0
 
     def metadata(self):
         return dict(
@@ -105,4 +108,26 @@ def build_teacher(backbone, reader, request, layout, selected):
         first,
         len(plan.ids),
         bool(instruction),
+        cache,
+        suffix,
+        plan.document_end,
     )
+
+
+@torch.no_grad()
+def score_student_prefix(backbone, reader, teacher, student_tokens):
+    """Teacher probabilities at the student's actual autoregressive prefixes.
+
+    Reuse the selected-only document cache, but give the teacher exactly the
+    same generated prefix the student saw. The current token is never input.
+    """
+    if student_tokens.ndim != 1 or not len(student_tokens):
+        raise ValueError("A nonempty one-dimensional student trajectory is required")
+    if teacher.document_cache is None or teacher.question_tokens is None:
+        raise ValueError("The teacher must retain its selected-document prefix")
+    tokens = torch.cat((teacher.question_tokens, student_tokens[:-1]))
+    branch = fork_prefix(teacher.document_cache, teacher.document_end)
+    backbone.budget.check()
+    output = private_forward(reader, tokens, teacher.document_end, branch)
+    hidden = output.last_hidden_state[0, len(teacher.question_tokens) - 1 :]
+    return backbone.model.lm_head(hidden).float().softmax(-1).detach()
