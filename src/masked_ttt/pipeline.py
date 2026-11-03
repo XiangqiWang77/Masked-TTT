@@ -17,7 +17,9 @@ from .output_guard_runtime import guard_answers
 from .reader import MemoryReader
 from .runtime import private_forward, private_module_tree
 from .selection import OpenAIChunkSelector
+from .selected_transfer import selected_transfer_loss
 from .self_study_runtime import generate_from_cache,generate_self_study
+from .shared_selected import shared_selected_reader
 from .standalone import answer_standalone
 from .teacher import build_teacher, prefill_document, score_student_prefix
 from .teacher_targeting import choice_positions
@@ -97,6 +99,10 @@ class MaskedTTT:
         if usable:
             memory.prepare_value_basis(cache,memory.adapted_layers)
             memory.value_enabled=True
+        selected_reader=None;selected_cache_stamp=[]
+        if usable and engine.config.selected_transfer_weight>0:
+            selected_reader=shared_selected_reader(engine,layout,selected,teacher,memory)
+            selected_cache_stamp=[(x,x._version,x.data_ptr()) for x in cache_tensors(teacher.document_cache)]
         engine.synchronize();setup_seconds=time.perf_counter()-began
         initial_kl=final_kl=None;steps=[];positions=[];optimizer_bytes=0
         use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
@@ -138,6 +144,15 @@ class MaskedTTT:
                             final_kl=before
                             del logits,loss
                             break
+                        transfer_kl=None;transfer_tokens=None;transfer_positions=None
+                        if selected_reader is not None:
+                            transfer_loss,transfer_rollout,transfer_positions=selected_transfer_loss(
+                                engine,reader,selected_reader,cache,teacher.document_cache,current_suffix,
+                                min(working.max_new_tokens,engine.config.student_rollout_tokens),
+                                target_choices=main_choice)
+                            transfer_kl=float(transfer_loss.detach())
+                            transfer_tokens=transfer_rollout.tolist()
+                            loss=loss+engine.config.selected_transfer_weight*transfer_loss
                         loss.backward()
                     if any(parameter.grad is None for parameter in params):
                         raise AssertionError('Both selected KV parameter groups need gradients')
@@ -149,11 +164,16 @@ class MaskedTTT:
                     if initial_kl is None:initial_kl=before
                     optimizer.step();memory.constrain()
                     optimizer_bytes=max(optimizer_bytes,optimizer_storage_bytes(optimizer))
-                    steps.append(dict(step=index+1,accepted=True,teacher_KL_before=before,
+                    step=dict(step=index+1,accepted=True,teacher_KL_before=before,
                         question_path=path['name'],
                         student_rollout_tokens=rollout.tolist(),
                         target_positions=positions or list(range(len(rollout))),
-                        gain_gradient_norm=norms[0],value_gradient_norm=norms[1],gradient_norm=total))
+                        gain_gradient_norm=norms[0],value_gradient_norm=norms[1],gradient_norm=total)
+                    if transfer_kl is not None:
+                        step.update(selected_transfer_KL_before=transfer_kl,
+                                    selected_rollout_tokens=transfer_tokens,
+                                    selected_target_positions=transfer_positions)
+                    steps.append(step)
                 if final_kl is None:
                     with torch.no_grad():
                         final_kl=float(distribution_kl(
@@ -221,6 +241,8 @@ class MaskedTTT:
             x._version != version or x.data_ptr() != pointer for x, version, pointer in cache_stamp
         ):
             raise AssertionError("The original document cache was changed")
+        if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in selected_cache_stamp):
+            raise AssertionError("The original selected evidence cache was changed")
         engine.assert_frozen(weights_before)
         return dict(
             prediction=engine.tokenizer.decode(generated, skip_special_tokens=True),
@@ -248,7 +270,9 @@ class MaskedTTT:
             selection=prepared.metadata,
             support=support,
             training=dict(
-                objective="on-policy KL(teacher || student)",
+                objective=("on-policy KL(selected teacher || full student) + weighted "
+                           "KL(detached full student || selected student)"
+                           if selected_reader is not None else "on-policy KL(teacher || student)"),
                 initial_kl=initial_kl,
                 final_kl=final_kl,
                 steps=steps,
@@ -260,6 +284,9 @@ class MaskedTTT:
                 student_rollout_limit=engine.config.student_rollout_tokens,
                 student_rollouts_refreshed_each_step=True,
                 teacher_conditioned_on_student_prefix=True,
+                selected_transfer_weight=engine.config.selected_transfer_weight,
+                selected_transfer_uses_selected_student_prefix=selected_reader is not None,
+                selected_transfer_full_target_detached=selected_reader is not None,
                 kl_initial_and_final_may_use_different_student_prefixes=True,
                 kl_initial_and_final_may_use_different_questions=bool(practice_paths),
                 verified_practice_questions=len(practice_paths),

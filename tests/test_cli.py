@@ -20,13 +20,16 @@ def test_recorded_olmo_profile_is_loaded_exactly_and_can_be_overridden():
     path=Path(__file__).resolve().parents[1]/'examples/olmo_babilong_icl_sd.json'
     saved=json.loads(path.read_text())
     config=load_method_config(path,keep_fraction=None,steps=None)
-    assert asdict(config)==saved
+    effective=asdict(config)
+    assert effective.pop('selected_transfer_weight')==0.0
+    assert effective==saved
     assert (config.keep_fraction,config.steps,config.value_rank)==(.1,2,8)
     assert (config.max_context,config.context_reserve_tokens)==(65536,4096)
     assert (config.student_rollout_tokens,config.self_question_count)==(8,2)
     assert (config.gain_learning_rate,config.value_learning_rate)==(.01,.0001)
     assert config.guard_enabled and config.standalone_cartridge_enabled
     assert load_method_config(path,steps=3).steps==3
+    assert load_method_config(path,selected_transfer_weight=.25).selected_transfer_weight==.25
 
 
 def test_config_file_rejects_invalid_json_shape_and_unknown_keys(tmp_path):

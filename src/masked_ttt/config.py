@@ -29,6 +29,9 @@ class TTTConfig:
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
+    # Optional self-distillation from the adapted full reader into the same
+    # state evaluated on the independently prefetched selected cache.
+    selected_transfer_weight: float = 0.0
     teacher_target_scope: str = 'choice_or_all'
     max_answer_steps: int = 8
     answer_KL_stop: float = 0.5
@@ -72,6 +75,9 @@ class TTTConfig:
         for name in ("gain_learning_rate", "value_learning_rate", "gradient_clip"):
             if not math.isfinite(getattr(self,name)) or getattr(self,name)<=0:
                 raise ValueError(f"{name} must be positive and finite")
+        if (type(self.selected_transfer_weight) not in (float,int) or
+            not math.isfinite(self.selected_transfer_weight) or self.selected_transfer_weight<0):
+            raise ValueError("selected_transfer_weight must be nonnegative and finite")
         if self.teacher_target_scope not in ('all','choice_or_all'):
             raise ValueError('Unsupported teacher token scope')
         if type(self.max_answer_steps) is not int or self.max_answer_steps<self.steps:
