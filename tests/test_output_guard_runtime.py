@@ -20,7 +20,7 @@ def test_label_token_sets_are_unique_and_support_space_variants():
 
 def test_judge_receives_both_orderings_and_accepts_only_consensus(monkeypatch):
     engine=SimpleNamespace(config=SimpleNamespace(guard_minimum_confidence=.65,
-                                                  guard_minimum_label_mass=.2),
+                                                  guard_minimum_label_mass=.2,guard_policy='consensus'),
                            synchronize=lambda:None)
     calls=[]
     def review(_engine,_reader,_cache,_layout,_request,first,second):
@@ -35,7 +35,7 @@ def test_judge_receives_both_orderings_and_accepts_only_consensus(monkeypatch):
 
 def test_no_judge_when_answers_match_and_unavailable_judge_falls_back(monkeypatch):
     engine=SimpleNamespace(config=SimpleNamespace(guard_minimum_confidence=.65,
-                                                  guard_minimum_label_mass=.2),
+                                                  guard_minimum_label_mass=.2,guard_policy='consensus'),
                            synchronize=lambda:None)
     def unavailable(*args):raise ValueError('too long')
     monkeypatch.setattr(guard,'review_order',unavailable)

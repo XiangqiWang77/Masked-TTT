@@ -15,6 +15,17 @@ from . import (
 )
 
 
+def load_method_config(path=None, **overrides):
+    """Load a recorded method config and apply only explicit CLI overrides."""
+    values = {}
+    if path is not None:
+        values = json.loads(path.read_text())
+        if not isinstance(values, dict):
+            raise ValueError("The method config must be a JSON object")
+    values.update({key: value for key, value in overrides.items() if value is not None})
+    return TTTConfig(**values)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Masked TTT via Selective Self-Distillation")
     parser.add_argument(
@@ -40,23 +51,28 @@ def main():
     )
     parser.add_argument("--cache-dir", help="Local Decisions response cache and cost ledger")
     parser.add_argument("--max-api-cost", type=float, default=15.0)
-    parser.add_argument("--keep-fraction", type=float, default=0.10)
-    parser.add_argument("--steps", type=int, default=2)
-    parser.add_argument("--max-answer-steps", type=int, default=8)
-    parser.add_argument("--teacher-max-new-tokens", type=int, default=32)
-    parser.add_argument("--answer-kl-stop", type=float, default=0.5)
-    parser.add_argument("--max-context", type=int, default=131072)
-    parser.add_argument("--context-reserve-tokens", type=int, default=4096,
+    parser.add_argument("--config-json", type=Path, help="Recorded TTTConfig JSON; explicit flags override it")
+    parser.add_argument("--keep-fraction", type=float)
+    parser.add_argument("--steps", type=int)
+    parser.add_argument("--max-answer-steps", type=int)
+    parser.add_argument("--teacher-max-new-tokens", type=int)
+    parser.add_argument("--answer-kl-stop", type=float)
+    parser.add_argument("--max-context", type=int)
+    parser.add_argument("--context-reserve-tokens", type=int,
                         help="Minimum room reserved for the generated answer")
     parser.add_argument("--time-budget", type=float, default=None)
     args = parser.parse_args()
     # Unknown input fields (including gold answers) fail instead of silently
     # becoming adaptation inputs.
     request = Request(**json.loads(args.request.read_text()))
-    config = TTTConfig(keep_fraction=args.keep_fraction, steps=args.steps, max_context=args.max_context,
-        context_reserve_tokens=args.context_reserve_tokens,
-        max_answer_steps=args.max_answer_steps,teacher_max_new_tokens=args.teacher_max_new_tokens,
-        answer_KL_stop=args.answer_kl_stop)
+    try:
+        config = load_method_config(args.config_json, keep_fraction=args.keep_fraction,
+            steps=args.steps, max_context=args.max_context,
+            context_reserve_tokens=args.context_reserve_tokens,
+            max_answer_steps=args.max_answer_steps,teacher_max_new_tokens=args.teacher_max_new_tokens,
+            answer_KL_stop=args.answer_kl_stop)
+    except (OSError, ValueError, TypeError) as exc:
+        parser.error('Invalid method configuration: '+str(exc))
     decision_options = dict(api_key_file=args.api_key_file, max_cost_usd=args.max_api_cost)
     if args.cache_dir:
         decision_options["cache_dir"] = args.cache_dir

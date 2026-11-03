@@ -10,7 +10,8 @@ from ._layout import selected_read_plan
 from .cache import fork_prefix
 from .request import Request,prepare_layout
 from .runtime import private_forward
-from .self_study import parse_exercises,practice_request,short_answer_equivalent
+from .self_study import (parse_exercises,practice_request,teacher_practice_request,
+                         verified_answer_hint)
 
 
 def suffixes(engine,original_layout,selected,teacher,new_request):
@@ -83,7 +84,8 @@ def generate_self_study(engine,teacher_reader,teacher,request,layout,selected):
         'Each must ask for one explicitly stated fact in one context passage. '
         'Return only JSON: {"exercises":[{"question":"...","answer":"...",'
         '"evidence":"an exact quote supporting that answer"}]}. '
-        'The answer must appear verbatim in its quote. Do not solve the original question.'
+        'The answer must be the shortest verbatim answer span in the quote, '
+        'not the full sentence. Do not solve the original question.'
     )
     generation_request=Request(document=request.document,question=request.question,
         prompt=request.prompt+instruction,answer_prefix='',max_new_tokens=engine.config.self_question_max_tokens)
@@ -95,17 +97,22 @@ def generate_self_study(engine,teacher_reader,teacher,request,layout,selected):
     verified=[];checks=[]
     for item in proposals:
         answer=answer_quote(engine,teacher_reader,item,engine.config.self_question_verify_tokens)
-        accepted=short_answer_equivalent(item.answer,answer)
+        hint=verified_answer_hint(item.answer,answer,item.evidence)
+        accepted=hint is not None
         checks.append(dict(question=item.question,answer=item.answer,evidence=item.evidence,
-                           source_chunk=item.source_chunk,verifier_answer=answer,accepted=accepted))
+                           source_chunk=item.source_chunk,verifier_answer=answer,
+                           verified_answer_hint=hint,accepted=accepted))
         if not accepted:continue
         question=practice_request(request,item.question,engine.config.student_rollout_tokens)
-        try:student,focused=suffixes(engine,layout,selected,teacher,question)
+        try:
+            student,_=suffixes(engine,layout,selected,teacher,question)
+            teacher_question=teacher_practice_request(question,hint)
+            _,focused=suffixes(engine,layout,selected,teacher,teacher_question)
         except ValueError:
             checks[-1]['accepted']=False;checks[-1]['reason']='document_prefix_mismatch';continue
         verified.append(dict(name='practice_'+str(len(verified)+1),student_suffix=student,
                              teacher=focused,question=item.question))
     engine.synchronize()
     return verified,dict(generated_tokens=len(generated),parsed=len(proposals),verified=len(verified),
-        checks=checks,rejections=rejections,seconds=time.perf_counter()-began,
-        reference_answers_used=False,student_answer_hint_used=False)
+        checks=checks,rejections=rejections,generated_preview=text[:512],seconds=time.perf_counter()-began,
+        reference_answers_used=False,student_answer_hint_used=False,teacher_answer_hint_used=bool(verified))

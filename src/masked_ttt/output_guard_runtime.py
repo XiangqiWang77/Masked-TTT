@@ -61,16 +61,18 @@ def guard_answers(engine,reader,cache,layout,request,base,adapted):
     began=time.perf_counter()
     if same_text(base,adapted):
         decision=decide(base,adapted,None,None,minimum_confidence=engine.config.guard_minimum_confidence,
-                        minimum_label_mass=engine.config.guard_minimum_label_mass)
+                        minimum_label_mass=engine.config.guard_minimum_label_mass,
+                        policy=engine.config.guard_policy)
         return dict(decision,seconds=0.,reference_answers_used=False)
     try:
         first=review_order(engine,reader,cache,layout,request,base,adapted)
         second=review_order(engine,reader,cache,layout,request,adapted,base)
         decision=decide(base,adapted,first,second,
             minimum_confidence=engine.config.guard_minimum_confidence,
-            minimum_label_mass=engine.config.guard_minimum_label_mass)
+            minimum_label_mass=engine.config.guard_minimum_label_mass,policy=engine.config.guard_policy)
     except ValueError as exc:
-        decision=dict(use_adapted=False,reason='judge_unavailable',detail=str(exc),reviews=[])
+        decision=dict(use_adapted=engine.config.guard_policy!='consensus',
+                      reason='judge_unavailable',detail=str(exc),reviews=[])
     engine.synchronize()
     return dict(decision,seconds=time.perf_counter()-began,reference_answers_used=False,
                 judgment_context='full_working_document',orderings=2)

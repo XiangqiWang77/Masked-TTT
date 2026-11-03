@@ -11,9 +11,10 @@ weights and the original document KV remain immutable.
 The trained state supports two explicitly different answer paths:
 
 * **Full KV + Query Cartridge:** answer from the working-document cache with
-  the trained corrections. A frozen full-context judge compares the native and
-  adapted answers in both orders; an inconclusive comparison retains the native
-  answer.
+  the trained corrections. The default full-context judge compares native and
+  adapted answers in both orders and retains the native answer if inconclusive.
+  The recorded Qwen V5 profile instead selects the adapted full-context answer;
+  its pre-update Teacher check remains a separate operation.
 * **Standalone Query Cartridge:** answer without reading the full-document KV.
   It contains an independently prefetched selected-chunk KV together with the
   trained corrections, materialized for decoding. Its answer is evaluated
@@ -32,6 +33,9 @@ one request and discarded afterwards.
    the top 10% of source chunks in their original order.
 2. Prefill the complete working document once. Separately prefill the selected
    text for the ICL teacher; obtain its answer for the baseline comparison.
+   The Qwen BABILONG V5 configuration also checks the Teacher against the
+   working document before admitting its main-question signal. A rejected
+   main signal can still leave independently verified practice paths active.
 3. Ask the teacher for up to two short factual practice questions, answers and
    exact source quotations. Keep only proposals whose quotation occurs in a
    selected chunk and whose answer agrees with a separate frozen-model answer
@@ -42,8 +46,8 @@ one request and discarded afterwards.
    minimize full-vocabulary forward KL on the student path. All exercises share
    the same selected-position attention and value-read state.
 5. Discard training suffixes and independently generate the original answer.
-   The full-context judge sees both the adapted and native answers, reads the
-   working document and can retain the native answer. Also generate an
+   Under the default full-context policy, a judge reads the working document
+   and can retain the native answer. Also generate an
    independent answer with the standalone selected-KV cartridge.
 
 At a selected document location $u$ in chunk $c$, the adapted read is
@@ -82,6 +86,19 @@ The full answer is `prediction`; the independent selected-KV result is
 and `memory` fields record the actual request path. If a document exceeds a
 backbone's native window, the cached selector constructs a source-prioritized
 working document and records its source mapping.
+
+To run the recorded Qwen3-4B BABILONG V5 settings, add
+`--config-json examples/qwen_babilong_v5_config.json` to the command above.
+That file preserves the saved experiment's 30% selection, rollout, Teacher
+judgment and optimizer settings. Explicit command-line options override the
+corresponding JSON values. The same local backbone, request formatting and
+cached Decision scores are needed to reproduce the experiment; exact outputs
+can still depend on the execution environment.
+
+The original implementation used for the earlier 10% Qwen, OLMo and GPT-OSS
+base experiments remains available at the Git tag `babilong-v1`. The current
+code includes the later V5 self-study and optional Teacher-judgment paths, so
+the tag should be used when reproducing those earlier base runs.
 
 ## Verify
 

@@ -11,6 +11,13 @@ require the answer to occur in the quote, and compare it with an independently
 generated quote-only answer. Practice paths are admitted only if their
 document token prefixes exactly match the caches being reused.
 
+`teacher_judge.py` and `teacher_judge_runtime.py` optionally check a focused
+Teacher's proposed answer before the main-question update. The Qwen V5 profile
+uses a source-grounded check and a separate full-context comparison against
+the native answer. When configured, verified practice questions remain
+eligible even if the main Teacher signal is rejected. These judgments use no
+benchmark labels and do not establish logical correctness by themselves.
+
 `pipeline.py` constructs one request-local `KVReadMemory` and trains the main
 and practice question paths jointly using full-vocabulary forward KL. The
 default profile has two main steps plus one step per verified exercise, up to
@@ -36,6 +43,12 @@ KV, adapter state, optimizer state, full decode materialization, selected KV
 and standalone materialization are reported separately. The GPU peak is for
 the complete paired run, including model and training; a separate standalone
 peak is not inferred from it.
+
+The recorded Qwen3-4B BABILONG V5 profile is provided as
+`examples/qwen_babilong_v5_config.json` and can be loaded with the CLI's
+`--config-json` option. It sets a 30% selected fraction, four base updates,
+up to 16 answer updates and 32 Student rollout tokens. The `babilong-v1` Git
+tag preserves the separate earlier base implementation and its defaults.
 
 The implementation supports Qwen3, OLMo3 and GPT-OSS. The current Qwen3 model
 adapts its 36 full-attention layers; hybrid models adapt only full-attention

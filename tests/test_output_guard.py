@@ -25,5 +25,17 @@ class OutputGuardTests(unittest.TestCase):
         self.assertTrue(decide('320 万元','320  万元',None,None,
                                minimum_confidence=.65,minimum_label_mass=.2)['use_adapted'])
 
+    def test_globally_calibrated_student_and_veto_policies(self):
+        base=dict(A=.8,B=.1,U=.1,label_mass=.7)
+        reverse=dict(A=.1,B=.8,U=.1,label_mass=.7)
+        def apply(first,second,policy):
+            return decide('300','320',first,second,minimum_confidence=.65,
+                          minimum_label_mass=.2,policy=policy)
+        self.assertFalse(apply(base,reverse,'veto')['use_adapted'])
+        self.assertTrue(apply(base,base,'veto')['use_adapted'])
+        self.assertTrue(apply(None,None,'veto')['use_adapted'])
+        self.assertTrue(apply(base,reverse,'student')['use_adapted'])
+        with self.assertRaises(ValueError):apply(base,reverse,'bad')
+
 
 if __name__=='__main__':unittest.main()

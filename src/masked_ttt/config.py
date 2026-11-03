@@ -22,7 +22,18 @@ class TTTConfig:
     self_question_count: int = 2
     self_question_max_tokens: int = 192
     self_question_verify_tokens: int = 16
+    teacher_judge_policy: str = 'off'
+    teacher_judge_action: str = 'enforce'
+    # A rejected answer-level teacher may still yield independently verified
+    # source-grounded practice questions. Default preserves the submitted run.
+    practice_when_teacher_rejected: bool = False
+    teacher_veto_against_native: bool = False
+    teacher_veto_minimum_confidence: float = 0.80
+    teacher_veto_minimum_label_mass: float = 0.20
+    teacher_judge_focused_tokens: int = 256
+    teacher_judge_full_tokens: int = 384
     guard_enabled: bool = True
+    guard_policy: str = 'consensus'
     guard_minimum_confidence: float = 0.65
     guard_minimum_label_mass: float = 0.20
     standalone_cartridge_enabled: bool = True
@@ -32,6 +43,10 @@ class TTTConfig:
     teacher_target_scope: str = 'choice_or_all'
     max_answer_steps: int = 8
     answer_KL_stop: float = 0.5
+    # Optional extra updates on open-ended QA until the answer distribution
+    # is aligned or the same bounded step budget is exhausted.
+    adaptive_open_ended: bool = False
+    adaptive_open_ended_kl_stop: float = 0.01
     teacher_response_instruction: str = 'Return only the final answer in the required format. Do not add an explanation.'
     seed: int = 42
 
@@ -46,6 +61,8 @@ class TTTConfig:
             "student_rollout_tokens",
             "self_question_max_tokens",
             "self_question_verify_tokens",
+            "teacher_judge_focused_tokens",
+            "teacher_judge_full_tokens",
         ):
             if type(getattr(self, name)) is not int or getattr(self, name) < 1:
                 raise ValueError(f"{name} must be a positive integer")
@@ -57,6 +74,22 @@ class TTTConfig:
             raise ValueError('self_question_count must be between 0 and 4')
         if type(self.guard_enabled) is not bool or type(self.standalone_cartridge_enabled) is not bool:
             raise ValueError('guard and standalone settings must be boolean')
+        if self.guard_policy not in ('consensus','veto','student'):
+            raise ValueError('Unsupported global answer-selection policy')
+        if self.teacher_judge_policy not in ('off','support_required','grounded_veto'):
+            raise ValueError('Unsupported pre-update teacher judgment policy')
+        if self.teacher_judge_action not in ('enforce','observe'):
+            raise ValueError('Unsupported pre-update judgment action')
+        if type(self.practice_when_teacher_rejected) is not bool:
+            raise ValueError('practice_when_teacher_rejected must be boolean')
+        if type(self.teacher_veto_against_native) is not bool:
+            raise ValueError('teacher_veto_against_native must be boolean')
+        if self.teacher_veto_against_native and not self.guard_enabled:
+            raise ValueError('A native answer is required for the pre-update comparison')
+        for name in ('teacher_veto_minimum_confidence','teacher_veto_minimum_label_mass'):
+            value=getattr(self,name)
+            if type(value) not in (float,int) or not math.isfinite(value) or not 0<=value<=1:
+                raise ValueError(name+' must be in [0, 1]')
         for name in ('guard_minimum_confidence','guard_minimum_label_mass'):
             value=getattr(self,name)
             if type(value) not in (float,int) or not math.isfinite(value) or not 0<=value<=1:
@@ -78,6 +111,12 @@ class TTTConfig:
             raise ValueError('Maximum answer steps must include the base budget')
         if not math.isfinite(self.answer_KL_stop) or self.answer_KL_stop<0:
             raise ValueError('Nonnegative answer-KL stopping threshold required')
+        if type(self.adaptive_open_ended) is not bool:
+            raise ValueError('adaptive_open_ended must be boolean')
+        if (type(self.adaptive_open_ended_kl_stop) not in (int,float) or
+                not math.isfinite(self.adaptive_open_ended_kl_stop) or
+                self.adaptive_open_ended_kl_stop<0):
+            raise ValueError('Nonnegative open-ended answer-KL threshold required')
         if not isinstance(self.teacher_response_instruction,str):
             raise ValueError('Teacher response instruction must be text')
         if type(self.sink_tokens) is not int or self.sink_tokens < 0:

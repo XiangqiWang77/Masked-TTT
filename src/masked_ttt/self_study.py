@@ -51,16 +51,34 @@ def parse_exercises(text,document,spans,selected,original_question,limit=2):
     """
     if not isinstance(text,str) or limit<1:
         raise ValueError('Need generated text and a positive exercise limit')
-    decoder=json.JSONDecoder();items=None
+    decoder=json.JSONDecoder();items=None;recovered=False
     for i,char in enumerate(text):
         if char not in '[{':continue
         try:candidate,_=decoder.raw_decode(text[i:])
         except json.JSONDecodeError:continue
         if isinstance(candidate,dict):candidate=candidate.get('exercises')
         if isinstance(candidate,list):items=candidate;break
+    if items is None:
+        # A token limit can truncate the outer array after a complete item.
+        # Recover only fully decoded entries within the declared exercises
+        # array; normal source and independent-answer checks still apply.
+        match=re.search(r'"exercises"\s*:\s*\[',text)
+        if match:
+            partial=[];pos=match.end()
+            while pos<len(text):
+                while pos<len(text) and text[pos].isspace():pos+=1
+                if partial and pos<len(text) and text[pos]==',':
+                    pos+=1
+                    while pos<len(text) and text[pos].isspace():pos+=1
+                if pos>=len(text) or text[pos]!='{':break
+                try:candidate,end=decoder.raw_decode(text,pos)
+                except json.JSONDecodeError:break
+                if not isinstance(candidate,dict):break
+                partial.append(candidate);pos=end
+            if partial:items=partial;recovered=True
     if items is None:return [],{'invalid_json':1}
     selected_texts=[(i,document[spans[i][0]:spans[i][1]]) for i in selected]
-    accepted=[];seen=set();rejected={}
+    accepted=[];seen=set();rejected={'partial_json_recovered':1} if recovered else {}
     def reject(reason):rejected[reason]=rejected.get(reason,0)+1
     for item in items:
         if not isinstance(item,dict) or not all(isinstance(item.get(k),str)
@@ -89,10 +107,46 @@ def short_answer_equivalent(proposed,verified):
     def canonical(value):
         words=normalized(value).split()
         if words and words[0] in ('a','an','the'):words=words[1:]
-        aliases={'zero':'0','one':'1','two':'2','three':'3','four':'4','five':'5'}
+        aliases={'zero':'0','one':'1','two':'2','three':'3','four':'4','five':'5',
+                 'years':'year','months':'month','days':'day'}
         return ' '.join(aliases.get(w,w) for w in words)
     a,b=canonical(proposed),canonical(verified)
     return bool(a and a==b)
+
+
+def verified_answer_hint(proposed,verified,evidence):
+    """Return a quote-anchored short answer corroborated by a second reader.
+
+    The generator sometimes returns the whole supporting sentence as its
+    answer.  In that case, accept the verifier's shorter extract only if it
+    occurs in both that sentence and the selected quote.  Ambiguous numeric,
+    disjunctive, negative, and uncertain answers are not shortened.
+    """
+    verification=normalized(re.sub(r'(?i)^\s*(?:the\s+)?(?:final\s+)?answer\s*(?:is\s+|:\s*)',
+                                   '',verified.strip()))
+    if verification in {'unknown','unsure','not known','not specified','not mentioned','none','no answer'}:
+        return None
+    if short_answer_equivalent(proposed,verified):
+        return proposed.strip() if answer_is_in_quote(proposed,evidence) else None
+    if re.search(r'(?i)\b(?:not|never|neither|nor|unknown|uncertain|either|or)\b',proposed):
+        return None
+    text=re.sub(r'(?i)^\s*(?:the\s+)?(?:final\s+)?answer\s*(?:is\s+|:\s*)','',verified.strip())
+    text=text.strip(' \t\r\n.,;:!?"\'')
+    text=re.sub(r'(?i)^(?:a|an|the)\s+','',text)
+    candidates=[text]
+    location=re.search(r'(?i)\b(?:is|are|was|were)\s+(?:in|at|on|inside)\s+(?:the\s+)?([^,;.!?]+)$',text)
+    if location:candidates.append(location.group(1).strip())
+    numbers=set(re.findall(r'(?<![\w.])\d+(?:[.,]\d+)?',proposed))
+    for candidate in candidates:
+        key=normalized(candidate)
+        if (not key or len(key.split())>5 or key in
+            {'unknown','unsure','not known','not specified','not mentioned','none','no answer'}):
+            continue
+        if any(ch.isdigit() for ch in candidate) and len(numbers)>1:
+            continue
+        if answer_is_in_quote(candidate,proposed) and answer_is_in_quote(candidate,evidence):
+            return candidate
+    return None
 
 
 def practice_request(original,question,max_new_tokens=16):
@@ -103,3 +157,13 @@ def practice_request(original,question,max_new_tokens=16):
     prompt=original.prompt[:end]+'\n\nPractice question: '+question+'\nAnswer concisely using the context.'
     return Request(document=original.document,question=question,prompt=prompt,
                    answer_prefix='',max_new_tokens=max_new_tokens)
+
+
+def teacher_practice_request(student,evidence_answer):
+    """Add the independently checked hint only to the teacher's suffix."""
+    if not evidence_answer or student.document in evidence_answer:
+        raise ValueError('Invalid evidence answer hint')
+    prompt=(student.prompt+'\nFor this practice only, the source-supported short answer is: '
+            +evidence_answer+'\nGive the answer concisely.')
+    return Request(document=student.document,question=student.question,prompt=prompt,
+                   answer_prefix='',max_new_tokens=student.max_new_tokens)

@@ -1,6 +1,7 @@
 """Selected-text ICL teacher -> on-policy joint KV SD -> fresh answer."""
 
 from copy import copy
+from dataclasses import replace
 from types import SimpleNamespace
 import time
 
@@ -20,6 +21,7 @@ from .selection import OpenAIChunkSelector
 from .self_study_runtime import generate_from_cache,generate_self_study
 from .standalone import answer_standalone
 from .teacher import build_teacher, prefill_document, score_student_prefix
+from .teacher_judge_runtime import judge_teacher
 from .teacher_targeting import choice_positions
 
 
@@ -65,16 +67,43 @@ class MaskedTTT:
             native_tokens,native_prediction=generate_from_cache(
                 engine,teacher_reader,cache,length,suffix,working.max_new_tokens)
         teacher = build_teacher(engine, teacher_reader, working, layout, selected)
-        try:
-            practice_paths,self_study=generate_self_study(
-                engine,teacher_reader,teacher,working,layout,selected)
-        except ValueError as exc:
-            # A non-reusable token boundary is an explicit no-practice case;
-            # no altered document cache is silently substituted.
+        teacher_judgment=judge_teacher(engine,teacher_reader,cache,teacher,working,layout,selected)
+        teacher_judgment['enforced']=(engine.config.teacher_judge_policy!='off' and
+                                     engine.config.teacher_judge_action=='enforce')
+        use_teacher_signal=(teacher_judgment['apply_update'] or not teacher_judgment['enforced'])
+        teacher_comparison=None
+        if use_teacher_signal and engine.config.teacher_veto_against_native:
+            # Compare two candidate answers under the same frozen full context.
+            # A source-independent, unclear comparison cannot veto a signal.
+            comparison_engine=copy(engine)
+            comparison_engine.config=replace(engine.config,guard_policy='veto',
+                guard_minimum_confidence=engine.config.teacher_veto_minimum_confidence,
+                guard_minimum_label_mass=engine.config.teacher_veto_minimum_label_mass)
+            teacher_comparison=guard_answers(comparison_engine,teacher_reader,cache,layout,working,
+                                             native_prediction,teacher.prediction)
+            use_teacher_signal=teacher_comparison['use_adapted']
+        teacher_judgment['native_comparison']=teacher_comparison
+        teacher_judgment['native_comparison_config']=(dict(policy='veto',
+            minimum_confidence=engine.config.teacher_veto_minimum_confidence,
+            minimum_label_mass=engine.config.teacher_veto_minimum_label_mass)
+            if engine.config.teacher_veto_against_native else None)
+        teacher_judgment['main_signal_accepted']=bool(use_teacher_signal)
+        if not use_teacher_signal and not engine.config.practice_when_teacher_rejected:
             practice_paths=[]
             self_study=dict(generated_tokens=0,parsed=0,verified=0,checks=[],
-                rejections={'unusable_practice_prefix':1},reason=str(exc),
+                rejections={},reason='teacher_signal_not_selected',
                 reference_answers_used=False,student_answer_hint_used=False)
+        else:
+            try:
+                practice_paths,self_study=generate_self_study(
+                    engine,teacher_reader,teacher,working,layout,selected)
+            except ValueError as exc:
+                # A non-reusable token boundary is an explicit no-practice case;
+                # no altered document cache is silently substituted.
+                practice_paths=[]
+                self_study=dict(generated_tokens=0,parsed=0,verified=0,checks=[],
+                    rejections={'unusable_practice_prefix':1},reason=str(exc),
+                    reference_answers_used=False,student_answer_hint_used=False)
 
         memory = KVReadMemory(
             engine.model.config,
@@ -88,9 +117,17 @@ class MaskedTTT:
             seed=engine.config.seed,
         ).to(engine.device)
         reader = MemoryReader(engine, memory)
-        usable=engine.config.steps>0
-        support=dict(decision=dict(state='selected_signal' if usable else 'empty_teacher',
+        main_path=dict(name='main',student_suffix=suffix,teacher=teacher,
+                       question=working.question)
+        paths=([main_path] if use_teacher_signal else [])+practice_paths
+        usable=engine.config.steps>0 and bool(paths)
+        decision_state=('selected_signal' if usable and use_teacher_signal else
+                        'verified_practice_only' if usable else
+                        'teacher_signal_rejected' if not use_teacher_signal else 'zero_step_budget')
+        support=dict(decision=dict(state=decision_state,
             planned_steps=engine.config.steps if usable else 0,apply_update=usable,
+            teacher_main_signal_used=bool(usable and use_teacher_signal),
+            verified_practice_paths=len(practice_paths),
             reference_answers_used=False),LLM_self_judge_enabled=engine.config.guard_enabled,
             reason='Selection applies to teacher source and trainable KV positions')
         began=time.perf_counter()
@@ -99,20 +136,25 @@ class MaskedTTT:
             memory.value_enabled=True
         engine.synchronize();setup_seconds=time.perf_counter()-began
         initial_kl=final_kl=None;steps=[];positions=[];optimizer_bytes=0
-        use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
+        use_choice=(use_teacher_signal and engine.config.teacher_target_scope=='choice_or_all'
+                    and 'Choices:' in working.question)
+        use_adaptive_open=(use_teacher_signal and not use_choice and engine.config.adaptive_open_ended)
         teacher_version=teacher.probabilities._version
         began=time.perf_counter()
         if usable:
             memory.native_mode=False
-            paths=[dict(name='main',student_suffix=suffix,teacher=teacher,
-                        question=working.question)]+practice_paths
-            required_steps=engine.config.steps+len(practice_paths)
+            # A veto applies only to the original-question teacher signal.
+            # Independently verified practice paths remain eligible and share
+            # the same request-local memory without seeing the rejected answer.
+            required_steps=(engine.config.steps+len(practice_paths) if use_teacher_signal
+                            else max(engine.config.steps,len(practice_paths)))
             params=(memory.gain,memory.value_coefficients)
             optimizer=torch.optim.Adam([
                 dict(params=[params[0]],lr=engine.config.gain_learning_rate),
                 dict(params=[params[1]],lr=engine.config.value_learning_rate)],foreach=False)
             try:
-                max_steps=max(required_steps,engine.config.max_answer_steps) if use_choice else required_steps
+                max_steps=(max(required_steps,engine.config.max_answer_steps)
+                           if use_choice or use_adaptive_open else required_steps)
                 for index in range(max_steps):
                     engine.budget.check();optimizer.zero_grad(set_to_none=True)
                     path=paths[index%len(paths)] if index<required_steps else paths[0]
@@ -134,7 +176,9 @@ class MaskedTTT:
                         if not bool(torch.isfinite(loss)):
                             raise FloatingPointError('Nonfinite teacher KL')
                         before=float(loss.detach())
-                        if index>=required_steps and (not positions or before<=engine.config.answer_KL_stop):
+                        stop_choice=(use_choice and (not positions or before<=engine.config.answer_KL_stop))
+                        stop_open=(use_adaptive_open and before<=engine.config.adaptive_open_ended_kl_stop)
+                        if index>=required_steps and (stop_choice or stop_open):
                             final_kl=before
                             del logits,loss
                             break
@@ -227,6 +271,7 @@ class MaskedTTT:
             generated_token_ids=generated,
             finish_reason="eos" if generated[-1] in engine.eos_ids else "length",
             teacher=teacher.metadata(),
+            teacher_judgment=teacher_judgment,
             self_study=self_study,
             self_judge=dict(guard,native_prediction=native_prediction,
                             adapted_prediction=adapted_prediction),
@@ -263,8 +308,13 @@ class MaskedTTT:
                 kl_initial_and_final_may_use_different_student_prefixes=True,
                 kl_initial_and_final_may_use_different_questions=bool(practice_paths),
                 verified_practice_questions=len(practice_paths),
+                teacher_main_signal_used=bool(usable and use_teacher_signal),
+                practice_when_teacher_rejected=engine.config.practice_when_teacher_rejected,
+                teacher_veto_against_native=engine.config.teacher_veto_against_native,
                 adaptive_max_answer_steps=engine.config.max_answer_steps,
                 adaptive_answer_KL_stop=engine.config.answer_KL_stop,
+                adaptive_open_ended=use_adaptive_open,
+                adaptive_open_ended_kl_stop=engine.config.adaptive_open_ended_kl_stop,
                 adapted_layers=memory.adapted_layers,
                 checkpointed_layers=True,causal_batched_teacher_forcing=True,
             ),
@@ -272,6 +322,9 @@ class MaskedTTT:
                 ttft_seconds=ttft,
                 prefill_seconds=prefill_seconds,
                 teacher_seconds=teacher.elapsed_seconds,
+                teacher_judgment_seconds=teacher_judgment['seconds'],
+                teacher_native_comparison_seconds=(teacher_comparison['seconds']
+                    if teacher_comparison is not None else 0.0),
                 icl_teacher_first_token_seconds_segmented=(
                     teacher_request_setup_seconds + teacher.first_token_seconds),
                 icl_teacher_timing_scope=(
