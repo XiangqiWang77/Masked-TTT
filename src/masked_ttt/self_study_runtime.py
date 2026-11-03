@@ -1,6 +1,7 @@
 """Generate and independently check selected-evidence practice questions."""
 
 from types import SimpleNamespace
+import re
 import time
 
 import torch
@@ -94,7 +95,7 @@ def generate_self_study(engine,teacher_reader,teacher,request,layout,selected):
         focused.document_end,focused.question_tokens,engine.config.self_question_max_tokens)
     proposals,rejections=parse_exercises(text,request.document,layout.spans,selected,
         request.question,engine.config.self_question_count)
-    verified=[];checks=[]
+    verified=[];checks=[];boundary_recovered=0
     for item in proposals:
         answer=answer_quote(engine,teacher_reader,item,engine.config.self_question_verify_tokens)
         hint=verified_answer_hint(item.answer,answer,item.evidence)
@@ -108,11 +109,32 @@ def generate_self_study(engine,teacher_reader,teacher,request,layout,selected):
             student,_=suffixes(engine,layout,selected,teacher,question)
             teacher_question=teacher_practice_request(question,hint)
             _,focused=suffixes(engine,layout,selected,teacher,teacher_question)
-        except ValueError:
-            checks[-1]['accepted']=False;checks[-1]['reason']='document_prefix_mismatch';continue
+        except ValueError as exc:
+            # Some tokenizers merge the last document character with the first
+            # newline. Retry only this exact mismatch using the original
+            # prompt's whitespace, then repeat all prefix/cache checks.
+            end=request.prompt.find(request.document)+len(request.document)
+            match=re.match(r'^\s+',request.prompt[end:])
+            separator=match.group() if match else ''
+            if (engine.config.practice_boundary_fallback and
+                str(exc)=='Practice prompt changed the original document token prefix' and
+                separator and separator!='\n\n'):
+                try:
+                    question=practice_request(request,item.question,engine.config.student_rollout_tokens,
+                                              separator=separator)
+                    student,_=suffixes(engine,layout,selected,teacher,question)
+                    teacher_question=teacher_practice_request(question,hint)
+                    _,focused=suffixes(engine,layout,selected,teacher,teacher_question)
+                except ValueError as retry_error:
+                    checks[-1]['accepted']=False;checks[-1]['reason']='document_prefix_mismatch'
+                    checks[-1]['boundary_fallback_error']=str(retry_error);continue
+                checks[-1]['boundary_fallback_used']=True;boundary_recovered+=1
+            else:
+                checks[-1]['accepted']=False;checks[-1]['reason']='document_prefix_mismatch';continue
         verified.append(dict(name='practice_'+str(len(verified)+1),student_suffix=student,
                              teacher=focused,question=item.question))
     engine.synchronize()
     return verified,dict(generated_tokens=len(generated),parsed=len(proposals),verified=len(verified),
         checks=checks,rejections=rejections,generated_preview=text[:512],seconds=time.perf_counter()-began,
-        reference_answers_used=False,student_answer_hint_used=False,teacher_answer_hint_used=bool(verified))
+        reference_answers_used=False,student_answer_hint_used=False,teacher_answer_hint_used=bool(verified),
+        boundary_fallback_recovered=boundary_recovered)

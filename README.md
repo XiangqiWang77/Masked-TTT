@@ -50,6 +50,13 @@ one request and discarded afterwards.
    and can retain the native answer. Also generate an
    independent answer with the standalone selected-KV cartridge.
 
+For tokenizers that merge the last document character with following
+whitespace, `TTTConfig(practice_boundary_fallback=True)` retries a verified
+practice question with the original prompt's separator if its document prefix
+would otherwise change. The retry must still match both the full-document and
+selected-document cache prefixes. The option defaults to `False` to preserve
+earlier experiment configurations; the GPT-OSS boundary-fix run enables it.
+
 At a selected document location $u$ in chunk $c$, the adapted read is
 
 $$z_{t,u}=q_t^\top k_{u,0}/\sqrt{d_h}+m_u g_c,\qquad

@@ -149,12 +149,14 @@ def verified_answer_hint(proposed,verified,evidence):
     return None
 
 
-def practice_request(original,question,max_new_tokens=16):
+def practice_request(original,question,max_new_tokens=16,*,separator='\n\n'):
     """Use the same document prefix with a distinct fact-focused question."""
     start=original.prompt.find(original.document)
     if start<0:raise ValueError('Original source is not in the prompt')
+    if not isinstance(separator,str) or not separator or not separator.isspace():
+        raise ValueError('Practice separator must be nonempty whitespace')
     end=start+len(original.document)
-    prompt=original.prompt[:end]+'\n\nPractice question: '+question+'\nAnswer concisely using the context.'
+    prompt=original.prompt[:end]+separator+'Practice question: '+question+'\nAnswer concisely using the context.'
     return Request(document=original.document,question=question,prompt=prompt,
                    answer_prefix='',max_new_tokens=max_new_tokens)
 

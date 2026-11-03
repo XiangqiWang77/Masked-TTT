@@ -21,7 +21,9 @@ def test_recorded_qwen_v5_config_is_loaded_without_changing_defaults():
     path=Path(__file__).resolve().parents[1]/'examples/qwen_babilong_v5_config.json'
     saved=json.loads(path.read_text())
     config=load_method_config(path,keep_fraction=None,steps=None)
-    assert asdict(config)==saved
+    effective=asdict(config)
+    assert effective.pop('practice_boundary_fallback') is False
+    assert effective==saved
     assert (config.keep_fraction,config.steps,config.student_rollout_tokens)==(.3,4,32)
     assert config.teacher_judge_policy=='grounded_veto' and config.teacher_veto_against_native
     assert config.practice_when_teacher_rejected and config.adaptive_open_ended
@@ -57,7 +59,9 @@ def test_cli_passes_recorded_config_to_backbone(tmp_path,monkeypatch):
         '--score-json-dir',str(tmp_path),'--case-id','sample','--config-json',str(path),
         '--output',str(output)])
     main()
-    assert asdict(seen['config'])==json.loads(path.read_text())
+    effective=asdict(seen['config'])
+    assert effective.pop('practice_boundary_fallback') is False
+    assert effective==json.loads(path.read_text())
     assert seen['case']=='sample' and json.loads(output.read_text())['prediction']=='done'
 
 

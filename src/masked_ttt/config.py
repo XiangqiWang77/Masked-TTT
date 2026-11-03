@@ -27,6 +27,7 @@ class TTTConfig:
     # A rejected answer-level teacher may still yield independently verified
     # source-grounded practice questions. Default preserves the submitted run.
     practice_when_teacher_rejected: bool = False
+    practice_boundary_fallback: bool = False
     teacher_veto_against_native: bool = False
     teacher_veto_minimum_confidence: float = 0.80
     teacher_veto_minimum_label_mass: float = 0.20
@@ -82,6 +83,8 @@ class TTTConfig:
             raise ValueError('Unsupported pre-update judgment action')
         if type(self.practice_when_teacher_rejected) is not bool:
             raise ValueError('practice_when_teacher_rejected must be boolean')
+        if type(self.practice_boundary_fallback) is not bool:
+            raise ValueError('practice_boundary_fallback must be boolean')
         if type(self.teacher_veto_against_native) is not bool:
             raise ValueError('teacher_veto_against_native must be boolean')
         if self.teacher_veto_against_native and not self.guard_enabled:
