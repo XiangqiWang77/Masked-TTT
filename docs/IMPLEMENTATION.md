@@ -50,7 +50,7 @@ read by the student when it fits in the backbone's context window.
 
 For non-choice questions, all student-prefix positions are used and only the
 base update budget applies. A choice position is used only when the question
-format and teacher output make it identifiable. This profile does not invoke a
+format and Student rollout make it identifiable. This profile does not invoke a
 separate teacher judge or perform NTP.
 
 ## Timing
@@ -61,6 +61,12 @@ native document prefill, teacher generation and SD updates. It excludes model
 loading, scheduler queueing and the previously completed shared Decision API
 preprocessing. The precomputed scoring time and estimated cost are separate
 fields, so cached online and cold request costs can be reported separately.
+
+`timing.icl_teacher_first_token_seconds_segmented` adds measured request setup
+to the Teacher's prompt construction, selected-context prefill, and first-token
+time; it excludes the intervening Student document prefill. Earlier runs did
+not include Teacher prompt construction in their core timing, so those estimates
+must be kept separate.
 
 Earlier teacher-prefix jobs used a different runtime and are not OPD results.
 This repository contains the method implementation rather than cluster

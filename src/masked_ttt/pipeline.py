@@ -42,6 +42,7 @@ class MaskedTTT:
         teacher_reader = SimpleNamespace(
             model=private_module_tree(engine.model.model), lm_head=engine.model.lm_head
         )
+        teacher_request_setup_seconds = time.perf_counter() - started
 
         began = time.perf_counter()
         cache = prefill_document(
@@ -197,6 +198,12 @@ class MaskedTTT:
                 ttft_seconds=ttft,
                 prefill_seconds=prefill_seconds,
                 teacher_seconds=teacher.elapsed_seconds,
+                icl_teacher_first_token_seconds_segmented=(
+                    teacher_request_setup_seconds + teacher.first_token_seconds),
+                icl_teacher_timing_scope=(
+                    'Sum of shared request setup and selected Teacher planning, prefill, and '
+                    'first token; excludes intervening Student document prefill and offline selection'
+                ),
                 support_seconds=0.0,adapter_setup_seconds=setup_seconds,
                 adaptation_seconds=adaptation_seconds,
                 total_seconds=time.perf_counter() - started,

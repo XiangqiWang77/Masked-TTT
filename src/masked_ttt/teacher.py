@@ -33,6 +33,7 @@ class TeacherSignal:
             prompt_tokens=self.prompt_tokens,
             elapsed_seconds=self.elapsed_seconds,
             first_token_seconds=self.first_token_seconds,
+            first_token_scope='selected_prompt_planning_prefill_first_token',
             target_fixed=True,
             fresh_selected_context=True,
             response_instruction_applied=self.instruction_applied,
@@ -54,6 +55,7 @@ def prefill_document(backbone, reader, ids, initial, boundaries):
 
 @torch.no_grad()
 def build_teacher(backbone, reader, request, layout, selected):
+    began = time.perf_counter()
     instruction=backbone.config.teacher_response_instruction
     teacher_ids=layout.ids
     if instruction:
@@ -74,7 +76,6 @@ def build_teacher(backbone, reader, request, layout, selected):
     cap = min(request.max_new_tokens, backbone.config.teacher_max_new_tokens)
     if len(plan.ids) + cap > backbone.config.max_context:
         raise ValueError("Selected-context teacher exceeds the model context")
-    began = time.perf_counter()
     cache = prefill_document(
         backbone, reader, plan.ids, plan.initial_prefix_tokens, plan.chunk_boundaries
     )

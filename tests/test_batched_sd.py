@@ -172,6 +172,10 @@ def test_simple_selected_sd_keeps_backbone_and_recomputes_question(monkeypatch):
         assert step['student_rollout_tokens']==rollout.tolist()
     assert not result['support']['LLM_self_judge_enabled']
     assert result['teacher']['fresh_selected_context'] and result['teacher']['target_fixed']
+    assert result['teacher']['first_token_scope']=='selected_prompt_planning_prefill_first_token'
+    assert (result['teacher']['first_token_seconds'] <=
+            result['timing']['icl_teacher_first_token_seconds_segmented'] <=
+            result['timing']['ttft_seconds'])
     assert result['teacher']['response_instruction_applied']
     assert result['teacher']['prompt_tokens']<len(prepare_layout(engine,request).ids)
     assert result['final_question_recomputed'] and not result['teacher_answer_in_final_prompt']
