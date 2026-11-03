@@ -1,0 +1,1929 @@
+{
+  "timestamp_utc": "2026-11-03T23:45:43.954804+00:00",
+  "metric": "answer_focused_lexical_v2",
+  "scope": "incomplete 40-case development probe; matched completed cases",
+  "model": "openai/gpt-oss-20b",
+  "expected": 40,
+  "arms": {
+    "0.00": {
+      "n": 25,
+      "teacher": 72.0,
+      "zero": 68.0,
+      "trained": 68.0,
+      "full_before": 64.0,
+      "full_after": 68.0,
+      "teacher_format_zero": 72.0,
+      "teacher_format_trained": 76.0,
+      "versus_teacher": {
+        "gains": 0,
+        "losses": 1,
+        "delta_pp": -4.0
+      },
+      "versus_zero": {
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      },
+      "versus_baseline": {
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      },
+      "verified_practice": 7,
+      "first_transfer_kl_median": null
+    },
+    "0.25": {
+      "n": 25,
+      "teacher": 72.0,
+      "zero": 68.0,
+      "trained": 68.0,
+      "full_before": 64.0,
+      "full_after": 72.0,
+      "teacher_format_zero": 72.0,
+      "teacher_format_trained": 72.0,
+      "versus_teacher": {
+        "gains": 0,
+        "losses": 1,
+        "delta_pp": -4.0
+      },
+      "versus_zero": {
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      },
+      "versus_baseline": {
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      },
+      "verified_practice": 7,
+      "first_transfer_kl_median": 0.007246071472764015
+    },
+    "0.75": {
+      "n": 25,
+      "teacher": 72.0,
+      "zero": 68.0,
+      "trained": 68.0,
+      "full_before": 64.0,
+      "full_after": 72.0,
+      "teacher_format_zero": 72.0,
+      "teacher_format_trained": 72.0,
+      "versus_teacher": {
+        "gains": 0,
+        "losses": 1,
+        "delta_pp": -4.0
+      },
+      "versus_zero": {
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      },
+      "versus_baseline": {
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      },
+      "verified_practice": 7,
+      "first_transfer_kl_median": 0.007246071472764015
+    }
+  },
+  "rows": [
+    {
+      "case": "babilong-32-qa1-300017",
+      "task": "qa1",
+      "length": 32768,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 795721728,
+      "standalone_kv_and_adapter_bytes": 392075622,
+      "selected_tokens": 9399,
+      "working_prompt_tokens": 31281
+    },
+    {
+      "case": "babilong-64-qa1-300017",
+      "task": "qa1",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 1550991360,
+      "standalone_kv_and_adapter_bytes": 754048616,
+      "selected_tokens": 18899,
+      "working_prompt_tokens": 62641
+    },
+    {
+      "case": "babilong-16-qa2-300025",
+      "task": "qa2",
+      "length": 16384,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 402137088,
+      "standalone_kv_and_adapter_bytes": 211440384,
+      "selected_tokens": 4674,
+      "working_prompt_tokens": 15597
+    },
+    {
+      "case": "babilong-32-qa2-300025",
+      "task": "qa2",
+      "length": 32768,
+      "coverage": "incomplete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 756252672,
+      "standalone_kv_and_adapter_bytes": 376498252,
+      "selected_tokens": 9152,
+      "working_prompt_tokens": 30482
+    },
+    {
+      "case": "babilong-64-qa2-300025",
+      "task": "qa2",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 1486823424,
+      "standalone_kv_and_adapter_bytes": 710535053,
+      "selected_tokens": 17759,
+      "working_prompt_tokens": 59673
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "task": "qa3",
+      "length": 8192,
+      "coverage": "incomplete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 209805312,
+      "standalone_kv_and_adapter_bytes": 117686206,
+      "selected_tokens": 2361,
+      "working_prompt_tokens": 7752
+    },
+    {
+      "case": "babilong-16-qa3-300060",
+      "task": "qa3",
+      "length": 16384,
+      "coverage": "incomplete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 387907584,
+      "standalone_kv_and_adapter_bytes": 222578173,
+      "selected_tokens": 4753,
+      "working_prompt_tokens": 15563
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "task": "qa3",
+      "length": 32768,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 774782976,
+      "standalone_kv_and_adapter_bytes": 384514478,
+      "selected_tokens": 9293,
+      "working_prompt_tokens": 30986
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "task": "qa3",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 1519411200,
+      "standalone_kv_and_adapter_bytes": 748267558,
+      "selected_tokens": 18715,
+      "working_prompt_tokens": 61165
+    },
+    {
+      "case": "babilong-64-qa4-300076",
+      "task": "qa4",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 0,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 1532338176,
+      "standalone_kv_and_adapter_bytes": 752732164,
+      "selected_tokens": 18611,
+      "working_prompt_tokens": 61554
+    },
+    {
+      "case": "babilong-8-qa5-300113",
+      "task": "qa5",
+      "length": 8192,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 210935808,
+      "standalone_kv_and_adapter_bytes": 119284982,
+      "selected_tokens": 2446,
+      "working_prompt_tokens": 7823
+    },
+    {
+      "case": "babilong-16-qa5-300113",
+      "task": "qa5",
+      "length": 16384,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 351928320,
+      "standalone_kv_and_adapter_bytes": 188018766,
+      "selected_tokens": 4287,
+      "working_prompt_tokens": 14060
+    },
+    {
+      "case": "babilong-32-qa5-300113",
+      "task": "qa5",
+      "length": 32768,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 744235008,
+      "standalone_kv_and_adapter_bytes": 375783939,
+      "selected_tokens": 8796,
+      "working_prompt_tokens": 29360
+    },
+    {
+      "case": "babilong-64-qa5-300113",
+      "task": "qa5",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 1412431872,
+      "standalone_kv_and_adapter_bytes": 673044494,
+      "selected_tokens": 17031,
+      "working_prompt_tokens": 56346
+    },
+    {
+      "case": "babilong-32-qa6-300145",
+      "task": "qa6",
+      "length": 32768,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 689283072,
+      "standalone_kv_and_adapter_bytes": 339390623,
+      "selected_tokens": 8224,
+      "working_prompt_tokens": 27272
+    },
+    {
+      "case": "babilong-16-qa7-300161",
+      "task": "qa7",
+      "length": 16384,
+      "coverage": "incomplete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 395034624,
+      "standalone_kv_and_adapter_bytes": 199281507,
+      "selected_tokens": 4458,
+      "working_prompt_tokens": 15397
+    },
+    {
+      "case": "babilong-32-qa7-300161",
+      "task": "qa7",
+      "length": 32768,
+      "coverage": "incomplete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 728997888,
+      "standalone_kv_and_adapter_bytes": 360367521,
+      "selected_tokens": 8523,
+      "working_prompt_tokens": 28570
+    },
+    {
+      "case": "babilong-64-qa7-300161",
+      "task": "qa7",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 1400242176,
+      "standalone_kv_and_adapter_bytes": 673426184,
+      "selected_tokens": 16979,
+      "working_prompt_tokens": 55993
+    },
+    {
+      "case": "babilong-16-qa8-300185",
+      "task": "qa8",
+      "length": 16384,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 397959168,
+      "standalone_kv_and_adapter_bytes": 220279994,
+      "selected_tokens": 4756,
+      "working_prompt_tokens": 15241
+    },
+    {
+      "case": "babilong-16-qa9-300219",
+      "task": "qa9",
+      "length": 16384,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 405454848,
+      "standalone_kv_and_adapter_bytes": 221645343,
+      "selected_tokens": 4826,
+      "working_prompt_tokens": 15553
+    },
+    {
+      "case": "babilong-64-qa9-300219",
+      "task": "qa9",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 1532878848,
+      "standalone_kv_and_adapter_bytes": 745392771,
+      "selected_tokens": 18463,
+      "working_prompt_tokens": 61368
+    },
+    {
+      "case": "babilong-8-qa10-300244",
+      "task": "qa10",
+      "length": 8192,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 208674816,
+      "standalone_kv_and_adapter_bytes": 119813491,
+      "selected_tokens": 2456,
+      "working_prompt_tokens": 7775
+    },
+    {
+      "case": "babilong-16-qa10-300244",
+      "task": "qa10",
+      "length": 16384,
+      "coverage": "complete",
+      "full_before": 0,
+      "full_after": 1,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 0,
+      "full_document_kv_bytes": 396558336,
+      "standalone_kv_and_adapter_bytes": 203325414,
+      "selected_tokens": 4492,
+      "working_prompt_tokens": 15341
+    },
+    {
+      "case": "babilong-32-qa10-300244",
+      "task": "qa10",
+      "length": 32768,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 1,
+      "selected_after": 1,
+      "teacher": 1,
+      "full_document_kv_bytes": 774488064,
+      "standalone_kv_and_adapter_bytes": 396109172,
+      "selected_tokens": 9491,
+      "working_prompt_tokens": 31338
+    },
+    {
+      "case": "babilong-64-qa10-300244",
+      "task": "qa10",
+      "length": 65536,
+      "coverage": "complete",
+      "full_before": 1,
+      "full_after": 1,
+      "selected_before": 0,
+      "selected_after": 0,
+      "teacher": 1,
+      "full_document_kv_bytes": 1541038080,
+      "standalone_kv_and_adapter_bytes": 750039220,
+      "selected_tokens": 18775,
+      "working_prompt_tokens": 62241
+    }
+  ],
+  "kl_same_prefix": [
+    {
+      "case": "babilong-64-qa1-300017",
+      "weight": 0.25,
+      "before": 0.27270087599754333,
+      "after": 0.2451104074716568,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa1-300017",
+      "weight": 0.75,
+      "before": 0.27270087599754333,
+      "after": 0.22579441964626312,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-16-qa2-300025",
+      "weight": 0.25,
+      "before": 0.37585294246673584,
+      "after": 0.35933735966682434,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-16-qa2-300025",
+      "weight": 0.75,
+      "before": 0.37585294246673584,
+      "after": 0.32377147674560547,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa2-300025",
+      "weight": 0.25,
+      "before": 0.3341367840766907,
+      "after": 0.2875792682170868,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa2-300025",
+      "weight": 0.75,
+      "before": 0.3341367840766907,
+      "after": 0.2727154493331909,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa2-300025",
+      "weight": 0.25,
+      "before": 0.68932044506073,
+      "after": 0.6303471326828003,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa2-300025",
+      "weight": 0.75,
+      "before": 0.68932044506073,
+      "after": 0.6638596653938293,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "weight": 0.25,
+      "before": 4.76773020636756e-05,
+      "after": 3.724424823303707e-05,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "weight": 0.75,
+      "before": 4.76773020636756e-05,
+      "after": 2.6891859306488186e-05,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "weight": 0.25,
+      "before": 6.055522680981085e-05,
+      "after": 5.0075519538950175e-05,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "weight": 0.75,
+      "before": 6.055522680981085e-05,
+      "after": 5.945743032498285e-05,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "weight": 0.25,
+      "before": 5.952166975475848e-05,
+      "after": 7.109224679879844e-05,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "weight": 0.75,
+      "before": 5.952166975475848e-05,
+      "after": 5.767800394096412e-05,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa4-300076",
+      "weight": 0.25,
+      "before": 1.9022250175476074,
+      "after": 1.5867786407470703,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa4-300076",
+      "weight": 0.75,
+      "before": 1.9022250175476074,
+      "after": 1.5571990013122559,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-8-qa5-300113",
+      "weight": 0.25,
+      "before": 0.04319484531879425,
+      "after": 0.024726014584302902,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-8-qa5-300113",
+      "weight": 0.75,
+      "before": 0.04319484531879425,
+      "after": 0.03289353847503662,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa6-300145",
+      "weight": 0.25,
+      "before": 0.00022474177239928395,
+      "after": 0.0001500152429798618,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa6-300145",
+      "weight": 0.75,
+      "before": 0.00022474177239928395,
+      "after": 0.0001428563118679449,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa7-300161",
+      "weight": 0.25,
+      "before": 0.0011589709902182221,
+      "after": 0.0005781345535069704,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa7-300161",
+      "weight": 0.75,
+      "before": 0.0011589709902182221,
+      "after": 0.000747137819416821,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa7-300161",
+      "weight": 0.25,
+      "before": 0.003642028197646141,
+      "after": 0.002114834962412715,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa7-300161",
+      "weight": 0.75,
+      "before": 0.003642028197646141,
+      "after": 0.00285766227170825,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-16-qa9-300219",
+      "weight": 0.25,
+      "before": 0.0017487539444118738,
+      "after": 0.00225503440015018,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-16-qa9-300219",
+      "weight": 0.75,
+      "before": 0.0017487539444118738,
+      "after": 0.002466420875862241,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa9-300219",
+      "weight": 0.25,
+      "before": 0.005781575571745634,
+      "after": 0.005660609807819128,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa9-300219",
+      "weight": 0.75,
+      "before": 0.005781575571745634,
+      "after": 0.007167947478592396,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-8-qa10-300244",
+      "weight": 0.25,
+      "before": 0.015185287222266197,
+      "after": 0.003923795185983181,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-8-qa10-300244",
+      "weight": 0.75,
+      "before": 0.015185287222266197,
+      "after": 0.015577969141304493,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-16-qa10-300244",
+      "weight": 0.25,
+      "before": 0.014040750451385975,
+      "after": 0.13480114936828613,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-16-qa10-300244",
+      "weight": 0.75,
+      "before": 0.014040750451385975,
+      "after": 0.09206468611955643,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa10-300244",
+      "weight": 0.25,
+      "before": 0.05027575418353081,
+      "after": 0.039651378989219666,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-32-qa10-300244",
+      "weight": 0.75,
+      "before": 0.05027575418353081,
+      "after": 0.07324102520942688,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa10-300244",
+      "weight": 0.25,
+      "before": 0.45031410455703735,
+      "after": 0.3296281397342682,
+      "question_path": "main"
+    },
+    {
+      "case": "babilong-64-qa10-300244",
+      "weight": 0.75,
+      "before": 0.45031410455703735,
+      "after": 0.4156190752983093,
+      "question_path": "main"
+    }
+  ],
+  "coverage_audit_rows": [
+    {
+      "case": "babilong-16-qa1-300004",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa1-300007",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa1-300017",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa1-300020",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa1-300022",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa10-300237",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa10-300241",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa10-300242",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa10-300244",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa10-300246",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa2-300025",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa2-300036",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa2-300038",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa2-300041",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa2-300042",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa3-300057",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa3-300060",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa3-300066",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa3-300073",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa3-300074",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa4-300075",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa4-300076",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa4-300081",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa4-300086",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa4-300097",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa5-300112",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa5-300113",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa5-300115",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa5-300121",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa5-300124",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa6-300132",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa6-300135",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa6-300143",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa6-300145",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa6-300148",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa7-300157",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa7-300161",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa7-300162",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa7-300163",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa7-300166",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa8-300177",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa8-300185",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa8-300193",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-16-qa8-300196",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa8-300197",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa9-300204",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa9-300215",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa9-300219",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa9-300220",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-16-qa9-300223",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa1-300004",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa1-300007",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa1-300017",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa1-300020",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa1-300022",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa10-300237",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa10-300241",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa10-300242",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa10-300244",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa10-300246",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa2-300025",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa2-300036",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa2-300038",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa2-300041",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa2-300042",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa3-300057",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa3-300066",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa3-300073",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa3-300074",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa4-300075",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa4-300076",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa4-300081",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa4-300086",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa4-300097",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa5-300112",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa5-300113",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa5-300115",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa5-300121",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa5-300124",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa6-300132",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa6-300135",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa6-300143",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa6-300145",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa6-300148",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa7-300157",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa7-300161",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa7-300162",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa7-300163",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa7-300166",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa8-300177",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa8-300185",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa8-300193",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa8-300196",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa8-300197",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa9-300204",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa9-300215",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-32-qa9-300219",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa9-300220",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-32-qa9-300223",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa1-300004",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa1-300007",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa1-300017",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa1-300020",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa1-300022",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa10-300237",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa10-300241",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa10-300242",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa10-300244",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa10-300246",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa2-300025",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa2-300036",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa2-300038",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa2-300041",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa2-300042",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa3-300057",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa3-300066",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa3-300073",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa3-300074",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa4-300075",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa4-300076",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa4-300081",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa4-300086",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa4-300097",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa5-300112",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa5-300113",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa5-300115",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa5-300121",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa5-300124",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa6-300132",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa6-300135",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa6-300143",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa6-300145",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa6-300148",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa7-300157",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa7-300161",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa7-300162",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa7-300163",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa7-300166",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa8-300177",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa8-300185",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa8-300193",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa8-300196",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa8-300197",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa9-300204",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa9-300215",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-64-qa9-300219",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa9-300220",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-64-qa9-300223",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa1-300004",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa1-300007",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa1-300017",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa1-300020",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa1-300022",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa10-300237",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa10-300241",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa10-300242",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa10-300244",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa10-300246",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa2-300025",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa2-300036",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa2-300038",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa2-300041",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa2-300042",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa3-300057",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa3-300066",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa3-300073",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa3-300074",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa4-300075",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa4-300076",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa4-300081",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa4-300086",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa4-300097",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa5-300112",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa5-300113",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa5-300115",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa5-300121",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa5-300124",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa6-300132",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa6-300135",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa6-300143",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa6-300145",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa6-300148",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa7-300157",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa7-300161",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa7-300162",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa7-300163",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa7-300166",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa8-300177",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa8-300185",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa8-300193",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa8-300196",
+      "coverage": "incomplete",
+      "full_zero": 1,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa8-300197",
+      "coverage": "incomplete",
+      "full_zero": 0,
+      "selected_zero": 0
+    },
+    {
+      "case": "babilong-8-qa9-300204",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa9-300215",
+      "coverage": "complete",
+      "full_zero": 0,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa9-300219",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa9-300220",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    },
+    {
+      "case": "babilong-8-qa9-300223",
+      "coverage": "complete",
+      "full_zero": 1,
+      "selected_zero": 1
+    }
+  ],
+  "provenance": {
+    "new_run": "query_cartridges_gpt_consistency_20261103",
+    "older_audit": "query_cartridges_gpt_transfer_audit_20261103",
+    "support_annotations": "query_cartridges_20261103/posthoc_diagnostics/practice_rank_coverage.json",
+    "note": "Saved annotations and answers are used only for post-hoc scoring, never inference."
+  }
+}
