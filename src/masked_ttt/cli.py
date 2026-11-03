@@ -46,12 +46,15 @@ def main():
     parser.add_argument("--teacher-max-new-tokens", type=int, default=32)
     parser.add_argument("--answer-kl-stop", type=float, default=0.5)
     parser.add_argument("--max-context", type=int, default=131072)
+    parser.add_argument("--context-reserve-tokens", type=int, default=4096,
+                        help="Minimum room reserved for the generated answer")
     parser.add_argument("--time-budget", type=float, default=None)
     args = parser.parse_args()
     # Unknown input fields (including gold answers) fail instead of silently
     # becoming adaptation inputs.
     request = Request(**json.loads(args.request.read_text()))
     config = TTTConfig(keep_fraction=args.keep_fraction, steps=args.steps, max_context=args.max_context,
+        context_reserve_tokens=args.context_reserve_tokens,
         max_answer_steps=args.max_answer_steps,teacher_max_new_tokens=args.teacher_max_new_tokens,
         answer_KL_stop=args.answer_kl_stop)
     decision_options = dict(api_key_file=args.api_key_file, max_cost_usd=args.max_api_cost)

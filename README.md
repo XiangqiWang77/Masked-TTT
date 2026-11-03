@@ -103,6 +103,7 @@ score index and the original question.
 ```bash
 masked-ttt --model /path/to/model --request request.json \
   --score-json-dir /path/to/shared_scores --case-id YOUR_CASE_ID \
+  --context-reserve-tokens 1024 \
   --local-files-only --output result.json
 ```
 
@@ -111,6 +112,10 @@ shared benchmark score bundle is available on the
 [data branch](https://github.com/XiangqiWang77/AsyncStack-TTT/tree/data/shared-source-scores-20261102).
 To score a new request online, pass `--online-decisions` instead; this uses
 the configured Decision API credentials and budget.
+
+The example reserves at least 1,024 tokens for the generated answer. The
+implementation also reserves the request's `max_new_tokens` if it is larger;
+the default reserve is 4,096 when the option is omitted.
 
 `timing.ttft_seconds` measures cached-score loading, teacher inference,
 adaptation, question recomputation and the first final token. It excludes model
