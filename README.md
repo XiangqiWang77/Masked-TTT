@@ -37,6 +37,14 @@ original full-context path; `matched_cache_direct=True` runs only the
 selected-cache update and returns its independent answer as `prediction`.
 The GPT-OSS evaluation of this candidate is in progress.
 
+When direct selected-cache training is enabled,
+`release_full_cache_before_direct=True` discards the full-document KV after
+native answering, Teacher judgment, and practice construction. It checks the
+full cache before release and keeps the independently prefetched selected KV
+for training and decoding. The output records whether release occurred and,
+on GPU, the associated change in allocated memory. This option does not avoid
+the earlier full-document prefill or measure the model-loading peak.
+
 ## Procedure
 
 1. Load the saved Decision API scores for the document and question. Select

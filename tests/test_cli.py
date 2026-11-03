@@ -26,6 +26,7 @@ def test_recorded_qwen_v5_config_is_loaded_without_changing_defaults():
     assert effective.pop('matched_cache_probe') is False
     assert effective.pop('matched_cache_direct') is False
     assert effective.pop('matched_cache_final_suffix')=='original'
+    assert effective.pop('release_full_cache_before_direct') is False
     assert effective==saved
     assert (config.keep_fraction,config.steps,config.student_rollout_tokens)==(.3,4,32)
     assert config.teacher_judge_policy=='grounded_veto' and config.teacher_veto_against_native
@@ -67,6 +68,7 @@ def test_cli_passes_recorded_config_to_backbone(tmp_path,monkeypatch):
     assert effective.pop('matched_cache_probe') is False
     assert effective.pop('matched_cache_direct') is False
     assert effective.pop('matched_cache_final_suffix')=='original'
+    assert effective.pop('release_full_cache_before_direct') is False
     assert effective==json.loads(path.read_text())
     assert seen['case']=='sample' and json.loads(output.read_text())['prediction']=='done'
 

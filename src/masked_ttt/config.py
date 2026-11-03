@@ -41,6 +41,7 @@ class TTTConfig:
     matched_cache_probe: bool = False
     matched_cache_direct: bool = False
     matched_cache_final_suffix: str = 'original'
+    release_full_cache_before_direct: bool = False
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
@@ -90,6 +91,10 @@ class TTTConfig:
             raise ValueError('Choose a supported direct-cache output policy')
         if self.matched_cache_final_suffix!='original' and not self.matched_cache_direct:
             raise ValueError('A formatted final suffix requires direct selected-cache mode')
+        if type(self.release_full_cache_before_direct) is not bool:
+            raise ValueError('release_full_cache_before_direct must be boolean')
+        if self.release_full_cache_before_direct and not self.matched_cache_direct:
+            raise ValueError('Releasing full KV requires direct selected-cache mode')
         if self.guard_policy not in ('consensus','veto','student'):
             raise ValueError('Unsupported global answer-selection policy')
         if self.teacher_judge_policy not in ('off','support_required','grounded_veto'):

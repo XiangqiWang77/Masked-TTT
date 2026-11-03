@@ -126,9 +126,23 @@ class MaskedTTT:
             # answer generation. The teacher signal and self-study paths are
             # exactly those used by the paired study, without the redundant
             # preliminary optimization on full-document KV.
+            released=False;released_allocated_bytes=None
+            if engine.config.release_full_cache_before_direct:
+                # Full-document use has ended after the native answer, Teacher
+                # judgment, and practice construction. The selected Teacher KV
+                # was independently prefetched and remains available.
+                if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in cache_stamp):
+                    raise AssertionError('The original document cache was changed')
+                engine.assert_frozen(weights_before)
+                allocated_before=cuda_allocated(engine.device)
+                del cache_stamp,cache
+                allocated_after=cuda_allocated(engine.device)
+                if allocated_before is not None and allocated_after is not None:
+                    released_allocated_bytes=max(0,allocated_before-allocated_after)
+                released=True
             matched=train_selected_cache(engine,teacher_reader,teacher,layout,selected,
                                          suffix,paths,working,use_teacher_signal)
-            if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in cache_stamp):
+            if not released and any(x._version != version or x.data_ptr() != pointer for x,version,pointer in cache_stamp):
                 raise AssertionError('The original document cache was changed')
             engine.assert_frozen(weights_before)
             chosen=select_answer_arm(engine.config.matched_cache_final_suffix,len(practice_paths),
@@ -154,6 +168,8 @@ class MaskedTTT:
                 standalone_cartridge=standalone,matched_cache_study=matched,
                 memory=dict(unit='bytes',model_resident_gpu_bytes=model_resident_bytes,
                     full_document_kv_bytes=original_kv_bytes,
+                    full_cache_released_before_update=released,
+                    allocated_bytes_released_before_update=released_allocated_bytes,
                     paired_run_peak_gpu_allocated_bytes=cuda_peak(engine.device),
                     gpu_peak_includes_model_and_training=True,
                     standalone_peak_is_not_measured_separately=True,
