@@ -139,3 +139,5 @@ Run `pytest -q`. Evaluation compares paired answers with the same task-aware
 metric, reports gains and losses relative to each baseline, and reports
 document KV and cartridge storage separately. Earlier OPD-only and
 teacher-prefix runs are different configurations, not results of this method.
+The CLI integration test builds a tiny local model and score JSON, then checks
+the complete cached-selection and adaptation path without a network call.
