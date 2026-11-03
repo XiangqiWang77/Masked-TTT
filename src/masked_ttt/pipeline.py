@@ -1,4 +1,4 @@
-"""Select -> frozen teacher -> source support -> joint KV SD -> fresh answer."""
+"""Selected-text ICL teacher -> batched joint KV SD -> fresh full-context answer."""
 
 from copy import copy
 from types import SimpleNamespace
@@ -6,17 +6,15 @@ import time
 
 import torch
 
-from .cache import fork_prefix
-from .checkpointing import layer_checkpointed_logits
+from .batched_sd import batched_teacher_logits
 from .memory import KVReadMemory
 from .model import Budget
-from .optimizer import distribution_kl, fit_memory
-from .query_guard import question_token_sets
-from .reader import MemoryReader, matched_incremental_logits
+from .optimizer import distribution_kl
+from .reader import MemoryReader
 from .runtime import private_forward, private_module_tree
 from .selection import OpenAIChunkSelector
-from .support import check_signal
 from .teacher import build_teacher, prefill_document
+from .teacher_targeting import choice_positions
 
 
 class MaskedTTT:
@@ -66,65 +64,70 @@ class MaskedTTT:
             seed=engine.config.seed,
         ).to(engine.device)
         reader = MemoryReader(engine, memory)
-        with torch.no_grad():
-            # Preserve the submitted initialization: native question read, then
-            # a fixed source-value eigenspace in every adapted layer.
-            memory.native_mode, memory.capture_attention = True, True
-            private_forward(reader.reader, suffix, length, fork_prefix(cache, length))
-            memory.capture_attention = False
-            layers = sorted(
-                memory.adapted_layers,
-                key=lambda layer: (-memory.attention_records[layer]["selected_mass"], layer),
-            )
-            memory.prepare_value_basis(cache, layers)
-            memory.attention_records = {}
-
-        checkpointed = len(
-            layout.ids
-        ) >= engine.config.checkpoint_at_tokens or engine.model.config.model_type in (
-            "olmo3",
-            "gpt_oss",
-        )
-
-        def evaluate():
-            if torch.is_grad_enabled():
-                memory.native_mode = False
-                if checkpointed:
-                    return layer_checkpointed_logits(engine, reader, cache, suffix, teacher.tokens)
-            else:
-                memory.select_actual_read_path()
-            return matched_incremental_logits(engine, reader, cache, suffix, teacher.tokens)
-
-        with torch.no_grad():
-            initial_kl = float(distribution_kl(evaluate(), teacher.probabilities))
-            before_check = memory.digest()
-            began = time.perf_counter()
-            support = check_signal(
-                engine, teacher_reader, cache, ids, working, layout, selected, teacher
-            )
-            support_seconds = time.perf_counter() - began
-            if memory.digest() != before_check:
-                raise AssertionError("Source checking changed the adaptation state")
-
-        content, qualifiers = question_token_sets(engine.tokenizer, working.question)
-        began = time.perf_counter()
-        with torch.enable_grad():
-            steps, final_kl, diagnostics = fit_memory(
-                memory,
-                evaluate,
-                teacher.probabilities,
-                support["decision"]["planned_steps"],
-                engine.config.update,
-                engine.budget.check,
-                query_token_ids=content,
-                query_qualifier_ids=qualifiers,
-            )
-        engine.synchronize()
-        adaptation_seconds = time.perf_counter() - began
-        if not support["decision"]["apply_update"] and (
-            bool(memory.gain.any()) or bool(memory.value_coefficients.any())
-        ):
-            raise AssertionError("An unadmitted teacher signal changed memory")
+        usable=bool(teacher.prediction.strip()) and engine.config.steps>0
+        support=dict(decision=dict(state='selected_signal' if usable else 'empty_teacher',
+            planned_steps=engine.config.steps if usable else 0,apply_update=usable,
+            reference_answers_used=False),LLM_self_judge_enabled=False,
+            reason='Selection applies to teacher source and trainable KV positions')
+        began=time.perf_counter()
+        if usable:
+            memory.prepare_value_basis(cache,memory.adapted_layers)
+            memory.value_enabled=True
+        engine.synchronize();setup_seconds=time.perf_counter()-began
+        initial_kl=final_kl=None;steps=[]
+        use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
+        positions=choice_positions(engine.tokenizer,teacher.tokens.tolist()) if use_choice else []
+        target_positions=(torch.tensor(positions,device=teacher.tokens.device,dtype=torch.long) if positions else None)
+        target=(teacher.probabilities.detach().index_select(0,target_positions) if positions
+                else teacher.probabilities.detach())
+        teacher_version=teacher.probabilities._version
+        began=time.perf_counter()
+        if usable:
+            memory.native_mode=False
+            params=(memory.gain,memory.value_coefficients)
+            optimizer=torch.optim.Adam([
+                dict(params=[params[0]],lr=engine.config.gain_learning_rate),
+                dict(params=[params[1]],lr=engine.config.value_learning_rate)],foreach=False)
+            try:
+                max_steps=engine.config.max_answer_steps if positions else engine.config.steps
+                for index in range(max_steps):
+                    engine.budget.check();optimizer.zero_grad(set_to_none=True)
+                    with torch.enable_grad():
+                        logits=batched_teacher_logits(engine,reader,cache,suffix,teacher.tokens,
+                                                      target_positions=target_positions)
+                        loss=distribution_kl(logits,target)
+                        if not bool(torch.isfinite(loss)):
+                            raise FloatingPointError('Nonfinite teacher KL')
+                        before=float(loss.detach())
+                        if index>=engine.config.steps and before<=engine.config.answer_KL_stop:
+                            final_kl=before
+                            del logits,loss
+                            break
+                        loss.backward()
+                    if any(parameter.grad is None for parameter in params):
+                        raise AssertionError('Both selected KV parameter groups need gradients')
+                    if bool(params[0].grad[:,:,~memory.selected_chunk_mask].any()):
+                        raise AssertionError('An unselected chunk received a gain gradient')
+                    norms=[float(parameter.grad.float().norm()) for parameter in params]
+                    total=float(torch.nn.utils.clip_grad_norm_(params,engine.config.gradient_clip,
+                                                             error_if_nonfinite=True))
+                    if initial_kl is None:initial_kl=before
+                    optimizer.step();memory.constrain()
+                    steps.append(dict(step=index+1,accepted=True,teacher_KL_before=before,
+                        gain_gradient_norm=norms[0],value_gradient_norm=norms[1],gradient_norm=total))
+                if final_kl is None:
+                    with torch.no_grad():
+                        final_kl=float(distribution_kl(
+                            batched_teacher_logits(engine,reader,cache,suffix,teacher.tokens,
+                                                   target_positions=target_positions),target))
+                if not bool(torch.isfinite(torch.tensor(final_kl))):
+                    raise FloatingPointError('Nonfinite final teacher KL')
+                if teacher.probabilities._version!=teacher_version:
+                    raise AssertionError('Teacher target was modified')
+            finally:
+                optimizer.zero_grad(set_to_none=True);optimizer.state.clear()
+        engine.synchronize();adaptation_seconds=time.perf_counter()-began
+        support['decision']['planned_steps']=len(steps)
 
         for parameter in memory.parameters():
             parameter.requires_grad_(False)
@@ -169,15 +172,20 @@ class MaskedTTT:
                 final_kl=final_kl,
                 steps=steps,
                 accepted_steps=sum(r["accepted"] for r in steps),
-                diagnostics=diagnostics,
+                optimizer='Adam',teacher_cap=engine.config.teacher_max_new_tokens,
+                teacher_prefix_truncated=not teacher.complete,
+                teacher_target_scope=engine.config.teacher_target_scope,
+                teacher_target_positions=positions or list(range(len(teacher.tokens))),
+                adaptive_max_answer_steps=engine.config.max_answer_steps,
+                adaptive_answer_KL_stop=engine.config.answer_KL_stop,
                 adapted_layers=memory.adapted_layers,
-                checkpointed_layers=checkpointed,
+                checkpointed_layers=True,causal_batched_teacher_forcing=True,
             ),
             timing=dict(
                 ttft_seconds=ttft,
                 prefill_seconds=prefill_seconds,
                 teacher_seconds=teacher.elapsed_seconds,
-                support_seconds=support_seconds,
+                support_seconds=0.0,adapter_setup_seconds=setup_seconds,
                 adaptation_seconds=adaptation_seconds,
                 total_seconds=time.perf_counter() - started,
                 selection_backend=prepared.metadata.get("backend", "online_decisions"),
@@ -185,7 +193,7 @@ class MaskedTTT:
                 offline_selection_cost_usd=prepared.metadata.get("offline_scoring_cost_usd", 0),
                 offline_selection_in_ttft=False,
                 scope=(
-                    "Online request including selection JSON loading or live selection, teacher, checks, "
+                    "Online request including selection JSON loading or live selection, teacher, "
                     "adaptation and fresh question through the first final token; excludes model loading, "
                     "queue time, and previously completed shared offline selection"
                 ),

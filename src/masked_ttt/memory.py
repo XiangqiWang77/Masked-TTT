@@ -1,7 +1,5 @@
 """The only trainable state: selected chunk read biases and low-rank value maps."""
 
-import hashlib
-import json
 import math
 from bisect import bisect_left
 import torch
@@ -180,37 +178,6 @@ class KVReadMemory(nn.Module):
         """Evaluate exactly the native/augmented branch used for generation."""
         has_values = self.value_enabled and bool(self.value_coefficients.any())
         self.native_mode = not bool(self.gain.any()) and (not has_values)
-
-    def digest(self):
-        digest = hashlib.sha256()
-        for tensor in (
-            self.gain,
-            self.value_coefficients,
-            self.value_layers,
-            self.value_basis,
-            self.chunk_index,
-            self.selected_positions,
-            self.bank_positions,
-            self.bank_source_indices,
-            self.bank_scatter_slots,
-        ):
-            digest.update(tensor.detach().cpu().contiguous().numpy().tobytes())
-        digest.update(
-            json.dumps(
-                dict(
-                    native_mode=self.native_mode,
-                    value_enabled=self.value_enabled,
-                    gain_bound=self.gain_bound,
-                    value_radius=self.value_radius,
-                    document_length=self.document_length,
-                    value_parameterization=self.value_parameterization,
-                    selected_chunks=self.selected_chunks,
-                    gain_scope=self.gain_scope,
-                ),
-                sort_keys=True,
-            ).encode()
-        )
-        return digest.hexdigest()
 
     @torch.no_grad()
     def observe(self, layer, q, k):

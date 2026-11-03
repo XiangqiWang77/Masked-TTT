@@ -1,22 +1,15 @@
 """CPU-produced source scores; GPU readers have no network fallback."""
 
 from bisect import bisect_right
-import hashlib
 import json
 from pathlib import Path
 import time
 
-from .request import Layout, text_sha
+from .request import Layout
 from .selection import PreparedRequest, compact_source, select_top_fraction
 
 
 SCHEMA = "masked-ttt-source-scores-v1"
-
-
-def score_key(document, question):
-    return hashlib.sha256(
-        json.dumps([SCHEMA, text_sha(document), question], ensure_ascii=False).encode()
-    ).hexdigest()
 
 
 def atomic_json(path, value):
@@ -27,22 +20,22 @@ def atomic_json(path, value):
     temporary.replace(path)
 
 
-def load_scores(directory, document, question):
-    path = Path(directory) / "scores" / (score_key(document, question) + ".json")
+def load_scores(directory, document, question, case_key, by_case):
+    path = Path(directory) / "scores" / by_case[case_key]
     data = json.loads(path.read_text())
     if (
         data.get("schema") != SCHEMA
         or data.get("complete") is not True
-        or data.get("document_sha256") != text_sha(document)
-        or data.get("question_sha256") != text_sha(question)
+        or data.get("case_key") != case_key
+        or data.get("question") != question
         or data.get("reference_answers_used") is not False
     ):
         raise ValueError("Frozen source score identity/format mismatch")
     spans = data["source_spans"]
-    if len(spans) != len(data["records"]) or len(spans) != len(data["chunk_sha256"]):
+    if len(spans) != len(data["records"]):
         raise ValueError("Incomplete frozen chunk scores")
     previous_start, previous_end = -1, 0
-    for (start, end), digest in zip(spans, data["chunk_sha256"]):
+    for start, end in spans:
         if not 0 <= start < end <= len(document) or start <= previous_start or end <= previous_end:
             raise ValueError("Invalid or nonmonotone frozen source ranges")
         if start < previous_end:
@@ -51,12 +44,9 @@ def load_scores(directory, document, question):
             # to the same character offset. Preserve the scored text exactly.
             if previous_end - start != 1 or len(document[start].encode("utf-8")) <= 1:
                 raise ValueError("Invalid overlapping frozen source ranges")
-        if text_sha(document[start:end]) != digest:
-            raise ValueError("The frozen source passage changed")
         previous_start, previous_end = start, end
     select_top_fraction(data["records"], 0.1)
     data["json_path"] = str(path)
-    data["json_sha256"] = hashlib.sha256(path.read_bytes()).hexdigest()
     return data
 
 
@@ -98,10 +88,17 @@ class FrozenJSONSelector:
 
     def __init__(self, directory):
         self.directory = Path(directory)
+        self.by_case = json.loads((self.directory/'case_to_score_file.json').read_text())
+        self.case_key = None
+
+    def bind_case(self,case_key):
+        if case_key not in self.by_case:raise KeyError('No cached Decision score for '+case_key)
+        self.case_key=case_key
 
     def prepare(self, backbone, original):
         began = time.perf_counter()
-        data = load_scores(self.directory, original.document, original.question)
+        if self.case_key is None:raise ValueError('Bind a case ID before reusing cached scores')
+        data = load_scores(self.directory, original.document, original.question,self.case_key,self.by_case)
         spans = data["source_spans"]
         layout = layout_on_source_spans(backbone, original, spans)
         original_tokens = len(layout.ids)
@@ -141,7 +138,6 @@ class FrozenJSONSelector:
             dict(
                 backend="precomputed_source_JSON",
                 score_file=data["json_path"],
-                score_file_sha256=data["json_sha256"],
                 canonical_tokenizer=data["canonical_tokenizer"],
                 selected_chunks=selected,
                 selected_original_chunks=[records[i].get("original_chunks", [i]) for i in selected],
@@ -151,8 +147,8 @@ class FrozenJSONSelector:
                 working_prompt_tokens=len(layout.ids),
                 complete_original_document=mapping is None,
                 source_mapping=mapping,
-                source_sha256=text_sha(original.document),
-                working_source_sha256=text_sha(working.document),
+                source_case_key=self.case_key,
+                working_source_length=len(working.document),
                 reference_answers_used=False,
                 online_api_calls=0,
                 offline_scoring_seconds=data["scoring_seconds"],

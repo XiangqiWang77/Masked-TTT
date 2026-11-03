@@ -28,9 +28,12 @@ def main():
     )
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--local-files-only", action="store_true")
-    parser.add_argument(
+    selection = parser.add_mutually_exclusive_group(required=True)
+    selection.add_argument(
         "--score-json-dir", type=Path, help="Precomputed source scores; disables all API calls"
     )
+    selection.add_argument("--online-decisions", action="store_true", help="Score source chunks with the Decision API")
+    parser.add_argument("--case-id", help="Case ID in the precomputed source-score index")
     parser.add_argument("--shard-gpus", type=int, default=1)
     parser.add_argument(
         "--api-key-file", help="Private credential file; alternatively use OPENAI_API_KEY"
@@ -38,24 +41,29 @@ def main():
     parser.add_argument("--cache-dir", help="Local Decisions response cache and cost ledger")
     parser.add_argument("--max-api-cost", type=float, default=15.0)
     parser.add_argument("--keep-fraction", type=float, default=0.10)
-    parser.add_argument("--steps", type=int, default=16)
-    parser.add_argument("--max-context", type=int, default=262144)
+    parser.add_argument("--steps", type=int, default=2)
+    parser.add_argument("--max-answer-steps", type=int, default=8)
+    parser.add_argument("--teacher-max-new-tokens", type=int, default=32)
+    parser.add_argument("--answer-kl-stop", type=float, default=0.5)
+    parser.add_argument("--max-context", type=int, default=131072)
     parser.add_argument("--time-budget", type=float, default=None)
     args = parser.parse_args()
     # Unknown input fields (including gold answers) fail instead of silently
     # becoming adaptation inputs.
     request = Request(**json.loads(args.request.read_text()))
-    config = TTTConfig(
-        keep_fraction=args.keep_fraction, steps=args.steps, max_context=args.max_context
-    )
+    config = TTTConfig(keep_fraction=args.keep_fraction, steps=args.steps, max_context=args.max_context,
+        max_answer_steps=args.max_answer_steps,teacher_max_new_tokens=args.teacher_max_new_tokens,
+        answer_KL_stop=args.answer_kl_stop)
     decision_options = dict(api_key_file=args.api_key_file, max_cost_usd=args.max_api_cost)
     if args.cache_dir:
         decision_options["cache_dir"] = args.cache_dir
-    selector = (
-        FrozenJSONSelector(args.score_json_dir)
-        if args.score_json_dir
-        else OpenAIChunkSelector(DecisionConfig(**decision_options))
-    )
+    if args.score_json_dir:
+        if not args.case_id:
+            parser.error('--case-id is required with --score-json-dir')
+        selector = FrozenJSONSelector(args.score_json_dir)
+        selector.bind_case(args.case_id)
+    else:
+        selector = OpenAIChunkSelector(DecisionConfig(**decision_options))
     backbone = Backbone.load(
         args.model,
         config,

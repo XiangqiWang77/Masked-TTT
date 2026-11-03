@@ -1,186 +1,114 @@
 # Masked TTT via Selective Self-Distillation
 
-**Learn from focused evidence. Answer with the full working document.**
+**Select evidence for learning; keep the working document for answering.**
 
-A standalone implementation of chunk-guided, request-local KV adaptation for
-long-context question answering. A frozen model builds an ICL teacher from
-selected source chunks. Source-supported teacher distributions then train the
-student's attention allocation and value readout. The student answers anew with
-its full working-document cache.
+Masked TTT adapts a frozen language model to one long-context question. A
+Decision API score selects a small set of source chunks. The same frozen model
+answers from those chunks as an in-context teacher. A student reads the full
+working document and learns from the teacher's next-token distributions by
+updating request-local attention allocation and value-read corrections. The
+student then answers independently and discards the corrections.
 
-[完整中文方法说明](docs/METHOD.zh-CN.md) · [Main algorithm](src/masked_ttt/pipeline.py)
-· [Implementation notes](docs/IMPLEMENTATION.md)
+[中文方法说明](docs/METHOD.zh-CN.md) · [Implementation](docs/IMPLEMENTATION.md)
 
 ```mermaid
 flowchart LR
-    D[Document + question] --> S[OpenAI chunk decisions]
-    S --> E[Selected source chunks]
-    E --> T[Frozen ICL teacher]
-    D --> C[Frozen full-document KV]
-    T --> J[Source-support check]
-    C --> J
-    J -->|Supported| U[Joint KV-read update with teacher KL]
-    J -->|Unresolved or unsupported| Z[Keep zero adaptation]
-    C --> U
-    U --> A[Fresh question + independent answer]
-    Z --> A
-    C --> A
+    D[Document and question] --> S[Cached Decision scores]
+    S --> E[Selected chunks]
+    E --> T[Focused ICL teacher]
+    D --> K[Full working-document KV]
+    T --> L[Answer-distribution KL]
+    K --> L
+    L --> U[Joint selected KV-read update]
+    K --> U
+    U --> A[Recompute question and answer]
 ```
 
 ## Method
 
-1. Split the original document into chunks using its actual prompt-token positions.
-   OpenAI Decisions scores relevance to the original question. Keep the top 10%
-   as the supervision source, preserving document order.
-2. Prefill the complete working document with the frozen backbone. Its original
-   keys and values remain immutable throughout adaptation.
-3. Build a fresh selected-context input for the same frozen model. Generate one
-   teacher response and retain the full next-token distributions along that response.
-4. Check the candidate against source excerpts and the original task. Supported
-   signals receive up to 16 joint update steps; unresolved or unsupported signals
-   receive zero steps. The check does not rewrite the teacher.
-5. Minimize standard forward KL on teacher answer positions. The student sees the
-   full working document and the same preceding answer tokens. Only selected-chunk
-   read biases and value-map coefficients are optimized.
-6. Freeze the final state, discard every training/checking suffix, recompute the
-   original question, and generate an independent answer. Discard the adapters afterward.
+1. **Select.** Rank source chunks using question-conditioned Decision scores;
+   by default, use the top 10%. Cached scores are loaded by case ID and are
+   reused across backbones. The selection is not an answer label.
+2. **Build the teacher.** The frozen backbone reads the selected chunks in
+   document order, with the original question and a concise-answer instruction.
+   It generates a short answer prefix and retains its full-vocabulary
+   distributions. Its targets are fixed during the update.
+3. **Adapt.** Prefill the complete working document once and keep its original
+   KV cache immutable. Optimize a chunk-level attention-score correction and a
+   low-rank value-read correction, jointly, only at selected positions. The
+   student is teacher-forced on the same answer prefix and minimizes
+   $\mathrm{KL}(p_T\|p_S)$. Original model weights remain frozen.
+4. **Answer.** Freeze the corrections, discard the training suffix, recompute
+   the original question and generate the student's own answer. All per-request
+   state is then discarded.
 
-For a selected document position, the effective attention is
+For selected document position $u$ in chunk $c$, the read operation is
 
 $$
-z_{t,u}=q_t^\top k_{u,0}/\sqrt{d_h}+m_u g_{c(u)},\qquad
-o_t=\sum_u\operatorname{softmax}(z_t)_u
-\left[v_{u,0}+m_u\operatorname{clip}_{\rho\lVert v_{u,0}\rVert}
-\left((v_{u,0}U)B_{c(u)}\right)\right].
+z_{t,u}=q_t^\top k_{u,0}/\sqrt{d_h}+m_u g_c,\qquad
+o_t=\sum_u \operatorname{softmax}(z_t)_u
+\left(v_{u,0}+m_u\operatorname{clip}_{0.15\lVert v_{u,0}\rVert}
+((v_{u,0}U)B_c)\right).
 $$
 
-The backbone projections stay frozen. The basis $U$ is fixed from the selected
-source values; $g$ and $B$ are the request's trainable state. Query/answer suffix
-positions receive no document-chunk bias or value correction.
+Here $m_u$ marks selected positions; $U$ is a fixed per-layer, per-KV-head
+basis computed from selected values, while $g$ and $B$ are trained jointly.
+No cached key or value is overwritten. Full-attention layers are adapted;
+sliding-attention layers retain their native behavior.
 
-## Install and run
+The shipped profile uses a 32-token teacher cap, two Adam steps, and for a
+recognized multiple-choice answer may continue up to eight steps until its
+answer-position KL is at most 0.5. Other answers use all available teacher-prefix
+positions and two steps. There is **no separate LLM judge, source NTP,
+centering, or output-answer routing** in this profile. Earlier experiments used
+different selective filters and must be reported as separate configurations.
 
-Python 3.10+ and a matching CUDA/PyTorch installation are required. Backbones include
-full-attention Qwen3, OLMo3, and GPT-OSS. The extraction was checked with PyTorch
-2.9.1 and Transformers 4.57.6. The included small-model tests run on CPU.
+If a document exceeds a backbone's native context window, the cached selector
+constructs a source-prioritized working document and records its source mapping.
+For inputs that fit, every original chunk remains readable by the student.
+
+## Install
 
 ```bash
 pip install -e '.[test]'
-pip install 'flash-attn>=2.7,<3' --no-build-isolation
+# Install a compatible FlashAttention build for the target CUDA hardware.
 ```
 
-Supply an OpenAI API credential through `OPENAI_API_KEY`, `OPENAI_API_KEY_FILE`,
-or a private key file. For a key file, restrict its permissions with `chmod 600`.
-The credential is never included in returned diagnostics or cached responses.
+The tested cluster environment uses PyTorch 2.9.1 with CUDA 12.8,
+Transformers 4.57.6 and FlashAttention 2.8.3. Qwen3-4B, OLMo-3-7B and
+GPT-OSS-20B backbones are supported by the implementation; the currently
+submitted benchmark jobs are tracked separately from this repository.
+
+## Run with cached decisions
+
+The JSON request contains `document`, `question`, and optionally `prompt`,
+`answer_prefix` and `max_new_tokens`. The case ID must match the saved
+score index and the original question.
 
 ```bash
-masked-ttt \
-  --model /path/to/Qwen3-4B-Instruct-2507 \
-  --local-files-only \
-  --request examples/request.json \
-  --api-key-file /path/to/private/openai.key \
-  --output outputs/answer.json
+masked-ttt --model /path/to/model --request request.json \
+  --score-json-dir /path/to/shared_scores --case-id YOUR_CASE_ID \
+  --local-files-only --output result.json
 ```
 
-The request accepts `document`, `question`, an optional original `prompt`, an
-optional `answer_prefix`, and `max_new_tokens`. Supply the original prompt when
-the task has specific answer formatting or multiple-choice instructions.
+The score directory contains `case_to_score_file.json` and `scores/`. The
+shared benchmark score bundle is available on the
+[data branch](https://github.com/XiangqiWang77/AsyncStack-TTT/tree/data/shared-source-scores-20261102).
+To score a new request online, pass `--online-decisions` instead; this uses
+the configured Decision API credentials and budget.
 
-```python
-from masked_ttt import Backbone, MaskedTTT, Request, TTTConfig
+`timing.ttft_seconds` measures cached-score loading, teacher inference,
+adaptation, question recomputation and the first final token. It excludes model
+loading, queueing and previously completed offline Decision scoring; those
+selection costs are recorded separately. Compare methods on the same cases,
+hardware and timing scope.
 
-backbone = Backbone.load("/path/to/Qwen3-4B-Instruct-2507", TTTConfig())
-method = MaskedTTT(backbone)
-result = method.answer(Request(document=document, question=question))
-print(result["prediction"])
-```
-
-For repeated evaluations, compute source relevance once and use the shared JSON
-selector. It maps the same source-character spans to each backbone's tokenizer;
-a missing or mismatched score file raises an error and never calls the API.
-At a byte-fallback boundary, adjacent canonical token chunks can share the offset
-of one multibyte character. The loader preserves these original scored passages;
-each native token slot still belongs to exactly one adaptation chunk.
-
-```python
-from masked_ttt import FrozenJSONSelector
-
-method = MaskedTTT(backbone, FrozenJSONSelector("/path/to/shared_scores"))
-result = method.answer(Request(document=document, question=question, prompt=original_prompt))
-```
-
-The CLI equivalent is `--score-json-dir /path/to/shared_scores`; no credential is
-needed on the GPU worker. JSON records use the `masked-ttt-source-scores-v1` schema
-in [`frozen_scores.py`](src/masked_ttt/frozen_scores.py).
-
-OLMo3 and GPT-OSS retain native rotary embeddings and sliding attention. Adaptation
-is placed only in their global attention layers, whose document cache is immutable:
-layers 3, 7, …, 31 in OLMo-3-7B, and layers 1, 3, …, 23 in GPT-OSS-20B. Local
-layers keep their native rolling cache. GPT-OSS learned attention sinks are preserved.
-GPT-OSS uses its final answer channel for both teacher and student, and its frozen
-MXFP4 weights are dequantized to BF16 for backward propagation through the reader.
-Use `--shard-gpus 2` when distributing that model across two allocated GPUs; the
-packed checkpoint's inference memory footprint does not describe this BF16 path.
-
-## Defaults
-
-| Component | Default |
-|---|---|
-| Chunk size / selection | Up to 256 tokens / top 10% by Decisions relevance |
-| Teacher | Same frozen backbone, selected source only, one greedy generation |
-| Student context | Full working document |
-| Adapted layers | Every attention layer: layers 0–35 for Qwen3-4B |
-| Read-allocation state | One bounded scalar per selected chunk, layer, and KV head |
-| Value state | Per-chunk rank-8 coefficients; fixed source-derived basis |
-| Initialization | Zero read bias and zero value coefficients |
-| Value residual bound | 15% of the original value-vector norm |
-| Objective | Mean full-vocabulary $\mathrm{KL}(p_T\Vert p_S)$ on answer positions |
-| Update | Joint Adam-preconditioned directions and a checked output-Fisher trust step |
-| Supported / unresolved budget | 16 / 0 optimizer iterations |
-| Final answer | Fresh original question suffix; final adapters fixed |
-
-Documents beyond the model context limit use an explicit source-only overflow
-adapter: API-ranked verbatim chunks are retained in original order. Such requests
-set `selection.complete_original_document` to `false` and include a source map.
-Within the context limit, all original chunks remain visible to the student.
-
-## Read the code
-
-| Entry | Responsibility |
-|---|---|
-| [`pipeline.py`](src/masked_ttt/pipeline.py) | Complete request lifecycle |
-| [`selection.py`](src/masked_ttt/selection.py) | Decisions scoring, masks, overflow handling |
-| [`teacher.py`](src/masked_ttt/teacher.py) | Fresh selected-context teacher and fixed soft targets |
-| [`support.py`](src/masked_ttt/support.py) | Source verification and update admission |
-| [`memory.py`](src/masked_ttt/memory.py) | Trainable read-allocation and value state |
-| [`reader.py`](src/masked_ttt/reader.py) | Same causal KV reader for training and generation |
-| [`optimizer.py`](src/masked_ttt/optimizer.py) | Coupled KL optimization and accepted-step checks |
-| [`checkpointing.py`](src/masked_ttt/checkpointing.py) | Layer recomputation for long-context gradients |
-
-`timing.ttft_seconds` includes tokenization, selection, teacher generation, source
-checks, optimization, and the first final token. Model loading and queue time are
-excluded. Selection cache hits and each major phase are reported separately. When
-using shared JSON, offline scoring time and cost are reported separately and are
-excluded from online TTFT. Compare cold end-to-end and cached online timing only
-under matching preprocessing conditions.
-
-## Validation
+## Verify
 
 ```bash
 pytest -q
 ```
 
-The tests cover causal masking, exact GQA bias arithmetic and derivatives, bounded
-selected-only value writes, a native zero state, fixed soft-target KL, source
-admission, suffix rebuilding, and unchanged backbone/cache storage.
-
-The extraction also passed a direct comparison against the submitted runtime:
-zero and nonzero adapter logits and gradients, a three-step optimizer trajectory,
-teacher tokens/distributions, and selection payloads matched on a small CPU Qwen3
-fixture. See [`extraction_validation.json`](docs/extraction_validation.json) and
-[`source_provenance.json`](docs/source_provenance.json). These are implementation
-checks; this repository contains the method, tests, and an example request.
-
-Small OLMo3/GPT-OSS tests additionally compare native logits, causal rolling caches,
-zero-state equivalence, and checkpointed adaptation gradients. Full-checkpoint GPU
-evaluation runs an allocation-local numerical and gradient preflight before cases.
+Tests cover causal teacher forcing, selected-only gradients, zero-state
+equivalence, immutable document KV, fresh question recomputation, cached-score
+identity and full/sliding attention backbones.

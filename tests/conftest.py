@@ -50,7 +50,6 @@ def tiny_backbone():
         value_rank=2,
         steps=2,
         teacher_max_new_tokens=3,
-        checkpoint_at_tokens=512,
         prefill_chunk_tokens=64,
     )
     return Backbone(model, ByteTokenizer(), options)

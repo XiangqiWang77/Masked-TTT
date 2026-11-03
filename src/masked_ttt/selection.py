@@ -9,7 +9,7 @@ import time
 
 from .config import DecisionConfig
 from .decision_api import CHOICES, MODEL, DecisionClient
-from .request import prepare_layout, text_sha
+from .request import prepare_layout
 
 
 RUBRIC = (
@@ -205,8 +205,6 @@ class OpenAIChunkSelector:
             selection_fraction=backbone.config.keep_fraction,
             original_prompt_tokens=original_tokens,
             working_prompt_tokens=len(layout.ids),
-            original_document_sha256=text_sha(original.document),
-            working_document_sha256=text_sha(working.document),
             complete_original_document=mapping is None,
             overflow_source_mapping=mapping,
             scores=records,

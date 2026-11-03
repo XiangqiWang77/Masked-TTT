@@ -1,13 +1,7 @@
 """Preserve the original question, task formatting, and source token positions."""
 
 from dataclasses import dataclass
-import hashlib
-
 from ._layout import chunk_positions
-
-
-def text_sha(text):
-    return hashlib.sha256(text.encode()).hexdigest()
 
 
 @dataclass(frozen=True)

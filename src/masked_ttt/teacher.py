@@ -1,7 +1,6 @@
 """One fresh selected-context teacher, with a fixed full-vocabulary target."""
 
 from dataclasses import dataclass
-import hashlib
 import time
 
 import torch
@@ -9,6 +8,7 @@ import torch
 from ._layout import prefill_batches, selected_read_plan
 from .cache import AppendOnlyDocumentCache, fork_prefix
 from .runtime import private_forward
+from .request import Request,prepare_layout
 
 
 @dataclass
@@ -20,6 +20,7 @@ class TeacherSignal:
     elapsed_seconds: float
     first_token_seconds: float
     prompt_tokens: int
+    instruction_applied: bool = False
 
     def metadata(self):
         return dict(
@@ -29,11 +30,9 @@ class TeacherSignal:
             prompt_tokens=self.prompt_tokens,
             elapsed_seconds=self.elapsed_seconds,
             first_token_seconds=self.first_token_seconds,
-            distribution_sha256=hashlib.sha256(
-                self.probabilities.contiguous().cpu().numpy().tobytes()
-            ).hexdigest(),
             target_fixed=True,
             fresh_selected_context=True,
+            response_instruction_applied=self.instruction_applied,
         )
 
 
@@ -52,8 +51,18 @@ def prefill_document(backbone, reader, ids, initial, boundaries):
 
 @torch.no_grad()
 def build_teacher(backbone, reader, request, layout, selected):
+    instruction=backbone.config.teacher_response_instruction
+    teacher_ids=layout.ids
+    if instruction:
+        teacher_request=Request(document=request.document,question=request.question,
+            prompt=request.prompt+'\n\nResponse requirements:\n'+instruction,
+            answer_prefix=request.answer_prefix,max_new_tokens=request.max_new_tokens)
+        teacher_layout=prepare_layout(backbone,teacher_request)
+        if teacher_layout.ids[:layout.document_end]!=layout.ids[:layout.document_end]:
+            raise ValueError('Teacher instruction changed the document token prefix')
+        teacher_ids=teacher_layout.ids
     plan = selected_read_plan(
-        layout.ids,
+        teacher_ids,
         layout.chunks,
         layout.initial,
         selected,
@@ -95,4 +104,5 @@ def build_teacher(backbone, reader, request, layout, selected):
         time.perf_counter() - began,
         first,
         len(plan.ids),
+        bool(instruction),
     )

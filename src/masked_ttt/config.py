@@ -2,44 +2,30 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 import math
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .optimizer import UpdateOptions
-
-
-def default_update_options():
-    from .optimizer import UpdateOptions
-
-    return UpdateOptions(
-        native_KL_budget=None,
-        direction_preconditioner="adam",
-        adaptive_probes=True,
-        preservation_aware_geometry=True,
-        query_guard=True,
-        allow_native_zero_boundary=True,
-    )
-
-
 @dataclass(frozen=True)
 class TTTConfig:
     chunk_tokens: int = 256
     keep_fraction: float = 0.10
-    max_context: int = 262144
+    max_context: int = 131072
     context_reserve_tokens: int = 4096
     prefill_chunk_tokens: int = 1024
-    steps: int = 16
+    steps: int = 2
     value_rank: int = 8
     value_radius: float = 0.15
     gain_bound: float = 6.0
     sink_tokens: int = 4
-    teacher_max_new_tokens: int = 1024
-    checkpoint_at_tokens: int = 65536
+    teacher_max_new_tokens: int = 32
+    gain_learning_rate: float = 0.01
+    value_learning_rate: float = 0.0001
+    gradient_clip: float = 10.0
+    teacher_target_scope: str = 'choice_or_all'
+    max_answer_steps: int = 8
+    answer_KL_stop: float = 0.5
+    teacher_response_instruction: str = 'Return only the final answer in the required format. Do not add an explanation.'
     seed: int = 42
-    update: UpdateOptions = field(default_factory=default_update_options)
 
     def __post_init__(self):
         for name in (
@@ -49,7 +35,6 @@ class TTTConfig:
             "prefill_chunk_tokens",
             "value_rank",
             "teacher_max_new_tokens",
-            "checkpoint_at_tokens",
         ):
             if type(getattr(self, name)) is not int or getattr(self, name) < 1:
                 raise ValueError(f"{name} must be a positive integer")
@@ -65,12 +50,19 @@ class TTTConfig:
             raise ValueError("keep_fraction must be in (0, 1]")
         if not 0 < self.value_radius <= 1 or not 0 < self.gain_bound:
             raise ValueError("Invalid KV trust bounds")
+        for name in ("gain_learning_rate", "value_learning_rate", "gradient_clip"):
+            if not math.isfinite(getattr(self,name)) or getattr(self,name)<=0:
+                raise ValueError(f"{name} must be positive and finite")
+        if self.teacher_target_scope not in ('all','choice_or_all'):
+            raise ValueError('Unsupported teacher token scope')
+        if type(self.max_answer_steps) is not int or self.max_answer_steps<self.steps:
+            raise ValueError('Maximum answer steps must include the base budget')
+        if not math.isfinite(self.answer_KL_stop) or self.answer_KL_stop<0:
+            raise ValueError('Nonnegative answer-KL stopping threshold required')
+        if not isinstance(self.teacher_response_instruction,str):
+            raise ValueError('Teacher response instruction must be text')
         if type(self.sink_tokens) is not int or self.sink_tokens < 0:
             raise ValueError("sink_tokens must be nonnegative")
-        if self.update.native_KL_budget is not None:
-            raise ValueError(
-                "This method uses a fixed teacher target without a cumulative native anchor"
-            )
 
 
 @dataclass(frozen=True)
