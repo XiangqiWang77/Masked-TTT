@@ -5,6 +5,7 @@
 [三道真实案例](whole_selective_case_examples.zh-CN.md) 展示了全文漏用证据、选中事实但未用对时间关系，以及连接事实漏选这三种情况。
 [小问题信号检查](self_study_signal_audit.zh-CN.md) 进一步记录了哪些练习进入训练，以及几类被拒的原因。
 [同缓存更新检查](update_effect_snapshot.zh-CN.md) 对比了训练前后相同输入上的输出变化。
+[选块覆盖检查](selection_coverage_development.zh-CN.md) 比较了固定开发题上的 10%、12% 与 15% 预算。
 
 以下为 2026-11-04 01:32 UTC 的运行中快照；统一 loose 词面评分。Whole、Selective 零更新和 Cartridge 使用同一模型、同一道原问题和相同生成预算。
 
