@@ -63,3 +63,15 @@ def test_indexed_source_does_not_use_evaluation_answers(tmp_path):
     index.write_text(json.dumps([dict(key='case1',offset=0,bytes=len(record)+1)]))
     with pytest.raises(ValueError,match='incomplete'):
         IndexedSource(index,source).verify('case1','A','Q')
+
+
+def test_indexed_source_uses_byte_offsets_for_multilingual_documents(tmp_path):
+    first=(json.dumps(dict(key='other',document='甲',query='问题？'),ensure_ascii=False)+'\n').encode('utf-8')
+    document='X 项目最终预算为 320 万元。';question='最终预算是多少？'
+    second=(json.dumps(dict(key='case1',document=document,query=question),ensure_ascii=False)+'\n').encode('utf-8')
+    source=tmp_path/'source.jsonl';source.write_bytes(first+second)
+    index=tmp_path/'index.json';index.write_text(json.dumps([dict(key='case1',offset=len(first),bytes=len(second))]))
+    checker=IndexedSource(index,source)
+    checker.verify('case1',document,question)
+    with pytest.raises(ValueError,match='original document'):
+        checker.verify('case1',document.replace('320','300'),question)
