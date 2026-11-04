@@ -1,0 +1,143 @@
+{
+  "snapshot_created_utc": "2026-11-04T11:39:57.542406+00:00",
+  "scope": "Completed cases named by the saved snapshot, not a live job poll",
+  "online_api_calls": 0,
+  "model_calls": 0,
+  "reference_answers_used": false,
+  "score_values_used": false,
+  "individual_cases_or_generated_text_in_output": false,
+  "equality_fields": [
+    "selected_original_chunks",
+    "selected_chunks",
+    "total_chunks",
+    "selected_tokens",
+    "teacher tokens",
+    "practice verification",
+    "zero-update output tokens"
+  ],
+  "note": "Matching output tokens does not establish equality of underlying probability distributions.",
+  "models": {
+    "qwen": {
+      "overall": {
+        "n": 200,
+        "same_node": 0,
+        "date_recorded": 0,
+        "same_date": 200,
+        "selection_different": 0,
+        "teacher_tokens_different": 1,
+        "practice_different": 5,
+        "zero_tokens_different": 4,
+        "observable_pair_different": 8
+      },
+      "same_gpu": {
+        "n": 144,
+        "same_node": 0,
+        "date_recorded": 0,
+        "same_date": 144,
+        "selection_different": 0,
+        "teacher_tokens_different": 0,
+        "practice_different": 0,
+        "zero_tokens_different": 0,
+        "observable_pair_different": 0
+      },
+      "different_gpu": {
+        "n": 56,
+        "same_node": 0,
+        "date_recorded": 0,
+        "same_date": 56,
+        "selection_different": 0,
+        "teacher_tokens_different": 1,
+        "practice_different": 5,
+        "zero_tokens_different": 4,
+        "observable_pair_different": 8
+      },
+      "gpu_pairs": [
+        {
+          "baseline": "NVIDIA B200",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": false,
+          "n": 144
+        },
+        {
+          "baseline": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": false,
+          "n": 48
+        },
+        {
+          "baseline": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": true,
+          "n": 8
+        }
+      ]
+    },
+    "gpt": {
+      "overall": {
+        "n": 166,
+        "same_node": 43,
+        "date_recorded": 166,
+        "same_date": 166,
+        "selection_different": 0,
+        "teacher_tokens_different": 6,
+        "practice_different": 25,
+        "zero_tokens_different": 1,
+        "observable_pair_different": 30
+      },
+      "same_gpu": {
+        "n": 109,
+        "same_node": 43,
+        "date_recorded": 109,
+        "same_date": 109,
+        "selection_different": 0,
+        "teacher_tokens_different": 0,
+        "practice_different": 0,
+        "zero_tokens_different": 0,
+        "observable_pair_different": 0
+      },
+      "different_gpu": {
+        "n": 57,
+        "same_node": 0,
+        "date_recorded": 57,
+        "same_date": 57,
+        "selection_different": 0,
+        "teacher_tokens_different": 6,
+        "practice_different": 25,
+        "zero_tokens_different": 1,
+        "observable_pair_different": 30
+      },
+      "gpu_pairs": [
+        {
+          "baseline": "NVIDIA B200",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": false,
+          "n": 109
+        },
+        {
+          "baseline": "NVIDIA H200",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": false,
+          "n": 3
+        },
+        {
+          "baseline": "NVIDIA H200",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": true,
+          "n": 5
+        },
+        {
+          "baseline": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": false,
+          "n": 24
+        },
+        {
+          "baseline": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+          "candidate": "NVIDIA B200",
+          "observable_pair_different": true,
+          "n": 25
+        }
+      ]
+    }
+  }
+}
