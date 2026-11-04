@@ -1,11 +1,51 @@
+from types import SimpleNamespace
+
+import pytest
 import torch
+from transformers import Qwen3Config, Qwen3ForCausalLM
 from transformers.models.qwen3.modeling_qwen3 import repeat_kv
 
+from masked_ttt import Backbone, TTTConfig
 from masked_ttt.attention import address_attention, bounded_value_residual
-from masked_ttt.cache import fork_prefix
+from masked_ttt.cache import AppendOnlyDocumentCache, fork_prefix
 from masked_ttt.checkpointing import layer_checkpointed_logits
-from masked_ttt.reader import matched_incremental_logits
+from masked_ttt.memory import KVReadMemory
+from masked_ttt.reader import MemoryReader, matched_incremental_logits
 from masked_ttt.runtime import private_forward
+
+
+@pytest.mark.parametrize("group_size", [2, 4])
+def test_qwen_grouped_prefill_and_zero_adapter_match_the_frozen_model(tiny_backbone, group_size):
+    engine = tiny_backbone
+    if group_size == 4:
+        # Match Qwen3-4B's four query heads per KV head.
+        config = Qwen3Config(vocab_size=64, hidden_size=32, intermediate_size=64,
+                             num_hidden_layers=2, num_attention_heads=4,
+                             num_key_value_heads=1, head_dim=8,
+                             max_position_embeddings=256, pad_token_id=0, eos_token_id=2)
+        config._attn_implementation = "eager"
+        engine = Backbone(Qwen3ForCausalLM(config).eval(), SimpleNamespace(eos_token_id=2),
+                          TTTConfig(max_context=256, context_reserve_tokens=32, value_rank=2))
+    tokens = torch.tensor([5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+    with torch.no_grad():
+        expected = engine.model(input_ids=tokens[None], use_cache=False).logits
+        cache = AppendOnlyDocumentCache(engine.model.config, len(tokens))
+        values = []
+        for start, end in ((0, 3), (3, 7), (7, 10)):
+            out = private_forward(engine.model, tokens[start:end], start, cache)
+            values.append(engine.model.lm_head(out.last_hidden_state))
+        actual = torch.cat(values, 1)
+        torch.testing.assert_close(actual, expected, atol=2e-7, rtol=2e-5)
+        memory = KVReadMemory(engine.model.config, [list(range(5)), list(range(5, 10))],
+                              [1], 10, rank=2, sink_tokens=1)
+        memory.prepare_value_basis(cache, memory.adapted_layers)
+        memory.value_enabled, memory.native_mode = True, False
+        reader = MemoryReader(engine, memory)
+        suffix = torch.tensor([15, 16, 17])
+        base = private_forward(engine.model, suffix, 10, fork_prefix(cache, 10)).last_hidden_state
+        augmented = private_forward(reader.reader, suffix, 10,
+                                    reader.compiled_branch(cache)).last_hidden_state
+    torch.testing.assert_close(base, augmented, atol=2e-7, rtol=2e-5)
 
 
 def test_attention_and_all_derivatives_match_direct_GQA_formula():

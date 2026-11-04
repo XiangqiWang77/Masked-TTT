@@ -13,7 +13,7 @@ from masked_ttt.checkpointing import layer_checkpointed_logits
 from masked_ttt.runtime import private_forward
 
 
-@pytest.fixture(params=["olmo3", "gpt_oss"])
+@pytest.fixture(params=["olmo3", "gpt_oss", "gpt_oss_gqa"])
 def hybrid(request):
     torch.set_num_threads(1)
     torch.manual_seed(31)
@@ -34,13 +34,19 @@ def hybrid(request):
         config = Olmo3Config(**common)
         cls = Olmo3ForCausalLM
     else:
+        if request.param == "gpt_oss_gqa":
+            # Match GPT-OSS-20B's eight query heads per shared KV head.
+            common["hidden_size"] = 64
+            common["intermediate_size"] = 128
+            common["num_attention_heads"] = 8
+            common["num_key_value_heads"] = 1
         config = GptOssConfig(
             **common, head_dim=8, num_local_experts=2, num_experts_per_tok=1, rope_scaling=None
         )
         cls = GptOssForCausalLM
     config._attn_implementation = "eager"
     reference = cls(config).eval()
-    if request.param == "gpt_oss":
+    if request.param.startswith("gpt_oss"):
         for block in reference.model.layers:
             with torch.no_grad():
                 block.self_attn.sinks.fill_(0.2)
@@ -106,6 +112,13 @@ def test_hybrid_kv_gradients_checkpoint_and_zero_equivalence(hybrid):
         ).last_hidden_state
     torch.testing.assert_close(a, b, atol=0, rtol=0)
     memory.native_mode = False
+    # The optimizer's first forward uses the differentiable augmented path
+    # at zero state; it must still reproduce the unmodified GQA readout.
+    with torch.no_grad():
+        zero = private_forward(
+            reader.reader, suffix, 8, reader.compiled_branch(cache)
+        ).last_hidden_state
+    torch.testing.assert_close(a, zero, atol=2e-7, rtol=2e-5)
     with torch.no_grad():
         memory.gain[1, :, 1].fill_(0.05)
         memory.value_coefficients[1].fill_(0.001)
