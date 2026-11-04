@@ -1,0 +1,67 @@
+{
+  "olmo": {
+    "n": 1000,
+    "full_correct": 361,
+    "selected_correct": 412,
+    "qc_correct": 446,
+    "median_cartridge_full_ratio": 0.29105210509772395,
+    "fact_coverage_n": 838,
+    "fact_coverage_incomplete": 314,
+    "context_compacted": 162,
+    "selection_and_qc_answer_format_differs": true,
+    "by_context": {
+      "8192": {
+        "n": 250,
+        "full_correct": 109,
+        "selected_correct": 109,
+        "qc_correct": 120,
+        "median_cartridge_full_ratio": 0.22970652531648839
+      },
+      "16384": {
+        "n": 250,
+        "full_correct": 94,
+        "selected_correct": 115,
+        "qc_correct": 121,
+        "median_cartridge_full_ratio": 0.2787691339241626
+      },
+      "32768": {
+        "n": 250,
+        "full_correct": 85,
+        "selected_correct": 94,
+        "qc_correct": 102,
+        "median_cartridge_full_ratio": 0.3292512878548567
+      },
+      "65536": {
+        "n": 250,
+        "full_correct": 73,
+        "selected_correct": 94,
+        "qc_correct": 103,
+        "median_cartridge_full_ratio": 0.2952830094431782
+      }
+    }
+  },
+  "qwen": {
+    "n": 1000,
+    "vanilla_correct": 542,
+    "methods": {
+      "kv_whole_ntp": {
+        "gained": 62,
+        "lost": 82,
+        "correct": 522
+      },
+      "kv_selected_ntp": {
+        "gained": 59,
+        "lost": 97,
+        "correct": 504
+      },
+      "kv_sd_soft": {
+        "gained": 145,
+        "lost": 109,
+        "correct": 578
+      }
+    }
+  },
+  "metric": "answer_focused_lexical_v2",
+  "group_definition": "task \u00d7 context length; 25 cases",
+  "no_new_model_or_api_calls": true
+}
