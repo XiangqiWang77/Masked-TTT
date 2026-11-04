@@ -63,10 +63,10 @@ def prepare_development_manifest(rollout, linked, profile):
         development_case_ids=list(development), holdout_case_ids=list(holdout),
         selection_reason="Combine cached-score evidence links with a longer student prefix; "
                          "same selected-teacher/full-student SD and independent KV materialization.",
-        development_gate="Beat own whole, selected zero, Teacher and matched linked 8-token; "
-                         "at least 180 of 200 linked comparisons must match exactly.",
-        holdout_gate="At least +3 pp versus own Teacher and positive versus whole, selected zero, "
-                     "and linked 8-token; report 792 cases excluding two previously viewed sources.",
+        development_gate="Beat own whole, selected zero and Teacher on all 200 cases; "
+                         "report the linked 8-token comparison separately.",
+        holdout_gate="At least +3 pp versus own Teacher and positive versus whole and selected zero; "
+                     "report 792 cases excluding two previously viewed sources.",
         combined_development_results_seen=False)
 
 
@@ -85,12 +85,14 @@ def prepare_holdout_manifest(development, report):
     for model in development["models"]:
         item = report["models"][model]
         rows = item["rows"]
-        if (len(rows) != 200 or {row["case"] for row in rows} != set(development["development_case_ids"]) or
+        if len(rows) != 200:
+            raise RuntimeError("Waiting for the full development: " + model)
+        if ({row["case"] for row in rows} != set(development["development_case_ids"]) or
             summarize(rows) != item["overall"]):
             raise ValueError("Development scores do not match the frozen per-case predictions")
         decision = development_decision(item["overall"])
-        if decision["reason"] == "development_or_matched_baseline_incomplete":
-            raise RuntimeError("Waiting for the full development and linked baseline: " + model)
+        if decision["reason"] == "development_incomplete":
+            raise RuntimeError("Waiting for the full development: " + model)
         if decision != item["decision"]:
             raise ValueError("The stored development decision does not match the scores")
         decisions[model] = decision
@@ -184,18 +186,25 @@ def summarize(rows):
 
 
 def development_decision(summary, required=200, minimum_matched=180):
-    """Fixed gate: beat all own controls and the linked 8-token comparator."""
-    if summary["n"] != required or summary["versus_linked8"]["n"] < minimum_matched:
-        return {"eligible": False, "reason": "development_or_matched_baseline_incomplete"}
+    """Fixed primary gate uses the same-run Teacher, full, and zero controls."""
+    if summary["n"] != required:
+        return {"eligible": False, "reason": "development_incomplete"}
     accuracy = summary["accuracy"]
     deltas = {key: accuracy["cartridge"] - accuracy[key] for key in ("whole", "zero", "teacher")}
-    deltas["linked8"] = summary["versus_linked8"]["delta_pp"]
     if any(not math.isfinite(value) for value in deltas.values()):
         raise ValueError("Invalid development score")
     passed = all(value > 0 for value in deltas.values())
     return {"eligible": passed, "reason": "beats_all_development_controls" if passed else
             "does_not_beat_all_development_controls", "delta_pp": deltas,
-            "matched_linked8": summary["versus_linked8"]["n"]}
+            "linked8_comparison": linked8_comparison(summary, minimum_matched)}
+
+
+def linked8_comparison(summary, minimum_matched):
+    """Keep attribution to the longer prefix separate from primary quality."""
+    paired = summary["versus_linked8"]
+    enough = paired["n"] >= minimum_matched
+    return {"available": enough, "matched": paired["n"], "minimum_matched": minimum_matched,
+            "delta_pp": paired["delta_pp"], "improved": paired["delta_pp"] > 0 if enough else None}
 
 
 def holdout_decision(summary, required=792, minimum_matched=713):

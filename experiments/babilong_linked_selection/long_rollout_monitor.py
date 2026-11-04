@@ -14,7 +14,7 @@ from experiments.babilong_linked_selection.long_rollout_monitors import disable_
 
 def done(report):
     return bool(report["models"]) and all(
-        item["decision"]["reason"] != "development_or_matched_baseline_incomplete"
+        item["decision"]["reason"] != "development_incomplete"
         for item in report["models"].values()
     )
 

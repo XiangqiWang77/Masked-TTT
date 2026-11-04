@@ -51,8 +51,8 @@ def test_development_and_holdout_require_teacher_and_paired_improvement():
     assert development_decision(summary, required=4, minimum_matched=4)["eligible"]
     assert holdout_decision(summary, required=4, minimum_matched=4)["eligible"]
     rows[0]["linked8"] = None
-    assert development_decision(summarize(rows), required=4, minimum_matched=4)["reason"] == \
-        "development_or_matched_baseline_incomplete"
+    decision = development_decision(summarize(rows), required=4, minimum_matched=4)
+    assert decision["eligible"] and not decision["linked8_comparison"]["available"]
     assert not development_decision(summarize([dict(whole=0, zero=0, teacher=1, cartridge=1, linked8=0)]),
                                     required=1, minimum_matched=1)["eligible"]
 

@@ -26,8 +26,7 @@ def development(tmp_path, qwen_wins=True, complete=True):
         rows = [dict(case=case, whole=0, zero=0, teacher=0 if wins else 1,
                      cartridge=1, linked8=0) for case in manifest["case_ids"]]
         if not complete:
-            rows[-1]["linked8"] = None
-            for row in rows[:20]: row["linked8"] = None
+            rows.pop()
         total = summarize(rows)
         models[model] = {"overall": total, "rows": rows, "decision": development_decision(total)}
     report = {"mode": "development", "expected_per_model": 200, "metric": "answer_focused_lexical_v2",

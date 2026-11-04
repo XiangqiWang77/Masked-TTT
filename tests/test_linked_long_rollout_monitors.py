@@ -20,5 +20,5 @@ def test_local_monitors_are_hourly_and_reuse_the_existing_workspace():
 
 def test_complete_report_must_not_hide_an_incomplete_pairing():
     assert done({"models": {"qwen": {"decision": {"reason": "beats_all_development_controls"}}}})
-    assert not done({"models": {"qwen": {"decision": {"reason": "development_or_matched_baseline_incomplete"}}}})
+    assert not done({"models": {"qwen": {"decision": {"reason": "development_incomplete"}}}})
     assert not done({"models": {}})

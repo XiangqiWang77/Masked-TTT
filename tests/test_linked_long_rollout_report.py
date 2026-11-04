@@ -89,7 +89,7 @@ def test_partial_report_scores_only_generated_cases_and_keeps_matched_baseline(t
     assert overall["n"] == 1 and overall["accuracy"]["teacher"] == 100
     assert overall["versus_linked8"]["n"] == 1 and overall["versus_linked8"]["delta_pp"] == 100
     assert overall["median_cartridge_percent"] == 20
-    assert report["models"]["qwen"]["decision"]["reason"] == "development_or_matched_baseline_incomplete"
+    assert report["models"]["qwen"]["decision"]["reason"] == "development_incomplete"
     assert report["evaluation_answers_used_only_posthoc"] and report["online_api_calls"] == 0
     text = render(report)
     assert "| qwen | 1 | 0.00 | 0.00 | 100.00 | 100.00 | 0.00 | 20.00 |" in text
