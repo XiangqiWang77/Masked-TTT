@@ -150,6 +150,13 @@ def test_optional_driver_restores_rng_and_configuration(tmp_path):
     stored = json.loads((tmp_path / "qwen.json").read_text())
     assert stored["same_standalone_logits"] and stored["identity"]["gpu"] == "test"
     assert run_if_enabled(engine, "qwen", {}, tmp_path, probe=probe) == "already_passed"
+    (tmp_path / "ready.json").write_text(json.dumps(
+        {"allow_single_loaded_model_probe": True, "probe_version": 2}))
+    assert run_if_enabled(engine, "qwen", {}, tmp_path, probe=probe) == "passed"
+    updated = json.loads((tmp_path / "qwen.json").read_text())
+    assert updated["probe_version"] == 2 and updated["attempts"] == 1
+    assert json.loads((tmp_path / "qwen.v1.json").read_text())["probe_version"] == 1
+    assert engine.config is original and torch.equal(torch.get_rng_state(), before)
 
 
 def test_optional_driver_saves_failure_without_disturbing_model(tmp_path):

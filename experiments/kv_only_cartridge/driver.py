@@ -14,8 +14,12 @@ def run_if_enabled(engine, model, identity, directory, *, probe=None):
         return "not_enabled"
     if model not in ("qwen", "gpt"):
         raise ValueError("Unexpected model")
-    if not json.loads(marker.read_text()).get("allow_single_loaded_model_probe"):
+    readiness = json.loads(marker.read_text())
+    if not readiness.get("allow_single_loaded_model_probe"):
         raise ValueError("Probe readiness marker is invalid")
+    version = readiness.get("probe_version", 1)
+    if type(version) is not int or version < 1:
+        raise ValueError("Probe version must be a positive integer")
 
     import torch
 
@@ -26,11 +30,16 @@ def run_if_enabled(engine, model, identity, directory, *, probe=None):
         except BlockingIOError:
             return "already_running"
         previous = json.loads(output.read_text()) if output.exists() else None
-        if previous and previous.get("passed"):
+        same_version = previous and previous.get("probe_version", 1) == version
+        if same_version and previous.get("passed"):
             return "already_passed"
-        if previous and previous.get("attempts", 0) >= 2:
+        if same_version and previous.get("attempts", 0) >= 2:
             return "previous_attempts_failed"
-        attempts = (previous.get("attempts", 0) if previous else 0) + 1
+        if previous and not same_version:
+            archive = directory / (model + ".v" + str(previous.get("probe_version", 1)) + ".json")
+            if not archive.exists():
+                archive.write_text(json.dumps(previous, indent=2, ensure_ascii=False) + "\n")
+        attempts = (previous.get("attempts", 0) if same_version else 0) + 1
         config = engine.config
         cpu_rng = torch.get_rng_state()
         gpu_rng = torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None
@@ -41,10 +50,11 @@ def run_if_enabled(engine, model, identity, directory, *, probe=None):
             result = probe(engine)
             if not result.get("passed"):
                 raise AssertionError("KV-only preflight did not pass")
-            data = dict(result, model=model, identity=identity, attempts=attempts, created=time.time())
+            data = dict(result, model=model, identity=identity, attempts=attempts,
+                        probe_version=version, created=time.time())
         except Exception as exc:
             data = dict(
-                passed=False, model=model, identity=identity, attempts=attempts,
+                passed=False, model=model, identity=identity, attempts=attempts, probe_version=version,
                 created=time.time(), error=type(exc).__name__, message=str(exc),
                 traceback=traceback.format_exc(),
             )
