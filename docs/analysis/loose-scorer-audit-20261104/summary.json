@@ -1,0 +1,78 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "scope": "Two 1,000-case completed paired runs; 250 source questions at four lengths per model",
+  "screening_only": true,
+  "semantic_review": false,
+  "changes_scores": false,
+  "model_or_api_calls": 0,
+  "models": {
+    "qwen": {
+      "whole": {
+        "answers_checked": 1000,
+        "correct": 544,
+        "unresolved": 0,
+        "correct_with_multiple_answer_labels": 3,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      },
+      "zero": {
+        "answers_checked": 1000,
+        "correct": 560,
+        "unresolved": 0,
+        "correct_with_multiple_answer_labels": 0,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      },
+      "teacher": {
+        "answers_checked": 1000,
+        "correct": 566,
+        "unresolved": 2,
+        "correct_with_multiple_answer_labels": 0,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      },
+      "cartridge": {
+        "answers_checked": 1000,
+        "correct": 567,
+        "unresolved": 1,
+        "correct_with_multiple_answer_labels": 0,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      }
+    },
+    "gpt": {
+      "whole": {
+        "answers_checked": 1000,
+        "correct": 487,
+        "unresolved": 0,
+        "correct_with_multiple_answer_labels": 1,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      },
+      "zero": {
+        "answers_checked": 1000,
+        "correct": 551,
+        "unresolved": 0,
+        "correct_with_multiple_answer_labels": 0,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      },
+      "teacher": {
+        "answers_checked": 1000,
+        "correct": 571,
+        "unresolved": 0,
+        "correct_with_multiple_answer_labels": 0,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      },
+      "cartridge": {
+        "answers_checked": 1000,
+        "correct": 554,
+        "unresolved": 0,
+        "correct_with_multiple_answer_labels": 0,
+        "yes_no_maybe_unresolved": 0,
+        "qa8_possible_missed_set": 0
+      }
+    }
+  }
+}
