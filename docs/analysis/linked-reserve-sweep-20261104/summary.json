@@ -1,0 +1,767 @@
+{
+  "scope": "fixed 200-case development split; 50 source questions at four lengths",
+  "keep_fraction": 0.1,
+  "reserve_fractions": [
+    0.0,
+    0.125,
+    0.25,
+    0.5
+  ],
+  "online_api_calls": 0,
+  "new_model_calls": 0,
+  "reference_answers_used": false,
+  "support_annotations_used_only_after_selection": true,
+  "prior_score_and_025_linked_cases_validated": 200,
+  "groups": {
+    "all": {
+      "0.0": {
+        "cases": 200,
+        "complete": 125,
+        "incomplete": 75,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 2449,
+        "total_chunks": 23474
+      },
+      "0.125": {
+        "cases": 200,
+        "complete": 153,
+        "incomplete": 47,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 31,
+        "lost_complete": 3,
+        "changed_selection": 133,
+        "selected_chunks": 2449,
+        "total_chunks": 23474
+      },
+      "0.25": {
+        "cases": 200,
+        "complete": 157,
+        "incomplete": 43,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 36,
+        "lost_complete": 4,
+        "changed_selection": 133,
+        "selected_chunks": 2449,
+        "total_chunks": 23474
+      },
+      "0.5": {
+        "cases": 200,
+        "complete": 158,
+        "incomplete": 42,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 37,
+        "lost_complete": 4,
+        "changed_selection": 128,
+        "selected_chunks": 2449,
+        "total_chunks": 23474
+      }
+    },
+    "length:16384": {
+      "0.0": {
+        "cases": 50,
+        "complete": 30,
+        "incomplete": 20,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 343,
+        "total_chunks": 3114
+      },
+      "0.125": {
+        "cases": 50,
+        "complete": 38,
+        "incomplete": 12,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 8,
+        "lost_complete": 0,
+        "changed_selection": 32,
+        "selected_chunks": 343,
+        "total_chunks": 3114
+      },
+      "0.25": {
+        "cases": 50,
+        "complete": 41,
+        "incomplete": 9,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 11,
+        "lost_complete": 0,
+        "changed_selection": 34,
+        "selected_chunks": 343,
+        "total_chunks": 3114
+      },
+      "0.5": {
+        "cases": 50,
+        "complete": 38,
+        "incomplete": 12,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 9,
+        "lost_complete": 1,
+        "changed_selection": 33,
+        "selected_chunks": 343,
+        "total_chunks": 3114
+      }
+    },
+    "length:32768": {
+      "0.0": {
+        "cases": 50,
+        "complete": 36,
+        "incomplete": 14,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 639,
+        "total_chunks": 6224
+      },
+      "0.125": {
+        "cases": 50,
+        "complete": 44,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 8,
+        "lost_complete": 0,
+        "changed_selection": 38,
+        "selected_chunks": 639,
+        "total_chunks": 6224
+      },
+      "0.25": {
+        "cases": 50,
+        "complete": 45,
+        "incomplete": 5,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 9,
+        "lost_complete": 0,
+        "changed_selection": 37,
+        "selected_chunks": 639,
+        "total_chunks": 6224
+      },
+      "0.5": {
+        "cases": 50,
+        "complete": 44,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 8,
+        "lost_complete": 0,
+        "changed_selection": 36,
+        "selected_chunks": 639,
+        "total_chunks": 6224
+      }
+    },
+    "length:65536": {
+      "0.0": {
+        "cases": 50,
+        "complete": 31,
+        "incomplete": 19,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 1284,
+        "total_chunks": 12619
+      },
+      "0.125": {
+        "cases": 50,
+        "complete": 37,
+        "incomplete": 13,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 6,
+        "lost_complete": 0,
+        "changed_selection": 35,
+        "selected_chunks": 1284,
+        "total_chunks": 12619
+      },
+      "0.25": {
+        "cases": 50,
+        "complete": 37,
+        "incomplete": 13,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 7,
+        "lost_complete": 1,
+        "changed_selection": 34,
+        "selected_chunks": 1284,
+        "total_chunks": 12619
+      },
+      "0.5": {
+        "cases": 50,
+        "complete": 41,
+        "incomplete": 9,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 11,
+        "lost_complete": 1,
+        "changed_selection": 34,
+        "selected_chunks": 1284,
+        "total_chunks": 12619
+      }
+    },
+    "length:8192": {
+      "0.0": {
+        "cases": 50,
+        "complete": 28,
+        "incomplete": 22,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 183,
+        "total_chunks": 1517
+      },
+      "0.125": {
+        "cases": 50,
+        "complete": 34,
+        "incomplete": 16,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 9,
+        "lost_complete": 3,
+        "changed_selection": 28,
+        "selected_chunks": 183,
+        "total_chunks": 1517
+      },
+      "0.25": {
+        "cases": 50,
+        "complete": 34,
+        "incomplete": 16,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 9,
+        "lost_complete": 3,
+        "changed_selection": 28,
+        "selected_chunks": 183,
+        "total_chunks": 1517
+      },
+      "0.5": {
+        "cases": 50,
+        "complete": 35,
+        "incomplete": 15,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 9,
+        "lost_complete": 2,
+        "changed_selection": 25,
+        "selected_chunks": 183,
+        "total_chunks": 1517
+      }
+    },
+    "task:qa1": {
+      "0.0": {
+        "cases": 20,
+        "complete": 7,
+        "incomplete": 13,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 249,
+        "total_chunks": 2370
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 14,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 7,
+        "lost_complete": 0,
+        "changed_selection": 8,
+        "selected_chunks": 249,
+        "total_chunks": 2370
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 14,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 7,
+        "lost_complete": 0,
+        "changed_selection": 8,
+        "selected_chunks": 249,
+        "total_chunks": 2370
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 13,
+        "incomplete": 7,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 7,
+        "lost_complete": 1,
+        "changed_selection": 8,
+        "selected_chunks": 249,
+        "total_chunks": 2370
+      }
+    },
+    "task:qa10": {
+      "0.0": {
+        "cases": 20,
+        "complete": 14,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 246,
+        "total_chunks": 2371
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 5,
+        "lost_complete": 0,
+        "changed_selection": 12,
+        "selected_chunks": 246,
+        "total_chunks": 2371
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 5,
+        "lost_complete": 0,
+        "changed_selection": 12,
+        "selected_chunks": 246,
+        "total_chunks": 2371
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 5,
+        "lost_complete": 0,
+        "changed_selection": 12,
+        "selected_chunks": 246,
+        "total_chunks": 2371
+      }
+    },
+    "task:qa2": {
+      "0.0": {
+        "cases": 20,
+        "complete": 4,
+        "incomplete": 16,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 245,
+        "total_chunks": 2348
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 10,
+        "incomplete": 10,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 6,
+        "lost_complete": 0,
+        "changed_selection": 18,
+        "selected_chunks": 245,
+        "total_chunks": 2348
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 12,
+        "incomplete": 8,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 8,
+        "lost_complete": 0,
+        "changed_selection": 18,
+        "selected_chunks": 245,
+        "total_chunks": 2348
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 14,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 10,
+        "lost_complete": 0,
+        "changed_selection": 19,
+        "selected_chunks": 245,
+        "total_chunks": 2348
+      }
+    },
+    "task:qa3": {
+      "0.0": {
+        "cases": 20,
+        "complete": 2,
+        "incomplete": 18,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 243,
+        "total_chunks": 2333
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 4,
+        "incomplete": 16,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 2,
+        "lost_complete": 0,
+        "changed_selection": 17,
+        "selected_chunks": 243,
+        "total_chunks": 2333
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 6,
+        "incomplete": 14,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 4,
+        "lost_complete": 0,
+        "changed_selection": 17,
+        "selected_chunks": 243,
+        "total_chunks": 2333
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 4,
+        "incomplete": 16,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 2,
+        "lost_complete": 0,
+        "changed_selection": 16,
+        "selected_chunks": 243,
+        "total_chunks": 2333
+      }
+    },
+    "task:qa4": {
+      "0.0": {
+        "cases": 20,
+        "complete": 20,
+        "incomplete": 0,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 246,
+        "total_chunks": 2368
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 20,
+        "incomplete": 0,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 5,
+        "selected_chunks": 246,
+        "total_chunks": 2368
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 20,
+        "incomplete": 0,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 5,
+        "selected_chunks": 246,
+        "total_chunks": 2368
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 20,
+        "incomplete": 0,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 4,
+        "selected_chunks": 246,
+        "total_chunks": 2368
+      }
+    },
+    "task:qa5": {
+      "0.0": {
+        "cases": 20,
+        "complete": 20,
+        "incomplete": 0,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 242,
+        "total_chunks": 2321
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 18,
+        "incomplete": 2,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 2,
+        "changed_selection": 15,
+        "selected_chunks": 242,
+        "total_chunks": 2321
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 18,
+        "incomplete": 2,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 2,
+        "changed_selection": 15,
+        "selected_chunks": 242,
+        "total_chunks": 2321
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 1,
+        "changed_selection": 14,
+        "selected_chunks": 242,
+        "total_chunks": 2321
+      }
+    },
+    "task:qa6": {
+      "0.0": {
+        "cases": 20,
+        "complete": 17,
+        "incomplete": 3,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 244,
+        "total_chunks": 2335
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 17,
+        "incomplete": 3,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 15,
+        "selected_chunks": 244,
+        "total_chunks": 2335
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 17,
+        "incomplete": 3,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 15,
+        "selected_chunks": 244,
+        "total_chunks": 2335
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 18,
+        "incomplete": 2,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 1,
+        "lost_complete": 0,
+        "changed_selection": 14,
+        "selected_chunks": 244,
+        "total_chunks": 2335
+      }
+    },
+    "task:qa7": {
+      "0.0": {
+        "cases": 20,
+        "complete": 11,
+        "incomplete": 9,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 243,
+        "total_chunks": 2345
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 14,
+        "incomplete": 6,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 3,
+        "lost_complete": 0,
+        "changed_selection": 16,
+        "selected_chunks": 243,
+        "total_chunks": 2345
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 16,
+        "incomplete": 4,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 5,
+        "lost_complete": 0,
+        "changed_selection": 17,
+        "selected_chunks": 243,
+        "total_chunks": 2345
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 16,
+        "incomplete": 4,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 5,
+        "lost_complete": 0,
+        "changed_selection": 16,
+        "selected_chunks": 243,
+        "total_chunks": 2345
+      }
+    },
+    "task:qa8": {
+      "0.0": {
+        "cases": 20,
+        "complete": 11,
+        "incomplete": 9,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 247,
+        "total_chunks": 2362
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 18,
+        "incomplete": 2,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 7,
+        "lost_complete": 0,
+        "changed_selection": 14,
+        "selected_chunks": 247,
+        "total_chunks": 2362
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 16,
+        "incomplete": 4,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 6,
+        "lost_complete": 1,
+        "changed_selection": 13,
+        "selected_chunks": 247,
+        "total_chunks": 2362
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 16,
+        "incomplete": 4,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 6,
+        "lost_complete": 1,
+        "changed_selection": 11,
+        "selected_chunks": 247,
+        "total_chunks": 2362
+      }
+    },
+    "task:qa9": {
+      "0.0": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 0,
+        "lost_complete": 0,
+        "changed_selection": 0,
+        "selected_chunks": 244,
+        "total_chunks": 2321
+      },
+      "0.125": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 1,
+        "lost_complete": 1,
+        "changed_selection": 13,
+        "selected_chunks": 244,
+        "total_chunks": 2321
+      },
+      "0.25": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 1,
+        "lost_complete": 1,
+        "changed_selection": 13,
+        "selected_chunks": 244,
+        "total_chunks": 2321
+      },
+      "0.5": {
+        "cases": 20,
+        "complete": 19,
+        "incomplete": 1,
+        "ambiguous": 0,
+        "unavailable": 0,
+        "new_complete": 1,
+        "lost_complete": 1,
+        "changed_selection": 14,
+        "selected_chunks": 244,
+        "total_chunks": 2321
+      }
+    }
+  }
+}
