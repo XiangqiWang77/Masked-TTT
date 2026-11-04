@@ -1,6 +1,7 @@
 """Selected-text ICL teacher -> on-policy joint KV SD -> fresh answer."""
 
 from copy import copy
+from contextlib import nullcontext
 from types import SimpleNamespace
 import gc
 import time
@@ -33,6 +34,11 @@ class MaskedTTT:
         self.selector = selector or OpenAIChunkSelector()
 
     def answer(self, request, *, time_budget_seconds=None):
+        scope = getattr(self.backbone.tokenizer, "request_scope", None)
+        with (scope() if callable(scope) else nullcontext()):
+            return self._answer(request, time_budget_seconds=time_budget_seconds)
+
+    def _answer(self, request, *, time_budget_seconds=None):
         started = time.perf_counter()
         # The backbone tensors are shared; the deadline, readers, KV, and optimizer
         # belong to this request. No adaptation state is stored on self.
@@ -329,6 +335,7 @@ class MaskedTTT:
         return dict(
             prediction=final_prediction,
             generated_token_ids=final_tokens,
+            request_chat_date=getattr(engine.tokenizer, "masked_ttt_request_date", None),
             finish_reason="eos" if final_tokens[-1] in engine.eos_ids else "length",
             output_source=source,
             full_context=dict(prediction=full_prediction,generated_token_ids=generated,

@@ -1,5 +1,10 @@
 """Native OLMo3/GPT-OSS attention, including local windows and learned sinks."""
 
+from contextlib import contextmanager
+from contextvars import ContextVar
+from datetime import date, datetime
+import os
+import re
 from types import MethodType, SimpleNamespace
 import torch
 from torch.nn import functional as F
@@ -124,11 +129,33 @@ def layer_rotary(embeddings, block):
     )
 
 
+def _template_date():
+    fixed = os.environ.get("MASKED_TTT_FIXED_CHAT_DATE")
+    return date.fromisoformat(fixed).isoformat() if fixed else datetime.now().strftime("%Y-%m-%d")
+
+
 class FinalChannelTokenizer:
     """Keep GPT-OSS Harmony boundaries; request an answer in the final channel."""
 
     def __init__(self, tokenizer):
         self.tokenizer = tokenizer
+        self._request_date = ContextVar("masked_ttt_gpt_oss_request_date", default=None)
+
+    @contextmanager
+    def request_scope(self):
+        """Keep the GPT-OSS system date fixed across one request, including midnight."""
+        if self._request_date.get() is not None:
+            yield
+            return
+        token = self._request_date.set(_template_date())
+        try:
+            yield
+        finally:
+            self._request_date.reset(token)
+
+    @property
+    def masked_ttt_request_date(self):
+        return self._request_date.get()
 
     def __getattr__(self, key):
         return getattr(self.tokenizer, key)
@@ -142,6 +169,15 @@ class FinalChannelTokenizer:
         text = self.tokenizer.apply_chat_template(
             messages, tokenize=False, reasoning_effort="low", **kwargs
         )
+        fixed_date = self._request_date.get()
+        prefix = "<|start|>system<|message|>"
+        if fixed_date and text.startswith(prefix):
+            end = text.find("<|end|>", len(prefix))
+            if end < 0:
+                raise ValueError("Unexpected GPT-OSS system-message boundary")
+            header = re.sub(r"(?m)(?<=Current date: )\d{4}-\d{2}-\d{2}(?=\n)",
+                            fixed_date, text[:end], count=1)
+            text = header + text[end:]
         if kwargs.get("add_generation_prompt"):
             if not text.endswith("<|start|>assistant"):
                 raise ValueError("Unexpected GPT-OSS Harmony generation boundary")

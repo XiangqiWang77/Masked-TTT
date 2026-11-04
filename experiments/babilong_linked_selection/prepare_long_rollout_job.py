@@ -18,7 +18,7 @@ sys.path.insert(0, str(REPO))
 from experiments.babilong_linked_selection.long_rollout_protocol import prepare_development_manifest
 
 
-CPU_TESTS = ["tests/test_linked_long_rollout_physical.py", "tests/test_linked_long_rollout_runtime.py",
+CPU_TESTS = ["tests/test_gpt_request_date.py", "tests/test_linked_long_rollout_physical.py", "tests/test_linked_long_rollout_runtime.py",
              "tests/test_linked_long_rollout_protocol.py", "tests/test_linked_long_rollout_report.py",
              "tests/test_linked_long_rollout_prepare.py", "tests/test_linked_long_rollout_submit.py",
              "tests/test_linked_long_rollout_monitors.py", "tests/test_linked_long_rollout_holdout.py"]
