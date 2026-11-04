@@ -1,6 +1,7 @@
 """Check KV-only decode against ordinary decoding on an already-loaded model."""
 from contextlib import contextmanager
 from dataclasses import replace
+import math
 
 import torch
 
@@ -8,6 +9,48 @@ from experiments.kv_only_cartridge.compact import kv_only_cartridge
 from masked_ttt import MaskedTTT, Request
 from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
+
+
+def _long_attention_probe(engine):
+    """Verify 32-position GQA/sink attention and both gradients on this GPU."""
+    from transformers.models.qwen3.modeling_qwen3 import repeat_kv
+    from masked_ttt.attention import address_attention
+
+    config = engine.model.config
+    query_heads, kv_heads = config.num_attention_heads, config.num_key_value_heads
+    dim = getattr(config, "head_dim", config.hidden_size // query_heads)
+    device, dtype = engine.device, torch.bfloat16
+    query = torch.randn(1, query_heads, 32, dim, device=device, dtype=dtype)
+    key = torch.randn(1, kv_heads, 64, dim, device=device, dtype=dtype)
+    value = torch.randn(1, kv_heads, 64, dim, device=device, dtype=dtype, requires_grad=True)
+    gain = (torch.randn(kv_heads, 64, device=device, dtype=torch.float32) * .3).requires_grad_()
+    sinks = (torch.randn(query_heads, device=device, dtype=torch.float32) * .2
+             if config.model_type == "gpt_oss" else None)
+    probe = torch.randn(1, query_heads, 32, dim, device=device, dtype=torch.float32)
+    backend = "flash" if device.type == "cuda" else "eager"
+    observed = address_attention(query, key, value, gain, backend=backend, sinks=sinks)
+    got_gain, got_value = torch.autograd.grad((observed.float() * probe).sum(), (gain, value))
+
+    reference_gain = gain.detach().clone().requires_grad_()
+    reference_value = value.detach().clone().requires_grad_()
+    groups = query_heads // kv_heads
+    scores = query.float() @ repeat_kv(key.float(), groups).transpose(-1, -2) / math.sqrt(dim)
+    scores = scores + reference_gain.repeat_interleave(groups, 0)[None, :, None, :]
+    visible = torch.arange(64, device=device)[None] <= torch.arange(32, 64, device=device)[:, None]
+    scores = scores.masked_fill(~visible[None, None], float("-inf"))
+    if sinks is not None:
+        scores = torch.cat((scores, sinks[None, :, None, None].expand(1, -1, 32, -1)), -1)
+    probabilities = scores.softmax(-1)
+    if sinks is not None:
+        probabilities = probabilities[..., :-1]
+    expected = probabilities @ repeat_kv(reference_value.float(), groups)
+    want_gain, want_value = torch.autograd.grad(
+        (expected * probe).sum(), (reference_gain, reference_value)
+    )
+    torch.testing.assert_close(observed.float(), expected, atol=.018, rtol=.04)
+    torch.testing.assert_close(got_gain, want_gain, atol=.08, rtol=.08)
+    torch.testing.assert_close(got_value.float(), want_value.float(), atol=.035, rtol=.05)
+    return backend
 
 
 @contextmanager
@@ -38,6 +81,7 @@ def validate_loaded_backbone(engine):
     """Run a synthetic paired request without benchmark data or extra models."""
     old_config = engine.config
     try:
+        long_attention_backend = _long_attention_probe(engine)
         engine.config = replace(
             old_config,
             chunk_tokens=64,
@@ -103,6 +147,9 @@ def validate_loaded_backbone(engine):
             same_teacher_tokens=True,
             same_standalone_tokens=True,
             same_standalone_logits=True,
+            long_attention_positions=32,
+            long_attention_backend=long_attention_backend,
+            long_attention_gradients_match=True,
             evaluated_positions=len(actual_logits),
             source_and_training_released=True,
             adapter_bytes_before=before["cartridge_adapter_bytes"],

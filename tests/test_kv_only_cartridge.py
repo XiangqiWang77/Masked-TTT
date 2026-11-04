@@ -91,6 +91,7 @@ def test_loaded_backbone_probe_preserves_configuration(architecture):
     original = engine.config
     result = validate_loaded_backbone(engine)
     assert result["passed"] and result["same_standalone_logits"]
+    assert result["long_attention_positions"] == 32 and result["long_attention_gradients_match"]
     assert result["cartridge_bytes_after"] < result["cartridge_bytes_before"]
     assert engine.config is original
 
