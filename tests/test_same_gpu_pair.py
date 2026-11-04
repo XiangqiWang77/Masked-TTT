@@ -53,8 +53,8 @@ def test_no_confounded_teacher_or_training_objective_changes():
     with pytest.raises(ValueError, match="optimization settings"):
         validate_configs(config, replace(config, teacher_response_instruction="Different teacher"))
     with pytest.raises(ValueError, match="original standalone"):
-        guarded = replace(config, guard_enabled=True)
-        validate_configs(guarded, guarded)
+        transfer = replace(config, selected_transfer_weight=.1)
+        validate_configs(transfer, transfer)
 
 
 def test_study_only_pair_changes_only_study_prompt_and_restores_hook(monkeypatch):
@@ -95,6 +95,41 @@ def test_study_only_pair_changes_only_study_prompt_and_restores_hook(monkeypatch
     with pytest.raises(ValueError, match="practice sets differ"):
         validate_pair(result["left"], changed)
     assert not validate_pair(result["left"], changed, require_same_practices=False)
+
+
+def test_pair_uses_one_shared_deadline_and_restores_rng():
+    engine = make_engine()
+    config = replace(engine.config, self_question_count=0, guard_enabled=False,
+        selected_transfer_weight=0, value_basis_source="document", standalone_answer_format="original",
+        release_full_before_cartridge=True, release_selected_source_before_decode=True)
+    before = torch.get_rng_state().clone()
+    with pytest.raises(TimeoutError, match="paired request budget"):
+        run_pair(engine, Selector(), None, config, config, time_budget_seconds=0)
+    assert torch.equal(before, torch.get_rng_state())
+
+
+def test_olmo_full_diagnostic_does_not_change_standalone_contract():
+    config = replace(make_engine().config, guard_enabled=True, selected_transfer_weight=0,
+        value_basis_source="document", standalone_answer_format="original",
+        release_full_before_cartridge=True, release_selected_source_before_decode=True)
+    assert validate_configs(config, config) == []
+
+
+def test_study_pair_preserves_full_diagnostic_with_original_final_cartridge():
+    engine = make_engine()
+    config = replace(engine.config, steps=2, self_question_count=1, self_question_max_tokens=8,
+        guard_enabled=True, selected_transfer_weight=0, value_basis_source="document",
+        standalone_answer_format="original", release_full_before_cartridge=True,
+        release_selected_source_before_decode=True)
+    request = Request(document="The old note is red. The current note is blue. " * 6,
+                      question="Which color is current?", max_new_tokens=3)
+    result = run_study_prompt_pair(engine, Selector(), request, config)
+    left, right = result["left"], result["right"]
+    assert isinstance(left["self_judge"]["native_prediction"], str)
+    assert left["self_judge"]["native_prediction"] == right["self_judge"]["native_prediction"]
+    assert left["self_judge"]["applies_to"] == right["self_judge"]["applies_to"] == "full_context_diagnostic"
+    assert left["output_source"] == right["output_source"] == "standalone_cartridge"
+    assert left["standalone_cartridge"]["answer_format"] == right["standalone_cartridge"]["answer_format"] == "original"
 
 
 def test_cannot_compare_study_prompts_when_study_disabled():

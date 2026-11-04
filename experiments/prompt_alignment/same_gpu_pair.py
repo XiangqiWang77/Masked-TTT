@@ -9,6 +9,7 @@ concurrent requests in the same process.
 from contextlib import nullcontext
 from copy import copy
 from dataclasses import fields
+import time
 
 import torch
 
@@ -31,7 +32,7 @@ def validate_configs(left, right):
         raise ValueError("Only the specified SD optimization settings may differ")
     for config in (left, right):
         if (config.selected_transfer_weight != 0 or config.value_basis_source != "document" or
-            config.guard_enabled or config.standalone_answer_format != "original" or
+            config.standalone_answer_format != "original" or
             not config.standalone_cartridge_enabled or not config.release_full_before_cartridge or
             not config.release_selected_source_before_decode):
             raise ValueError("The original standalone on-policy SD method is required")
@@ -46,6 +47,7 @@ def validate_pair(left, right, *, require_same_practices=True):
             result["teacher_answer_in_final_prompt"] or
             result["self_study"]["reference_answers_used"] or
             result["self_study"]["student_answer_hint_used"] or
+            result["self_judge"]["applies_to"] != "full_context_diagnostic" or
             result["training"]["objective"] != "on-policy KL(teacher || student)" or
             result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] != 0):
             raise ValueError("A paired result violates the original-method contract")
@@ -63,6 +65,8 @@ def validate_pair(left, right, *, require_same_practices=True):
         raise ValueError("The two selections differ")
     if left["teacher"]["tokens"] != right["teacher"]["tokens"]:
         raise ValueError("The two Teacher output sequences differ")
+    if left["self_judge"]["native_prediction"] != right["self_judge"]["native_prediction"]:
+        raise ValueError("The two native full-document predictions differ")
     same_practices = left["self_study"]["checks"] == right["self_study"]["checks"]
     if require_same_practices and not same_practices:
         raise ValueError("The two verified practice sets differ")
@@ -81,6 +85,7 @@ def _run_pair(engine, selector, request, left_config, right_config, *, contexts,
     stamp = engine.weight_stamp()
     cpu_rng = torch.get_rng_state()
     gpu_rng = torch.cuda.get_rng_state(engine.device) if engine.device.type == "cuda" else None
+    deadline = None if time_budget_seconds is None else time.monotonic() + time_budget_seconds
     scope = getattr(engine.tokenizer, "request_scope", None)
     results = []
     try:
@@ -91,9 +96,12 @@ def _run_pair(engine, selector, request, left_config, right_config, *, contexts,
                     torch.cuda.set_rng_state(gpu_rng, engine.device)
                 local = copy(engine)
                 local.config = config
+                remaining = None if deadline is None else deadline - time.monotonic()
+                if remaining is not None and remaining <= 0:
+                    raise TimeoutError("The paired request budget expired")
                 with context():
                     results.append(MaskedTTT(local, selector).answer(request,
-                        time_budget_seconds=time_budget_seconds, compact_standalone=True))
+                        time_budget_seconds=remaining, compact_standalone=True))
         engine.assert_frozen(stamp)
         same_practices = validate_pair(*results, require_same_practices=require_same_practices)
     finally:
