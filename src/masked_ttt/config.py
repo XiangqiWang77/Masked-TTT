@@ -14,6 +14,7 @@ class TTTConfig:
     prefill_chunk_tokens: int = 1024
     steps: int = 2
     value_rank: int = 8
+    value_basis_source: str = "document"
     value_radius: float = 0.15
     gain_bound: float = 6.0
     sink_tokens: int = 4
@@ -80,6 +81,8 @@ class TTTConfig:
             raise ValueError("keep_fraction must be in (0, 1]")
         if not 0 < self.value_radius <= 1 or not 0 < self.gain_bound:
             raise ValueError("Invalid KV trust bounds")
+        if self.value_basis_source not in ("document","selected"):
+            raise ValueError("value_basis_source must be document or selected")
         for name in ("gain_learning_rate", "value_learning_rate", "gradient_clip"):
             if not math.isfinite(getattr(self,name)) or getattr(self,name)<=0:
                 raise ValueError(f"{name} must be positive and finite")

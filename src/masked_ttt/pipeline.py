@@ -99,8 +99,19 @@ class MaskedTTT:
             reason='Selection applies to teacher source and trainable KV positions')
         began=time.perf_counter()
         if usable:
-            memory.prepare_value_basis(cache,memory.adapted_layers)
             memory.value_enabled=True
+            if engine.config.value_basis_source=="document":
+                memory.prepare_value_basis(cache,memory.adapted_layers)
+            else:
+                # The frozen low-rank input basis is aligned with the cache on
+                # which the learned state will be materialized. Only B and g
+                # are trained, still on the full-document student path.
+                memory.active_value_layers=set(memory.adapted_layers)
+                memory.value_layers.zero_()
+                memory.value_layers[memory.adapted_layers]=True
+                basis_view=shared_selected_reader(engine,layout,selected,teacher,memory)
+                basis_view.memory.prepare_value_basis(teacher.document_cache,memory.adapted_layers)
+                del basis_view
         selected_reader=None;selected_cache_stamp=[]
         if usable and engine.config.selected_transfer_weight>0:
             selected_reader=shared_selected_reader(engine,layout,selected,teacher,memory)
@@ -313,6 +324,7 @@ class MaskedTTT:
                 student_rollouts_refreshed_each_step=True,
                 teacher_conditioned_on_student_prefix=True,
                 selected_transfer_weight=engine.config.selected_transfer_weight,
+                value_basis_source=engine.config.value_basis_source,
                 selected_transfer_uses_selected_student_prefix=selected_reader is not None,
                 selected_transfer_full_target_detached=selected_reader is not None,
                 kl_initial_and_final_may_use_different_student_prefixes=True,
