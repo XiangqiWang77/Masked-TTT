@@ -90,6 +90,10 @@ Both exclude model weights and question/output suffix KV. The
 storage outside the artifact. This runtime count is distinct from construction
 peak.
 
+Measured Qwen3-4B and GPT-OSS-20B cartridge/full-KV ratios on a completed
+200-case development set, with model-resident and training-peak GPU memory
+reported separately, are available in the [physical memory audit](docs/analysis/aligned-cartridge-memory-20261104/README.md).
+
 ## Run
 
 Install with `pip install -e '.[test]'` and a compatible FlashAttention build.
