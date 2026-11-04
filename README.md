@@ -151,6 +151,14 @@ reserving some slots for related source context. The KV-only option discards
 the duplicate read-state tensors after they have been materialized into the
 selected cache.
 
+For the linked-selection experiments, add `--selection-policy linked` to the
+cached-score CLI command above. It uses the same saved scores and a fixed 25%
+of the selected slots for entity-linked context; the number of selected chunks
+does not change. Without this flag, the CLI retains the original score-ranked
+selection. Linked selection requires `--score-json-dir` and does not make API
+calls. Results record the selected chunks and identify the linked policy when
+it is used.
+
 ```python
 from masked_ttt import Backbone, MaskedTTT, Request, TTTConfig
 from masked_ttt.linked_selection import LinkedFrozenSelector

@@ -47,7 +47,8 @@ def main():
     env["PYTHONPATH"] = os.pathsep.join((str(wheel), str(root / "tests")))
     help_result = subprocess.run([sys.executable, "-m", "masked_ttt.cli", "--help"], cwd=work,
                                  env=env, capture_output=True, text=True, timeout=60)
-    if help_result.returncode or "--score-json-dir" not in help_result.stdout:
+    if (help_result.returncode or "--score-json-dir" not in help_result.stdout or
+        "--selection-policy" not in help_result.stdout):
         raise RuntimeError("The packaged CLI failed its offline help check")
     smoke = subprocess.run([sys.executable, str(root / "tests/wheel_smoke.py")], cwd=work,
                            env=env, capture_output=True, text=True, timeout=180)

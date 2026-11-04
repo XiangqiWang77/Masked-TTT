@@ -13,6 +13,7 @@ from . import (
     Request,
     TTTConfig,
 )
+from .linked_selection import LinkedFrozenSelector
 
 
 def load_method_config(path=None, **overrides):
@@ -44,6 +45,10 @@ def main():
         "--score-json-dir", type=Path, help="Precomputed source scores; disables all API calls"
     )
     selection.add_argument("--online-decisions", action="store_true", help="Score source chunks with the Decision API")
+    parser.add_argument(
+        "--selection-policy", choices=("score", "linked"), default="score",
+        help="Use score ranking (default) or the cached-score entity-linked policy",
+    )
     parser.add_argument("--case-id", help="Case ID in the precomputed source-score index")
     parser.add_argument("--source-index", type=Path,
                         help="Optional original-case index for exact document verification")
@@ -98,12 +103,15 @@ def main():
         parser.error('--source-index and --source-jsonl must be supplied together')
     if args.online_decisions and args.source_index is not None:
         parser.error('source verification applies to precomputed scores')
+    if args.online_decisions and args.selection_policy != 'score':
+        parser.error('--selection-policy linked requires --score-json-dir')
     if args.score_json_dir:
         if not args.case_id:
             parser.error('--case-id is required with --score-json-dir')
-        selector = (FrozenJSONSelector(args.score_json_dir, source_index=args.source_index,
-                                       source_cases=args.source_jsonl)
-                    if args.source_index is not None else FrozenJSONSelector(args.score_json_dir))
+        selector_type = LinkedFrozenSelector if args.selection_policy == 'linked' else FrozenJSONSelector
+        selector = (selector_type(args.score_json_dir, source_index=args.source_index,
+                                  source_cases=args.source_jsonl)
+                    if args.source_index is not None else selector_type(args.score_json_dir))
         selector.bind_case(args.case_id)
     else:
         selector = OpenAIChunkSelector(DecisionConfig(**decision_options))

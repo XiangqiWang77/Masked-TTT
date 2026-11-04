@@ -78,14 +78,31 @@ def test_cached_source_verification_requires_both_files(tmp_path,monkeypatch,cap
     assert error.value.code==2 and '--source-index and --source-jsonl' in capsys.readouterr().err
 
 
+def test_linked_policy_rejects_online_scoring_before_loading_model(tmp_path,monkeypatch,capsys):
+    request=tmp_path/'request.json'
+    request.write_text(json.dumps(dict(document='A short document.',question='What is it?')))
+    monkeypatch.setattr(sys,'argv',['masked-ttt','--model','unused','--request',str(request),
+        '--online-decisions','--selection-policy','linked'])
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code==2 and '--selection-policy linked requires --score-json-dir' in capsys.readouterr().err
+
+
 @pytest.mark.parametrize('architecture', ['qwen3', 'gpt_oss_gqa'])
-def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypatch,architecture):
+@pytest.mark.parametrize('policy,selected', [('score',[0,1,3,6]),('linked',[1,2,3,6])])
+def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypatch,architecture,policy,selected):
     from masked_ttt import Backbone
     from test_materialization_equivalence import gpt_gqa_engine
     from test_public_linked_selection import _source
     from test_standalone import make_engine
 
     document,question,_,_=_source(tmp_path)
+    # Make the relation chunk lower-scored than the unrelated filler so the
+    # two policies select different evidence under the same four-slot budget.
+    scores_path=tmp_path/'scores'/'case.json'
+    scores=json.loads(scores_path.read_text())
+    scores['records'][2]['decision_probabilities']['yes']=.005
+    scores_path.write_text(json.dumps(scores))
     request=tmp_path/'request.json'
     request.write_text(json.dumps(dict(document=document,question=question,max_new_tokens=3)))
     source=tmp_path/'source.jsonl'
@@ -109,6 +126,7 @@ def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypat
     monkeypatch.setattr(Backbone,'load',classmethod(load))
     monkeypatch.setattr(sys,'argv',['masked-ttt','--model','synthetic','--request',str(request),
         '--score-json-dir',str(tmp_path),'--case-id','case','--config-json',str(profile),
+        '--selection-policy',policy,
         '--source-index',str(index),'--source-jsonl',str(source),
         '--value-learning-rate','0.001','--gain-learning-rate','0.02','--output',str(result_path)])
     main()
@@ -121,6 +139,10 @@ def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypat
     assert any(step['gain_gradient_norm']>0 for step in result['training']['steps'])
     assert any(step['value_gradient_norm']>0 for step in result['training']['steps'])
     assert result['selection']['backend']=='precomputed_source_JSON'
+    assert result['selection']['selected_chunks']==selected
+    if policy=='linked':
+        assert result['selection']['selection_policy']=='decision_entity_link_v1'
+        assert result['selection']['entity_reserve_fraction']==.25
     assert result['selection']['source_document_matches_index']
     assert result['selection']['online_api_calls']==0 and not result['selection']['reference_answers_used']
     assert result['backbone_unchanged'] and result['original_document_KV_unchanged']
