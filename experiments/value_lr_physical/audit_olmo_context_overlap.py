@@ -22,6 +22,19 @@ def paired(rows, teacher_key="teacher", answer_key="cartridge"):
                 delta_points=100 * (gains - losses) / n)
 
 
+def complementarity(rows):
+    """Report whether training preserves or recovers each view's unique wins."""
+    triples = [(int(row["whole"]), int(row["zero"]), int(row["trained"])) for row in rows]
+    if any(value not in (0, 1) for triple in triples for value in triple):
+        raise ValueError("Answer scores must be binary")
+    whole_only = [triple for triple in triples if triple[0] and not triple[1]]
+    selected_only = [triple for triple in triples if triple[1] and not triple[0]]
+    return dict(n=len(triples), whole_only=len(whole_only),
+                whole_only_recovered=sum(row[2] for row in whole_only),
+                selected_only=len(selected_only),
+                selected_only_retained=sum(row[2] for row in selected_only))
+
+
 def read_report(path):
     report = json.loads(path.read_text())
     if report["metric"] != "answer_focused_lexical_v2" or report["completed"] != 1000:
@@ -86,6 +99,13 @@ def main():
                     qwen="selected zero-update with teacher-format instruction",
                     gpt="selected zero-update with teacher-format instruction"),
                 groups={})
+    if olmo_paired is not None:
+        data["complementarity"] = {"olmo": complementarity([
+            dict(whole=row["whole"], **olmo_paired[row["case"]]) for row in olmo])}
+        for model, rows in others.items():
+            data["complementarity"][model] = complementarity([
+                dict(whole=row["whole"], zero=row["selective"], trained=row["cartridge"])
+                for row in rows.values()])
     for coverage, expected in (("complete", 838), ("compacted", 162)):
         group = [row for row in olmo if row["working_document"] == coverage]
         if len(group) != expected:

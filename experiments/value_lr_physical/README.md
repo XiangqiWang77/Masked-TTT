@@ -8,6 +8,8 @@ For GPT-OSS-20B, the completed development results selected `0.001`: **54.00%**,
 
 If the CPU preflight fails transiently after the runtime was frozen, the Qwen launcher retries validation on that same intact runtime and frozen protocol at its next hourly check. It refuses to replace an existing submitted run or proceed with an incomplete or changed preparation.
 
+The [recovery report](recovery_report.py) reads each existing paired report and counts how often the trained cartridge recovers a Whole-only correct answer and retains a selected-only correct answer, overall and by question type. It runs after generation, does not issue scheduler or model requests, and keeps missing cases separate from wrong answers. An hourly [watcher](recovery_watch.py) refreshes it after the ordinary job reports and stops after both model paths reach a terminal stage.
+
 The original Teacher retains its generic response-format instruction; selected-zero and Cartridge use the same original question format. All arms use the same task-aware loose lexical scorer. Two previously inspected source questions are excluded from the 792-case target, and earlier aggregate results have been seen, so the holdout is not fully blind. A legacy launcher checks whether a matching physical holdout has already been submitted to avoid repeating it. Both model launchers and reports obey the shared limit of 12 single-GPU jobs and update hourly.
 
 [Archived versus physical runtime comparison](../../docs/analysis/value-runtime-compatibility-20261104/README.md) checks the Student trajectory and selected-cache output at both the original and candidate Value learning rates.

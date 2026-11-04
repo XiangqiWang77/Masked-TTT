@@ -111,5 +111,28 @@
         }
       }
     }
+  },
+  "complementarity": {
+    "olmo": {
+      "n": 1000,
+      "whole_only": 93,
+      "whole_only_recovered": 2,
+      "selected_only": 175,
+      "selected_only_retained": 173
+    },
+    "qwen": {
+      "n": 1000,
+      "whole_only": 130,
+      "whole_only_recovered": 1,
+      "selected_only": 146,
+      "selected_only_retained": 144
+    },
+    "gpt": {
+      "n": 1000,
+      "whole_only": 94,
+      "whole_only_recovered": 1,
+      "selected_only": 158,
+      "selected_only_retained": 156
+    }
   }
 }

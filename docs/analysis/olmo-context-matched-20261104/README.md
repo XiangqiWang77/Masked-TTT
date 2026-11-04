@@ -19,4 +19,6 @@ OLMo 在完整原文组仍有 3.46 点提升，所以它的总体涨点并非只
 
 OLMo 的零更新对照来自另一轮配对复跑，并使用原问题格式；Qwen 和 GPT-OSS 两列使用 Teacher 的通用格式要求。每一行内部两次回答共享相同缓存和问题格式，表中比较的是训练前后而非 Teacher 与 Cartridge。三种模型的净增都是 2 / 838 题，这说明跨模型复现需要检查训练状态怎样影响最终卡带，而不能仅复制 OLMo 的超参数。
 
+以完整的 1,000 题计算，全文答对而选中零更新答错的题中，训练后的独立卡带分别修回 OLMo 的 2 / 93、Qwen 的 1 / 130、GPT-OSS 的 1 / 94。反过来，选中零更新答对而全文答错的题中，卡带分别保住 173 / 175、144 / 146、156 / 158。OLMo 的全文结果取原始运行，零更新和训练后取独立配对复跑；Qwen 与 GPT-OSS 则使用各自配对日志。这一分组直接提供了后续改进的目标：保持聚焦阅读的优势，并提高全文独有正确答案转入卡带的比例。
+
 [summary.json](summary.json) 包含各组配对新答对／新答错数量；[脚本](../../../experiments/value_lr_physical/audit_olmo_context_overlap.py) 在生成后读取已有结果并校验题目 ID，没有新模型或 API 调用。OLMo 源数据和完整覆盖定义见 [原始固定快照](https://github.com/XiangqiWang77/Masked-TTT/blob/experiment/cartridge-basis-alignment-20261104/docs/analysis/olmo-motivations-20261104/README.md)。
