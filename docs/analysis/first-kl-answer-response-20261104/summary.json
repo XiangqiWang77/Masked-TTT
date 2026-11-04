@@ -1,0 +1,104 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "kl_threshold": 0.01,
+  "grouping": "first main-question SD step; descriptive only; not a training gate",
+  "online_api_calls": 0,
+  "new_model_calls": 0,
+  "reference_answers_used_only_posthoc": true,
+  "models": {
+    "qwen": {
+      "overall": {
+        "n": 1000,
+        "original_tokens_changed": 57,
+        "teacher_format_tokens_changed": 41,
+        "original_update": {
+          "new_correct": 15,
+          "new_wrong": 8,
+          "delta_pp": 0.7
+        },
+        "teacher_format_update": {
+          "new_correct": 10,
+          "new_wrong": 8,
+          "delta_pp": 0.2
+        }
+      },
+      "low": {
+        "n": 357,
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 2,
+        "original_update": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        },
+        "teacher_format_update": {
+          "new_correct": 0,
+          "new_wrong": 1,
+          "delta_pp": -0.2801120448179272
+        }
+      },
+      "high": {
+        "n": 643,
+        "original_tokens_changed": 56,
+        "teacher_format_tokens_changed": 39,
+        "original_update": {
+          "new_correct": 15,
+          "new_wrong": 8,
+          "delta_pp": 1.088646967340591
+        },
+        "teacher_format_update": {
+          "new_correct": 10,
+          "new_wrong": 7,
+          "delta_pp": 0.4665629860031104
+        }
+      }
+    },
+    "gpt": {
+      "overall": {
+        "n": 1000,
+        "original_tokens_changed": 25,
+        "teacher_format_tokens_changed": 35,
+        "original_update": {
+          "new_correct": 8,
+          "new_wrong": 5,
+          "delta_pp": 0.3
+        },
+        "teacher_format_update": {
+          "new_correct": 10,
+          "new_wrong": 6,
+          "delta_pp": 0.4
+        }
+      },
+      "low": {
+        "n": 271,
+        "original_tokens_changed": 5,
+        "teacher_format_tokens_changed": 4,
+        "original_update": {
+          "new_correct": 2,
+          "new_wrong": 0,
+          "delta_pp": 0.7380073800738007
+        },
+        "teacher_format_update": {
+          "new_correct": 0,
+          "new_wrong": 1,
+          "delta_pp": -0.36900369003690037
+        }
+      },
+      "high": {
+        "n": 729,
+        "original_tokens_changed": 20,
+        "teacher_format_tokens_changed": 31,
+        "original_update": {
+          "new_correct": 6,
+          "new_wrong": 5,
+          "delta_pp": 0.13717421124828533
+        },
+        "teacher_format_update": {
+          "new_correct": 10,
+          "new_wrong": 5,
+          "delta_pp": 0.6858710562414266
+        }
+      }
+    }
+  }
+}
