@@ -90,14 +90,20 @@ def load(workspace, model, dataset):
     result = []
     for item in records:
         document = json.loads(path_for(item["case"]).read_text())
-        result.append(read_row(document, {key: item[value] for key, value in names.items()}))
+        row = read_row(document, {key: item[value] for key, value in names.items()})
+        row["task"] = item["task"]
+        result.append(row)
     return result
 
 
 def summarize(rows):
-    return dict(overall=group(rows), by_original_format_first_token_difference={
+    summary = dict(overall=group(rows), by_original_format_first_token_difference={
         label: group([row for row in rows if row["format_first_token_diff"] == flag])
         for label, flag in (("same", False), ("different", True))})
+    if rows and all("task" in row for row in rows):
+        summary["by_task"] = {task: group([row for row in rows if row["task"] == task])
+                              for task in sorted({row["task"] for row in rows})}
+    return summary
 
 
 def main():
