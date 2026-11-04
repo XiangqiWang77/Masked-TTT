@@ -56,3 +56,14 @@ def test_empty_partial_model_keeps_missing_values():
     value = _result()
     value["models"]["qwen"]["rows"] = []
     assert "| qwen | 0 | — | — | — | — | 0 / 0 | — | 0 / 0 | — |" in render(value)
+
+
+def test_rollout_subgroups_only_use_strictly_matched_cases():
+    value = _result()
+    rows = value["models"]["qwen"]["rows"]
+    rows[0].update(old_rollout_tokens=8, new_rollout_tokens=16)
+    rows[1].update(old_rollout_tokens=8, new_rollout_tokens=12)
+    rows[2].update(old_rollout_tokens=2, new_rollout_tokens=2)
+    text = render(value)
+    assert "| longer initial prefix | 1 | 0.00 | 100.00 | 1 / 0 | 100.00 |" in text
+    assert "| same initial prefix length | 1 | 100.00 | 100.00 | 0 / 0 | 0.00 |" in text

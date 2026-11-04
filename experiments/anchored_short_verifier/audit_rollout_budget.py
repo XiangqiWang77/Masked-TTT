@@ -80,11 +80,14 @@ def audit(snapshot, results_root, eos_ids=None):
         ("teacher_incomplete", [row for row in rows if not row["teacher_generation_complete"]]),
     ]:
         groups[name] = summarize(subset)
+    tasks = sorted({row["task"] for row in rows},
+                   key=lambda name: (int(name[2:]), name) if name.startswith("qa") and name[2:].isdigit() else (10**6, name))
     return {
         "model": snapshot["model"],
         "snapshot_time": snapshot["updated"],
         "expected_snapshot_cases": len(snapshot["rows"]),
         "groups": groups,
+        "per_task": {task: summarize([row for row in rows if row["task"] == task]) for task in tasks},
         "rows": rows,
         "unavailable_cases": skipped,
         "new_model_calls": 0,
@@ -111,6 +114,18 @@ def render(result):
             f"{stats['teacher_generation_incomplete']} | {fmt(stats['zero_accuracy'])} | "
             f"{fmt(stats['cartridge_accuracy'])} | {stats['new_correct']} / {stats['new_wrong']} | "
             f"{fmt(stats['delta_pp'])} |"
+        )
+    lines += [
+        "",
+        "| Task | n | Prefix reaches cap | Cap without EOS | Zero update | Cartridge | New right / wrong | Δ pp |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for name, stats in result["per_task"].items():
+        lines.append(
+            f"| {name} | {stats['n']} | {stats['student_prefix_reaches_cap']} | "
+            f"{stats['student_cap_without_eos'] if stats['student_cap_without_eos'] is not None else '—'} | "
+            f"{fmt(stats['zero_accuracy'])} | {fmt(stats['cartridge_accuracy'])} | "
+            f"{stats['new_correct']} / {stats['new_wrong']} | {fmt(stats['delta_pp'])} |"
         )
     lines += [
         "",

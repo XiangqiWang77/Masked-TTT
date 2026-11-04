@@ -118,6 +118,26 @@ def render(result):
             f"Strictly matched original-SD comparison: {n} cases; "
             f"new right / new wrong = {gain} / {loss}; Δ = {_pct(delta)} pp.",
         ]
+        paired = [row for row in rows if row.get("old_cartridge") is not None
+                  and row.get("old_rollout_tokens") is not None and row.get("new_rollout_tokens") is not None]
+        if paired:
+            partitions = [
+                ("longer initial prefix", [row for row in paired
+                                           if row["new_rollout_tokens"] > row["old_rollout_tokens"]]),
+                ("same initial prefix length", [row for row in paired
+                                                if row["new_rollout_tokens"] == row["old_rollout_tokens"]]),
+            ]
+            lines += [
+                "",
+                f"## {model}: matched rollout comparison",
+                "",
+                "| Initial rollout | n | 8-token SD | 32-token SD | New right / new wrong | Δ pp |",
+                "|---|---:|---:|---:|---:|---:|",
+            ]
+            for name, subset in partitions:
+                _, gain, loss, delta = _pair(subset, "old_cartridge")
+                lines.append(f"| {name} | {len(subset)} | {_pct(_rate(subset, 'old_cartridge'))} "
+                             f"| {_pct(_rate(subset, 'cartridge'))} | {gain} / {loss} | {_pct(delta)} |")
     lines += [
         "",
         "A partial run summarizes completed cases only. A matched old-SD comparison "

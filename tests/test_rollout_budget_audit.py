@@ -45,5 +45,6 @@ def test_only_fixed_snapshot_cases_are_aggregated(tmp_path):
     assert result["groups"]["all"]["n"] == 1
     assert result["groups"]["all"]["teacher_generation_incomplete"] == 1
     assert result["groups"]["shorter_than_prefix_cap"]["n"] == 0
+    assert result["per_task"]["qa1"]["n"] == 1
     assert len(result["unavailable_cases"]) == 1
     assert result["new_model_calls"] == result["online_api_calls"] == 0
