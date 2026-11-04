@@ -223,6 +223,8 @@ $$
 
 实现默认在独立 Cartridge 开始生成前释放全文 KV。API 的 `prediction` 和 `generated_token_ids` 直接返回这条独立路径的答案；`full_context` 另存全文路径的对照结果，全文 Self Judge 只影响该对照。`timing.ttft_seconds` 计到独立答案的首个 token，包含此前在线构造和物化时间；此前离线保存的选块打分时间不计入。
 
+物化完成后，默认也释放不再需要的选中源 KV；混合注意力中被 Cartridge 共享的必要张量继续保留。`standalone_cartridge_bytes` 是 Cartridge 本体大小，`live_document_state_before_decode_bytes` 另外计入仍存活的训练适配状态与源 KV；两个字段都不含模型权重和问题／答案后缀。历史配对实验记录的是本体大小，并非完整的解码驻留量。
+
 选中片段 KV 是在选中片段上下文中重新 prefill 的，因此它不等同于从全文 prefill 后直接裁剪对应 KV。独立版和全文版分别评测，才能看到聚焦阅读、全文覆盖与缓存大小之间的实际关系。
 
 ### 对照：全文 KV 加读取状态

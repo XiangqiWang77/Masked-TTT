@@ -35,5 +35,9 @@ def cuda_allocated(device):
     return int(torch.cuda.memory_allocated(device)) if device.type=='cuda' else None
 
 
+def cuda_reserved(device):
+    return int(torch.cuda.memory_reserved(device)) if device.type=='cuda' else None
+
+
 def cuda_peak(device):
     return int(torch.cuda.max_memory_allocated(device)) if device.type=='cuda' else None

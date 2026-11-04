@@ -77,3 +77,50 @@ def test_primary_answer_is_from_cartridge_even_if_full_answer_differs(monkeypatc
     assert result['full_context']['prediction']!=sentinel
     assert result['output_source']=='standalone_cartridge'
     assert result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']==0
+
+
+@pytest.mark.parametrize('architecture',['qwen3','gpt_oss'])
+@pytest.mark.parametrize('transfer_weight',[0.,.25])
+def test_releasing_selected_source_preserves_output_and_counts_live_storage(architecture,transfer_weight):
+    engine=make_engine() if architecture=='qwen3' else gpt_engine()
+    engine.config=replace(engine.config,self_question_count=0,guard_enabled=False,
+        selected_transfer_weight=transfer_weight,release_full_before_cartridge=True,
+        release_selected_source_before_decode=False)
+    request=Request(document='Old note says red. Current note says blue. '*6,
+                    question='What is in the current note?',max_new_tokens=3)
+    class Selector:
+        def prepare(self,backbone,item):
+            layout=prepare_layout(backbone,item)
+            return PreparedRequest(item,layout,[1,len(layout.chunks)-2],dict(backend='unit_test'))
+    method=MaskedTTT(engine,Selector())
+    retained=method.answer(request)
+    engine.config=replace(engine.config,release_selected_source_before_decode=True)
+    released=method.answer(request)
+    before=retained['standalone_cartridge']['memory']
+    after=released['standalone_cartridge']['memory']
+    assert not before['source_release_requested'] and after['source_release_requested']
+    assert before['additional_source_kv_bytes_before_decode']>0
+    assert after['additional_source_kv_bytes_before_decode']==0
+    assert after['live_document_state_before_decode_bytes']>=after['standalone_cartridge_bytes']
+    assert after['live_document_state_before_decode_bytes']<before['live_document_state_before_decode_bytes']
+    assert released['generated_token_ids']==retained['generated_token_ids']
+    assert released['training']['steps']==retained['training']['steps']
+    assert released['backbone_unchanged'] and released['original_document_KV_unchanged']
+
+
+@pytest.mark.parametrize('architecture',['qwen3','gpt_oss'])
+def test_zero_update_reuses_only_the_required_selected_cache_storage(architecture):
+    engine=make_engine() if architecture=='qwen3' else gpt_engine()
+    engine.config=replace(engine.config,steps=0,self_question_count=0,guard_enabled=False)
+    request=Request(document='Old note says red. Current note says blue. '*6,
+                    question='What is in the current note?',max_new_tokens=3)
+    class Selector:
+        def prepare(self,backbone,item):
+            layout=prepare_layout(backbone,item)
+            return PreparedRequest(item,layout,[1,len(layout.chunks)-2],dict(backend='unit_test'))
+    result=MaskedTTT(engine,Selector()).answer(request)
+    usage=result['standalone_cartridge']['memory']
+    assert usage['source_release_requested']
+    assert usage['additional_source_kv_bytes_before_decode']==0
+    assert usage['live_document_state_before_decode_bytes']>=usage['standalone_cartridge_bytes']
+    assert result['prediction']==result['standalone_cartridge']['prediction']

@@ -115,7 +115,7 @@ class MaskedTTT:
         selected_reader=None;selected_cache_stamp=[]
         if usable and engine.config.selected_transfer_weight>0:
             selected_reader=shared_selected_reader(engine,layout,selected,teacher,memory)
-            selected_cache_stamp=[(x,x._version,x.data_ptr()) for x in cache_tensors(teacher.document_cache)]
+            selected_cache_stamp=[(weakref.ref(x),x._version,x.data_ptr()) for x in cache_tensors(teacher.document_cache)]
         engine.synchronize();setup_seconds=time.perf_counter()-began
         initial_kl=final_kl=None;steps=[];positions=[];optimizer_bytes=0
         use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
@@ -247,8 +247,20 @@ class MaskedTTT:
         full_plus_adapter_bytes=storage_bytes(cache_tensors(cache)+module_tensors(memory))
         if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in cache_stamp):
             raise AssertionError("The original document cache was changed")
-        if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in selected_cache_stamp):
+        if any(ref() is None or ref()._version != version or ref().data_ptr() != pointer
+               for ref,version,pointer in selected_cache_stamp):
             raise AssertionError("The original selected evidence cache was changed")
+        verified_practice_questions=len(practice_paths)
+        # Practice teacher paths share the selected document cache. Release
+        # those request-local references once training is complete so that
+        # materialization can drop an otherwise redundant source cache.
+        if engine.config.standalone_cartridge_enabled and engine.config.release_selected_source_before_decode:
+            paths=practice_paths=current_teacher=path=None
+            # This initial Teacher trajectory is only used during training;
+            # its generated answer tokens remain available for the report.
+            teacher.probabilities=None
+        engine._release_selected_source_before_decode=(
+            engine.config.standalone_cartridge_enabled and engine.config.release_selected_source_before_decode)
         release_info=dict(requested=engine.config.release_full_before_cartridge,
                           full_cache_tensors_live_before_standalone=None,
                           cuda_allocated_before_release_bytes=None,
@@ -280,7 +292,8 @@ class MaskedTTT:
         engine.synchronize()
         total_peak_bytes=cuda_peak(engine.device)
 
-        if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in selected_cache_stamp):
+        if any(ref() is not None and (ref()._version != version or ref().data_ptr() != pointer)
+               for ref,version,pointer in selected_cache_stamp):
             raise AssertionError("The original selected evidence cache was changed")
         engine.assert_frozen(weights_before)
         full_prediction=engine.tokenizer.decode(generated,skip_special_tokens=True)
@@ -352,8 +365,8 @@ class MaskedTTT:
                 selected_transfer_uses_selected_student_prefix=selected_reader is not None,
                 selected_transfer_full_target_detached=selected_reader is not None,
                 kl_initial_and_final_may_use_different_student_prefixes=True,
-                kl_initial_and_final_may_use_different_questions=bool(practice_paths),
-                verified_practice_questions=len(practice_paths),
+                kl_initial_and_final_may_use_different_questions=bool(verified_practice_questions),
+                verified_practice_questions=verified_practice_questions,
                 adaptive_max_answer_steps=engine.config.max_answer_steps,
                 adaptive_answer_KL_stop=engine.config.answer_KL_stop,
                 adapted_layers=memory.adapted_layers,

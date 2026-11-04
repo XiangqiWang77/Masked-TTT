@@ -46,3 +46,4 @@ def test_verified_subquestion_joins_main_opd_on_the_same_memory(monkeypatch):
     assert result['backbone_unchanged'] and result['original_document_KV_unchanged']
     assert result['final_question_recomputed'] and not result['teacher_answer_in_final_prompt']
     assert result['self_study']['reference_answers_used'] is False
+    assert result['standalone_cartridge']['memory']['additional_source_kv_bytes_before_decode']==0

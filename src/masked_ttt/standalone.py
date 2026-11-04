@@ -1,11 +1,13 @@
 """Build a self-contained selected-KV cartridge from one trained request."""
 
+import gc
 import time
+import weakref
 import torch
 
 from ._layout import selected_read_plan
 from .memory import KVReadMemory
-from .memory_accounting import cache_tensors,module_tensors,storage_bytes
+from .memory_accounting import cache_tensors,cuda_allocated,cuda_reserved,module_tensors,storage_bytes
 from .reader import MemoryReader
 from .runtime import private_forward
 
@@ -69,6 +71,8 @@ def build_standalone(engine,layout,selected,teacher,trained):
 @torch.no_grad()
 def answer_standalone(engine,layout,selected,teacher,trained,limit):
     began=time.perf_counter()
+    original=cache_tensors(teacher.document_cache)
+    source_stamp=[(weakref.ref(x),x._version,x.data_ptr()) for x in original]
     reader,branch,suffix,length,accounting=build_standalone(
         engine,layout,selected,teacher,trained)
     if engine.config.standalone_answer_format=='teacher_requirements':
@@ -79,6 +83,43 @@ def answer_standalone(engine,layout,selected,teacher,trained,limit):
         suffix=teacher.question_tokens.to(engine.device)
     if limit<1 or length+len(suffix)+limit>engine.config.max_context:
         raise ValueError('Standalone question and generation exceed the model context')
+    # The standalone branch is self-contained. Once constructed, the source
+    # selected cache need not be retained merely because Teacher used it.
+    # Weak references make any still-live source storage visible in accounting.
+    if any(x._version!=version or x.data_ptr()!=pointer
+           for x,(_,version,pointer) in zip(original,source_stamp)):
+        raise AssertionError('The selected source cache changed during materialization')
+    release_source=getattr(engine,'_release_selected_source_before_decode',False)
+    engine.synchronize()
+    before_release=cuda_allocated(engine.device)
+    reserved_before_release=cuda_reserved(engine.device)
+    if release_source:
+        teacher.document_cache=None
+    del original
+    if release_source:
+        gc.collect()
+        if engine.device.type=='cuda':
+            with engine.device_context():torch.cuda.empty_cache()
+    engine.synchronize()
+    alive=[ref() for ref,_,_ in source_stamp if ref() is not None]
+    if any(ref() is not None and (ref()._version!=version or ref().data_ptr()!=pointer)
+           for ref,version,pointer in source_stamp):
+        raise AssertionError('The selected source cache changed during materialization')
+    artifact=cache_tensors(branch)+module_tensors(reader.memory)
+    artifact_bytes=storage_bytes(artifact)
+    with_source=storage_bytes(artifact+alive)
+    accounting.update(
+        source_release_requested=release_source,
+        source_tensor_views_live_before_decode=len(alive),
+        additional_source_kv_bytes_before_decode=with_source-artifact_bytes,
+        live_document_state_before_decode_bytes=storage_bytes(artifact+alive+module_tensors(trained)),
+        live_document_state_includes_training_adapter=True,
+        cuda_allocated_before_source_release_bytes=before_release,
+        cuda_allocated_before_decode_bytes=cuda_allocated(engine.device),
+        cuda_reserved_before_source_release_bytes=reserved_before_release,
+        cuda_reserved_before_decode_bytes=cuda_reserved(engine.device),
+    )
+    del alive,artifact
     engine.budget.check()
     output=private_forward(reader.reader,suffix,length,branch)
     tokens=[];first_token_seconds=None

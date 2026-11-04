@@ -30,6 +30,7 @@ class TTTConfig:
     standalone_cartridge_enabled: bool = True
     standalone_answer_format: str = 'original'
     release_full_before_cartridge: bool = True
+    release_selected_source_before_decode: bool = True
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
@@ -70,6 +71,8 @@ class TTTConfig:
             raise ValueError('standalone_answer_format must be original or teacher_requirements')
         if type(self.release_full_before_cartridge) is not bool:
             raise ValueError('release_full_before_cartridge must be boolean')
+        if type(self.release_selected_source_before_decode) is not bool:
+            raise ValueError('release_selected_source_before_decode must be boolean')
         if self.release_full_before_cartridge and not self.standalone_cartridge_enabled:
             raise ValueError('Releasing the full cache requires standalone cartridge generation')
         for name in ('guard_minimum_confidence','guard_minimum_label_mass'):
