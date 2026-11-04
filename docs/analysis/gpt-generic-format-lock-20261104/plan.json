@@ -47,6 +47,7 @@
     "previously_viewed_holdout_sources": 2,
     "selected_format_has_teacher_answer": false,
     "holdout_generic_answer_is_pre_release_diagnostic": true,
-    "requires_loaded_model_release_verification": true
+    "requires_loaded_model_release_verification": true,
+    "prior_full_cohort_format_results_seen_for_other_selection": true
   }
 }

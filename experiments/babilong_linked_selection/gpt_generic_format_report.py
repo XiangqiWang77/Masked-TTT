@@ -74,7 +74,8 @@ def freeze_development(manifest, report):
         previously_viewed_holdout_sources=len(manifest["qualitative_case_sources"]),
         selected_format_has_teacher_answer=False,
         holdout_generic_answer_is_pre_release_diagnostic=True,
-        requires_loaded_model_release_verification=True)
+        requires_loaded_model_release_verification=True,
+        prior_full_cohort_format_results_seen_for_other_selection=True)
 
 
 def evaluate(plan, dev_manifest, dev_report, held_manifest, held_report):
@@ -99,6 +100,7 @@ def evaluate(plan, dev_manifest, dev_report, held_manifest, held_report):
         labels_used_only_posthoc=True, model_or_api_calls=0,
         generic_answer_is_pre_release_diagnostic=True,
         requires_loaded_model_release_verification=True,
+        prior_full_cohort_format_results_seen_for_other_selection=True,
         previously_viewed_holdout_sources=plan["decision"]["previously_viewed_holdout_sources"])
 
 
