@@ -1,8 +1,47 @@
 """Run the two study-prompt arms using the existing single-GPU case driver."""
 from contextlib import contextmanager, nullcontext
+from dataclasses import replace
 
 from experiments.prompt_alignment.same_gpu_pair import run_study_prompt_pair
 from masked_ttt.config import TTTConfig
+
+
+def real_pair_preflight(engine):
+    """Exercise both study arms on a real allocated GPU before corpus cases."""
+    if engine.device.type != "cuda":
+        raise ValueError("The paired real-model preflight requires an allocated GPU")
+    from masked_ttt import Request
+    from masked_ttt.request import prepare_layout
+    from masked_ttt.selection import PreparedRequest
+
+    request = Request(document="The old note is red. " + "Ordinary material. " * 30 +
+                      "The current note is blue.", question="What is the current note?", max_new_tokens=3)
+
+    class SyntheticSelector:
+        def prepare(self, backbone, item):
+            layout = prepare_layout(backbone, item)
+            selected = [len(layout.chunks) // 2]
+            metadata = dict(backend="synthetic", selected_original_chunks=selected,
+                selected_chunks=selected, total_chunks=len(layout.chunks),
+                selected_tokens=sum(len(layout.chunks[index]) for index in selected))
+            return PreparedRequest(item, layout, selected, metadata)
+
+    old = engine.config
+    try:
+        engine.config = replace(old, chunk_tokens=64, steps=2, max_answer_steps=2,
+            self_question_count=1, self_question_max_tokens=8, student_rollout_tokens=3,
+            guard_enabled=False, selected_transfer_weight=0, value_basis_source="document",
+            standalone_answer_format="original", release_full_before_cartridge=True,
+            release_selected_source_before_decode=True)
+        pair = run_study_prompt_pair(engine, SyntheticSelector(), request, engine.config,
+                                     time_budget_seconds=300)
+        if (not pair["same_gpu"] or not pair["same_loaded_model"] or not pair["same_request"] or
+            not pair["independently_prefilled_caches"] or pair["reference_answers_used"]):
+            raise AssertionError("Real-GPU paired study preflight violated its contract")
+        return dict(paired_study_preflight=True, same_gpu=True, selected_teacher_and_zero_match=True,
+                    independently_materialized_and_released=True, reference_answers_used=False)
+    finally:
+        engine.config = old
 
 
 @contextmanager
@@ -78,9 +117,10 @@ def study_pair_runner(implementation, runtime, controls, *, root, selector, phys
         # do not route that synthetic request through the two-arm comparison.
         runtime.MaskedTTT, controls.original_question_controls = old_method, physical_controls
         try:
-            return old_preflight(engine)
+            baseline = old_preflight(engine)
         finally:
             runtime.MaskedTTT, controls.original_question_controls = StudyPair, nullcontext
+        return dict(baseline, **real_pair_preflight(engine))
 
     implementation.ROOT, implementation.validate_manifest = root, validate_manifest
     implementation.validate, implementation.replace, implementation.preflight = validate, configured, preflight

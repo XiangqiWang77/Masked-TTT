@@ -32,4 +32,4 @@
 
 200 题均有效、候选答案同时超过这四个对照时，才自动提交来源问题互不重叠的 800 题留出集。使用缓存的 Decision JSON 和统一的宽松词面评分；参考答案只在生成之后评分。每个作业请求一张 GPU，遵守项目最多 12 张的共享限制。汇总按一小时一次执行。两题留出来源曾在以往分析中查看，其他选块配置的整体汇总也曾查看，因此最终报告不称其为完全盲测。
 
-冻结环境的 CPU 测试已通过；CUDA 测试和真实模型预检在分配到 GPU 后执行。条件触发不代表该 200 题作业已经提交，也不保证候选会通过质量门槛。[冻结和提交逻辑](../../../experiments/self_study_prompt/study_job.py) · [配对评分](../../../experiments/self_study_prompt/study_report.py) · [门槛](../../../experiments/self_study_prompt/study_gate.py)。
+冻结环境的 CPU 测试已通过；CUDA 测试和真实模型预检在分配到 GPU 后执行。真实模型预检还会在同一张 GPU 上完整执行两种小题措辞的训练与独立卡带解码，验证配对条件及缓存释放，然后才开始评测题目。条件触发不代表该 200 题作业已经提交，也不保证候选会通过质量门槛。[冻结和提交逻辑](../../../experiments/self_study_prompt/study_job.py) · [配对评分](../../../experiments/self_study_prompt/study_report.py) · [门槛](../../../experiments/self_study_prompt/study_gate.py)。
