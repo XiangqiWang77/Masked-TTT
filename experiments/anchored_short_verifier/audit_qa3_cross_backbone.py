@@ -15,7 +15,9 @@ SIGNALS = ("teacher_KL_before", "gain_gradient_norm", "value_gradient_norm")
 
 
 def pair(case, qwen, olmo, qwen_decode, olmo_decode):
-    if qwen["key"] != case or olmo["key"] != case or qwen["task"] != "qa3" or olmo["task"] != "qa3":
+    if (qwen["key"] != case or olmo["key"] != case or qwen["task"] != "qa3" or olmo["task"] != "qa3" or
+        qwen["model"] != "Qwen/Qwen3-4B-Instruct-2507" or
+        olmo["model"] != "allenai/Olmo-3-7B-Instruct"):
         raise ValueError("Unexpected case or task")
     first = []
     for result in (qwen, olmo):
@@ -32,6 +34,8 @@ def pair(case, qwen, olmo, qwen_decode, olmo_decode):
             raise ValueError("Invalid first-step signal")
         first.append(step)
     qsel, osel = qwen["selection"], olmo["selection"]
+    if qsel["source_case_key"] != case or osel["source_case_key"] != case:
+        raise ValueError("The cached score source does not match the case")
     if not qsel["complete_original_document"] or not osel["complete_original_document"]:
         raise ValueError("One model used a compressed working document")
     if qsel["selected_original_chunks"] != osel["selected_original_chunks"]:
