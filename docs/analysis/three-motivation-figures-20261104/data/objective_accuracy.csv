@@ -1,0 +1,5 @@
+arm,n,correct,accuracy_pct,new_correct_vs_vanilla,new_wrong_vs_vanilla
+vanilla,1000,542,54.2,0,0
+kv_whole_ntp,1000,522,52.2,62,82
+kv_selected_ntp,1000,504,50.4,59,97
+kv_sd_soft,1000,578,57.8,145,109

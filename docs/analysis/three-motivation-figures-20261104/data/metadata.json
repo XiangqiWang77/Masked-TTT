@@ -1,0 +1,45 @@
+{
+  "olmo_model": "OLMo-3-7B-Instruct",
+  "olmo_cases": 1000,
+  "coverage_cases": 838,
+  "coverage_excluded_compacted_documents": 162,
+  "coverage_bins": {
+    "0%": 148,
+    "1\u201399%": 166,
+    "100%": 524
+  },
+  "selected_icl_is_saved_selected_only_answer": true,
+  "selected_icl_has_generic_answer_instruction": true,
+  "cartridge_uses_original_question_format": true,
+  "qwen_model": "Qwen3-4B-Instruct-2507",
+  "qwen_paired_cases": 1000,
+  "qwen_max_update_steps": 16,
+  "qwen_update_counts": {
+    "vanilla": {
+      "0": 1000
+    },
+    "kv_whole_ntp": {
+      "16": 999,
+      "0": 1
+    },
+    "kv_selected_ntp": {
+      "16": 999,
+      "0": 1
+    },
+    "kv_sd_soft": {
+      "16": 994,
+      "0": 6
+    }
+  },
+  "qwen_sd_is_fixed_step_soft_sd_not_historical_selective_sd": true,
+  "metric": "answer_focused_lexical_v2",
+  "median_cartridge_to_full_document_kv_ratio": 0.29105210509772395,
+  "storage_cartridge_includes_materialized_kv_and_adapter": true,
+  "storage_excludes_model_question_answer_and_training_peak": true,
+  "storage_not_a_measurement_of_physical_peak_gpu_memory": true,
+  "no_new_model_or_online_api_calls": true,
+  "reference_answers_used_only_for_posthoc_scoring": true,
+  "source_olmo_snapshot": "docs/analysis/olmo-motivations-20261104/data_snapshot.csv",
+  "source_olmo_results": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cross_backbone_selective_sd_20261102/query_cartridges_20261103/runs/olmo3-7b-babilong/cases",
+  "source_qwen_outputs": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/babilong_dense_evidence_20261029/v3/full_report_official_selective_sd/case_arms.csv"
+}
