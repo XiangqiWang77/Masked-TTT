@@ -1,5 +1,7 @@
 """Exercise the paired runtime's real result schema through its report."""
+import importlib.util
 import json
+import os
 from contextlib import nullcontext
 from dataclasses import replace
 from types import SimpleNamespace
@@ -47,7 +49,14 @@ def test_real_small_model_result_roundtrips_through_post_generation_report(tmp_p
                 reference_answers_used=False, online_api_calls=0)
             return PreparedRequest(request, layout, selected, metadata)
 
-    impl = SimpleNamespace(ROOT="old", validate_manifest=lambda x: x, validate=lambda *_: None,
+    driver_path = os.environ.get("CANONICAL_FROZEN_DRIVER_PATH")
+    old_validate = lambda *_: None
+    if driver_path:
+        spec = importlib.util.spec_from_file_location("canonical_frozen_driver_integration", driver_path)
+        driver = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(driver)
+        old_validate = driver.validate
+    impl = SimpleNamespace(ROOT="old", validate_manifest=lambda x: x, validate=old_validate,
                            replace=replace, preflight=lambda _: {"passed": True})
     with canonical_pair_runner(impl, runtime, controls, root="candidate", selector=Selector,
                                physical_controls=kv_only_original_question_controls):
