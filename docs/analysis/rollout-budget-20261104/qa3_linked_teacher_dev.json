@@ -1,0 +1,176 @@
+{
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "metric": "answer_focused_lexical_v2",
+  "expected": 20,
+  "overall": {
+    "n": 20,
+    "score_only_correct": 3,
+    "linked_correct": 7,
+    "new_correct": 4,
+    "new_wrong": 0
+  },
+  "source_questions": 5,
+  "per_source": {
+    "qa3-300060": {
+      "n": 4,
+      "score_only_correct": 2,
+      "linked_correct": 3,
+      "new_correct": 1,
+      "new_wrong": 0
+    },
+    "qa3-300063": {
+      "n": 4,
+      "score_only_correct": 0,
+      "linked_correct": 0,
+      "new_correct": 0,
+      "new_wrong": 0
+    },
+    "qa3-300065": {
+      "n": 4,
+      "score_only_correct": 0,
+      "linked_correct": 1,
+      "new_correct": 1,
+      "new_wrong": 0
+    },
+    "qa3-300069": {
+      "n": 4,
+      "score_only_correct": 1,
+      "linked_correct": 3,
+      "new_correct": 2,
+      "new_wrong": 0
+    },
+    "qa3-300072": {
+      "n": 4,
+      "score_only_correct": 0,
+      "linked_correct": 0,
+      "new_correct": 0,
+      "new_wrong": 0
+    }
+  },
+  "rows": [
+    {
+      "case": "babilong-16-qa3-300060",
+      "source": "qa3-300060",
+      "score_only_teacher": 1,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-16-qa3-300063",
+      "source": "qa3-300063",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-16-qa3-300065",
+      "source": "qa3-300065",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-16-qa3-300069",
+      "source": "qa3-300069",
+      "score_only_teacher": 1,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-16-qa3-300072",
+      "source": "qa3-300072",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "source": "qa3-300060",
+      "score_only_teacher": 0,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-32-qa3-300063",
+      "source": "qa3-300063",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-32-qa3-300065",
+      "source": "qa3-300065",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-32-qa3-300069",
+      "source": "qa3-300069",
+      "score_only_teacher": 0,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-32-qa3-300072",
+      "source": "qa3-300072",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "source": "qa3-300060",
+      "score_only_teacher": 1,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-64-qa3-300063",
+      "source": "qa3-300063",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-64-qa3-300065",
+      "source": "qa3-300065",
+      "score_only_teacher": 0,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-64-qa3-300069",
+      "source": "qa3-300069",
+      "score_only_teacher": 0,
+      "linked_teacher": 1
+    },
+    {
+      "case": "babilong-64-qa3-300072",
+      "source": "qa3-300072",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "source": "qa3-300060",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-8-qa3-300063",
+      "source": "qa3-300063",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-8-qa3-300065",
+      "source": "qa3-300065",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-8-qa3-300069",
+      "source": "qa3-300069",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    },
+    {
+      "case": "babilong-8-qa3-300072",
+      "source": "qa3-300072",
+      "score_only_teacher": 0,
+      "linked_teacher": 0
+    }
+  ],
+  "missing": [],
+  "reference_answers_used_only_posthoc": true,
+  "new_model_calls": 0,
+  "online_api_calls": 0
+}
