@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import sys
 
 import pytest
+import torch
 
 import masked_ttt as real_runtime
 import experiments.anchored_short_verifier.paired_controls as real_controls
@@ -102,6 +103,33 @@ def test_small_model_pair_materializes_and_releases_both_arms(tmp_path, factory,
             report.validate_pair(result, "case", model, "qa1")
     with pytest.raises(ValueError, match="allocated GPU"):
         real_pair_preflight(engine)
+
+
+@pytest.mark.parametrize("factory,model", [(make_engine,"qwen"), (gpt_gqa_engine,"gpt")])
+def test_gain_rate_changes_actual_selected_update_not_value_initial_step(tmp_path,monkeypatch,factory,model):
+    from experiments.prompt_alignment.same_gpu_pair import run_pair
+
+    document,question,_,_=_source(tmp_path)
+    engine=factory()
+    engine.config=replace(engine.config,keep_fraction=.1,steps=2,max_answer_steps=2,
+        self_question_count=0,guard_enabled=False,selected_transfer_weight=0.,value_basis_source="document",
+        release_full_before_cartridge=True,release_selected_source_before_decode=True)
+    selector=LinkedFrozenSelector(tmp_path);selector.bind_case("case")
+    baseline,candidate=configs(engine.config,model)
+    original=torch.optim.Adam.step;updates=[]
+    def observe(optimizer,*args,**kwargs):
+        output=original(optimizer,*args,**kwargs)
+        gain=optimizer.param_groups[0]["params"][0].detach().clone()
+        value=optimizer.param_groups[1]["params"][0].detach().clone()
+        updates.append((gain,value))
+        return output
+    monkeypatch.setattr(torch.optim.Adam,"step",observe)
+    result=run_pair(engine,selector,Request(document=document,question=question,max_new_tokens=3),
+                    baseline,candidate)
+    assert result["changed_settings"]==["gain_learning_rate"] and len(updates)==4
+    assert torch.count_nonzero(updates[0][0])>0 and torch.count_nonzero(updates[0][1])>0
+    torch.testing.assert_close(updates[2][0],updates[0][0]*3,rtol=2e-5,atol=1e-7)
+    torch.testing.assert_close(updates[2][1],updates[0][1],rtol=2e-5,atol=1e-7)
 
 
 def test_manifest_and_batch_fix_two_model_gain_protocol():

@@ -16,6 +16,13 @@ materialized onto an independently prefilled selected cache; full and source KV
 and training state are released before final generation. No evaluation answer
 is used for selection, training or inference; there are no online API calls.
 
+An optimizer-level miniature-model check covers both architectures: on the
+identical initial loss, the first nonzero gain update with rate 0.03 is three
+times the 0.01 update, while the first Value update is unchanged. The six
+attention, optimizer and pair-runner modules used by this test were compared
+directly with the submitted frozen runtime. This checks the implemented update,
+not the full-size models' answer quality.
+
 One six-hour, requeue-capable single-GPU job evaluates the fixed 200-case
 development partition for each model, sharing one loaded model and device for
 each pair. The runner verifies identical selected evidence, Teacher output
