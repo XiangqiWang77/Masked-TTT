@@ -71,8 +71,10 @@ are adapted and sliding-attention layers retain their native behavior.
 
 Each result records the backing storage of the full document KV, the
 request-local adapter, optimizer state, and the materialized decode cache.
-Standalone cartridge size includes both selected KV and its adapter. Shared
-tensor views are counted once. A GPU peak records the full paired experiment
+Standalone cartridge size includes its materialized selected KV and any
+reader state that remains. The command-line path materializes the read
+corrections into KV and drops the duplicate adapter. Shared tensor views are
+counted once. A GPU peak records the full paired experiment
 and includes model weights and training; it is not presented as a separately
 measured standalone peak. Source and question/output suffix KV are identified
 separately so that the compared cache scope is clear.
@@ -94,11 +96,19 @@ Install with `pip install -e '.[test]'` and a compatible FlashAttention build.
 The saved score directory contains `case_to_score_file.json` and `scores/`.
 
 ```bash
-masked-ttt --model /path/to/model --request request.json \
+masked-ttt --model /path/to/Qwen3-4B-Instruct-2507 --request request.json \
   --score-json-dir /path/to/shared_scores --case-id YOUR_CASE_ID \
-  --config-json examples/olmo_babilong_icl_sd.json \
+  --config-json examples/query_cartridges_babilong.json \
   --local-files-only --output result.json
 ```
+
+Replace the model path with a local GPT-OSS-20B checkpoint to use the same
+request-specific procedure. The profile uses the original `0.0001` Value
+learning rate; `--value-learning-rate` and `--gain-learning-rate` override the
+two optimizer rates when evaluating a configuration. The result records both
+rates under `training`. The GPT-OSS `0.001` Value-rate candidate is a
+development-selected setting whose independent evaluation is in progress;
+see [the experiment protocol](experiments/value_lr_physical/README.md).
 
 `prediction`, `generated_token_ids`, and `finish_reason` describe the primary
 output. With standalone enabled, they match `standalone_cartridge` and
@@ -107,6 +117,13 @@ available in `full_context`. With standalone disabled, explicitly set both
 `standalone_cartridge_enabled` and `release_full_before_cartridge` to `false`;
 the primary answer then comes from the full-context path. `self_judge.applies_to`
 identifies which path the judge can affect.
+
+The CLI automatically uses KV-only materialization for standalone requests
+when source-cache release is enabled. With the default release settings, its
+memory diagnostics record zero extra source KV and zero extra training-adapter
+bytes at standalone decode. The
+context used to materialize the cache is process-local; the CLI handles one
+request per process.
 
 `timing.ttft_seconds` measures through the first token of the primary output,
 including preceding online work and selected-cache materialization. Model

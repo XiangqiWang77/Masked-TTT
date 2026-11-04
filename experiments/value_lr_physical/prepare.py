@@ -21,6 +21,8 @@ CPU_TESTS = ["tests/test_value_lr_physical.py", "tests/test_value_lr_physical_re
              "tests/test_value_lr_physical_prepare.py", "tests/test_value_lr_physical_monitor.py",
              "tests/test_value_lr_physical_handoff.py",
              "tests/test_value_lr_physical_launch.py",
+             "tests/test_value_lr_frozen_driver.py",
+             "tests/test_cli.py",
              "tests/test_batched_sd.py", "tests/test_memory.py",
              "tests/test_materialization_equivalence.py", "tests/test_kv_only_cartridge.py",
              "tests/test_gpt_request_date.py"]
@@ -103,7 +105,7 @@ def prepare(workspace, root, python, model):
         frozen = runtime / "repo"
         frozen.mkdir()
         ignore = shutil.ignore_patterns("__pycache__", ".pytest_cache", "*.pyc")
-        for folder in ("src", "experiments", "tests"):
+        for folder in ("src", "experiments", "tests", "examples"):
             shutil.copytree(REPO / folder, frozen / folder, ignore=ignore)
         source = workspace / "query_cartridges_rollout32_olmo_dev_20261104/run.py"
         atomic(runtime / "rollout_driver.py", physical_driver(source.read_text()))
@@ -118,7 +120,8 @@ def prepare(workspace, root, python, model):
         atomic(root / "report.py", report_stub(workspace, root))
         atomic(root / "job.sbatch", physical_slurm(root, model))
         env = dict(os.environ, PYTHONPATH="src:tests:.", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
-                   OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
+                   OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
+                   CARTRIDGE_VALUE_DRIVER_PATH=str(runtime / "rollout_driver.py"))
         result = subprocess.run([str(python), "-m", "pytest", "--rootdir", str(frozen),
             "--confcutdir", str(frozen), "-q", *CPU_TESTS], cwd=frozen, env=env,
             text=True, capture_output=True, timeout=180)

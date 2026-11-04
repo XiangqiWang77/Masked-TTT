@@ -1,6 +1,7 @@
 """Run the method on one user-provided document and question."""
 
 import argparse
+from contextlib import nullcontext
 import json
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from . import (
     Request,
     TTTConfig,
 )
+from .kv_only import kv_only_cartridge
 
 
 def load_method_config(path=None, **overrides):
@@ -54,6 +56,8 @@ def main():
     parser.add_argument("--config-json", type=Path, help="Recorded TTTConfig JSON; explicit flags override it")
     parser.add_argument("--keep-fraction", type=float)
     parser.add_argument("--steps", type=int)
+    parser.add_argument("--gain-learning-rate", type=float)
+    parser.add_argument("--value-learning-rate", type=float)
     parser.add_argument("--value-basis-source",choices=("document","selected"),default=None)
     parser.add_argument("--standalone-answer-format",choices=("original","teacher_requirements"),default=None)
     parser.add_argument("--max-answer-steps", type=int)
@@ -73,6 +77,7 @@ def main():
     request = Request(**json.loads(args.request.read_text()))
     try:
         config = load_method_config(args.config_json, keep_fraction=args.keep_fraction, steps=args.steps,
+            gain_learning_rate=args.gain_learning_rate,value_learning_rate=args.value_learning_rate,
             value_basis_source=args.value_basis_source,
             standalone_answer_format=args.standalone_answer_format,
             max_context=args.max_context, context_reserve_tokens=args.context_reserve_tokens,
@@ -98,7 +103,13 @@ def main():
         local_files_only=args.local_files_only,
         shard_gpus=args.shard_gpus,
     )
-    result = MaskedTTT(backbone, selector).answer(request, time_budget_seconds=args.time_budget)
+    # The CLI handles one request per process, so it can safely materialize a
+    # compact KV-only artifact without leaving duplicate adapter tensors live.
+    # Full-context-only requests keep the normal reader path.
+    compact = config.standalone_cartridge_enabled and config.release_selected_source_before_decode
+    context = kv_only_cartridge() if compact else nullcontext()
+    with context:
+        result = MaskedTTT(backbone, selector).answer(request, time_budget_seconds=args.time_budget)
     text = json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
