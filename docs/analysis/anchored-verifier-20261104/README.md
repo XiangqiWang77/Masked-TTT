@@ -14,3 +14,11 @@
 这些数字只说明核验决策的变化，不是回答准确率。小题还需通过原有的缓存前缀检查，训练效果需要同题实验。规则不读取评测答案，也不调用新 API。
 
 [summary.json](summary.json) 保存聚合结果；[audit.py](audit.py) 使用已保存的生成问题、引用及独立核验回答重放规则。[实现](../../../experiments/anchored_short_verifier/verifier.py)与 [测试](../../../tests/test_anchored_short_verifier.py)位于仓库中。
+
+## OLMo 配置的配对复现
+
+Qwen3-4B 和 GPT-OSS-20B 各使用固定的 200 道开发题及 800 道来源问题不重叠的留出题。证据来自已缓存的 Decision API 分数，保留约 10% 的块；Teacher 继续使用 OLMo 配置中的回答格式指令，Student 和最终 Cartridge 使用原问题格式。原模型权重与文档缓存冻结；原问题和通过核验的小练习共享全文路径上的一次请求内 SD 更新。物化到独立选中缓存后，再释放全文及训练状态并生成。
+
+新增的[同缓存、同格式零更新对照](../../../experiments/anchored_short_verifier/paired_controls.py)与训练后 Cartridge 使用相同的选中 KV、问题后缀和生成长度。与历史 OLMo 风格运行比较时，还要求同一题的选块、Teacher token、零更新 token 和已生成练习及其独立核验回答一致。这样的配对将练习核验的变化与证据、Teacher 或回答格式的变化分开。
+
+开发集对照包含全文、零更新选中缓存、ICL Teacher 和原核验 SD；对某个模型，只有完成全部匹配题且新规则超过这四项对照，才将固定配置用于该模型的 800 道留出题。评测参考答案只在所有回答生成之后用于统一评分。当前已通过 29 项流程与单元检查，以及 8 项使用真实 Qwen/GPT-OSS 分词器和缓存选块的 CPU 检查；**这些检查证明实现契约，不代表答题效果已经提升**。
