@@ -9,6 +9,7 @@ from experiments.precision_cartridge.benchmark_runner import precision_controls,
 from experiments.precision_cartridge.benchmark_report import summarize, validate_result
 from experiments.precision_cartridge.materialization import float32_cartridge
 from experiments.anchored_short_verifier import paired_controls
+from experiments.anchored_short_verifier.paired_controls import original_question_controls
 from masked_ttt import MaskedTTT, Request
 from masked_ttt.linked_selection import LinkedFrozenSelector
 from masked_ttt.kv_only import kv_only_cartridge
@@ -69,6 +70,37 @@ def test_precision_runner_restores_all_hooks_on_failure():
             implementation.preflight, runtime.FrozenJSONSelector, paired_controls.original_question_controls) == old
 
 
+def test_precision_preflight_runs_inside_the_patched_runner_without_recursion():
+    implementation = SimpleNamespace(ROOT="old", validate_manifest=lambda value: value,
+        validate=lambda _result, _entry: None, preflight=lambda _engine: None)
+    engine = make_engine()
+    engine.model.to(dtype=torch.bfloat16)
+    with precision_runner(implementation, runtime, paired_controls, root="candidate",
+                          linked_selector=LinkedFrozenSelector):
+        assert implementation.preflight(engine)["passed"]
+
+
+def test_precision_runner_composes_with_frozen_selector_and_real_request(tmp_path):
+    document, question, _, _ = _source(tmp_path)
+    engine = make_engine()
+    engine.model.to(dtype=torch.bfloat16)
+    engine.config = replace(engine.config, keep_fraction=.1, student_rollout_tokens=32,
+        self_question_count=0, guard_enabled=False, selected_transfer_weight=0., gain_head_mode="kv",
+        value_basis_source="document", release_full_before_cartridge=True,
+        release_selected_source_before_decode=True)
+    implementation = SimpleNamespace(ROOT="old", validate_manifest=lambda value: value,
+        validate=lambda _result, _entry: None, preflight=lambda _engine: None)
+    with precision_runner(implementation, runtime, paired_controls, root="candidate",
+                          linked_selector=LinkedFrozenSelector):
+        selector = runtime.FrozenJSONSelector(tmp_path)
+        selector.bind_case("case")
+        with paired_controls.original_question_controls():
+            result = MaskedTTT(engine, selector).answer(Request(
+                document=document, question=question, max_new_tokens=3))
+        implementation.validate(result, {"key": "case"})
+    assert result["standalone_cartridge"]["precision_paired_diagnostic"]["passed"]
+
+
 @pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss_gqa"])
 def test_precision_preflight_uses_both_paths_and_restores_config(architecture):
     engine = make_engine() if architecture == "qwen3" else gpt_gqa_engine()
@@ -101,11 +133,16 @@ def test_precision_pilot_accepts_a_true_zero_update_without_inventing_a_gain(tmp
     selector = LinkedFrozenSelector(tmp_path)
     selector.bind_case("case")
     monkeypatch.setattr(torch.optim.Adam, "step", lambda self, *args, **kwargs: None)
+    method = MaskedTTT(engine, selector)
+    request = Request(document=document, question=question, max_new_tokens=3)
+    with kv_only_cartridge(), original_question_controls():
+        baseline = method.answer(request)
     with precision_controls():
-        result = MaskedTTT(engine, selector).answer(Request(
-            document=document, question=question, max_new_tokens=3))
+        result = method.answer(request)
     diag = result["standalone_cartridge"]["precision_paired_diagnostic"]
     assert diag["passed"], diag.get("error")
+    assert result["generated_token_ids"] == baseline["generated_token_ids"]
+    assert result["teacher"]["tokens"] == baseline["teacher"]["tokens"]
     assert diag["precision_tokens"] == diag["precision_zero"]["tokens"]
     assert diag["precision_kv_only_materialized"] and diag["precision_adapter_bytes"] == 0
 

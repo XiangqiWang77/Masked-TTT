@@ -20,6 +20,7 @@ CPU_TESTS = ["tests/test_precision_benchmark_prepare.py", "tests/test_precision_
              "tests/test_precision_cartridge.py", "tests/test_gpt_request_date.py",
              "tests/test_linked_long_rollout_physical.py", "tests/test_memory.py",
              "tests/test_batched_sd.py", "tests/test_kv_only_cartridge.py"]
+CPU_BATCHES = [CPU_TESTS[:4], CPU_TESTS[4:7], CPU_TESTS[7:]]
 
 
 def precision_slurm(root):
@@ -87,14 +88,21 @@ def prepare(workspace, root, python):
         atomic(root / "job.sbatch", precision_slurm(root))
         env = dict(os.environ, PYTHONPATH="src:tests:.", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
                    OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
-        result = subprocess.run([str(python), "-m", "pytest", "-q", *CPU_TESTS], cwd=frozen,
-                                env=env, text=True, capture_output=True, timeout=180)
-        if result.returncode:
-            raise RuntimeError("Frozen precision CPU validation failed:\n" + result.stdout + result.stderr)
-        matched = re.search(r"\b(\d+) passed\b", result.stdout)
-        if not matched:
-            raise RuntimeError("No successful test count")
-        data = dict(cpu_tests_passed=True, passed_count=int(matched.group(1)), tests=CPU_TESTS,
+        passed = 0
+        # Running all tiny-model suites in one pytest process can keep model
+        # graphs resident on the shared login node. Bound memory by executing
+        # separate sequential test processes; every listed suite still runs.
+        for batch in CPU_BATCHES:
+            result = subprocess.run([str(python), "-m", "pytest", "-q", *batch], cwd=frozen,
+                                    env=env, text=True, capture_output=True, timeout=180)
+            if result.returncode:
+                raise RuntimeError(f"Frozen precision CPU validation failed ({result.returncode}):\n" +
+                                   result.stdout + result.stderr)
+            matched = re.search(r"\b(\d+) passed\b", result.stdout)
+            if not matched:
+                raise RuntimeError("No successful test count")
+            passed += int(matched.group(1))
+        data = dict(cpu_tests_passed=True, passed_count=passed, tests=CPU_TESTS,
                     gpu_preflight_required=True, submitted=False, online_api_calls=0)
         atomic(root / "cpu_validation_passed.json", json.dumps(data, indent=2) + "\n")
         return data

@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from dataclasses import replace
 
 from experiments.babilong_linked_selection.long_rollout_runtime import linked_long_rollout_runner
+from experiments.anchored_short_verifier.paired_controls import original_question_controls as _original_question_controls
 from experiments.precision_cartridge.paired_diagnostic import capture_precision_paired
 from masked_ttt.kv_only import kv_only_cartridge
 
@@ -10,8 +11,9 @@ from masked_ttt.kv_only import kv_only_cartridge
 @contextmanager
 def precision_controls():
     # Both independently materialized cartridges drop duplicate adapter tensors.
-    from experiments.anchored_short_verifier.paired_controls import original_question_controls
-    with kv_only_cartridge(), capture_precision_paired(include_noop=True), original_question_controls():
+    # Capture the unpatched control before the outer benchmark runner swaps
+    # its public hook to this function; importing it here would recurse.
+    with kv_only_cartridge(), capture_precision_paired(include_noop=True), _original_question_controls():
         yield
 
 
