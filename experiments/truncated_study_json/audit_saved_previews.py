@@ -11,7 +11,7 @@ sys.path[:0] = [str(REPO / "src"), str(REPO)]
 from experiments.truncated_study_json.parser import original_parse, parse_with_truncated_recovery
 
 
-def collect(workspace):
+def collect(workspace, candidate_parser=parse_with_truncated_recovery):
     run = workspace / "query_cartridges_cross_v4_20261103/runs/gptoss20b-babilong"
     split = workspace / "query_cartridges_gpt_v4_holdout_20261103/split.json"
     protocol = json.loads((run / "protocol.json").read_text())
@@ -39,7 +39,7 @@ def collect(workspace):
                 raise ValueError("Unexpected saved preview")
             args = (preview, case["document"], spans, selected, case["query"])
             before, old_rejections = original_parse(*args, limit=2)
-            after, new_rejections = parse_with_truncated_recovery(*args, limit=2)
+            after, new_rejections = candidate_parser(*args, limit=2)
             identity = lambda item: (item.question, item.answer, item.evidence, item.source_chunk)
             previous = {identity(item) for item in before}
             current = {identity(item) for item in after}

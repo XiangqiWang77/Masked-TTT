@@ -5,6 +5,13 @@
     "invalid_json_cases": 62,
     "invalid_json_at_token_limit": 2,
     "invalid_json_below_token_limit": 60,
+    "rejection_event_counts": {
+      "answer_not_in_quote": 12,
+      "duplicate_or_original_question": 15,
+      "invalid_json": 62,
+      "invalid_lengths": 3,
+      "quote_not_in_selected_chunk": 23
+    },
     "invalid_json_token_histogram": {
       "2": 7,
       "4": 53,
@@ -20,6 +27,11 @@
     "invalid_json_cases": 0,
     "invalid_json_at_token_limit": 0,
     "invalid_json_below_token_limit": 0,
+    "rejection_event_counts": {
+      "answer_not_in_quote": 11,
+      "duplicate_or_original_question": 21,
+      "quote_not_in_selected_chunk": 46
+    },
     "invalid_json_token_histogram": {},
     "model": "gpt",
     "source_questions": 50,

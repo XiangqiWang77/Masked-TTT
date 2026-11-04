@@ -1,0 +1,22 @@
+{
+  "model": "gpt",
+  "cases": 200,
+  "source_questions": 50,
+  "counts": {
+    "original_proposals": 278,
+    "recovery_proposals": 283,
+    "new_proposals": 5,
+    "cases_with_new_proposals": 5,
+    "invalid_json_before": 1,
+    "invalid_json_after": 1,
+    "preview_at_512_characters": 1
+  },
+  "preview_character_limit": 512,
+  "saved_preview_may_be_shorter_than_original_generation": true,
+  "independent_verification_performed": false,
+  "final_answers_evaluated": false,
+  "reference_answers_used": false,
+  "model_calls": 0,
+  "online_api_calls": 0,
+  "candidate": "whitespace_quote_recovery"
+}

@@ -12,6 +12,7 @@ def test_counts_limit_and_short_failures_separately():
     assert result["invalid_json_at_token_limit"] == 1
     assert result["invalid_json_below_token_limit"] == 1
     assert result["cases_with_verified_practice"] == 1
+    assert result["rejection_event_counts"] == {"invalid_json": 2}
 
 
 def test_rejects_invalid_generation_lengths():

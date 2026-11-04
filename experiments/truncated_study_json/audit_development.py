@@ -14,10 +14,14 @@ def summarize(records, max_tokens):
            for row in records):
         raise ValueError("Unexpected generated-token count")
     hist = Counter(row["generated_tokens"] for row in failures)
+    rejection_events = Counter()
+    for row in records:
+        rejection_events.update(row["rejections"])
     return dict(cases=len(records), cases_with_verified_practice=sum(row["verified"] > 0 for row in records),
                 invalid_json_cases=len(failures),
                 invalid_json_at_token_limit=hist.get(max_tokens, 0),
                 invalid_json_below_token_limit=len(failures)-hist.get(max_tokens, 0),
+                rejection_event_counts=dict(sorted(rejection_events.items())),
                 invalid_json_token_histogram={str(k): v for k, v in sorted(hist.items())})
 
 
