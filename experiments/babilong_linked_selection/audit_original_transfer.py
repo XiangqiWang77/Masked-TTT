@@ -121,7 +121,10 @@ def render(result):
         "loose lexical scorer for every arm, rather than an LLM semantic judge.", "",
         "The report uses the completed original Decision top-10% selection, with no model or "
         "online API call. Adaptation uses selected ICL Teacher, full Student on-policy KL, "
-        "and independent selected-cache materialization; no reverse transfer loss is added.", ""]
+        "and independent selected-cache materialization; no reverse transfer loss is added. "
+        "This historical paired diagnostic decoded the selected cache while retaining its "
+        "source cache and training state, so it is a quality comparison, not a measurement "
+        "of a fully released serving footprint. The full document KV was released first.", ""]
     return "\n".join(lines)
 
 
