@@ -62,8 +62,9 @@ def main():
                 selector = selector_type(root, source_index=index_path, source_cases=source_path)
                 selector.bind_case("case")
                 request = Request(document=document, question=question, max_new_tokens=3)
-                result = MaskedTTT(engine, selector).answer(request, compact_standalone=True)
+                cartridge, result = MaskedTTT(engine, selector).prepare_cartridge(request)
                 memory, training = result["standalone_cartridge"]["memory"], result["training"]
+                repeated = cartridge.answer()
                 checks = dict(selection=result["selection"]["selected_chunks"] == selected,
                     source_matches=result["selection"]["source_document_matches_index"],
                     teacher_kl=training["objective"] == "on-policy KL(teacher || student)",
@@ -74,13 +75,16 @@ def main():
                     materialized=memory["kv_only_materialized"], no_adapter=memory["cartridge_adapter_bytes"] == 0,
                     no_source=memory["additional_source_kv_bytes_before_decode"] == 0,
                     no_training=memory["additional_training_adapter_bytes_before_decode"] == 0,
+                    repeated_answer=repeated["generated_token_ids"] == result["generated_token_ids"],
+                    retained_kv_size=cartridge.document_kv_bytes == memory["materialized_selected_kv_bytes"],
                     no_full_cache=(result["memory"]["full_cache_release_before_standalone"]
                                    ["full_cache_tensors_live_before_standalone"] == 0))
+                cartridge.close()
                 failed = [key for key, passed in checks.items() if not passed]
                 if failed:
                     raise AssertionError("The packaged " + policy + " cartridge failed on " + name + ": " +
                                          ", ".join(failed) + "; selected=" + str(result["selection"]["selected_chunks"]))
-                print(name + " / " + policy + ": selected chunks, SD and independent KV-only decode passed")
+                print(name + " / " + policy + ": selected chunks, SD and reusable independent KV passed")
         for architecture in ("qwen3", "gpt_oss"):
             directory = root / ("checkpoint-" + architecture)
             directory.mkdir()

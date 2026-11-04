@@ -8,6 +8,7 @@ _EXPORTS = {
     "Backbone": "model",
     "MaskedTTT": "pipeline",
     "Request": "request",
+    "QueryCartridge": "cartridge",
     "OpenAIChunkSelector": "selection",
     "FrozenJSONSelector": "frozen_scores",
 }
@@ -28,5 +29,6 @@ __all__ = [
     "OpenAIChunkSelector",
     "FrozenJSONSelector",
     "Request",
+    "QueryCartridge",
     "TTTConfig",
 ]

@@ -53,7 +53,18 @@ class MaskedTTT:
             return self._answer(request, time_budget_seconds=time_budget_seconds,
                                 compact_standalone=compact_standalone)
 
-    def _answer(self, request, *, time_budget_seconds=None, compact_standalone=False):
+    def prepare_cartridge(self, request, *, time_budget_seconds=None):
+        """Return a reusable original-question cartridge and its first-answer report."""
+        config = self.backbone.config
+        if (not config.standalone_cartridge_enabled or not config.release_full_before_cartridge or
+            not config.release_selected_source_before_decode):
+            raise ValueError("A reusable cartridge requires release of both source caches")
+        scope = getattr(self.backbone.tokenizer, "request_scope", None)
+        with (scope() if callable(scope) else nullcontext()):
+            return self._answer(request, time_budget_seconds=time_budget_seconds,
+                                compact_standalone=True, return_cartridge=True)
+
+    def _answer(self, request, *, time_budget_seconds=None, compact_standalone=False, return_cartridge=False):
         started = time.perf_counter()
         # The backbone tensors are shared; the deadline, readers, KV, and optimizer
         # belong to this request. No adaptation state is stored on self.
@@ -319,6 +330,7 @@ class MaskedTTT:
         standalone_started=time.perf_counter()
         standalone=(answer_standalone(engine,layout,selected,teacher,memory,working.max_new_tokens)
                     if engine.config.standalone_cartridge_enabled else None)
+        cartridge = None
         if engine.config.standalone_cartridge_enabled:
             # The materialization call has returned, so its argument stack no
             # longer retains the full-view training adapter.
@@ -328,6 +340,11 @@ class MaskedTTT:
                 if compact_standalone and not standalone.accounting.get('kv_only_materialized', False):
                     from .kv_only import _drop_redundant_tensors
                     _drop_redundant_tensors(standalone)
+                if return_cartridge:
+                    if release_info['full_cache_tensors_live_before_standalone'] != 0:
+                        raise RuntimeError('The full document KV must be released before retaining a cartridge')
+                    from .cartridge import QueryCartridge
+                    cartridge = QueryCartridge.from_ready(engine, standalone)
                 standalone=decode_standalone(engine,standalone)
             elif compact_standalone:
                 raise RuntimeError('Compact standalone decoding requires a deferred materialized cache')
@@ -357,7 +374,7 @@ class MaskedTTT:
             ttft_scope=('Online request through the first final full-context token, including '
                         'any full-context guard; excludes model loading and offline scoring')
         if not final_tokens:raise AssertionError('The primary output contains no tokens')
-        return dict(
+        report = dict(
             prediction=final_prediction,
             generated_token_ids=final_tokens,
             request_chat_date=getattr(engine.tokenizer, "masked_ttt_request_date", None),
@@ -446,3 +463,8 @@ class MaskedTTT:
             final_question_recomputed=True,
             teacher_answer_in_final_prompt=False,
         )
+        if return_cartridge:
+            if cartridge is None:
+                raise RuntimeError('Standalone cartridge construction did not complete')
+            return cartridge, report
+        return report

@@ -187,6 +187,28 @@ print(result["prediction"])
 print(result["standalone_cartridge"]["memory"]["standalone_cartridge_bytes"])
 ```
 
+To keep the materialized cache for another decode of **the same original
+question**, use the request-local cartridge API instead:
+
+```python
+cartridge, first = MaskedTTT(backbone, selector).prepare_cartridge(request)
+try:
+    print(first["prediction"])
+    print(cartridge.answer()["prediction"])
+    print(cartridge.document_kv_bytes)
+finally:
+    cartridge.close()
+```
+
+The object keeps the selected materialized KV, the original question suffix,
+and references to the frozen backbone. Full-document KV is released before the
+first answer; the selected source cache and training adapter occupy no extra
+storage. Unmodified selected KV layers may reuse their original storage. Each later
+answer uses a new suffix branch; `close()` discards the request-specific cache.
+It is tied to the same backbone and question, and is not a cross-question
+document index. `document_kv_bytes` excludes model weights and the question or
+generated suffix. The method and quality are unchanged by retaining the object.
+
 The document, question and case ID must match the saved scores. No online API
 call is made by this selector. `compact_standalone=True` removes the duplicate
 adapter after materialization and requires both source caches to be released;
