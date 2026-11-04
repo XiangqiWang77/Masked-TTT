@@ -1,0 +1,26 @@
+{
+  "all": {
+    "whole": 37.94749403341289,
+    "icl": 42.124105011933175,
+    "qc": 45.58472553699284,
+    "n": 838,
+    "qc_new_correct_vs_icl": 47,
+    "qc_new_wrong_vs_icl": 18
+  },
+  "complete": {
+    "whole": 41.221374045801525,
+    "icl": 51.14503816793893,
+    "qc": 55.343511450381676,
+    "n": 524,
+    "qc_new_correct_vs_icl": 33,
+    "qc_new_wrong_vs_icl": 11
+  },
+  "incomplete": {
+    "whole": 32.48407643312102,
+    "icl": 27.070063694267517,
+    "qc": 29.29936305732484,
+    "n": 314,
+    "qc_new_correct_vs_icl": 14,
+    "qc_new_wrong_vs_icl": 7
+  }
+}

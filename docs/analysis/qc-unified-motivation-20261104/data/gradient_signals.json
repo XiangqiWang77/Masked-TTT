@@ -1,0 +1,12 @@
+{
+  "cases": 1000,
+  "cases_with_accepted_step": 1000,
+  "cases_with_nonzero_gain_gradient": 1000,
+  "cases_with_nonzero_value_gradient": 1000,
+  "median_first_gain_gradient": 0.08138887584209442,
+  "median_first_value_gradient": 0.588524341583252,
+  "interpretation": "nonzero gradients show that training signals reached both parameter groups; they do not measure causal answer gains",
+  "source": "original OLMo 1,000-case Query Cartridge training logs",
+  "new_model_calls": 0,
+  "online_api_calls": 0
+}

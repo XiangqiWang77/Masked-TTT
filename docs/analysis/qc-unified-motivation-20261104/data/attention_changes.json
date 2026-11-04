@@ -1,0 +1,9 @@
+{
+  "cases": 48,
+  "threshold_pp": 1e-05,
+  "qc_greater": 21,
+  "qc_smaller": 21,
+  "within_threshold": 6,
+  "median_absolute_change_pp": 0.001225222513312474,
+  "note": "Comparison of measured target attention; nonzero numerical changes are not proof of a causal QA benefit."
+}
