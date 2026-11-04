@@ -1,0 +1,38 @@
+{
+  "scope": "40 fixed source-only development cases per model",
+  "selection_policy": "decision_entity_link_v1",
+  "independently_selected_token_plan": true,
+  "model_weights_loaded": false,
+  "model_calls": 0,
+  "online_api_calls": 0,
+  "reference_answers_used": false,
+  "predictions_or_accuracy_not_measured": true,
+  "models": {
+    "qwen": {
+      "cases": 40,
+      "exact_selected_token_mapping": 40,
+      "sink_membership_changed_cases": 0,
+      "canonical_identical_cases": 1,
+      "replacement_character_cases": 0,
+      "total_selected_source_tokens": 119857,
+      "total_evidence_tokens": 120195,
+      "total_canonical_tokens": 119897,
+      "absolute_token_count_change": 298,
+      "total_separators_added": 338,
+      "matches_saved_full_prompt_token_counts": 40
+    },
+    "gpt": {
+      "cases": 40,
+      "exact_selected_token_mapping": 40,
+      "sink_membership_changed_cases": 0,
+      "canonical_identical_cases": 1,
+      "replacement_character_cases": 0,
+      "total_selected_source_tokens": 117830,
+      "total_evidence_tokens": 118168,
+      "total_canonical_tokens": 117872,
+      "absolute_token_count_change": 296,
+      "total_separators_added": 338,
+      "matches_saved_full_prompt_token_counts": 40
+    }
+  }
+}
