@@ -37,23 +37,24 @@ def compare_initial_step(original, candidate):
 
 
 def _summary(rows):
+    comparable = [row for row in rows if row["same_student_rollout"] and row["same_target_positions"]]
+
     def median(name):
-        values = [row[name] for row in rows]
+        values = [row[name] for row in comparable]
         return statistics.median(values) if values else None
 
-    same_inputs = sum(row["same_student_rollout"] and row["same_target_positions"] for row in rows)
     return {
         "n": len(rows),
-        "same_first_rollout_and_positions": same_inputs,
+        "same_first_rollout_and_positions": len(comparable),
         "median_kl_relative_difference": median("kl_relative_difference"),
         "median_gain_gradient_relative_difference": median("gain_gradient_relative_difference"),
         "median_value_gradient_relative_difference": median("value_gradient_relative_difference"),
-        "cases_kl_relative_difference_over_1_percent": sum(row["kl_relative_difference"] > .01 for row in rows),
+        "cases_kl_relative_difference_over_1_percent": sum(row["kl_relative_difference"] > .01 for row in comparable),
         "cases_gain_gradient_relative_difference_over_1_percent": sum(
-            row["gain_gradient_relative_difference"] > .01 for row in rows
+            row["gain_gradient_relative_difference"] > .01 for row in comparable
         ),
         "cases_value_gradient_relative_difference_over_1_percent": sum(
-            row["value_gradient_relative_difference"] > .01 for row in rows
+            row["value_gradient_relative_difference"] > .01 for row in comparable
         ),
     }
 
@@ -112,6 +113,7 @@ def render(result):
     lines += [
         "",
         f"Unreadable or incomplete matched pairs: {len(result['unavailable_cases'])}.",
+        "Medians and threshold counts include only identical rollouts and target positions. "
         "Differences can arise from numerical execution as well as an implementation change; "
         "they are a reproduction diagnostic, not an accuracy metric.",
         "",

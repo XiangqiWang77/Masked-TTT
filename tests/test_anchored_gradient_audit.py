@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from experiments.anchored_short_verifier.audit_pair_gradients import audit, compare_initial_step, render
+from experiments.anchored_short_verifier.audit_pair_gradients import audit, compare_initial_step, render, _summary
 
 
 def _result(loss=1.0, gain=2.0, value=3.0, tokens=(1, 2)):
@@ -22,6 +22,9 @@ def test_first_update_comparison_uses_same_input_and_finite_signals():
     assert result["gain_gradient_relative_difference"] == 0
     assert result["kl_relative_difference"] == pytest.approx(.1 / 1.1)
     assert result["value_gradient_relative_difference"] == pytest.approx(.3 / 3.3)
+    unmatched = _summary([result])
+    assert unmatched["n"] == 1 and unmatched["same_first_rollout_and_positions"] == 0
+    assert unmatched["median_kl_relative_difference"] is None
     with pytest.raises(ValueError):
         compare_initial_step(_result(loss=float("nan")), _result())
     other = _result()
