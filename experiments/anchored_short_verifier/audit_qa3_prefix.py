@@ -5,7 +5,9 @@ location; it does not claim that full-vocabulary KL contains no useful signal.
 """
 import argparse
 import json
+import math
 import re
+import statistics
 from pathlib import Path
 
 
@@ -27,7 +29,11 @@ def audit_result(case, saved, decode):
         raise ValueError("Invalid student rollout or limit")
     if any(type(i) is not int or i < 0 or i >= len(tokens) for i in targets):
         raise ValueError("A target position falls outside the saved rollout")
+    signals = (step["teacher_KL_before"], step["gain_gradient_norm"], step["value_gradient_norm"])
+    if any(type(value) not in (int, float) or not math.isfinite(value) or value < 0 for value in signals):
+        raise ValueError("The first-step KL and gradient norms must be finite and nonnegative")
     text = decode(tokens)
+    pair = saved.get("standalone_cartridge", {}).get("paired_prompt_control")
     return {
         "case": case,
         "tokens": len(tokens),
@@ -35,6 +41,13 @@ def audit_result(case, saved, decode):
         "reached_cap": len(tokens) == limit,
         "ends_at_location_slot": bool(ENDS_AT_LOCATION_SLOT.search(text)),
         "target_positions": len(targets),
+        "first_teacher_kl": signals[0],
+        "first_gain_gradient_norm": signals[1],
+        "first_value_gradient_norm": signals[2],
+        "generated_tokens_changed": (
+            pair["zero_original"]["tokens"] != pair["trained_original"]["tokens"]
+            if pair is not None else None
+        ),
     }
 
 
@@ -57,6 +70,11 @@ def audit(case_ids, result_root, decode):
         "prefixes_at_cap": sum(row["reached_cap"] for row in rows),
         "prefixes_ending_at_location_slot": sum(row["ends_at_location_slot"] for row in rows),
         "both": sum(row["reached_cap"] and row["ends_at_location_slot"] for row in rows),
+        "median_first_teacher_kl": statistics.median(row["first_teacher_kl"] for row in rows) if rows else None,
+        "median_first_gain_gradient_norm": statistics.median(row["first_gain_gradient_norm"] for row in rows) if rows else None,
+        "median_first_value_gradient_norm": statistics.median(row["first_value_gradient_norm"] for row in rows) if rows else None,
+        "matched_generation_pairs": sum(row["generated_tokens_changed"] is not None for row in rows),
+        "matched_generation_changed": sum(row["generated_tokens_changed"] is True for row in rows),
         "missing_cases": missing,
         "references_read": False,
         "new_model_calls": 0,

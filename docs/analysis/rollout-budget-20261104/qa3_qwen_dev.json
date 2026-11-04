@@ -5,6 +5,11 @@
   "prefixes_at_cap": 20,
   "prefixes_ending_at_location_slot": 20,
   "both": 20,
+  "median_first_teacher_kl": 2.3188898801151936e-08,
+  "median_first_gain_gradient_norm": 9.585923610444524e-09,
+  "median_first_value_gradient_norm": 8.355426572848046e-08,
+  "matched_generation_pairs": 20,
+  "matched_generation_changed": 0,
   "missing_cases": [],
   "references_read": false,
   "new_model_calls": 0,
@@ -15,7 +20,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 5.574009698250393e-09,
+      "first_gain_gradient_norm": 2.799280141019267e-09,
+      "first_value_gradient_norm": 2.8018702025178754e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-16-qa3-300063",
@@ -23,7 +32,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 2.873553839322085e-08,
+      "first_gain_gradient_norm": 1.2902457768859676e-08,
+      "first_value_gradient_norm": 8.590384226181413e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-16-qa3-300065",
@@ -31,7 +44,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 2.2752237871515035e-09,
+      "first_gain_gradient_norm": 1.9360992808969968e-09,
+      "first_value_gradient_norm": 2.070562743483606e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-16-qa3-300069",
@@ -39,7 +56,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 1.4595237018966145e-08,
+      "first_gain_gradient_norm": 8.317068145302642e-10,
+      "first_value_gradient_norm": 1.0730760280353024e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-16-qa3-300072",
@@ -47,7 +68,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 2.9566282755411066e-10,
+      "first_gain_gradient_norm": 1.3916823249360277e-09,
+      "first_value_gradient_norm": 1.3375696106265877e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-32-qa3-300060",
@@ -55,7 +80,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 7.35726871425868e-06,
+      "first_gain_gradient_norm": 3.2464824926137226e-06,
+      "first_value_gradient_norm": 3.070148886763491e-05,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-32-qa3-300063",
@@ -63,7 +92,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 4.5940826254309286e-08,
+      "first_gain_gradient_norm": 1.636918334213533e-08,
+      "first_value_gradient_norm": 1.139430807484132e-07,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-32-qa3-300065",
@@ -71,7 +104,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 0.003755293320864439,
+      "first_gain_gradient_norm": 0.018205495551228523,
+      "first_value_gradient_norm": 0.1490548551082611,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-32-qa3-300069",
@@ -79,7 +116,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 2.7861986495736346e-08,
+      "first_gain_gradient_norm": 1.24466232875875e-08,
+      "first_value_gradient_norm": 1.2225140721966454e-07,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-32-qa3-300072",
@@ -87,7 +128,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 1.5145252163506484e-08,
+      "first_gain_gradient_norm": 6.7252239333015496e-09,
+      "first_value_gradient_norm": 8.120468919514678e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-64-qa3-300060",
@@ -95,7 +140,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 2.2834769879409578e-06,
+      "first_gain_gradient_norm": 3.518260200507939e-06,
+      "first_value_gradient_norm": 5.311161658028141e-05,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-64-qa3-300063",
@@ -103,7 +152,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 8.046683069551364e-05,
+      "first_gain_gradient_norm": 0.00013855281576979905,
+      "first_value_gradient_norm": 0.0009355999645777047,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-64-qa3-300065",
@@ -111,7 +164,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 2.6065965357702225e-05,
+      "first_gain_gradient_norm": 6.362960994010791e-05,
+      "first_value_gradient_norm": 0.0006179423653520644,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-64-qa3-300069",
@@ -119,7 +176,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 6.781477281947446e-07,
+      "first_gain_gradient_norm": 7.585069283777557e-07,
+      "first_value_gradient_norm": 6.260030659177573e-06,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-64-qa3-300072",
@@ -127,7 +188,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 1.9296285245218314e-06,
+      "first_gain_gradient_norm": 1.360977989861567e-06,
+      "first_value_gradient_norm": 1.1208707292098552e-05,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-8-qa3-300060",
@@ -135,7 +200,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 1.7168984456361613e-08,
+      "first_gain_gradient_norm": 3.3116747122363677e-09,
+      "first_value_gradient_norm": 4.452004631616546e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-8-qa3-300063",
@@ -143,7 +212,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 3.881645227465924e-09,
+      "first_gain_gradient_norm": 1.8537205104252052e-09,
+      "first_value_gradient_norm": 1.758995793466056e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-8-qa3-300065",
@@ -151,7 +224,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 1.5490650540073148e-08,
+      "first_gain_gradient_norm": 5.682438075638174e-09,
+      "first_value_gradient_norm": 4.395028341264151e-08,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-8-qa3-300069",
@@ -159,7 +236,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 8.867251821698119e-09,
+      "first_gain_gradient_norm": 7.359541864815355e-10,
+      "first_value_gradient_norm": 6.413004349781204e-09,
+      "generated_tokens_changed": false
     },
     {
       "case": "babilong-8-qa3-300072",
@@ -167,7 +248,11 @@
       "limit": 8,
       "reached_cap": true,
       "ends_at_location_slot": true,
-      "target_positions": 8
+      "target_positions": 8,
+      "first_teacher_kl": 1.8515811106567526e-08,
+      "first_gain_gradient_norm": 3.0170645981542066e-09,
+      "first_value_gradient_norm": 2.6015731791062535e-08,
+      "generated_tokens_changed": false
     }
   ]
 }
