@@ -29,6 +29,11 @@ the same task-aware loose lexical scorer, after generation. Report both new
 correct and new wrong answers, with the artifact and actual runtime memory
 scopes kept distinct.
 
+The supplementary same-format table reuses existing zero-update and trained
+outputs with the Teacher's generic format instruction. It separates format
+effects from SD effects without inserting the Teacher answer into the student
+prompt or changing the predeclared promotion rule.
+
 After both models have all 200 development results and their 10% counterparts,
 a model qualifies for the source-disjoint 800-case test only if its 12%
 Cartridge beats its full-KV, zero-update and Teacher controls, and also beats
