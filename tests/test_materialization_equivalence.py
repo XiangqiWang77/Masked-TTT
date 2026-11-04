@@ -1,5 +1,6 @@
 """A materialized cartridge must match applying the same read state dynamically."""
 from dataclasses import replace
+import math
 from types import SimpleNamespace
 
 import pytest
@@ -7,7 +8,7 @@ import torch
 from transformers import GptOssConfig,GptOssForCausalLM
 
 from masked_ttt import Backbone,Request,TTTConfig
-from masked_ttt.cache import fork_prefix
+from masked_ttt.cache import AppendOnlyDocumentCache,fork_prefix
 from masked_ttt.memory import KVReadMemory
 from masked_ttt.request import prepare_layout
 from masked_ttt.runtime import private_forward,private_module_tree
@@ -36,6 +37,72 @@ def gpt_gqa_engine():
         context_reserve_tokens=128,value_rank=2,steps=2,teacher_max_new_tokens=3,
         self_question_count=0,prefill_chunk_tokens=64,guard_enabled=False,
         standalone_cartridge_enabled=True))
+
+
+@pytest.mark.parametrize('architecture',['qwen3','gpt_oss_gqa'])
+@pytest.mark.parametrize('device',['cpu',pytest.param('cuda',marks=pytest.mark.skipif(
+    not torch.cuda.is_available(),reason='Requires CUDA attention backend'))])
+def test_transplant_bakes_each_original_chunk_into_independent_selected_kv(architecture,device):
+    """Check the physical K/V result against the original trained parameters."""
+    engine=make_engine() if architecture=='qwen3' else gpt_gqa_engine()
+    if device=='cuda':
+        engine.model.to(device='cuda:0',dtype=torch.bfloat16)
+        engine.device=torch.device('cuda:0')
+    engine.budget=Budget(None)
+    ids=list(range(50,70))
+    chunks=[list(range(6,9)),list(range(9,12)),list(range(12,15)),list(range(15,18))]
+    selected=[1,3]
+    layout=SimpleNamespace(ids=ids,chunks=chunks,initial=6)
+    # Two removed gaps introduce two newline separators in the fresh evidence.
+    selected_ids=ids[:6]+[10,10]+ids[9:12]+[10,10]+ids[15:18]
+    selected_chunks=[[8,9,10],[13,14,15]]
+    full=AppendOnlyDocumentCache(engine.model.config,18)
+    evidence=AppendOnlyDocumentCache(engine.model.config,len(selected_ids))
+    with torch.no_grad():
+        private_forward(engine.model,torch.tensor(ids[:18],device=engine.device),0,full)
+        private_forward(engine.model,torch.tensor(selected_ids,device=engine.device),0,evidence)
+    original=[(x,x._version,x.clone()) for cache in (full,evidence) for layer in cache.layers
+              for x in (layer.keys,layer.values) if x is not None]
+    trained=KVReadMemory(engine.model.config,chunks,selected,18,rank=2,
+                         sink_tokens=engine.config.sink_tokens).to(engine.device)
+    trained.prepare_value_basis(full,trained.adapted_layers)
+    trained.value_enabled=True;trained.native_mode=False
+    torch.manual_seed(420)
+    with torch.no_grad():
+        for layer in trained.adapted_layers:
+            trained.gain[layer,:,selected[0]]=.31
+            trained.gain[layer,:,selected[1]]=-.23
+            trained.value_coefficients[layer].normal_(std=.25)
+    teacher=SimpleNamespace(document_cache=evidence,document_end=len(selected_ids),
+                            document_ids=tuple(selected_ids))
+    _,branch,_,length,_=build_standalone(engine,layout,selected,teacher,trained)
+    assert length==len(selected_ids)
+    for layer in trained.adapted_layers:
+        src=evidence.layers[layer]
+        baked=branch.layers[layer]
+        d=trained.dim
+        expected_key=torch.zeros_like(baked.keys)
+        expected_key[...,:d]=src.keys
+        expected_value=torch.zeros_like(baked.values)
+        expected_value[...,:d]=src.values
+        for bank,(source_chunk,target_positions) in enumerate(zip(selected,selected_chunks)):
+            expected_key[...,target_positions,d]=trained.gain[layer,:,source_chunk][None,:,None]*math.sqrt(d)
+            source_values=src.values[...,target_positions,:].float()
+            basis=trained.value_basis[layer][None]
+            coeff=trained.value_coefficients[layer,:,bank][None]
+            delta=source_values @ basis @ coeff
+            radius=trained.value_radius*source_values.norm(dim=-1,keepdim=True)
+            factor=(radius/delta.norm(dim=-1,keepdim=True).clamp_min(1e-12)).clamp(max=1.)
+            expected_value[...,target_positions,:d]+=delta*factor
+        torch.testing.assert_close(baked.keys,expected_key,
+            rtol=.02 if device=='cuda' else 0,atol=.01 if device=='cuda' else 1e-7)
+        torch.testing.assert_close(baked.values,expected_value,
+            rtol=.02 if device=='cuda' else 1e-6,atol=.01 if device=='cuda' else 1e-7)
+        assert baked.keys.data_ptr()!=src.keys.data_ptr()
+        assert baked.values.data_ptr()!=src.values.data_ptr()
+    for tensor,version,contents in original:
+        assert tensor._version==version
+        torch.testing.assert_close(tensor,contents,rtol=0,atol=0)
 
 
 @pytest.mark.parametrize('device',['cpu',pytest.param('cuda',marks=pytest.mark.skipif(
