@@ -1,0 +1,36 @@
+{
+  "qwen": {
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "snapshot_time": 1793766079.8129323,
+    "n": 1000,
+    "expected": 1000,
+    "median_full_bytes": 2862047232.0,
+    "median_artifact_before_bytes": 424216659.5,
+    "median_materialized_kv_bytes": 413521920.0,
+    "median_estimated_saved_bytes": 10694787.0,
+    "median_artifact_before_percent": 14.432458803571759,
+    "median_kv_only_percent": 14.060130760742178,
+    "estimate_only": true,
+    "excludes_model_and_training_peak": true,
+    "new_model_calls": 0,
+    "online_api_calls": 0,
+    "unavailable_count": 0
+  },
+  "gpt": {
+    "model": "openai/gpt-oss-20b",
+    "snapshot_time": 1793761554.030948,
+    "n": 563,
+    "expected": 563,
+    "median_full_bytes": 684834816,
+    "median_artifact_before_bytes": 132038481,
+    "median_materialized_kv_bytes": 126443520,
+    "median_estimated_saved_bytes": 5216498,
+    "median_artifact_before_percent": 20.806917263426293,
+    "median_kv_only_percent": 20.061435843426366,
+    "estimate_only": true,
+    "excludes_model_and_training_peak": true,
+    "new_model_calls": 0,
+    "online_api_calls": 0,
+    "unavailable_count": 0
+  }
+}
