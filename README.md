@@ -132,6 +132,14 @@ available in `full_context`. With standalone disabled, explicitly set both
 the primary answer then comes from the full-context path. `self_judge.applies_to`
 identifies which path the judge can affect.
 
+The optional `--selected-evidence-tokenization canonical` retokenizes the
+concatenated selected evidence text for both the ICL Teacher and the standalone
+cartridge. The default `original` mode preserves the selected source token IDs.
+Both modes keep the full-document Student and SD update unchanged. Canonical
+mode checks that evidence characters and chunk ownership are preserved; it
+rejects ambiguous boundaries rather than assigning them to the wrong chunk.
+The paired evaluation is still in progress, so the default is unchanged.
+
 The CLI automatically uses KV-only materialization for standalone requests
 when both source caches are released. With the default release settings, its
 memory diagnostics record zero extra source KV and zero extra training-adapter

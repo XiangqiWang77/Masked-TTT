@@ -14,13 +14,13 @@ def canonical_selected_evidence(tokenizer, *, sink_tokens):
     original prefix and suffix token IDs held fixed. This experimental hook is
     process-local and must not run concurrently with other requests.
     """
-    from masked_ttt import _layout, self_study_runtime, shared_selected, standalone, teacher
+    from masked_ttt import _layout, evidence, self_study_runtime, shared_selected, standalone, teacher
 
     modules = (teacher, self_study_runtime, shared_selected, standalone)
     originals = [module.selected_read_plan for module in modules]
     old_standalone_map = standalone.selected_chunk_positions
     old_shared_map = shared_selected.selected_chunk_positions
-    if any(fn is not _layout.selected_read_plan for fn in originals):
+    if any(fn is not evidence.selected_read_plan for fn in originals):
         raise ValueError("The selected-evidence planning path is already patched")
     if old_shared_map is not old_standalone_map:
         raise ValueError("The selected-evidence chunk mapping is already patched")

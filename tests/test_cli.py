@@ -26,6 +26,7 @@ def test_recorded_olmo_profile_is_loaded_exactly_and_can_be_overridden():
     assert effective.pop('release_full_before_cartridge') is True
     assert effective.pop('release_selected_source_before_decode') is True
     assert effective.pop('value_basis_source') == 'document'
+    assert effective.pop('selected_evidence_tokenization') == 'original'
     assert effective.pop('gain_head_mode') == 'kv'
     assert effective.pop('standalone_answer_format') == 'original'
     assert effective.pop('align_student_teacher_prompt') is False
@@ -39,6 +40,7 @@ def test_recorded_olmo_profile_is_loaded_exactly_and_can_be_overridden():
     assert load_method_config(path,selected_transfer_weight=.25).selected_transfer_weight==.25
     assert load_method_config(path,align_student_teacher_prompt=True).align_student_teacher_prompt
     assert load_method_config(path,value_learning_rate=.001,gain_learning_rate=.02).value_learning_rate==.001
+    assert load_method_config(path,selected_evidence_tokenization='canonical').selected_evidence_tokenization=='canonical'
 
 
 def test_config_file_rejects_invalid_json_shape_and_unknown_keys(tmp_path):
@@ -46,6 +48,9 @@ def test_config_file_rejects_invalid_json_shape_and_unknown_keys(tmp_path):
     with pytest.raises(ValueError):load_method_config(path)
     path.write_text('{"unknown_field":1}')
     with pytest.raises(TypeError):load_method_config(path)
+    path.write_text('{"selected_evidence_tokenization":"unknown"}')
+    with pytest.raises(ValueError, match='selected_evidence_tokenization'):
+        load_method_config(path)
 
 
 def test_two_backbone_profile_keeps_full_document_and_releases_both_source_caches():
@@ -66,6 +71,26 @@ def test_cached_selection_requires_an_explicit_case_id(tmp_path,monkeypatch,caps
         main()
     assert error.value.code==2
     assert '--case-id is required' in capsys.readouterr().err
+
+
+def test_cli_passes_canonical_evidence_setting_to_backbone(tmp_path,monkeypatch):
+    from types import SimpleNamespace
+    import masked_ttt.cli as cli
+    request=tmp_path/'request.json'
+    request.write_text(json.dumps(dict(document='A short document.',question='What is it?')))
+    out=tmp_path/'out.json';configs=[]
+    monkeypatch.setattr(cli,'FrozenJSONSelector',lambda _path:SimpleNamespace(bind_case=lambda _case:None))
+    def load(_model,config,**_kwargs):
+        configs.append(config)
+        return object()
+    monkeypatch.setattr(cli.Backbone,'load',load)
+    monkeypatch.setattr(cli,'MaskedTTT',lambda *_args:SimpleNamespace(answer=lambda *_a,**_k:dict(prediction='ok')))
+    monkeypatch.setattr(sys,'argv',['masked-ttt','--model','unused','--request',str(request),
+        '--score-json-dir',str(tmp_path),'--case-id','case','--selected-evidence-tokenization','canonical',
+        '--output',str(out)])
+    main()
+    assert configs[0].selected_evidence_tokenization=='canonical'
+    assert json.loads(out.read_text())['prediction']=='ok'
 
 
 def test_cached_source_verification_requires_both_files(tmp_path,monkeypatch,capsys):

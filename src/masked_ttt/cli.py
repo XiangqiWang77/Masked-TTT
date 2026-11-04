@@ -66,6 +66,8 @@ def main():
     parser.add_argument("--gain-learning-rate", type=float)
     parser.add_argument("--value-learning-rate", type=float)
     parser.add_argument("--value-basis-source",choices=("document","selected"),default=None)
+    parser.add_argument("--selected-evidence-tokenization", choices=("original", "canonical"), default=None,
+                        help="Keep source token IDs (default) or retokenize selected evidence text")
     parser.add_argument("--standalone-answer-format",choices=("original","teacher_requirements"),default=None)
     parser.add_argument("--align-student-teacher-prompt", action="store_true", default=None,
                         help="Use the Teacher's question-only formatting for the main SD path")
@@ -88,6 +90,7 @@ def main():
         config = load_method_config(args.config_json, keep_fraction=args.keep_fraction, steps=args.steps,
             gain_learning_rate=args.gain_learning_rate,value_learning_rate=args.value_learning_rate,
             value_basis_source=args.value_basis_source,
+            selected_evidence_tokenization=args.selected_evidence_tokenization,
             standalone_answer_format=args.standalone_answer_format,
             align_student_teacher_prompt=args.align_student_teacher_prompt,
             max_context=args.max_context, context_reserve_tokens=args.context_reserve_tokens,

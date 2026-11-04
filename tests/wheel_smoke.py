@@ -49,15 +49,21 @@ def main():
         source_path.write_bytes(source_record)
         index_path.write_text(json.dumps([dict(key="case", offset=0, bytes=len(source_record))]))
         for name, factory in (("qwen", make_engine), ("gpt-gqa", gpt_gqa_engine)):
-            for policy, selector_type, selected in (
-                ("score-ranked", FrozenJSONSelector, [0,1,3,6]),
-                ("entity-linked", LinkedFrozenSelector, [1,2,3,6]),
+            for policy, selector_type, selected, tokenization in (
+                ("score-ranked", FrozenJSONSelector, [0,1,3,6], "original"),
+                ("entity-linked", LinkedFrozenSelector, [1,2,3,6], "original"),
+                ("entity-linked", LinkedFrozenSelector, [1,2,3,6], "canonical"),
             ):
                 engine = factory()
+                if tokenization == "canonical":
+                    # The toy byte tokenizer normally renders newlines as '<10>'.
+                    # Canonical evidence requires lossless decoding, as real tokenizers do.
+                    raw_tokenizer = getattr(engine.tokenizer, "tokenizer", engine.tokenizer)
+                    raw_tokenizer.decode = lambda ids, **_kwargs: "".join(chr(int(i)) for i in ids)
                 engine.config = replace(
                     engine.config, keep_fraction=.1, self_question_count=0, guard_enabled=False,
                     selected_transfer_weight=0., release_full_before_cartridge=True,
-                    release_selected_source_before_decode=True,
+                    release_selected_source_before_decode=True, selected_evidence_tokenization=tokenization,
                 )
                 selector = selector_type(root, source_index=index_path, source_cases=source_path)
                 selector.bind_case("case")
@@ -66,6 +72,8 @@ def main():
                 memory, training = result["standalone_cartridge"]["memory"], result["training"]
                 repeated = cartridge.answer()
                 checks = dict(selection=result["selection"]["selected_chunks"] == selected,
+                    evidence_mode=result["selection"]["evidence_tokenization"] == tokenization,
+                    teacher_mode=result["teacher"]["evidence_tokenization"] == tokenization,
                     source_matches=result["selection"]["source_document_matches_index"],
                     teacher_kl=training["objective"] == "on-policy KL(teacher || student)",
                     no_extra_loss=training["selected_transfer_weight"] == 0,
@@ -82,9 +90,9 @@ def main():
                 cartridge.close()
                 failed = [key for key, passed in checks.items() if not passed]
                 if failed:
-                    raise AssertionError("The packaged " + policy + " cartridge failed on " + name + ": " +
+                    raise AssertionError("The packaged " + policy + " " + tokenization + " cartridge failed on " + name + ": " +
                                          ", ".join(failed) + "; selected=" + str(result["selection"]["selected_chunks"]))
-                print(name + " / " + policy + ": selected chunks, SD and reusable independent KV passed")
+                print(name + " / " + policy + " / " + tokenization + ": selected chunks, SD and reusable independent KV passed")
         for architecture in ("qwen3", "gpt_oss"):
             directory = root / ("checkpoint-" + architecture)
             directory.mkdir()

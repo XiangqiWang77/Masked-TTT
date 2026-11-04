@@ -10,6 +10,7 @@ import weakref
 import torch
 
 from .batched_sd import batched_teacher_logits
+from .evidence import selected_evidence_mode
 from .memory import KVReadMemory
 from .memory_accounting import (cache_tensors,cuda_allocated,cuda_peak,module_tensors,
                                 optimizer_storage_bytes,storage_bytes)
@@ -49,7 +50,9 @@ class MaskedTTT:
                 not config.release_selected_source_before_decode):
                 raise ValueError("Compact standalone decoding requires release of both source caches")
         scope = getattr(self.backbone.tokenizer, "request_scope", None)
-        with (scope() if callable(scope) else nullcontext()):
+        with (scope() if callable(scope) else nullcontext()), selected_evidence_mode(
+            self.backbone.tokenizer, self.backbone.config.selected_evidence_tokenization,
+            sink_tokens=self.backbone.config.sink_tokens):
             return self._answer(request, time_budget_seconds=time_budget_seconds,
                                 compact_standalone=compact_standalone)
 
@@ -60,7 +63,8 @@ class MaskedTTT:
             not config.release_selected_source_before_decode):
             raise ValueError("A reusable cartridge requires release of both source caches")
         scope = getattr(self.backbone.tokenizer, "request_scope", None)
-        with (scope() if callable(scope) else nullcontext()):
+        with (scope() if callable(scope) else nullcontext()), selected_evidence_mode(
+            self.backbone.tokenizer, config.selected_evidence_tokenization, sink_tokens=config.sink_tokens):
             return self._answer(request, time_budget_seconds=time_budget_seconds,
                                 compact_standalone=True, return_cartridge=True)
 
@@ -403,7 +407,7 @@ class MaskedTTT:
                 cache_sizes_exclude_question_and_generated_suffix=True,
                 full_cache_release_before_standalone=release_info,
             ),
-            selection=prepared.metadata,
+            selection=dict(prepared.metadata, evidence_tokenization=teacher.evidence_tokenization),
             support=support,
             training=dict(
                 objective=("on-policy KL(selected teacher || full student) + weighted "

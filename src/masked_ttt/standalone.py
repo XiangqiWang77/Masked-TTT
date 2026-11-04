@@ -6,28 +6,11 @@ import weakref
 from dataclasses import dataclass
 import torch
 
-from ._layout import selected_read_plan
+from .evidence import selected_chunk_positions, selected_read_plan
 from .memory import KVReadMemory
 from .memory_accounting import cache_tensors,cuda_allocated,cuda_reserved,module_tensors,storage_bytes
 from .reader import MemoryReader
 from .runtime import private_forward
-
-
-def selected_chunk_positions(layout,selected,plan,separator_length):
-    """Map original selected token slots to the selected-only cache slots."""
-    if separator_length<1:
-        raise ValueError('A nonempty separator is required')
-    mapping={};cursor=layout.initial;previous=layout.initial-1
-    for original in plan.original_document_positions:
-        if original!=previous+1:
-            cursor+=separator_length
-        mapping[original]=cursor;cursor+=1;previous=original
-    if cursor!=plan.document_end:
-        raise ValueError('Selected cache position mapping is inconsistent')
-    try:
-        return [[mapping[position] for position in layout.chunks[i]] for i in selected]
-    except KeyError as exc:
-        raise ValueError('Selected cache is missing a selected token') from exc
 
 
 @torch.no_grad()

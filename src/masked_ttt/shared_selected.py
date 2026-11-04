@@ -1,10 +1,9 @@
 """Use one trainable reading state on full and independently prefetched KV."""
 import torch
 
-from ._layout import selected_read_plan
+from .evidence import selected_chunk_positions, selected_read_plan
 from .memory import KVReadMemory
 from .reader import MemoryReader
-from .standalone import selected_chunk_positions
 
 
 def shared_selected_reader(engine,layout,selected,teacher,full_memory):

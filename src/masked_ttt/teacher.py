@@ -5,7 +5,9 @@ import time
 
 import torch
 
-from ._layout import prefill_batches, selected_read_plan
+from ._layout import prefill_batches
+from .canonical_evidence import CanonicalEvidence
+from .evidence import selected_read_plan
 from .cache import AppendOnlyDocumentCache, fork_prefix
 from .runtime import private_forward
 from .request import Request,prepare_layout
@@ -25,6 +27,7 @@ class TeacherSignal:
     question_tokens: torch.Tensor = None
     document_end: int = 0
     document_ids: tuple = ()
+    evidence_tokenization: str = "original"
 
     def metadata(self):
         return dict(
@@ -40,6 +43,7 @@ class TeacherSignal:
             on_policy_targets_recomputed=True,
             fresh_selected_context=True,
             response_instruction_applied=self.instruction_applied,
+            evidence_tokenization=self.evidence_tokenization,
         )
 
 
@@ -116,6 +120,7 @@ def build_teacher(backbone, reader, request, layout, selected):
         suffix,
         plan.document_end,
         tuple(plan.ids[:plan.document_end]),
+        "canonical" if isinstance(plan, CanonicalEvidence) else "original",
     )
 
 

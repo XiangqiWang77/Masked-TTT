@@ -19,6 +19,8 @@
 
 已据此实现一个**独立、默认关闭**的候选：[canonical_evidence.py](../../../experiments/value_lr_physical/canonical_evidence.py) 重新分词证据片段，并把只跨越“分隔文字＋一个选中 chunk”的 token 归属到该 chunk；跨两个选中 chunk、无法恢复字符边界或涉及 sink 的情况直接拒绝。两种模型的各 40 题都能构建候选计划。
 
-[canonical_context.py](../../../experiments/value_lr_physical/canonical_context.py) 让候选 Teacher 和最终卡带使用相同的新证据序列，全文 Student 的原 SD 和更新参数不变。Qwen 与 GPT-OSS 的小模型测试覆盖了无变化时的一致性、实际边界合并、参数冻结和缓存释放。该候选没有进入当前作业，真实模型准确率尚未测试；它也没有对整个聊天提示重新分词。
+[canonical_context.py](../../../experiments/value_lr_physical/canonical_context.py) 让候选 Teacher 和最终卡带使用相同的新证据序列，全文 Student 的原 SD 和更新参数不变。Qwen 与 GPT-OSS 的小模型测试覆盖了无变化时的一致性、实际边界合并、参数冻结和缓存释放。真实模型的配对评测已启动；候选不会对整个聊天提示重新分词。
 
 扩展的 CPU 可行性检查覆盖每个模型固定开发集的 **200 题**：Qwen 和 GPT-OSS 均为 **200/200** 可构造，且各有 197 题的证据 token 序列与原拼接方式不同。两者分别有 1,458 和 1,451 个 token 跨证据与分隔文字边界，已依照上述规则归属。检查核对了各题与已完成运行的全文提示长度和选中原文块，没有加载模型、读取参考答案或调用 API。这仅验证候选的输入构造，不是准确率评测。[聚合数据](development_feasibility.json) · [复核脚本](../../../experiments/value_lr_physical/canonical_development_audit.py)。
+
+该候选现已提供请求级可选配置 `selected_evidence_tokenization="canonical"`，CLI 对应 `--selected-evidence-tokenization canonical`；默认仍为原 token 拼接。实现只改变选中 Teacher 和卡带的证据 token，全文 Student 和 SD 训练不变，并使用请求局部状态隔离并发调用。Qwen 和 GPT-OSS 小模型测试逐步对照了原实验实现的 Teacher、损失、梯度、最终输出和卡带释放；真实模型的配对评测仍在运行。[调用说明](../../../README.md#run) · [请求级实现](../../../src/masked_ttt/evidence.py) · [对照测试](../../../tests/test_canonical_request_local.py)。

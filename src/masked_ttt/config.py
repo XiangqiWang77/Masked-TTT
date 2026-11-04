@@ -15,6 +15,7 @@ class TTTConfig:
     steps: int = 2
     value_rank: int = 8
     value_basis_source: str = "document"
+    selected_evidence_tokenization: str = "original"
     value_radius: float = 0.15
     gain_bound: float = 6.0
     gain_head_mode: str = "kv"
@@ -93,6 +94,8 @@ class TTTConfig:
             raise ValueError("Invalid KV trust bounds")
         if self.value_basis_source not in ("document","selected"):
             raise ValueError("value_basis_source must be document or selected")
+        if self.selected_evidence_tokenization not in ("original", "canonical"):
+            raise ValueError("selected_evidence_tokenization must be original or canonical")
         if self.gain_head_mode not in ("kv", "query"):
             raise ValueError("gain_head_mode must be kv or query")
         for name in ("gain_learning_rate", "value_learning_rate", "gradient_clip"):
