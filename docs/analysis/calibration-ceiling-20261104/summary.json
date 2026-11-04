@@ -1,0 +1,1063 @@
+{
+  "scope": "200-case development cohort; 50 sources at four lengths",
+  "metric": "answer_focused_lexical_v2",
+  "oracle_definition": "post-hoc gold-aware choice among recorded fixed candidate outputs; not deployable",
+  "reference_answers_used_in_inference": false,
+  "reference_answers_used_only_after_generation": true,
+  "online_api_calls": 0,
+  "new_model_calls": 0,
+  "candidate_families": {
+    "value_learning_rate": [
+      "lr_0.0001",
+      "lr_0.0003",
+      "lr_0.0010"
+    ],
+    "update_steps": [
+      "step2",
+      "step4",
+      "step8"
+    ]
+  },
+  "models": {
+    "qwen": {
+      "value_learning_rate": {
+        "overall": {
+          "n": 200,
+          "accuracy": {
+            "lr_0.0001": 52.5,
+            "lr_0.0003": 52.5,
+            "lr_0.0010": 51.5,
+            "teacher": 52.5,
+            "whole": 58.0,
+            "zero": 52.0
+          },
+          "oracle_accuracy": 54.0,
+          "oracle_above_teacher_pp": 1.5,
+          "oracle_above_whole_pp": -4.0,
+          "oracle_correct": 108,
+          "answer_changes_across_candidates": 8,
+          "all_candidates_wrong": 92
+        },
+        "groups": {
+          "length:16384": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 54.0,
+              "lr_0.0003": 50.0,
+              "lr_0.0010": 48.0,
+              "teacher": 52.0,
+              "whole": 56.0,
+              "zero": 52.0
+            },
+            "oracle_accuracy": 54.0,
+            "oracle_above_teacher_pp": 2.0,
+            "oracle_above_whole_pp": -2.0,
+            "oracle_correct": 27,
+            "answer_changes_across_candidates": 3,
+            "all_candidates_wrong": 23
+          },
+          "length:32768": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 58.0,
+              "lr_0.0003": 60.0,
+              "lr_0.0010": 60.0,
+              "teacher": 60.0,
+              "whole": 60.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 60.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 30,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 20
+          },
+          "length:65536": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 44.0,
+              "lr_0.0003": 44.0,
+              "lr_0.0010": 44.0,
+              "teacher": 44.0,
+              "whole": 54.0,
+              "zero": 48.0
+            },
+            "oracle_accuracy": 44.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -10.0,
+            "oracle_correct": 22,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 28
+          },
+          "length:8192": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 54.0,
+              "lr_0.0003": 56.0,
+              "lr_0.0010": 54.0,
+              "teacher": 54.0,
+              "whole": 62.0,
+              "zero": 48.0
+            },
+            "oracle_accuracy": 58.0,
+            "oracle_above_teacher_pp": 4.0,
+            "oracle_above_whole_pp": -4.0,
+            "oracle_correct": 29,
+            "answer_changes_across_candidates": 4,
+            "all_candidates_wrong": 21
+          },
+          "task:qa1": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 35.0,
+              "lr_0.0003": 35.0,
+              "lr_0.0010": 35.0,
+              "teacher": 35.0,
+              "whole": 95.0,
+              "zero": 35.0
+            },
+            "oracle_accuracy": 35.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -60.0,
+            "oracle_correct": 7,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 13
+          },
+          "task:qa10": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 30.0,
+              "lr_0.0003": 30.0,
+              "lr_0.0010": 25.0,
+              "teacher": 25.0,
+              "whole": 30.0,
+              "zero": 30.0
+            },
+            "oracle_accuracy": 30.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 6,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 14
+          },
+          "task:qa2": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 45.0,
+              "lr_0.0003": 45.0,
+              "lr_0.0010": 40.0,
+              "teacher": 45.0,
+              "whole": 45.0,
+              "zero": 45.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 11
+          },
+          "task:qa3": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 20.0,
+              "lr_0.0003": 20.0,
+              "lr_0.0010": 20.0,
+              "teacher": 20.0,
+              "whole": 20.0,
+              "zero": 20.0
+            },
+            "oracle_accuracy": 20.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 4,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 16
+          },
+          "task:qa4": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 35.0,
+              "lr_0.0003": 35.0,
+              "lr_0.0010": 40.0,
+              "teacher": 40.0,
+              "whole": 30.0,
+              "zero": 25.0
+            },
+            "oracle_accuracy": 40.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 8,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 12
+          },
+          "task:qa5": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 100.0,
+              "lr_0.0003": 100.0,
+              "lr_0.0010": 100.0,
+              "teacher": 100.0,
+              "whole": 100.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 0
+          },
+          "task:qa6": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 80.0,
+              "lr_0.0003": 80.0,
+              "lr_0.0010": 80.0,
+              "teacher": 80.0,
+              "whole": 75.0,
+              "zero": 85.0
+            },
+            "oracle_accuracy": 80.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 5.0,
+            "oracle_correct": 16,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 4
+          },
+          "task:qa7": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 40.0,
+              "lr_0.0003": 35.0,
+              "lr_0.0010": 35.0,
+              "teacher": 45.0,
+              "whole": 45.0,
+              "zero": 40.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 3,
+            "all_candidates_wrong": 11
+          },
+          "task:qa8": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 40.0,
+              "lr_0.0003": 45.0,
+              "lr_0.0010": 45.0,
+              "teacher": 40.0,
+              "whole": 55.0,
+              "zero": 40.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": -10.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 11
+          },
+          "task:qa9": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 100.0,
+              "lr_0.0003": 100.0,
+              "lr_0.0010": 95.0,
+              "teacher": 95.0,
+              "whole": 85.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 15.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 0
+          }
+        }
+      },
+      "update_steps": {
+        "overall": {
+          "n": 200,
+          "accuracy": {
+            "step2": 52.5,
+            "step4": 53.0,
+            "step8": 51.5,
+            "teacher": 52.5,
+            "whole": 58.0,
+            "zero": 52.0
+          },
+          "oracle_accuracy": 53.5,
+          "oracle_above_teacher_pp": 1.0,
+          "oracle_above_whole_pp": -4.5,
+          "oracle_correct": 107,
+          "answer_changes_across_candidates": 6,
+          "all_candidates_wrong": 93
+        },
+        "groups": {
+          "length:16384": {
+            "n": 50,
+            "accuracy": {
+              "step2": 54.0,
+              "step4": 52.0,
+              "step8": 50.0,
+              "teacher": 52.0,
+              "whole": 56.0,
+              "zero": 52.0
+            },
+            "oracle_accuracy": 54.0,
+            "oracle_above_teacher_pp": 2.0,
+            "oracle_above_whole_pp": -2.0,
+            "oracle_correct": 27,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 23
+          },
+          "length:32768": {
+            "n": 50,
+            "accuracy": {
+              "step2": 58.0,
+              "step4": 60.0,
+              "step8": 60.0,
+              "teacher": 60.0,
+              "whole": 60.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 60.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 30,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 20
+          },
+          "length:65536": {
+            "n": 50,
+            "accuracy": {
+              "step2": 44.0,
+              "step4": 44.0,
+              "step8": 44.0,
+              "teacher": 44.0,
+              "whole": 54.0,
+              "zero": 48.0
+            },
+            "oracle_accuracy": 44.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -10.0,
+            "oracle_correct": 22,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 28
+          },
+          "length:8192": {
+            "n": 50,
+            "accuracy": {
+              "step2": 54.0,
+              "step4": 56.0,
+              "step8": 52.0,
+              "teacher": 54.0,
+              "whole": 62.0,
+              "zero": 48.0
+            },
+            "oracle_accuracy": 56.0,
+            "oracle_above_teacher_pp": 2.0,
+            "oracle_above_whole_pp": -6.0,
+            "oracle_correct": 28,
+            "answer_changes_across_candidates": 3,
+            "all_candidates_wrong": 22
+          },
+          "task:qa1": {
+            "n": 20,
+            "accuracy": {
+              "step2": 35.0,
+              "step4": 35.0,
+              "step8": 35.0,
+              "teacher": 35.0,
+              "whole": 95.0,
+              "zero": 35.0
+            },
+            "oracle_accuracy": 35.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -60.0,
+            "oracle_correct": 7,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 13
+          },
+          "task:qa10": {
+            "n": 20,
+            "accuracy": {
+              "step2": 30.0,
+              "step4": 30.0,
+              "step8": 30.0,
+              "teacher": 25.0,
+              "whole": 30.0,
+              "zero": 30.0
+            },
+            "oracle_accuracy": 30.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 6,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 14
+          },
+          "task:qa2": {
+            "n": 20,
+            "accuracy": {
+              "step2": 45.0,
+              "step4": 45.0,
+              "step8": 40.0,
+              "teacher": 45.0,
+              "whole": 45.0,
+              "zero": 45.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 11
+          },
+          "task:qa3": {
+            "n": 20,
+            "accuracy": {
+              "step2": 20.0,
+              "step4": 20.0,
+              "step8": 20.0,
+              "teacher": 20.0,
+              "whole": 20.0,
+              "zero": 20.0
+            },
+            "oracle_accuracy": 20.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 4,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 16
+          },
+          "task:qa4": {
+            "n": 20,
+            "accuracy": {
+              "step2": 35.0,
+              "step4": 35.0,
+              "step8": 35.0,
+              "teacher": 40.0,
+              "whole": 30.0,
+              "zero": 25.0
+            },
+            "oracle_accuracy": 35.0,
+            "oracle_above_teacher_pp": -5.0,
+            "oracle_above_whole_pp": 5.0,
+            "oracle_correct": 7,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 13
+          },
+          "task:qa5": {
+            "n": 20,
+            "accuracy": {
+              "step2": 100.0,
+              "step4": 100.0,
+              "step8": 100.0,
+              "teacher": 100.0,
+              "whole": 100.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 0
+          },
+          "task:qa6": {
+            "n": 20,
+            "accuracy": {
+              "step2": 80.0,
+              "step4": 80.0,
+              "step8": 80.0,
+              "teacher": 80.0,
+              "whole": 75.0,
+              "zero": 85.0
+            },
+            "oracle_accuracy": 80.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 5.0,
+            "oracle_correct": 16,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 4
+          },
+          "task:qa7": {
+            "n": 20,
+            "accuracy": {
+              "step2": 40.0,
+              "step4": 40.0,
+              "step8": 35.0,
+              "teacher": 45.0,
+              "whole": 45.0,
+              "zero": 40.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 3,
+            "all_candidates_wrong": 11
+          },
+          "task:qa8": {
+            "n": 20,
+            "accuracy": {
+              "step2": 40.0,
+              "step4": 45.0,
+              "step8": 45.0,
+              "teacher": 40.0,
+              "whole": 55.0,
+              "zero": 40.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": -10.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 11
+          },
+          "task:qa9": {
+            "n": 20,
+            "accuracy": {
+              "step2": 100.0,
+              "step4": 100.0,
+              "step8": 95.0,
+              "teacher": 95.0,
+              "whole": 85.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 15.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 0
+          }
+        }
+      }
+    },
+    "gpt": {
+      "value_learning_rate": {
+        "overall": {
+          "n": 200,
+          "accuracy": {
+            "lr_0.0001": 52.5,
+            "lr_0.0003": 53.5,
+            "lr_0.0010": 54.0,
+            "teacher": 53.5,
+            "whole": 53.0,
+            "zero": 52.5
+          },
+          "oracle_accuracy": 54.5,
+          "oracle_above_teacher_pp": 1.0,
+          "oracle_above_whole_pp": 1.5,
+          "oracle_correct": 109,
+          "answer_changes_across_candidates": 5,
+          "all_candidates_wrong": 91
+        },
+        "groups": {
+          "length:16384": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 60.0,
+              "lr_0.0003": 60.0,
+              "lr_0.0010": 60.0,
+              "teacher": 60.0,
+              "whole": 62.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 60.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -2.0,
+            "oracle_correct": 30,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 20
+          },
+          "length:32768": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 54.0,
+              "lr_0.0003": 54.0,
+              "lr_0.0010": 56.0,
+              "teacher": 58.0,
+              "whole": 54.0,
+              "zero": 54.0
+            },
+            "oracle_accuracy": 56.0,
+            "oracle_above_teacher_pp": -2.0,
+            "oracle_above_whole_pp": 2.0,
+            "oracle_correct": 28,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 22
+          },
+          "length:65536": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 48.0,
+              "lr_0.0003": 50.0,
+              "lr_0.0010": 48.0,
+              "teacher": 46.0,
+              "whole": 42.0,
+              "zero": 50.0
+            },
+            "oracle_accuracy": 50.0,
+            "oracle_above_teacher_pp": 4.0,
+            "oracle_above_whole_pp": 8.0,
+            "oracle_correct": 25,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 25
+          },
+          "length:8192": {
+            "n": 50,
+            "accuracy": {
+              "lr_0.0001": 48.0,
+              "lr_0.0003": 50.0,
+              "lr_0.0010": 52.0,
+              "teacher": 50.0,
+              "whole": 54.0,
+              "zero": 46.0
+            },
+            "oracle_accuracy": 52.0,
+            "oracle_above_teacher_pp": 2.0,
+            "oracle_above_whole_pp": -2.0,
+            "oracle_correct": 26,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 24
+          },
+          "task:qa1": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 35.0,
+              "lr_0.0003": 35.0,
+              "lr_0.0010": 35.0,
+              "teacher": 35.0,
+              "whole": 55.0,
+              "zero": 35.0
+            },
+            "oracle_accuracy": 35.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -20.0,
+            "oracle_correct": 7,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 13
+          },
+          "task:qa10": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 25.0,
+              "lr_0.0003": 25.0,
+              "lr_0.0010": 35.0,
+              "teacher": 35.0,
+              "whole": 30.0,
+              "zero": 25.0
+            },
+            "oracle_accuracy": 35.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 5.0,
+            "oracle_correct": 7,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 13
+          },
+          "task:qa2": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 20.0,
+              "lr_0.0003": 20.0,
+              "lr_0.0010": 20.0,
+              "teacher": 30.0,
+              "whole": 45.0,
+              "zero": 20.0
+            },
+            "oracle_accuracy": 20.0,
+            "oracle_above_teacher_pp": -10.0,
+            "oracle_above_whole_pp": -25.0,
+            "oracle_correct": 4,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 16
+          },
+          "task:qa3": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 15.0,
+              "lr_0.0003": 15.0,
+              "lr_0.0010": 15.0,
+              "teacher": 10.0,
+              "whole": 35.0,
+              "zero": 15.0
+            },
+            "oracle_accuracy": 15.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": -20.0,
+            "oracle_correct": 3,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 17
+          },
+          "task:qa4": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 45.0,
+              "lr_0.0003": 45.0,
+              "lr_0.0010": 45.0,
+              "teacher": 40.0,
+              "whole": 20.0,
+              "zero": 40.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 25.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 11
+          },
+          "task:qa5": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 100.0,
+              "lr_0.0003": 100.0,
+              "lr_0.0010": 100.0,
+              "teacher": 100.0,
+              "whole": 90.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 0
+          },
+          "task:qa6": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 55.0,
+              "lr_0.0003": 65.0,
+              "lr_0.0010": 65.0,
+              "teacher": 60.0,
+              "whole": 55.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 65.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 13,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 7
+          },
+          "task:qa7": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 60.0,
+              "lr_0.0003": 60.0,
+              "lr_0.0010": 60.0,
+              "teacher": 65.0,
+              "whole": 60.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 60.0,
+            "oracle_above_teacher_pp": -5.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 12,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 8
+          },
+          "task:qa8": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 70.0,
+              "lr_0.0003": 70.0,
+              "lr_0.0010": 65.0,
+              "teacher": 60.0,
+              "whole": 60.0,
+              "zero": 70.0
+            },
+            "oracle_accuracy": 70.0,
+            "oracle_above_teacher_pp": 10.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 14,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 6
+          },
+          "task:qa9": {
+            "n": 20,
+            "accuracy": {
+              "lr_0.0001": 100.0,
+              "lr_0.0003": 100.0,
+              "lr_0.0010": 100.0,
+              "teacher": 100.0,
+              "whole": 80.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 20.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 0
+          }
+        }
+      },
+      "update_steps": {
+        "overall": {
+          "n": 200,
+          "accuracy": {
+            "step2": 52.0,
+            "step4": 51.5,
+            "step8": 54.0,
+            "teacher": 53.5,
+            "whole": 52.5,
+            "zero": 52.5
+          },
+          "oracle_accuracy": 54.0,
+          "oracle_above_teacher_pp": 0.5,
+          "oracle_above_whole_pp": 1.5,
+          "oracle_correct": 108,
+          "answer_changes_across_candidates": 6,
+          "all_candidates_wrong": 92
+        },
+        "groups": {
+          "length:16384": {
+            "n": 50,
+            "accuracy": {
+              "step2": 60.0,
+              "step4": 58.0,
+              "step8": 60.0,
+              "teacher": 58.0,
+              "whole": 60.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 60.0,
+            "oracle_above_teacher_pp": 2.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 30,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 20
+          },
+          "length:32768": {
+            "n": 50,
+            "accuracy": {
+              "step2": 54.0,
+              "step4": 54.0,
+              "step8": 56.0,
+              "teacher": 60.0,
+              "whole": 52.0,
+              "zero": 54.0
+            },
+            "oracle_accuracy": 56.0,
+            "oracle_above_teacher_pp": -4.0,
+            "oracle_above_whole_pp": 4.0,
+            "oracle_correct": 28,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 22
+          },
+          "length:65536": {
+            "n": 50,
+            "accuracy": {
+              "step2": 46.0,
+              "step4": 46.0,
+              "step8": 50.0,
+              "teacher": 46.0,
+              "whole": 44.0,
+              "zero": 48.0
+            },
+            "oracle_accuracy": 50.0,
+            "oracle_above_teacher_pp": 4.0,
+            "oracle_above_whole_pp": 6.0,
+            "oracle_correct": 25,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 25
+          },
+          "length:8192": {
+            "n": 50,
+            "accuracy": {
+              "step2": 48.0,
+              "step4": 48.0,
+              "step8": 50.0,
+              "teacher": 50.0,
+              "whole": 54.0,
+              "zero": 48.0
+            },
+            "oracle_accuracy": 50.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -4.0,
+            "oracle_correct": 25,
+            "answer_changes_across_candidates": 2,
+            "all_candidates_wrong": 25
+          },
+          "task:qa1": {
+            "n": 20,
+            "accuracy": {
+              "step2": 35.0,
+              "step4": 35.0,
+              "step8": 35.0,
+              "teacher": 35.0,
+              "whole": 55.0,
+              "zero": 35.0
+            },
+            "oracle_accuracy": 35.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": -20.0,
+            "oracle_correct": 7,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 13
+          },
+          "task:qa10": {
+            "n": 20,
+            "accuracy": {
+              "step2": 25.0,
+              "step4": 20.0,
+              "step8": 25.0,
+              "teacher": 40.0,
+              "whole": 30.0,
+              "zero": 25.0
+            },
+            "oracle_accuracy": 25.0,
+            "oracle_above_teacher_pp": -15.0,
+            "oracle_above_whole_pp": -5.0,
+            "oracle_correct": 5,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 15
+          },
+          "task:qa2": {
+            "n": 20,
+            "accuracy": {
+              "step2": 15.0,
+              "step4": 15.0,
+              "step8": 20.0,
+              "teacher": 25.0,
+              "whole": 45.0,
+              "zero": 15.0
+            },
+            "oracle_accuracy": 20.0,
+            "oracle_above_teacher_pp": -5.0,
+            "oracle_above_whole_pp": -25.0,
+            "oracle_correct": 4,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 16
+          },
+          "task:qa3": {
+            "n": 20,
+            "accuracy": {
+              "step2": 15.0,
+              "step4": 15.0,
+              "step8": 20.0,
+              "teacher": 10.0,
+              "whole": 25.0,
+              "zero": 15.0
+            },
+            "oracle_accuracy": 20.0,
+            "oracle_above_teacher_pp": 10.0,
+            "oracle_above_whole_pp": -5.0,
+            "oracle_correct": 4,
+            "answer_changes_across_candidates": 1,
+            "all_candidates_wrong": 16
+          },
+          "task:qa4": {
+            "n": 20,
+            "accuracy": {
+              "step2": 45.0,
+              "step4": 45.0,
+              "step8": 45.0,
+              "teacher": 40.0,
+              "whole": 25.0,
+              "zero": 45.0
+            },
+            "oracle_accuracy": 45.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 20.0,
+            "oracle_correct": 9,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 11
+          },
+          "task:qa5": {
+            "n": 20,
+            "accuracy": {
+              "step2": 100.0,
+              "step4": 100.0,
+              "step8": 100.0,
+              "teacher": 100.0,
+              "whole": 90.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 0
+          },
+          "task:qa6": {
+            "n": 20,
+            "accuracy": {
+              "step2": 55.0,
+              "step4": 55.0,
+              "step8": 65.0,
+              "teacher": 60.0,
+              "whole": 55.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 65.0,
+            "oracle_above_teacher_pp": 5.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 13,
+            "answer_changes_across_candidates": 3,
+            "all_candidates_wrong": 7
+          },
+          "task:qa7": {
+            "n": 20,
+            "accuracy": {
+              "step2": 60.0,
+              "step4": 60.0,
+              "step8": 60.0,
+              "teacher": 65.0,
+              "whole": 60.0,
+              "zero": 60.0
+            },
+            "oracle_accuracy": 60.0,
+            "oracle_above_teacher_pp": -5.0,
+            "oracle_above_whole_pp": 0.0,
+            "oracle_correct": 12,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 8
+          },
+          "task:qa8": {
+            "n": 20,
+            "accuracy": {
+              "step2": 70.0,
+              "step4": 70.0,
+              "step8": 70.0,
+              "teacher": 60.0,
+              "whole": 60.0,
+              "zero": 70.0
+            },
+            "oracle_accuracy": 70.0,
+            "oracle_above_teacher_pp": 10.0,
+            "oracle_above_whole_pp": 10.0,
+            "oracle_correct": 14,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 6
+          },
+          "task:qa9": {
+            "n": 20,
+            "accuracy": {
+              "step2": 100.0,
+              "step4": 100.0,
+              "step8": 100.0,
+              "teacher": 100.0,
+              "whole": 80.0,
+              "zero": 100.0
+            },
+            "oracle_accuracy": 100.0,
+            "oracle_above_teacher_pp": 0.0,
+            "oracle_above_whole_pp": 20.0,
+            "oracle_correct": 20,
+            "answer_changes_across_candidates": 0,
+            "all_candidates_wrong": 0
+          }
+        }
+      }
+    }
+  }
+}
