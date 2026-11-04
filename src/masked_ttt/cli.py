@@ -59,6 +59,8 @@ def main():
     parser.add_argument("--answer-kl-stop", type=float)
     parser.add_argument("--selected-transfer-weight", type=float,
                         help="Weight for full-to-selected on-policy KL; 0 preserves the archived method")
+    parser.add_argument("--release-full-before-cartridge",action="store_true",default=None,
+                        help="Release full-document KV before standalone cartridge decoding")
     parser.add_argument("--max-context", type=int)
     parser.add_argument("--context-reserve-tokens", type=int,
                         help="Minimum room reserved for the generated answer")
@@ -71,7 +73,8 @@ def main():
         config = load_method_config(args.config_json, keep_fraction=args.keep_fraction, steps=args.steps,
             max_context=args.max_context, context_reserve_tokens=args.context_reserve_tokens,
             max_answer_steps=args.max_answer_steps,teacher_max_new_tokens=args.teacher_max_new_tokens,
-            answer_KL_stop=args.answer_kl_stop,selected_transfer_weight=args.selected_transfer_weight)
+            answer_KL_stop=args.answer_kl_stop,selected_transfer_weight=args.selected_transfer_weight,
+            release_full_before_cartridge=args.release_full_before_cartridge)
     except (OSError,ValueError,TypeError) as exc:
         parser.error('Invalid method configuration: '+str(exc))
     decision_options = dict(api_key_file=args.api_key_file, max_cost_usd=args.max_api_cost)

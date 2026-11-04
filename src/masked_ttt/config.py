@@ -27,6 +27,7 @@ class TTTConfig:
     guard_minimum_confidence: float = 0.65
     guard_minimum_label_mass: float = 0.20
     standalone_cartridge_enabled: bool = True
+    release_full_before_cartridge: bool = False
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0
@@ -63,6 +64,10 @@ class TTTConfig:
             raise ValueError('practice_boundary_fallback must be boolean')
         if type(self.guard_enabled) is not bool or type(self.standalone_cartridge_enabled) is not bool:
             raise ValueError('guard and standalone settings must be boolean')
+        if type(self.release_full_before_cartridge) is not bool:
+            raise ValueError('release_full_before_cartridge must be boolean')
+        if self.release_full_before_cartridge and not self.standalone_cartridge_enabled:
+            raise ValueError('Releasing the full cache requires standalone cartridge generation')
         for name in ('guard_minimum_confidence','guard_minimum_label_mass'):
             value=getattr(self,name)
             if type(value) not in (float,int) or not math.isfinite(value) or not 0<=value<=1:

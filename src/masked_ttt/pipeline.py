@@ -2,7 +2,9 @@
 
 from copy import copy
 from types import SimpleNamespace
+import gc
 import time
+import weakref
 
 import torch
 
@@ -232,15 +234,40 @@ class MaskedTTT:
         guarded_peak_bytes=cuda_peak(engine.device)
         adapter_bytes=storage_bytes(module_tensors(memory))
         full_plus_adapter_bytes=storage_bytes(cache_tensors(cache)+module_tensors(memory))
+        if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in cache_stamp):
+            raise AssertionError("The original document cache was changed")
+        if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in selected_cache_stamp):
+            raise AssertionError("The original selected evidence cache was changed")
+        release_info=dict(requested=engine.config.release_full_before_cartridge,
+                          full_cache_tensors_live_before_standalone=None,
+                          cuda_allocated_before_release_bytes=None,
+                          cuda_allocated_after_release_bytes=None)
+        if engine.config.release_full_before_cartridge:
+            # Preserve only weak references for validation; stamps, the full
+            # decode branch and the final training graph otherwise retain KV.
+            full_refs=[weakref.ref(t) for t in cache_tensors(cache)]
+            engine.synchronize()
+            release_info["cuda_allocated_before_release_bytes"]=cuda_allocated(engine.device)
+            cache_stamp=None
+            branch=None
+            output=None
+            cache=None
+            logits=loss=target=teacher_probs=None
+            transfer_loss=transfer_rollout=None
+            gc.collect()
+            remaining=sum(ref() is not None for ref in full_refs)
+            release_info["full_cache_tensors_live_before_standalone"]=remaining
+            if remaining:
+                raise AssertionError("Full document cache remains live before standalone decoding")
+            if engine.device.type=='cuda':
+                torch.cuda.empty_cache()
+            engine.synchronize()
+            release_info["cuda_allocated_after_release_bytes"]=cuda_allocated(engine.device)
         standalone=(answer_standalone(engine,layout,selected,teacher,memory,working.max_new_tokens)
                     if engine.config.standalone_cartridge_enabled else None)
         engine.synchronize()
         total_peak_bytes=cuda_peak(engine.device)
 
-        if any(
-            x._version != version or x.data_ptr() != pointer for x, version, pointer in cache_stamp
-        ):
-            raise AssertionError("The original document cache was changed")
         if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in selected_cache_stamp):
             raise AssertionError("The original selected evidence cache was changed")
         engine.assert_frozen(weights_before)
@@ -266,6 +293,7 @@ class MaskedTTT:
                 gpu_peak_includes_model_and_training=True,
                 standalone_peak_is_not_measured_separately=True,
                 cache_sizes_exclude_question_and_generated_suffix=True,
+                full_cache_release_before_standalone=release_info,
             ),
             selection=prepared.metadata,
             support=support,
