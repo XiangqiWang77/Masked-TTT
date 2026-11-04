@@ -32,5 +32,13 @@ this experiment. Otherwise the monitor records the outcome and does not promote.
 The comparison with 0.001 remains a separately reported matched subset, since
 different GPU runs may generate different self-study exercises.
 
+The 200-case run is complete. Whole, selected zero, ICL Teacher and the 0.003
+Cartridge scored **53.50%, 52.00%, 53.50% and 53.00%**, respectively. Versus
+Teacher, the Cartridge gained 6 cases and lost 7. In the 138 cases meeting the
+stricter comparison against 0.001, it gained 1 and lost 2. The monitor recorded
+the failed development gate and stopped; no 800-case 0.003 holdout was submitted.
+These results use the same loose lexical scorer and retain the response-format
+difference described above.
+
 [Runner](strong_dev_runner.py) · [Report](strong_dev_report.py) ·
 [Preparation](strong_dev_prepare.py) · [Monitor](strong_dev_monitor.py)
