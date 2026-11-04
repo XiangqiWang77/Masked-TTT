@@ -15,6 +15,8 @@ full-context answer is retained as a diagnostic. The recorded profile is at
 [examples/olmo_babilong_icl_sd.json](examples/olmo_babilong_icl_sd.json).
 The [Chinese method description](docs/OLMO_ICL_SELF_DISTILLATION.zh-CN.md)
 explains the two cache paths, the paired results, and their scope.
+[Three paired BABILONG examples](docs/whole_selective_case_examples.zh-CN.md)
+illustrate their complementary behavior and remaining errors.
 
 The trained state supports two explicitly different answer paths:
 

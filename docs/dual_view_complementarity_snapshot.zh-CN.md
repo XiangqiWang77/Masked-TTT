@@ -2,6 +2,8 @@
 
 目标是利用全文的全局信息，增强问题相关的选中 KV；回答时只使用增强后的独立 Cartridge。这个目标需要同时检查两类题：全文答对但选中缓存答错时，Cartridge 能否补回信息；选中缓存答对但全文答错时，Cartridge 能否保住已有答案。
 
+[三道真实案例](whole_selective_case_examples.zh-CN.md) 展示了全文漏用证据、选中事实但未用对时间关系，以及连接事实漏选这三种情况。
+
 以下为 2026-11-04 01:32 UTC 的运行中快照；统一 loose 词面评分。Whole、Selective 零更新和 Cartridge 使用同一模型、同一道原问题和相同生成预算。
 
 | 模型 | 题数 | Whole | Selective | Cartridge | Whole 独对：Cartridge 修复 / 总数 | Selective 独对：Cartridge 保住 / 总数 |
