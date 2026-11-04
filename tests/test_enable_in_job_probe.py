@@ -17,6 +17,12 @@ def workspace(tmp_path):
         destination.parent.mkdir(parents=True)
         shutil.copytree(setup.REPO / "src/masked_ttt", destination,
                         ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+        for name in ("experiments/kv_only_cartridge/driver.py",
+                     "experiments/kv_only_cartridge/compact.py",
+                     "experiments/shared_question_sd/controls.py"):
+            output = runtime / "repo" / name
+            output.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(setup.REPO / name, output)
     return tmp_path
 
 
@@ -67,3 +73,28 @@ def test_deployed_wrapper_uses_the_shared_probe(tmp_path):
     assert module.run_if_needed(make_engine(), "qwen", {"gpu": "cpu-test"}) == "passed"
     data = json.loads((Path(result["shared_results"]) / "qwen.json").read_text())
     assert data["same_standalone_logits"] and data["original_benchmark_runtime_unchanged"]
+    assert data["same_generic_tokens_before_after_release"]
+
+
+def test_upgrade_keeps_v2_results_and_routes_existing_hooks_to_v3(tmp_path):
+    import json
+
+    root = workspace(tmp_path)
+    old = root / setup.OLD_CENTRAL
+    old.mkdir()
+    (old / "ready.json").write_text('{"probe_version":2}')
+    (old / "qwen.json").write_text('{"passed":true}')
+    for target in setup.TARGETS:
+        option = root / target / "disabled_optional_probe"
+        option.mkdir()
+        (option / "driver.py").write_text(setup.wrapper(old))
+        (option / "ready.json").write_text(json.dumps(dict(enabled=True, shared_probe=str(old))))
+    result = setup.upgrade_existing(root)
+    assert json.loads((old / "qwen.json").read_text())["passed"]
+    new = Path(result["shared_results"])
+    assert json.loads((new / "ready.json").read_text())["probe_version"] == 3
+    assert (new / "paired_control_candidate.py").exists()
+    for target in setup.TARGETS:
+        option = root / target / "disabled_optional_probe"
+        assert (option / "driver.py").read_text() == setup.wrapper(new)
+    assert setup.upgrade_existing(root) == result

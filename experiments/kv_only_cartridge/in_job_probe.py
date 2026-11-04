@@ -135,9 +135,67 @@ def validate_loaded_candidate(engine, candidate_path):
             torch.cuda.set_rng_state_all(gpu_rng)
 
 
+def validate_loaded_generic_format(engine, control_path):
+    """Check the generic-format diagnostic after both source caches are released."""
+    import masked_ttt.pipeline as frozen_pipeline
+    from masked_ttt import MaskedTTT, Request
+    from masked_ttt.request import prepare_layout
+    from masked_ttt.selection import PreparedRequest
+
+    spec = importlib.util.spec_from_file_location("cartridge_format_control", Path(control_path))
+    if spec is None or spec.loader is None:
+        raise ValueError("The format-control snapshot is required")
+    control = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(control)
+    hooks = (frozen_pipeline.answer_standalone, frozen_pipeline.decode_standalone)
+    original_config = engine.config
+    cpu_rng = torch.get_rng_state()
+    gpu_rng = torch.cuda.get_rng_state_all() if engine.device.type == "cuda" else None
+    try:
+        engine.config = replace(original_config, chunk_tokens=64, steps=2, max_answer_steps=2,
+            self_question_count=0, student_rollout_tokens=3, guard_enabled=False,
+            standalone_cartridge_enabled=True, standalone_answer_format="original",
+            selected_transfer_weight=0., value_basis_source="document",
+            align_student_teacher_prompt=False,
+            release_full_before_cartridge=True, release_selected_source_before_decode=True)
+        request = Request(document="The old note is red. " + "Ordinary context. " * 30 +
+                          "The current note is blue.",
+                          question="What color is the current note?", max_new_tokens=4)
+
+        class Selector:
+            def prepare(self, backbone, item):
+                layout = prepare_layout(backbone, item)
+                return PreparedRequest(item, layout, [len(layout.chunks) // 2],
+                                       dict(backend="synthetic_format_release_probe"))
+
+        scope = getattr(engine.tokenizer, "request_scope", None)
+        with (scope() if callable(scope) else nullcontext()):
+            with control.physical_paired_prompt_control(verify_teacher_suffix_after_release=True):
+                result = MaskedTTT(engine, Selector()).answer(request, time_budget_seconds=300)
+        paired = result["standalone_cartridge"]["paired_prompt_control"]
+        released = paired["teacher_suffix_independent_decode"]
+        if (released["generated_token_ids"] != paired["trained_teacher_suffix"]["tokens"] or
+            not released["source_and_training_released"] or released["adapter_bytes"] != 0 or
+            released["teacher_answer_in_prompt"] or
+            result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] != 0 or
+            not result["backbone_unchanged"] or not result["original_document_KV_unchanged"] or
+            (frozen_pipeline.answer_standalone, frozen_pipeline.decode_standalone) != hooks):
+            raise AssertionError("Generic-format output changed after source release")
+        return dict(same_generic_tokens_before_after_release=True,
+                    generic_teacher_answer_in_prompt=False)
+    finally:
+        engine.config = original_config
+        torch.set_rng_state(cpu_rng)
+        if gpu_rng is not None:
+            torch.cuda.set_rng_state_all(gpu_rng)
+
+
 def run_if_needed(engine, model, identity):
     """Entry point used by the existing optional-probe hook in a GPU job."""
     from experiments.kv_only_cartridge.driver import run_if_enabled
     directory = Path(__file__).resolve().parent
-    return run_if_enabled(engine, model, identity, directory,
-        probe=lambda item: validate_loaded_candidate(item, directory / "pipeline_candidate.py"))
+    def probe(item):
+        result = validate_loaded_candidate(item, directory / "pipeline_candidate.py")
+        result.update(validate_loaded_generic_format(item, directory / "paired_control_candidate.py"))
+        return result
+    return run_if_enabled(engine, model, identity, directory, probe=probe)

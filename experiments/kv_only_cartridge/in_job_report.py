@@ -8,13 +8,16 @@ from pathlib import Path
 
 REQUIRED = ("same_teacher_tokens", "same_student_rollouts", "same_training_gradients",
             "same_standalone_tokens", "same_standalone_logits", "same_request_chat_date",
-            "no_full_kv_or_extra_adapter_at_decode", "original_benchmark_runtime_unchanged")
+            "no_full_kv_or_extra_adapter_at_decode", "original_benchmark_runtime_unchanged",
+            "same_generic_tokens_before_after_release")
 
 
 def collect(directory):
     directory = Path(directory)
     if not (directory / "ready.json").is_file():
         raise ValueError("The independent preflight was not enabled")
+    ready = json.loads((directory / "ready.json").read_text())
+    version = ready.get("probe_version", 1)
     models = {}
     for model, expected_type in (("qwen", "qwen3"), ("gpt", "gpt_oss")):
         path = directory / (model + ".json")
@@ -22,6 +25,9 @@ def collect(directory):
             models[model] = dict(state="waiting")
             continue
         data = json.loads(path.read_text())
+        if data.get("probe_version", 1) != version:
+            models[model] = dict(state="waiting", reason="preflight version changed")
+            continue
         if data.get("passed") is not True:
             models[model] = dict(state="failed", error_type=data.get("error"),
                                  attempts=data.get("attempts"))
@@ -30,6 +36,7 @@ def collect(directory):
         valid = (data.get("model") == model and data.get("model_type") == expected_type and
                  isinstance(gpu, str) and bool(gpu) and "cpu" not in gpu.lower() and
                  all(data.get(key) is True for key in REQUIRED) and
+                 data.get("generic_teacher_answer_in_prompt") is False and
                  data.get("online_api_calls") == 0 and data.get("reference_answers_used") is False)
         models[model] = (dict(state="passed", gpu=gpu, attempts=data.get("attempts")) if valid else
                          dict(state="invalid", reason="missing real-GPU or method evidence"))
@@ -45,6 +52,7 @@ def render(report):
         lines.append(f"| {model} | {item['state']} | {item.get('gpu', '—')} |")
     lines += ["", "A pass requires matching Teacher tokens, student rollouts, joint gradients, "
               "standalone tokens and logits, together with release of full KV and extra adapter state. "
+              "It also checks that generic-format tokens match after source release. "
               "This synthetic preflight does not measure answer accuracy.", ""]
     return "\n".join(lines)
 

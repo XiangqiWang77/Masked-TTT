@@ -13,6 +13,7 @@ from test_standalone import make_engine
 ROOT = Path(__file__).resolve().parents[1]
 PROBE = ROOT / "experiments/kv_only_cartridge/in_job_probe.py"
 CANDIDATE = ROOT / "src/masked_ttt/pipeline.py"
+CONTROL = ROOT / "experiments/kv_only_cartridge/paired_control.py"
 
 
 def load_probe(path):
@@ -40,6 +41,7 @@ def test_one_model_probe_is_recorded_once(tmp_path):
     engine = make_engine()
     shutil.copy2(PROBE, tmp_path / "driver.py")
     shutil.copy2(CANDIDATE, tmp_path / "pipeline_candidate.py")
+    shutil.copy2(CONTROL, tmp_path / "paired_control_candidate.py")
     (tmp_path / "ready.json").write_text(json.dumps({"allow_single_loaded_model_probe": True}))
     probe = load_probe(tmp_path / "driver.py")
     config, state = engine.config, torch.get_rng_state()
@@ -47,7 +49,18 @@ def test_one_model_probe_is_recorded_once(tmp_path):
     assert probe.run_if_needed(engine, "qwen", {"gpu": "cpu-test"}) == "already_passed"
     report = json.loads((tmp_path / "qwen.json").read_text())
     assert report["passed"] and report["same_standalone_logits"]
+    assert report["same_generic_tokens_before_after_release"]
     assert report["original_benchmark_runtime_unchanged"]
+    assert engine.config is config and torch.equal(torch.get_rng_state(), state)
+
+
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss_gqa"])
+def test_generic_format_survives_source_release(architecture):
+    engine = make_engine() if architecture == "qwen3" else gpt_gqa_engine()
+    config, state = engine.config, torch.get_rng_state()
+    result = load_probe(PROBE).validate_loaded_generic_format(engine, CONTROL)
+    assert result["same_generic_tokens_before_after_release"]
+    assert not result["generic_teacher_answer_in_prompt"]
     assert engine.config is config and torch.equal(torch.get_rng_state(), state)
 
 

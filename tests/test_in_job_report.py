@@ -12,7 +12,7 @@ def test_waiting_failed_passed_and_cpu_results_are_distinct(tmp_path):
     (tmp_path / "ready.json").write_text('{}')
     assert collect(tmp_path)["models"]["qwen"]["state"] == "waiting"
     data = dict(passed=True, model="qwen", model_type="qwen3", identity={"gpu": "NVIDIA H200"},
-                online_api_calls=0, reference_answers_used=False, attempts=1,
+                online_api_calls=0, reference_answers_used=False, generic_teacher_answer_in_prompt=False, attempts=1,
                 **{key: True for key in REQUIRED})
     (tmp_path / "qwen.json").write_text(json.dumps(data))
     (tmp_path / "gpt.json").write_text(json.dumps(dict(passed=False, error="ValueError", attempts=1)))
@@ -22,6 +22,21 @@ def test_waiting_failed_passed_and_cpu_results_are_distinct(tmp_path):
     assert result["scheduler_queries"] == 0 and result["new_gpu_jobs"] == 0
     data["identity"]["gpu"] = "cpu-test"
     (tmp_path / "qwen.json").write_text(json.dumps(data))
+    assert collect(tmp_path)["models"]["qwen"]["state"] == "invalid"
+
+
+def test_version_change_does_not_report_old_preflight_as_new(tmp_path):
+    (tmp_path / "ready.json").write_text('{"probe_version": 3}')
+    old = dict(passed=True, probe_version=2, model="qwen", model_type="qwen3",
+               identity={"gpu": "H200"}, online_api_calls=0, reference_answers_used=False,
+               generic_teacher_answer_in_prompt=False, **{key: True for key in REQUIRED})
+    (tmp_path / "qwen.json").write_text(json.dumps(old))
+    assert collect(tmp_path)["models"]["qwen"]["state"] == "waiting"
+    old["probe_version"] = 3
+    (tmp_path / "qwen.json").write_text(json.dumps(old))
+    assert collect(tmp_path)["models"]["qwen"]["state"] == "passed"
+    old["generic_teacher_answer_in_prompt"] = True
+    (tmp_path / "qwen.json").write_text(json.dumps(old))
     assert collect(tmp_path)["models"]["qwen"]["state"] == "invalid"
 
 
