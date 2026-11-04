@@ -23,5 +23,13 @@ their Value learning rates differed. The runs are development data and are not
 evidence of final accuracy. We keep the experimental parser disabled while
 continuing the already submitted paired optimization and holdout experiments.
 
+As an additional check, an older GPT-OSS development run retained proposal
+previews of at most 512 characters. Replaying 200 such previews produces
+278 structurally accepted proposals with either parser and no recovered
+proposals. One preview reached 512 characters, so its saved text may itself
+be truncated; no independent verification or answer evaluation was run.
+The older run uses a different selection configuration from the table above.
+[Preview replay](gpt_old_preview_replay.json) · [Reproduction script](../../../experiments/truncated_study_json/audit_saved_previews.py).
+
 [Aggregate counts](summary.json) · [Audit script](../../../experiments/truncated_study_json/audit_development.py) ·
 [Candidate and safety filters](../../../experiments/truncated_study_json/README.md).

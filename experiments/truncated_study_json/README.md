@@ -15,6 +15,8 @@ this failure. Generated self-study text
 was not retained in these records, so they cannot directly establish whether
 any complete object could be recovered. A real same-output probe would be
 needed before claiming an increase in verified exercises or accuracy.
+An older GPT-OSS run did retain 200 short previews; replaying those recovered
+no additional structurally valid proposals. See the same audit for limitations.
 
 This is an experimental, unsubmitted candidate. It is not enabled in the
 production runtime or any currently queued or running job. Its scoped runtime
