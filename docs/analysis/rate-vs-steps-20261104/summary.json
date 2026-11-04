@@ -1,0 +1,103 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "development_cases_per_model": 200,
+  "source_questions": 50,
+  "context_lengths_per_source": 4,
+  "rate_value_learning_rate": 0.001,
+  "step_value_learning_rate": 0.0001,
+  "step_base_updates": 8,
+  "scorer_used_post_generation_only": true,
+  "different_gpu_allocations_possible": true,
+  "new_model_calls": 0,
+  "online_api_calls": 0,
+  "models": {
+    "qwen": {
+      "matched_fields": {
+        "selection": 200,
+        "teacher_tokens": 200,
+        "practice": 200,
+        "initial_prefix": 200,
+        "zero_tokens": 200,
+        "step2_tokens": 200
+      },
+      "strictly_matched": {
+        "n": 200,
+        "accuracy": {
+          "teacher": 52.5,
+          "zero": 52.0,
+          "rate": 51.5,
+          "step8": 51.5
+        },
+        "rate_vs_teacher": {
+          "new_correct": 4,
+          "new_wrong": 6,
+          "delta_pp": -1.0
+        },
+        "step8_vs_teacher": {
+          "new_correct": 4,
+          "new_wrong": 6,
+          "delta_pp": -1.0
+        },
+        "rate_vs_zero": {
+          "new_correct": 7,
+          "new_wrong": 8,
+          "delta_pp": -0.5
+        },
+        "step8_vs_zero": {
+          "new_correct": 6,
+          "new_wrong": 7,
+          "delta_pp": -0.5
+        },
+        "rate_vs_step8": {
+          "new_correct": 1,
+          "new_wrong": 1,
+          "delta_pp": 0.0
+        }
+      }
+    },
+    "gpt": {
+      "matched_fields": {
+        "selection": 200,
+        "teacher_tokens": 197,
+        "practice": 170,
+        "initial_prefix": 196,
+        "zero_tokens": 197,
+        "step2_tokens": 196
+      },
+      "strictly_matched": {
+        "n": 163,
+        "accuracy": {
+          "teacher": 51.533742331288344,
+          "zero": 50.306748466257666,
+          "rate": 52.147239263803684,
+          "step8": 50.920245398773005
+        },
+        "rate_vs_teacher": {
+          "new_correct": 5,
+          "new_wrong": 4,
+          "delta_pp": 0.6134969325153374
+        },
+        "step8_vs_teacher": {
+          "new_correct": 5,
+          "new_wrong": 6,
+          "delta_pp": -0.6134969325153374
+        },
+        "rate_vs_zero": {
+          "new_correct": 3,
+          "new_wrong": 0,
+          "delta_pp": 1.8404907975460123
+        },
+        "step8_vs_zero": {
+          "new_correct": 1,
+          "new_wrong": 0,
+          "delta_pp": 0.6134969325153374
+        },
+        "rate_vs_step8": {
+          "new_correct": 2,
+          "new_wrong": 0,
+          "delta_pp": 1.2269938650306749
+        }
+      }
+    }
+  }
+}
