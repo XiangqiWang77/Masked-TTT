@@ -8,4 +8,6 @@ Qwen3 和 GPT-OSS 分组查询注意力的小模型测试覆盖了零更新和�
 
 `document_kv_bytes` 统计物化后的文档 KV，不包括模型权重、问题后缀、生成后缀或训练峰值。完整的实际内存对照见[已有测量](../aligned-cartridge-memory-20261104/README.md)。
 
+测试时发现 home 的文件数配额已满，DeepSpeed 在退出时无法创建 Triton 缓存锁文件。新生成的 GPU 作业脚本将 Triton 与 Torch 扩展缓存写入各作业的 scratch 目录；三个现有 Qwen／GPT 作业也安装了仅修改这两个缓存路径的启动配置。该配置对**之后启动的 Python 进程**生效，不改变已在运行的进程、模型或训练代码，也没有删除 home 文件。[缓存路由代码](../../../experiments/gqa_head_gain/cache_environment.py)。
+
 [调用示例](../../../README.md#optional-linked-selection-and-kv-only-decoding) · [卡带实现](../../../src/masked_ttt/cartridge.py) · [预检代码](../../../experiments/kv_only_cartridge/reusable_probe.py) · [测试](../../../tests/test_reusable_cartridge.py)

@@ -88,6 +88,9 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 TASK_REPO={q(repo)}
 TASK_ROOT={q(root)}
 TASK_RUNTIME={q(runtime)}
+export TRITON_CACHE_DIR="$TASK_ROOT/runtime_cache/triton"
+export TORCH_EXTENSIONS_DIR="$TASK_ROOT/runtime_cache/torch_extensions"
+mkdir -p "$TRITON_CACHE_DIR" "$TORCH_EXTENSIONS_DIR"
 OPD_PYTHON=/home/da839/.conda/envs/TTT/bin/python
 if nvidia-smi --query-gpu=name --format=csv,noheader | grep -Eqi 'B200|Blackwell'; then
     OPD_PYTHON=/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/envs/ttt-cu128/bin/python

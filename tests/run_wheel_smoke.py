@@ -21,12 +21,16 @@ def main():
     stage, wheels = work / "source", work / "wheels"
     stage.mkdir()
     wheels.mkdir()
+    cache = work / "runtime_cache"
+    (cache / "triton").mkdir(parents=True)
+    (cache / "torch_extensions").mkdir()
     shutil.copytree(root / "src", stage / "src",
                     ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "*.egg-info"))
     for name in ("pyproject.toml", "README.md"):
         shutil.copy2(root / name, stage / name)
     env = dict(os.environ, HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1",
-               OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
+               OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
+               TRITON_CACHE_DIR=str(cache / "triton"), TORCH_EXTENSIONS_DIR=str(cache / "torch_extensions"))
     build = subprocess.run([sys.executable, "-m", "pip", "wheel", "--no-deps", "--no-build-isolation",
                             "--no-index", "--wheel-dir", str(wheels), "."],
                            cwd=stage, env=env, capture_output=True, text=True, timeout=180)

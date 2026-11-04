@@ -84,8 +84,15 @@ def test_load_unquantized_checkpoint_from_disk_without_network(tmp_path, archite
     document, question = cached_source(scores)
     selector = FrozenJSONSelector(scores)
     selector.bind_case("case")
-    result = MaskedTTT(backbone, selector).answer(
-        Request(document=document, question=question, max_new_tokens=3), compact_standalone=True)
+    cartridge, result = MaskedTTT(backbone, selector).prepare_cartridge(
+        Request(document=document, question=question, max_new_tokens=3))
+    try:
+        repeated = cartridge.answer()
+        assert repeated["generated_token_ids"] == result["generated_token_ids"]
+        assert repeated["prediction"] == result["prediction"]
+        assert cartridge.document_kv_bytes == result["standalone_cartridge"]["memory"]["materialized_selected_kv_bytes"]
+    finally:
+        cartridge.close()
     assert result["training"]["objective"] == "on-policy KL(teacher || student)"
     assert result["training"]["teacher_conditioned_on_student_prefix"]
     assert result["training"]["student_rollouts_refreshed_each_step"]

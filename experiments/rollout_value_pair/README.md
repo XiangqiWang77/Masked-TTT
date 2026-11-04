@@ -40,6 +40,10 @@ five GPU-specific cases skipped on the CPU; the allocation itself must run the
 CUDA tests and real-model preflight before any dataset cases. The job uses
 cached Decision scores and has no online API access.
 
+If this submitted job starts or restarts after the scratch-cache configuration
+was installed, its Triton and Torch extension caches are written under its own
+scratch directory. An interpreter that was already running is not changed.
+
 The GPU allocation runs real-model preflight checks before evaluation. The
 report records the same-run four controls, paired new correct and new wrong
 counts, and task/length breakdown. The goal is performance improvement, which

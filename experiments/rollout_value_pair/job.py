@@ -78,8 +78,12 @@ def report_stub(workspace, root):
 
 def validate_frozen(root, python):
     frozen = root / "runtime/repo"
+    cache = root / "runtime_cache"
+    (cache / "triton").mkdir(parents=True, exist_ok=True)
+    (cache / "torch_extensions").mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, PYTHONPATH="src:tests:.", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
-               OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
+               OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
+               TRITON_CACHE_DIR=str(cache / "triton"), TORCH_EXTENSIONS_DIR=str(cache / "torch_extensions"))
     done = subprocess.run([str(python), "-m", "pytest", "--rootdir", str(frozen),
         "--confcutdir", str(frozen), "-q", *CPU_TESTS], cwd=frozen, env=env,
         text=True, capture_output=True, timeout=180)

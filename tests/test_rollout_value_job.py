@@ -20,6 +20,8 @@ def test_manifest_and_batch_fix_two_original_sd_settings():
         script = job.batch_script(Path("/tmp") / name)
         assert "#SBATCH --gpus-per-task=1" in script and "#SBATCH --mem=64G" in script
         assert "rollout_value_pair/execute.py" in script and "unset OPENAI_API_KEY" in script
+        assert 'TRITON_CACHE_DIR="$TASK_ROOT/runtime_cache/triton"' in script
+        assert 'TORCH_EXTENSIONS_DIR="$TASK_ROOT/runtime_cache/torch_extensions"' in script
     bad = list(source_protocols())
     bad[2]["gain_learning_rate"] = .1
     with pytest.raises(ValueError, match="baseline changed"):

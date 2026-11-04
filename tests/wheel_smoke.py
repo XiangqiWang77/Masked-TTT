@@ -89,7 +89,7 @@ def main():
             directory = root / ("checkpoint-" + architecture)
             directory.mkdir()
             test_load_unquantized_checkpoint_from_disk_without_network(directory, architecture)
-            print(architecture + ": offline checkpoint loading and standalone cartridge passed")
+            print(architecture + ": offline checkpoint loading and reusable standalone cartridge passed")
 
 
 if __name__ == "__main__":
