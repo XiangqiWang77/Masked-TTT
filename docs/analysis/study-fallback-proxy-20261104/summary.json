@@ -1,0 +1,32 @@
+{
+  "summary": {
+    "cases": 200,
+    "source_questions": 50,
+    "original_verified_practices": 48,
+    "potential_additional_verified_practices": 20,
+    "original_cases_with_practice": 41,
+    "cases_with_candidate_fallback": 17,
+    "fallback_source_questions": 14,
+    "fallback_cases_by_task": {
+      "qa10": 3,
+      "qa2": 2,
+      "qa5": 1,
+      "qa6": 1,
+      "qa7": 2,
+      "qa8": 1,
+      "qa9": 7
+    },
+    "fallback_cases_candidate_vs_original": {
+      "new_correct": 0,
+      "new_wrong": 0
+    },
+    "original_correct": 118,
+    "proxy_correct": 118,
+    "teacher_correct": 119
+  },
+  "proxy_from_saved_answers_not_new_inference": true,
+  "model_calls": 0,
+  "online_api_calls": 0,
+  "reference_answers_used_only_for_post_generation_scoring": true,
+  "fallback_not_implemented_or_submitted": true
+}
