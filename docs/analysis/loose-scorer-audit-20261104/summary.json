@@ -13,6 +13,8 @@
         "unresolved": 0,
         "correct_with_multiple_answer_labels": 3,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       },
       "zero": {
@@ -21,6 +23,8 @@
         "unresolved": 0,
         "correct_with_multiple_answer_labels": 0,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       },
       "teacher": {
@@ -29,6 +33,8 @@
         "unresolved": 2,
         "correct_with_multiple_answer_labels": 0,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       },
       "cartridge": {
@@ -37,6 +43,8 @@
         "unresolved": 1,
         "correct_with_multiple_answer_labels": 0,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       }
     },
@@ -47,6 +55,8 @@
         "unresolved": 0,
         "correct_with_multiple_answer_labels": 1,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       },
       "zero": {
@@ -55,6 +65,8 @@
         "unresolved": 0,
         "correct_with_multiple_answer_labels": 0,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       },
       "teacher": {
@@ -63,6 +75,8 @@
         "unresolved": 0,
         "correct_with_multiple_answer_labels": 0,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       },
       "cartridge": {
@@ -71,6 +85,8 @@
         "unresolved": 0,
         "correct_with_multiple_answer_labels": 0,
         "yes_no_maybe_unresolved": 0,
+        "qa7_possible_missed_count": 0,
+        "qa7_correct_with_multiple_counts": 0,
         "qa8_possible_missed_set": 0
       }
     }

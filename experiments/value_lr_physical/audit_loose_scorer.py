@@ -16,6 +16,10 @@ OBJECTS = re.compile(r"(?i)\b(apple|football|milk)s?\b")
 UNCERTAIN_OR_NEGATED = re.compile(
     r"(?i)\b(?:not|never|no|without|unknown|unclear|maybe|perhaps|possibly|unsure|or)\b"
 )
+COUNTS = {"zero": 0, "none": 0, "nothing": 0, "0": 0, "one": 1, "1": 1,
+          "two": 2, "2": 2, "three": 3, "3": 3, "four": 4, "4": 4, "five": 5, "5": 5}
+COUNT_TOKEN = re.compile(r"(?i)(?<!\w)(?:zero|none|nothing|one|two|three|four|five|[0-5])(?!\w)")
+COUNT_UNCERTAIN = re.compile(r"(?i)\b(?:not|never|without|unknown|unclear|maybe|perhaps|or|instead|however|but)\b")
 
 
 def qa8_possible_missed_set(segment, references, correct):
@@ -23,6 +27,16 @@ def qa8_possible_missed_set(segment, references, correct):
     expected = {match.group(1).lower() for answer in references for match in OBJECTS.finditer(answer)}
     found = {match.group(1).lower() for match in OBJECTS.finditer(segment)}
     return bool(not correct and expected and found == expected and not UNCERTAIN_OR_NEGATED.search(segment))
+
+
+def qa7_count_screen(segment, references, correct):
+    """Identify narrow count-synonym and multiple-number cases for review."""
+    expected = {COUNTS[value.strip().casefold()] for value in references if value.strip().casefold() in COUNTS}
+    observed = {COUNTS[match.group().casefold()] for match in COUNT_TOKEN.finditer(segment)}
+    possible_miss = (not correct and len(expected) == 1 and observed == expected and
+                     not COUNT_UNCERTAIN.search(segment))
+    multiple_numbers = bool(correct and len(observed) > 1)
+    return bool(possible_miss), multiple_numbers
 
 
 def collect(root, references, scorer, model):
@@ -65,6 +79,10 @@ def collect(root, references, scorer, model):
                     len(scorer.answer_candidates(extracted, task)) > 1)
             if task in ("qa6", "qa9", "qa10"):
                 totals["yes_no_maybe_unresolved"] += int(not resolved)
+            if task == "qa7":
+                possible_miss, multiple = qa7_count_screen(segment, ref["answers"], correct)
+                totals["qa7_possible_missed_count"] += int(possible_miss)
+                totals["qa7_correct_with_multiple_counts"] += int(multiple)
             if task == "qa8":
                 totals["qa8_possible_missed_set"] += int(
                     qa8_possible_missed_set(segment, ref["answers"], correct))
