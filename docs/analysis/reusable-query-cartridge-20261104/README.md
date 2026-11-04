@@ -12,4 +12,6 @@ Qwen3 和 GPT-OSS 分组查询注意力的小模型测试覆盖了零更新和�
 
 此外，原 home 下的 230 个 Triton 编译缓存文件已复制到 scratch，逐文件直接比较后迁移；原路径保留为指向新位置的符号链接。这样沿用默认路径的程序仍可访问缓存，并释放 home 的文件数配额。没有计算哈希，也没有删除模型。
 
+两个有条件的 800 题留出目录也预先配置了 scratch 缓存；这一步没有提交作业，也没有改变开发集通过后才提交的门槛。
+
 [调用示例](../../../README.md#optional-linked-selection-and-kv-only-decoding) · [卡带实现](../../../src/masked_ttt/cartridge.py) · [预检代码](../../../experiments/kv_only_cartridge/reusable_probe.py) · [测试](../../../tests/test_reusable_cartridge.py)

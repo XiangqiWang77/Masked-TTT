@@ -4,6 +4,8 @@ import pytest
 
 from experiments.value_lr_physical.canonical_monitor import combine, prepare_holdout
 from experiments.value_lr_physical.canonical_report import summarize
+from experiments.value_lr_physical.canonical_job import HOLDOUT, batch_script
+from experiments.gqa_head_gain.cache_environment import stage_holdout
 from test_canonical_job import sources
 
 
@@ -30,12 +32,16 @@ def test_promotes_only_complete_models_that_beat_their_same_run_controls(tmp_pat
                     qualitative_case_sources=["qa1-300023", "qa2-300037"])
     (development / "manifest.json").write_text(json.dumps(manifest))
     data = report({"qwen": rows(dev), "gpt": rows(dev, improved=False)}, "development")
+    staged = tmp_path / HOLDOUT
+    stage_holdout(staged, batch_script(staged))
+    assert not (staged / "submission.json").exists()
     root, decision = prepare_holdout(tmp_path, development, data)
     assert decision["qwen"]["eligible"] and not decision["gpt"]["eligible"]
     frozen = json.loads((root / "manifest.json").read_text())
     assert frozen["models"] == ["qwen"] and frozen["case_count"] == 800
     assert frozen["case_ids"] == held and (root / "runtime/frozen.txt").read_text() == "unchanged"
     assert "canonical_execute.py" in (root / "job.sbatch").read_text()
+    assert root == staged and (root / "sitecustomize.py").is_file()
     data["models"]["qwen"]["overall"]["accuracy"]["whole"] = 100
     with pytest.raises(ValueError, match="scores"):
         prepare_holdout(tmp_path, development, data)

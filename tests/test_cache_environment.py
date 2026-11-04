@@ -6,7 +6,7 @@ import sys
 
 import pytest
 
-from experiments.gqa_head_gain.cache_environment import install
+from experiments.gqa_head_gain.cache_environment import install, stage_holdout
 
 
 @pytest.mark.parametrize("root_variable", ["ROOT", "TASK_ROOT"])
@@ -43,3 +43,14 @@ def test_rejects_job_without_root_on_pythonpath(tmp_path):
     with pytest.raises(ValueError, match="not explicitly"):
         install(tmp_path)
     assert not (tmp_path / "sitecustomize.py").exists()
+
+
+def test_stages_conditional_holdout_without_submitting_or_creating_a_batch(tmp_path):
+    root = tmp_path / "candidate_holdout"
+    planned = f'TASK_ROOT={root}\nexport PYTHONPATH="$TASK_REPO/src:$TASK_ROOT"\n'
+    state = stage_holdout(root, planned)
+    assert state["installed"] and (root / "sitecustomize.py").is_file()
+    assert not (root / "job.sbatch").exists() and not (root / "submission.json").exists()
+    assert stage_holdout(root, planned)["already_present"]
+    with pytest.raises(ValueError, match="planned holdout"):
+        stage_holdout(tmp_path / "not-a-target", planned)

@@ -7,6 +7,8 @@ import sys
 import pytest
 
 from experiments.rollout_value_pair import job, monitor, report
+from experiments.gqa_head_gain.cache_environment import stage_holdout
+from experiments.gqa_head_gain.report import summarize
 from test_study_job import source_protocols, sources
 
 
@@ -70,6 +72,25 @@ def test_combined_report_requires_source_disjoint_complete_cases():
     assert data["holdout_excluding_two_previously_viewed_sources"]["n"] == 792
     with pytest.raises(ValueError, match="Complete"):
         monitor.combine(manifest, dict(base, rows=rows(dev)), dict(base, rows=rows(held)[:-1]))
+
+
+def test_staged_cache_survives_conditional_holdout_preparation(tmp_path):
+    manifest = job.make_manifest(*source_protocols())
+    development = tmp_path / job.DEV
+    (development / "runtime").mkdir(parents=True)
+    (development / "runtime/frozen.txt").write_text("unchanged")
+    (development / "manifest.json").write_text(json.dumps(manifest))
+    rows = [dict(case=case, task="qa1", length=8192, whole=0, zero=0, teacher=0,
+                 baseline=0, cartridge=1, cartridge_percent=10.) for case in manifest["case_ids"]]
+    data = dict(mode="development", expected=200, metric="answer_focused_lexical_v2",
+                errors=[], invalid=[], overall=summarize(rows), rows=rows)
+    staged = tmp_path / job.HOLDOUT
+    stage_holdout(staged, job.batch_script(staged))
+    root, decision = monitor.prepare_holdout(tmp_path, development, data)
+    assert decision["eligible"] and root == staged
+    assert (root / "sitecustomize.py").is_file() and (root / "job.sbatch").is_file()
+    assert (root / "runtime/frozen.txt").read_text() == "unchanged"
+    assert not (root / "submission.json").exists()
 
 
 def test_report_rejects_nonmatching_hyperparameters_and_score_before_validation(monkeypatch):

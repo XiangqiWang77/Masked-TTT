@@ -20,9 +20,7 @@ def content(root):
             f"_os.environ['TORCH_EXTENSIONS_DIR'] = {str(cache / 'torch_extensions')!r}\n")
 
 
-def install(root):
-    root = Path(root).resolve()
-    batch = (root / "job.sbatch").read_text()
+def _install(root, batch):
     # Both historical and current scripts explicitly place the job root at
     # the end of PYTHONPATH. Reject unrelated jobs instead of guessing.
     rooted = (f"ROOT={root}" in batch and ':$ROOT"' in batch) or (
@@ -52,6 +50,23 @@ def install(root):
     finally:
         os.unlink(temporary)
     return dict(installed=True, already_present=False, applies_to_future_python_starts=True)
+
+
+def install(root):
+    root = Path(root).resolve()
+    return _install(root, (root / "job.sbatch").read_text())
+
+
+def stage_holdout(root, planned_batch):
+    """Prepare only cache routing before a conditional holdout is submitted."""
+    root = Path(root).resolve()
+    if "holdout" not in root.name or not isinstance(planned_batch, str):
+        raise ValueError("A planned holdout batch is required")
+    if (root / "job.sbatch").exists():
+        return install(root)
+    if (root / "submission.json").exists() or (root / "runtime").exists():
+        raise ValueError("An existing holdout cannot be staged without its batch script")
+    return _install(root, planned_batch)
 
 
 def main():
