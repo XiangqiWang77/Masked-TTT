@@ -136,6 +136,8 @@ def test_frozen_driver_runs_a_real_request_and_releases_all_training_state(tmp_p
     result = json.loads((job / "cases" / model / first / "result.json").read_text())
     validate_result(result, first, model, first.split("-", 3)[2], fixed_lr)
     assert result["prediction"] == result["standalone_cartridge"]["prediction"]
+    assert engine.config.value_learning_rate == fixed_lr and engine.config.gain_learning_rate == .01
+    assert engine.config.gain_head_mode == "kv" and engine.config.steps == 2
     assert result["training"]["student_rollout_limit"] == 8
     assert result["training"]["fixed_value_learning_rate"] == fixed_lr
     assert result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] == 0
