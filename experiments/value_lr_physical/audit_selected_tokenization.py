@@ -2,6 +2,7 @@
 """Audit selected-evidence token splicing using local tokenizers and no model."""
 import argparse
 from dataclasses import replace
+from collections import Counter
 import json
 from pathlib import Path
 import re
@@ -12,6 +13,7 @@ from transformers import AutoTokenizer
 from masked_ttt import Request, TTTConfig
 from masked_ttt._layout import selected_read_plan
 from masked_ttt.linked_selection import LinkedFrozenSelector
+from experiments.value_lr_physical.canonical_evidence import build_canonical_evidence
 
 
 class FinalChannelTokenizer:
@@ -59,6 +61,54 @@ def selected_chunk_positions(layout, selected, plan, separator_length):
     return [[mapping[position] for position in layout.chunks[index]] for index in selected]
 
 
+def inspect_canonical_ownership(tokenizer, layout, plan, mapped):
+    """Check whether canonical document tokens have unambiguous source-chunk owners.
+
+    Decoding a raw-token prefix may end inside a Unicode character. Such a
+    boundary is reported as unsupported instead of assigning it incorrectly.
+    This is a source-only feasibility audit, not an inference implementation.
+    """
+    tokens = list(plan.ids[layout.initial:plan.document_end])
+    decode = lambda ids: tokenizer.decode(ids, skip_special_tokens=False, clean_up_tokenization_spaces=False)
+    text = decode(tokens)
+    intervals = []
+    for positions in mapped:
+        left, right = positions[0] - layout.initial, positions[-1] + 1 - layout.initial
+        before, through = decode(tokens[:left]), decode(tokens[:right])
+        if not text.startswith(before) or not text.startswith(through) or len(through) <= len(before):
+            return dict(stable_chunk_boundaries=False, ambiguous_chunk_tokens=None,
+                        mixed_separator_tokens=None, uncovered_nonspace_characters=None,
+                        chunks_without_tokens=None)
+        intervals.append((len(before), len(through)))
+    encoded = tokenizer(text, add_special_tokens=False, return_offsets_mapping=True)
+    if len(encoded["input_ids"]) != len(encoded["offset_mapping"]):
+        raise ValueError("Canonical token offsets do not align with token IDs")
+    coverage = [bytearray(end - start) for start, end in intervals]
+    owner_counts = [0] * len(intervals)
+    ambiguous = mixed = 0
+    for start, end in encoded["offset_mapping"]:
+        if not 0 <= start <= end <= len(text):
+            raise ValueError("Canonical tokenizer returned an invalid text offset")
+        owners = [i for i, (left, right) in enumerate(intervals) if max(left, start) < min(right, end)]
+        if len(owners) > 1:
+            ambiguous += 1
+            continue
+        if not owners:
+            continue
+        owner = owners[0]
+        left, right = intervals[owner]
+        owner_counts[owner] += 1
+        mixed += int(start < left or end > right)
+        for char in range(max(start, left), min(end, right)):
+            coverage[owner][char - left] = 1
+    uncovered = sum(not covered and not text[left + index].isspace()
+                    for (left, _), mask in zip(intervals, coverage)
+                    for index, covered in enumerate(mask))
+    return dict(stable_chunk_boundaries=True, ambiguous_chunk_tokens=ambiguous,
+                mixed_separator_tokens=mixed, uncovered_nonspace_characters=uncovered,
+                chunks_without_tokens=sum(count == 0 for count in owner_counts))
+
+
 def inspect_plan(tokenizer, layout, selected, sink_tokens):
     separator = tokenizer.encode("\n\n", add_special_tokens=False)
     plan = selected_read_plan(layout.ids, layout.chunks, layout.initial, selected, separator)
@@ -75,16 +125,28 @@ def inspect_plan(tokenizer, layout, selected, sink_tokens):
     recoded_text = tokenizer.decode(canonical, skip_special_tokens=False, clean_up_tokenization_spaces=False)
     if text != recoded_text:
         raise ValueError("Selected evidence text cannot be round-tripped by the local tokenizer")
+    ownership = inspect_canonical_ownership(tokenizer, layout, plan, mapped)
+    try:
+        candidate = build_canonical_evidence(tokenizer, layout, selected, plan, mapped, sink_tokens=sink_tokens)
+        if (tuple(candidate.ids[:layout.initial]) != tuple(plan.ids[:layout.initial]) or
+            tuple(candidate.ids[candidate.document_end:]) != tuple(plan.ids[plan.document_end:]) or
+            candidate.mixed_boundary_tokens != ownership["mixed_separator_tokens"]):
+            raise ValueError("Canonical candidate prefix, suffix or ownership changed")
+        candidate_error = None
+    except ValueError as exc:
+        candidate_error = str(exc)
     return dict(exact_selected_token_mapping=True, sink_membership_changed=sink_changed,
                 selected_source_tokens=len(original), evidence_tokens=len(tokens),
                 canonical_tokens=len(canonical), canonical_identical=tokens == canonical,
                 canonical_length_delta=len(canonical)-len(tokens),
-                replacement_characters=text.count("\ufffd"), separators_added=plan.separators_added)
+                replacement_characters=text.count("\ufffd"), separators_added=plan.separators_added,
+                canonical_ownership=ownership, canonical_plan_error=candidate_error)
 
 
 def summarize(rows):
     if not rows:
         raise ValueError("At least one evidence plan is required")
+    ownership = [r["canonical_ownership"] for r in rows if r["canonical_ownership"]["stable_chunk_boundaries"]]
     return dict(cases=len(rows), exact_selected_token_mapping=sum(r["exact_selected_token_mapping"] for r in rows),
         sink_membership_changed_cases=sum(r["sink_membership_changed"] > 0 for r in rows),
         canonical_identical_cases=sum(r["canonical_identical"] for r in rows),
@@ -94,7 +156,16 @@ def summarize(rows):
         total_canonical_tokens=sum(r["canonical_tokens"] for r in rows),
         absolute_token_count_change=sum(abs(r["canonical_length_delta"]) for r in rows),
         total_separators_added=sum(r["separators_added"] for r in rows),
-        matches_saved_full_prompt_token_counts=sum(r.get("matches_saved_full_prompt_token_counts", False) for r in rows))
+        matches_saved_full_prompt_token_counts=sum(r.get("matches_saved_full_prompt_token_counts", False) for r in rows),
+        canonical_stable_boundary_cases=len(ownership),
+        canonical_ambiguous_chunk_cases=sum(r["ambiguous_chunk_tokens"] > 0 for r in ownership),
+        canonical_ambiguous_chunk_tokens=sum(r["ambiguous_chunk_tokens"] for r in ownership),
+        canonical_mixed_separator_cases=sum(r["mixed_separator_tokens"] > 0 for r in ownership),
+        canonical_mixed_separator_tokens=sum(r["mixed_separator_tokens"] for r in ownership),
+        canonical_uncovered_nonspace_cases=sum(r["uncovered_nonspace_characters"] > 0 for r in ownership),
+        canonical_chunks_without_token_cases=sum(r["chunks_without_tokens"] > 0 for r in ownership),
+        canonical_plan_buildable_cases=sum(r["canonical_plan_error"] is None for r in rows),
+        canonical_plan_errors=dict(Counter(r["canonical_plan_error"] for r in rows if r["canonical_plan_error"])))
 
 
 def audit(workspace):

@@ -12,3 +12,11 @@
 文本一致并不意味着 token 序列唯一：当前拼接方式与对拼接文字重新分词的序列在 39/40 题不同。表中最后一列是总长度变化，**不是 token 错误率**；不同序列也可能长度相同。这是一个值得做配对实验的工程差异，现有数据不能说明它会提高或降低答题准确率。
 
 如果后续测试重新分词，需要同时重新建立“全文 chunk → 选中 token”的映射，特别处理分隔符与证据共用一个 token 的边界，保证训练得到的修正仍施加到正确片段。本审计没有改动正在运行的方法。[聚合数据](summary.json) · [复核脚本](../../../experiments/value_lr_physical/audit_selected_tokenization.py) · [映射测试](../../../tests/test_selected_tokenization_audit.py)。
+
+进一步按重新分词后的字符 offset 检查，两个模型各 **40/40** 题的选中 chunk 边界均可稳定恢复，没有 token 同时跨两个选中 chunk，也没有非空白证据字符漏覆盖。Qwen 有 299 个、GPT-OSS 有 297 个 token 同时覆盖证据和片段外的边界文字，这些 token 分布在各自的 39 道题中。它们需要在候选实现中明确规定归属；不能把它们当作完全独立的分隔符。
+
+这项可行性检查只对选中证据片段重新分词，没有验证把整个聊天提示连同前缀和问题一起重新分词时的边界，也没有运行模型。对于字符边界落在不完整 UTF-8 字节序列中的情况，脚本会明确标记为不支持，而不是猜测归属；这批题没有出现该情况。
+
+已据此实现一个**独立、默认关闭**的候选：[canonical_evidence.py](../../../experiments/value_lr_physical/canonical_evidence.py) 重新分词证据片段，并把只跨越“分隔文字＋一个选中 chunk”的 token 归属到该 chunk；跨两个选中 chunk、无法恢复字符边界或涉及 sink 的情况直接拒绝。两种模型的各 40 题都能构建候选计划。
+
+[canonical_context.py](../../../experiments/value_lr_physical/canonical_context.py) 让候选 Teacher 和最终卡带使用相同的新证据序列，全文 Student 的原 SD 和更新参数不变。Qwen 与 GPT-OSS 的小模型测试覆盖了无变化时的一致性、实际边界合并、参数冻结和缓存释放。该候选没有进入当前作业，真实模型准确率尚未测试；它也没有对整个聊天提示重新分词。

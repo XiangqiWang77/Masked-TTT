@@ -19,7 +19,16 @@
       "total_canonical_tokens": 119897,
       "absolute_token_count_change": 298,
       "total_separators_added": 338,
-      "matches_saved_full_prompt_token_counts": 40
+      "matches_saved_full_prompt_token_counts": 40,
+      "canonical_stable_boundary_cases": 40,
+      "canonical_ambiguous_chunk_cases": 0,
+      "canonical_ambiguous_chunk_tokens": 0,
+      "canonical_mixed_separator_cases": 39,
+      "canonical_mixed_separator_tokens": 299,
+      "canonical_uncovered_nonspace_cases": 0,
+      "canonical_chunks_without_token_cases": 0,
+      "canonical_plan_buildable_cases": 40,
+      "canonical_plan_errors": {}
     },
     "gpt": {
       "cases": 40,
@@ -32,7 +41,16 @@
       "total_canonical_tokens": 117872,
       "absolute_token_count_change": 296,
       "total_separators_added": 338,
-      "matches_saved_full_prompt_token_counts": 40
+      "matches_saved_full_prompt_token_counts": 40,
+      "canonical_stable_boundary_cases": 40,
+      "canonical_ambiguous_chunk_cases": 0,
+      "canonical_ambiguous_chunk_tokens": 0,
+      "canonical_mixed_separator_cases": 39,
+      "canonical_mixed_separator_tokens": 297,
+      "canonical_uncovered_nonspace_cases": 0,
+      "canonical_chunks_without_token_cases": 0,
+      "canonical_plan_buildable_cases": 40,
+      "canonical_plan_errors": {}
     }
   }
 }
