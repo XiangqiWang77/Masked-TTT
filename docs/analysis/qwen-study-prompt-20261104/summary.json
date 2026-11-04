@@ -1,0 +1,583 @@
+{
+  "created_utc": "2026-11-04T13:29:04.049460+00:00",
+  "model": "Qwen3-4B-Instruct-2507",
+  "completed_cases": 200,
+  "metric": "answer_focused_lexical_v2",
+  "reference_answers_used_only_posthoc": true,
+  "online_api_calls": 0,
+  "same_gpu": true,
+  "teacher_probability_tensors_compared": false,
+  "teacher_and_cartridge_answer_formats_differ": true,
+  "development_used_for_selection": true,
+  "job_id": "32007831",
+  "gpu": "NVIDIA B200",
+  "probe_decision": {
+    "eligible": true,
+    "reason": "more_verified_source_exercises",
+    "base": 0,
+    "candidate": 2,
+    "more": 1,
+    "fewer": 0
+  },
+  "development_decision": {
+    "eligible": false,
+    "reason": "does_not_beat_all_paired_development_controls",
+    "delta_pp": {
+      "whole": 2.0,
+      "zero": 2.0,
+      "teacher": 0.0,
+      "original_sd": 0.5
+    },
+    "new_correct": 1,
+    "new_wrong": 0
+  },
+  "practice": {
+    "original": 48,
+    "study_only": 43,
+    "more": 18,
+    "fewer": 21,
+    "identical_checks": 67
+  },
+  "overall": {
+    "n": 200,
+    "accuracy": {
+      "whole": 57.5,
+      "zero": 57.5,
+      "teacher": 59.5,
+      "cartridge": 59.5
+    },
+    "versus_teacher": {
+      "n": 200,
+      "new_correct": 2,
+      "new_wrong": 2,
+      "delta_pp": 0.0
+    },
+    "versus_zero": {
+      "n": 200,
+      "new_correct": 5,
+      "new_wrong": 1,
+      "delta_pp": 2.0
+    },
+    "versus_whole": {
+      "n": 200,
+      "new_correct": 26,
+      "new_wrong": 22,
+      "delta_pp": 2.0
+    },
+    "strictly_paired": {
+      "n": 200,
+      "new_correct": 1,
+      "new_wrong": 0,
+      "delta_pp": 0.5
+    },
+    "paired_baseline_accuracy": 59.0,
+    "paired_candidate_accuracy": 59.5,
+    "median_cartridge_percent": 14.120679916050387
+  },
+  "groups": {
+    "length:16384": {
+      "n": 50,
+      "accuracy": {
+        "whole": 56.0,
+        "zero": 54.0,
+        "teacher": 58.0,
+        "cartridge": 56.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 5,
+        "new_wrong": 5,
+        "delta_pp": 0.0
+      },
+      "strictly_paired": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 56.0,
+      "paired_candidate_accuracy": 56.0,
+      "median_cartridge_percent": 15.285035576466065
+    },
+    "length:32768": {
+      "n": 50,
+      "accuracy": {
+        "whole": 56.0,
+        "zero": 70.0,
+        "teacher": 68.0,
+        "cartridge": 70.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 8,
+        "new_wrong": 1,
+        "delta_pp": 14.0
+      },
+      "strictly_paired": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 70.0,
+      "paired_candidate_accuracy": 70.0,
+      "median_cartridge_percent": 13.530400684935382
+    },
+    "length:65536": {
+      "n": 50,
+      "accuracy": {
+        "whole": 56.0,
+        "zero": 54.0,
+        "teacher": 54.0,
+        "cartridge": 52.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -2.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 8,
+        "new_wrong": 10,
+        "delta_pp": -4.0
+      },
+      "strictly_paired": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "paired_baseline_accuracy": 50.0,
+      "paired_candidate_accuracy": 52.0,
+      "median_cartridge_percent": 13.112392830480117
+    },
+    "length:8192": {
+      "n": 50,
+      "accuracy": {
+        "whole": 62.0,
+        "zero": 52.0,
+        "teacher": 58.0,
+        "cartridge": 60.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 4,
+        "new_wrong": 0,
+        "delta_pp": 8.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 5,
+        "new_wrong": 6,
+        "delta_pp": -2.0
+      },
+      "strictly_paired": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 60.0,
+      "paired_candidate_accuracy": 60.0,
+      "median_cartridge_percent": 18.621792929012372
+    },
+    "task:qa1": {
+      "n": 20,
+      "accuracy": {
+        "whole": 95.0,
+        "zero": 70.0,
+        "teacher": 70.0,
+        "cartridge": 70.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 5,
+        "delta_pp": -25.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 70.0,
+      "paired_candidate_accuracy": 70.0,
+      "median_cartridge_percent": 14.122957871539974
+    },
+    "task:qa10": {
+      "n": 20,
+      "accuracy": {
+        "whole": 30.0,
+        "zero": 35.0,
+        "teacher": 40.0,
+        "cartridge": 35.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 35.0,
+      "paired_candidate_accuracy": 35.0,
+      "median_cartridge_percent": 14.202010289282889
+    },
+    "task:qa2": {
+      "n": 20,
+      "accuracy": {
+        "whole": 40.0,
+        "zero": 60.0,
+        "teacher": 60.0,
+        "cartridge": 60.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 6,
+        "new_wrong": 2,
+        "delta_pp": 20.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "paired_baseline_accuracy": 55.0,
+      "paired_candidate_accuracy": 60.0,
+      "median_cartridge_percent": 14.639818211883952
+    },
+    "task:qa3": {
+      "n": 20,
+      "accuracy": {
+        "whole": 20.0,
+        "zero": 35.0,
+        "teacher": 35.0,
+        "cartridge": 40.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 5,
+        "new_wrong": 1,
+        "delta_pp": 20.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 40.0,
+      "paired_candidate_accuracy": 40.0,
+      "median_cartridge_percent": 14.717102228595472
+    },
+    "task:qa4": {
+      "n": 20,
+      "accuracy": {
+        "whole": 30.0,
+        "zero": 25.0,
+        "teacher": 35.0,
+        "cartridge": 40.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 3,
+        "new_wrong": 0,
+        "delta_pp": 15.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 2,
+        "delta_pp": 10.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 40.0,
+      "paired_candidate_accuracy": 40.0,
+      "median_cartridge_percent": 13.805940203705088
+    },
+    "task:qa5": {
+      "n": 20,
+      "accuracy": {
+        "whole": 100.0,
+        "zero": 90.0,
+        "teacher": 90.0,
+        "cartridge": 90.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 2,
+        "delta_pp": -10.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 90.0,
+      "paired_candidate_accuracy": 90.0,
+      "median_cartridge_percent": 14.239677904362157
+    },
+    "task:qa6": {
+      "n": 20,
+      "accuracy": {
+        "whole": 75.0,
+        "zero": 85.0,
+        "teacher": 80.0,
+        "cartridge": 80.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -5.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 3,
+        "delta_pp": 5.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 80.0,
+      "paired_candidate_accuracy": 80.0,
+      "median_cartridge_percent": 14.471939339704477
+    },
+    "task:qa7": {
+      "n": 20,
+      "accuracy": {
+        "whole": 45.0,
+        "zero": 30.0,
+        "teacher": 40.0,
+        "cartridge": 35.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 4,
+        "delta_pp": -10.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 35.0,
+      "paired_candidate_accuracy": 35.0,
+      "median_cartridge_percent": 13.896421632164223
+    },
+    "task:qa8": {
+      "n": 20,
+      "accuracy": {
+        "whole": 55.0,
+        "zero": 50.0,
+        "teacher": 50.0,
+        "cartridge": 50.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 3,
+        "delta_pp": -5.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 50.0,
+      "paired_candidate_accuracy": 50.0,
+      "median_cartridge_percent": 14.431044406848446
+    },
+    "task:qa9": {
+      "n": 20,
+      "accuracy": {
+        "whole": 85.0,
+        "zero": 95.0,
+        "teacher": 95.0,
+        "cartridge": 95.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 0,
+        "delta_pp": 10.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 95.0,
+      "paired_candidate_accuracy": 95.0,
+      "median_cartridge_percent": 14.717602681192663
+    }
+  }
+}

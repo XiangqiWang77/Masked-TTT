@@ -34,6 +34,12 @@ after generation for the common `answer_focused_lexical_v2` scorer. No paid
 API calls are made. The single candidate changes two hyperparameters together;
 its result will not isolate their individual contributions.
 
+The development job is **32012882**, submitted for one GPU with a six-hour
+allocation and requeue support. Frozen-runtime checks passed 82 tests, with
+five GPU-specific cases skipped on the CPU; the allocation itself must run the
+CUDA tests and real-model preflight before any dataset cases. The job uses
+cached Decision scores and has no online API access.
+
 The GPU allocation runs real-model preflight checks before evaluation. The
 report records the same-run four controls, paired new correct and new wrong
 counts, and task/length breakdown. The goal is performance improvement, which
