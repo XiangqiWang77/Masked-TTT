@@ -1,0 +1,631 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "source_questions": 250,
+  "context_lengths_per_question": 4,
+  "new_model_calls": 0,
+  "online_api_calls": 0,
+  "teacher_has_generic_output_requirement": true,
+  "original_cartridge_format": true,
+  "olmo_zero_control": "independent rerun with same selected KV and original suffix",
+  "qwen_gpt_zero_control": "same selected KV and original suffix",
+  "teacher_format_control": "same selected KV, generic output requirement and generation limit",
+  "models": {
+    "qwen": {
+      "overall": {
+        "n": 1000,
+        "counts": {
+          "teacher": 566,
+          "selective": 560,
+          "cartridge": 567,
+          "selective_teacher_format": 566,
+          "cartridge_teacher_format": 568
+        },
+        "original_update": {
+          "new_correct": 15,
+          "new_wrong": 8
+        },
+        "teacher_format_update": {
+          "new_correct": 10,
+          "new_wrong": 8
+        }
+      },
+      "by_task": {
+        "qa1": {
+          "n": 100,
+          "counts": {
+            "teacher": 56,
+            "selective": 55,
+            "cartridge": 56,
+            "selective_teacher_format": 56,
+            "cartridge_teacher_format": 56
+          },
+          "original_update": {
+            "new_correct": 1,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          }
+        },
+        "qa10": {
+          "n": 100,
+          "counts": {
+            "teacher": 50,
+            "selective": 49,
+            "cartridge": 50,
+            "selective_teacher_format": 50,
+            "cartridge_teacher_format": 51
+          },
+          "original_update": {
+            "new_correct": 2,
+            "new_wrong": 1
+          },
+          "teacher_format_update": {
+            "new_correct": 2,
+            "new_wrong": 1
+          }
+        },
+        "qa2": {
+          "n": 100,
+          "counts": {
+            "teacher": 24,
+            "selective": 26,
+            "cartridge": 27,
+            "selective_teacher_format": 24,
+            "cartridge_teacher_format": 25
+          },
+          "original_update": {
+            "new_correct": 2,
+            "new_wrong": 1
+          },
+          "teacher_format_update": {
+            "new_correct": 1,
+            "new_wrong": 0
+          }
+        },
+        "qa3": {
+          "n": 100,
+          "counts": {
+            "teacher": 27,
+            "selective": 26,
+            "cartridge": 26,
+            "selective_teacher_format": 27,
+            "cartridge_teacher_format": 26
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          }
+        },
+        "qa4": {
+          "n": 100,
+          "counts": {
+            "teacher": 74,
+            "selective": 74,
+            "cartridge": 74,
+            "selective_teacher_format": 74,
+            "cartridge_teacher_format": 71
+          },
+          "original_update": {
+            "new_correct": 3,
+            "new_wrong": 3
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 3
+          }
+        },
+        "qa5": {
+          "n": 100,
+          "counts": {
+            "teacher": 79,
+            "selective": 80,
+            "cartridge": 80,
+            "selective_teacher_format": 79,
+            "cartridge_teacher_format": 80
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 1,
+            "new_wrong": 0
+          }
+        },
+        "qa6": {
+          "n": 100,
+          "counts": {
+            "teacher": 84,
+            "selective": 86,
+            "cartridge": 84,
+            "selective_teacher_format": 84,
+            "cartridge_teacher_format": 83
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 2
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          }
+        },
+        "qa7": {
+          "n": 100,
+          "counts": {
+            "teacher": 37,
+            "selective": 29,
+            "cartridge": 33,
+            "selective_teacher_format": 37,
+            "cartridge_teacher_format": 37
+          },
+          "original_update": {
+            "new_correct": 4,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          }
+        },
+        "qa8": {
+          "n": 100,
+          "counts": {
+            "teacher": 49,
+            "selective": 48,
+            "cartridge": 51,
+            "selective_teacher_format": 49,
+            "cartridge_teacher_format": 52
+          },
+          "original_update": {
+            "new_correct": 3,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 4,
+            "new_wrong": 1
+          }
+        },
+        "qa9": {
+          "n": 100,
+          "counts": {
+            "teacher": 86,
+            "selective": 87,
+            "cartridge": 86,
+            "selective_teacher_format": 86,
+            "cartridge_teacher_format": 87
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          },
+          "teacher_format_update": {
+            "new_correct": 2,
+            "new_wrong": 1
+          }
+        }
+      }
+    },
+    "gpt": {
+      "overall": {
+        "n": 1000,
+        "counts": {
+          "teacher": 571,
+          "selective": 551,
+          "cartridge": 554,
+          "selective_teacher_format": 571,
+          "cartridge_teacher_format": 575
+        },
+        "original_update": {
+          "new_correct": 8,
+          "new_wrong": 5
+        },
+        "teacher_format_update": {
+          "new_correct": 10,
+          "new_wrong": 6
+        }
+      },
+      "by_task": {
+        "qa1": {
+          "n": 100,
+          "counts": {
+            "teacher": 56,
+            "selective": 56,
+            "cartridge": 55,
+            "selective_teacher_format": 56,
+            "cartridge_teacher_format": 56
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          }
+        },
+        "qa10": {
+          "n": 100,
+          "counts": {
+            "teacher": 50,
+            "selective": 38,
+            "cartridge": 40,
+            "selective_teacher_format": 50,
+            "cartridge_teacher_format": 51
+          },
+          "original_update": {
+            "new_correct": 2,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 3,
+            "new_wrong": 2
+          }
+        },
+        "qa2": {
+          "n": 100,
+          "counts": {
+            "teacher": 20,
+            "selective": 18,
+            "cartridge": 18,
+            "selective_teacher_format": 20,
+            "cartridge_teacher_format": 19
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          }
+        },
+        "qa3": {
+          "n": 100,
+          "counts": {
+            "teacher": 22,
+            "selective": 23,
+            "cartridge": 25,
+            "selective_teacher_format": 22,
+            "cartridge_teacher_format": 22
+          },
+          "original_update": {
+            "new_correct": 2,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          }
+        },
+        "qa4": {
+          "n": 100,
+          "counts": {
+            "teacher": 57,
+            "selective": 55,
+            "cartridge": 56,
+            "selective_teacher_format": 57,
+            "cartridge_teacher_format": 59
+          },
+          "original_update": {
+            "new_correct": 1,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 3,
+            "new_wrong": 1
+          }
+        },
+        "qa5": {
+          "n": 100,
+          "counts": {
+            "teacher": 81,
+            "selective": 78,
+            "cartridge": 77,
+            "selective_teacher_format": 81,
+            "cartridge_teacher_format": 83
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          },
+          "teacher_format_update": {
+            "new_correct": 2,
+            "new_wrong": 0
+          }
+        },
+        "qa6": {
+          "n": 100,
+          "counts": {
+            "teacher": 76,
+            "selective": 74,
+            "cartridge": 73,
+            "selective_teacher_format": 76,
+            "cartridge_teacher_format": 78
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          },
+          "teacher_format_update": {
+            "new_correct": 2,
+            "new_wrong": 0
+          }
+        },
+        "qa7": {
+          "n": 100,
+          "counts": {
+            "teacher": 67,
+            "selective": 66,
+            "cartridge": 67,
+            "selective_teacher_format": 67,
+            "cartridge_teacher_format": 66
+          },
+          "original_update": {
+            "new_correct": 1,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          }
+        },
+        "qa8": {
+          "n": 100,
+          "counts": {
+            "teacher": 54,
+            "selective": 57,
+            "cartridge": 57,
+            "selective_teacher_format": 54,
+            "cartridge_teacher_format": 54
+          },
+          "original_update": {
+            "new_correct": 2,
+            "new_wrong": 2
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          }
+        },
+        "qa9": {
+          "n": 100,
+          "counts": {
+            "teacher": 88,
+            "selective": 86,
+            "cartridge": 86,
+            "selective_teacher_format": 88,
+            "cartridge_teacher_format": 87
+          },
+          "original_update": {
+            "new_correct": 0,
+            "new_wrong": 0
+          },
+          "teacher_format_update": {
+            "new_correct": 0,
+            "new_wrong": 1
+          }
+        }
+      }
+    },
+    "olmo": {
+      "overall": {
+        "n": 1000,
+        "correct": {
+          "zero": 443,
+          "trained": 445,
+          "teacher": 410,
+          "historical": 446
+        },
+        "accuracy": {
+          "zero": 44.3,
+          "trained": 44.5,
+          "teacher": 41.0,
+          "historical": 44.6
+        },
+        "delta_pp": 0.2,
+        "gains": 5,
+        "losses": 3,
+        "median_trained_to_zero_memory_ratio": 1.0605015872417596
+      },
+      "by_task": {
+        "qa1": {
+          "n": 100,
+          "correct": {
+            "zero": 37,
+            "trained": 36,
+            "teacher": 40,
+            "historical": 37
+          },
+          "accuracy": {
+            "zero": 37.0,
+            "trained": 36.0,
+            "teacher": 40.0,
+            "historical": 37.0
+          },
+          "delta_pp": -1.0,
+          "gains": 0,
+          "losses": 1,
+          "median_trained_to_zero_memory_ratio": 1.0604868877294482
+        },
+        "qa10": {
+          "n": 100,
+          "correct": {
+            "zero": 55,
+            "trained": 55,
+            "teacher": 45,
+            "historical": 55
+          },
+          "accuracy": {
+            "zero": 55.0,
+            "trained": 55.0,
+            "teacher": 45.0,
+            "historical": 55.0
+          },
+          "delta_pp": 0.0,
+          "gains": 1,
+          "losses": 1,
+          "median_trained_to_zero_memory_ratio": 1.0605081717878084
+        },
+        "qa2": {
+          "n": 100,
+          "correct": {
+            "zero": 13,
+            "trained": 13,
+            "teacher": 12,
+            "historical": 13
+          },
+          "accuracy": {
+            "zero": 13.0,
+            "trained": 13.0,
+            "teacher": 12.0,
+            "historical": 13.0
+          },
+          "delta_pp": 0.0,
+          "gains": 1,
+          "losses": 1,
+          "median_trained_to_zero_memory_ratio": 1.0605102190056162
+        },
+        "qa3": {
+          "n": 100,
+          "correct": {
+            "zero": 14,
+            "trained": 14,
+            "teacher": 11,
+            "historical": 14
+          },
+          "accuracy": {
+            "zero": 14.0,
+            "trained": 14.0,
+            "teacher": 11.0,
+            "historical": 14.0
+          },
+          "delta_pp": 0.0,
+          "gains": 0,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0605766147877287
+        },
+        "qa4": {
+          "n": 100,
+          "correct": {
+            "zero": 53,
+            "trained": 55,
+            "teacher": 39,
+            "historical": 54
+          },
+          "accuracy": {
+            "zero": 53.0,
+            "trained": 55.0,
+            "teacher": 39.0,
+            "historical": 54.0
+          },
+          "delta_pp": 2.0,
+          "gains": 2,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0604529779680836
+        },
+        "qa5": {
+          "n": 100,
+          "correct": {
+            "zero": 68,
+            "trained": 68,
+            "teacher": 64,
+            "historical": 68
+          },
+          "accuracy": {
+            "zero": 68.0,
+            "trained": 68.0,
+            "teacher": 64.0,
+            "historical": 68.0
+          },
+          "delta_pp": 0.0,
+          "gains": 0,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0605091155071322
+        },
+        "qa6": {
+          "n": 100,
+          "correct": {
+            "zero": 54,
+            "trained": 54,
+            "teacher": 52,
+            "historical": 54
+          },
+          "accuracy": {
+            "zero": 54.0,
+            "trained": 54.0,
+            "teacher": 52.0,
+            "historical": 54.0
+          },
+          "delta_pp": 0.0,
+          "gains": 0,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0604782304075586
+        },
+        "qa7": {
+          "n": 100,
+          "correct": {
+            "zero": 46,
+            "trained": 47,
+            "teacher": 41,
+            "historical": 47
+          },
+          "accuracy": {
+            "zero": 46.0,
+            "trained": 47.0,
+            "teacher": 41.0,
+            "historical": 47.0
+          },
+          "delta_pp": 1.0,
+          "gains": 1,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0604929737731295
+        },
+        "qa8": {
+          "n": 100,
+          "correct": {
+            "zero": 40,
+            "trained": 40,
+            "teacher": 41,
+            "historical": 40
+          },
+          "accuracy": {
+            "zero": 40.0,
+            "trained": 40.0,
+            "teacher": 41.0,
+            "historical": 40.0
+          },
+          "delta_pp": 0.0,
+          "gains": 0,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0605133544203547
+        },
+        "qa9": {
+          "n": 100,
+          "correct": {
+            "zero": 63,
+            "trained": 63,
+            "teacher": 65,
+            "historical": 64
+          },
+          "accuracy": {
+            "zero": 63.0,
+            "trained": 63.0,
+            "teacher": 65.0,
+            "historical": 64.0
+          },
+          "delta_pp": 0.0,
+          "gains": 0,
+          "losses": 0,
+          "median_trained_to_zero_memory_ratio": 1.0604828171180718
+        }
+      }
+    }
+  }
+}
