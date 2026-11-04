@@ -1,0 +1,481 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "n_per_model": 1000,
+  "selection_note": "Qwen/GPT lowest baseline versus best QC may be different configurations; deltas are descriptive",
+  "qttt_gpt": "incomplete_1000",
+  "model_summaries": {
+    "qwen": {
+      "overall": {
+        "vanilla": 54.2,
+        "qttt": 54.4,
+        "teacher": 56.6,
+        "cartridge": 60.2,
+        "selective": 56.0,
+        "delta_teacher": 3.6,
+        "delta_selective": 4.2,
+        "n": 1000
+      },
+      "tasks": {
+        "qa1": {
+          "vanilla": 78.0,
+          "qttt": 79.0,
+          "teacher": 56.0,
+          "cartridge": 78.0,
+          "selective": 55.0,
+          "delta_teacher": 22.0,
+          "delta_selective": 23.0,
+          "n": 100
+        },
+        "qa2": {
+          "vanilla": 33.0,
+          "qttt": 34.0,
+          "teacher": 25.0,
+          "cartridge": 31.0,
+          "selective": 26.0,
+          "delta_teacher": 6.0,
+          "delta_selective": 5.0,
+          "n": 100
+        },
+        "qa3": {
+          "vanilla": 19.0,
+          "qttt": 19.0,
+          "teacher": 28.0,
+          "cartridge": 30.0,
+          "selective": 26.0,
+          "delta_teacher": 2.0,
+          "delta_selective": 4.0,
+          "n": 100
+        },
+        "qa4": {
+          "vanilla": 64.0,
+          "qttt": 65.0,
+          "teacher": 74.0,
+          "cartridge": 71.0,
+          "selective": 74.0,
+          "delta_teacher": -3.0,
+          "delta_selective": -3.0,
+          "n": 100
+        },
+        "qa5": {
+          "vanilla": 71.0,
+          "qttt": 70.0,
+          "teacher": 79.0,
+          "cartridge": 77.0,
+          "selective": 80.0,
+          "delta_teacher": -2.0,
+          "delta_selective": -3.0,
+          "n": 100
+        },
+        "qa6": {
+          "vanilla": 76.0,
+          "qttt": 74.0,
+          "teacher": 84.0,
+          "cartridge": 87.0,
+          "selective": 86.0,
+          "delta_teacher": 3.0,
+          "delta_selective": 1.0,
+          "n": 100
+        },
+        "qa7": {
+          "vanilla": 40.0,
+          "qttt": 41.0,
+          "teacher": 37.0,
+          "cartridge": 38.0,
+          "selective": 29.0,
+          "delta_teacher": 1.0,
+          "delta_selective": 9.0,
+          "n": 100
+        },
+        "qa8": {
+          "vanilla": 43.0,
+          "qttt": 43.0,
+          "teacher": 48.0,
+          "cartridge": 56.0,
+          "selective": 48.0,
+          "delta_teacher": 8.0,
+          "delta_selective": 8.0,
+          "n": 100
+        },
+        "qa9": {
+          "vanilla": 75.0,
+          "qttt": 75.0,
+          "teacher": 87.0,
+          "cartridge": 83.0,
+          "selective": 87.0,
+          "delta_teacher": -4.0,
+          "delta_selective": -4.0,
+          "n": 100
+        },
+        "qa10": {
+          "vanilla": 43.0,
+          "qttt": 44.0,
+          "teacher": 48.0,
+          "cartridge": 51.0,
+          "selective": 49.0,
+          "delta_teacher": 3.0,
+          "delta_selective": 2.0,
+          "n": 100
+        }
+      },
+      "lengths": {
+        "8192": {
+          "vanilla": 59.2,
+          "qttt": 59.2,
+          "teacher": 55.2,
+          "cartridge": 60.4,
+          "selective": 53.6,
+          "delta_teacher": 5.2,
+          "delta_selective": 6.8,
+          "n": 250
+        },
+        "16384": {
+          "vanilla": 54.4,
+          "qttt": 55.6,
+          "teacher": 60.0,
+          "cartridge": 64.8,
+          "selective": 58.4,
+          "delta_teacher": 4.8,
+          "delta_selective": 6.4,
+          "n": 250
+        },
+        "32768": {
+          "vanilla": 49.6,
+          "qttt": 50.4,
+          "teacher": 58.8,
+          "cartridge": 60.0,
+          "selective": 58.0,
+          "delta_teacher": 1.2,
+          "delta_selective": 2.0,
+          "n": 250
+        },
+        "65536": {
+          "vanilla": 53.6,
+          "qttt": 52.4,
+          "teacher": 52.4,
+          "cartridge": 55.6,
+          "selective": 54.0,
+          "delta_teacher": 3.2,
+          "delta_selective": 1.6,
+          "n": 250
+        }
+      }
+    },
+    "olmo": {
+      "overall": {
+        "vanilla": 36.1,
+        "qttt": 36.0,
+        "teacher": 41.2,
+        "cartridge": 44.6,
+        "selective": 44.3,
+        "delta_teacher": 3.4,
+        "delta_selective": 0.3,
+        "n": 1000
+      },
+      "tasks": {
+        "qa1": {
+          "vanilla": 23.0,
+          "qttt": 23.0,
+          "teacher": 40.0,
+          "cartridge": 37.0,
+          "selective": 37.0,
+          "delta_teacher": -3.0,
+          "delta_selective": 0.0,
+          "n": 100
+        },
+        "qa2": {
+          "vanilla": 17.0,
+          "qttt": 16.0,
+          "teacher": 12.0,
+          "cartridge": 13.0,
+          "selective": 13.0,
+          "delta_teacher": 1.0,
+          "delta_selective": 0.0,
+          "n": 100
+        },
+        "qa3": {
+          "vanilla": 12.0,
+          "qttt": 11.0,
+          "teacher": 11.0,
+          "cartridge": 14.0,
+          "selective": 14.0,
+          "delta_teacher": 3.0,
+          "delta_selective": 0.0,
+          "n": 100
+        },
+        "qa4": {
+          "vanilla": 31.0,
+          "qttt": 32.0,
+          "teacher": 40.0,
+          "cartridge": 54.0,
+          "selective": 53.0,
+          "delta_teacher": 14.0,
+          "delta_selective": 1.0,
+          "n": 100
+        },
+        "qa5": {
+          "vanilla": 62.0,
+          "qttt": 61.0,
+          "teacher": 64.0,
+          "cartridge": 68.0,
+          "selective": 68.0,
+          "delta_teacher": 4.0,
+          "delta_selective": 0.0,
+          "n": 100
+        },
+        "qa6": {
+          "vanilla": 42.0,
+          "qttt": 42.0,
+          "teacher": 52.0,
+          "cartridge": 54.0,
+          "selective": 54.0,
+          "delta_teacher": 2.0,
+          "delta_selective": 0.0,
+          "n": 100
+        },
+        "qa7": {
+          "vanilla": 37.0,
+          "qttt": 36.0,
+          "teacher": 41.0,
+          "cartridge": 47.0,
+          "selective": 46.0,
+          "delta_teacher": 6.0,
+          "delta_selective": 1.0,
+          "n": 100
+        },
+        "qa8": {
+          "vanilla": 29.0,
+          "qttt": 31.0,
+          "teacher": 41.0,
+          "cartridge": 40.0,
+          "selective": 40.0,
+          "delta_teacher": -1.0,
+          "delta_selective": 0.0,
+          "n": 100
+        },
+        "qa9": {
+          "vanilla": 57.0,
+          "qttt": 57.0,
+          "teacher": 65.0,
+          "cartridge": 64.0,
+          "selective": 63.0,
+          "delta_teacher": -1.0,
+          "delta_selective": 1.0,
+          "n": 100
+        },
+        "qa10": {
+          "vanilla": 51.0,
+          "qttt": 51.0,
+          "teacher": 46.0,
+          "cartridge": 55.0,
+          "selective": 55.0,
+          "delta_teacher": 9.0,
+          "delta_selective": 0.0,
+          "n": 100
+        }
+      },
+      "lengths": {
+        "8192": {
+          "vanilla": 43.6,
+          "qttt": 43.6,
+          "teacher": 43.6,
+          "cartridge": 48.0,
+          "selective": 48.0,
+          "delta_teacher": 4.4,
+          "delta_selective": 0.0,
+          "n": 250
+        },
+        "16384": {
+          "vanilla": 37.6,
+          "qttt": 38.4,
+          "teacher": 46.0,
+          "cartridge": 48.4,
+          "selective": 47.6,
+          "delta_teacher": 2.4,
+          "delta_selective": 0.8,
+          "n": 250
+        },
+        "32768": {
+          "vanilla": 34.0,
+          "qttt": 32.8,
+          "teacher": 37.6,
+          "cartridge": 40.8,
+          "selective": 40.8,
+          "delta_teacher": 3.2,
+          "delta_selective": 0.0,
+          "n": 250
+        },
+        "65536": {
+          "vanilla": 29.2,
+          "qttt": 29.2,
+          "teacher": 37.6,
+          "cartridge": 41.2,
+          "selective": 40.8,
+          "delta_teacher": 3.6,
+          "delta_selective": 0.4,
+          "n": 250
+        }
+      }
+    },
+    "gpt": {
+      "overall": {
+        "vanilla": 48.7,
+        "qttt": null,
+        "teacher": 57.1,
+        "cartridge": 60.3,
+        "selective": 55.1,
+        "delta_teacher": 3.2,
+        "delta_selective": 5.2,
+        "n": 1000
+      },
+      "tasks": {
+        "qa1": {
+          "vanilla": 58.0,
+          "qttt": null,
+          "teacher": 56.0,
+          "cartridge": 70.0,
+          "selective": 56.0,
+          "delta_teacher": 14.0,
+          "delta_selective": 14.0,
+          "n": 100
+        },
+        "qa2": {
+          "vanilla": 28.0,
+          "qttt": null,
+          "teacher": 20.0,
+          "cartridge": 37.0,
+          "selective": 18.0,
+          "delta_teacher": 17.0,
+          "delta_selective": 19.0,
+          "n": 100
+        },
+        "qa3": {
+          "vanilla": 23.0,
+          "qttt": null,
+          "teacher": 22.0,
+          "cartridge": 27.0,
+          "selective": 23.0,
+          "delta_teacher": 5.0,
+          "delta_selective": 4.0,
+          "n": 100
+        },
+        "qa4": {
+          "vanilla": 28.0,
+          "qttt": null,
+          "teacher": 57.0,
+          "cartridge": 59.0,
+          "selective": 55.0,
+          "delta_teacher": 2.0,
+          "delta_selective": 4.0,
+          "n": 100
+        },
+        "qa5": {
+          "vanilla": 71.0,
+          "qttt": null,
+          "teacher": 81.0,
+          "cartridge": 73.0,
+          "selective": 78.0,
+          "delta_teacher": -8.0,
+          "delta_selective": -5.0,
+          "n": 100
+        },
+        "qa6": {
+          "vanilla": 48.0,
+          "qttt": null,
+          "teacher": 76.0,
+          "cartridge": 78.0,
+          "selective": 74.0,
+          "delta_teacher": 2.0,
+          "delta_selective": 4.0,
+          "n": 100
+        },
+        "qa7": {
+          "vanilla": 68.0,
+          "qttt": null,
+          "teacher": 67.0,
+          "cartridge": 68.0,
+          "selective": 66.0,
+          "delta_teacher": 1.0,
+          "delta_selective": 2.0,
+          "n": 100
+        },
+        "qa8": {
+          "vanilla": 56.0,
+          "qttt": null,
+          "teacher": 54.0,
+          "cartridge": 64.0,
+          "selective": 57.0,
+          "delta_teacher": 10.0,
+          "delta_selective": 7.0,
+          "n": 100
+        },
+        "qa9": {
+          "vanilla": 73.0,
+          "qttt": null,
+          "teacher": 88.0,
+          "cartridge": 90.0,
+          "selective": 86.0,
+          "delta_teacher": 2.0,
+          "delta_selective": 4.0,
+          "n": 100
+        },
+        "qa10": {
+          "vanilla": 34.0,
+          "qttt": null,
+          "teacher": 50.0,
+          "cartridge": 37.0,
+          "selective": 38.0,
+          "delta_teacher": -13.0,
+          "delta_selective": -1.0,
+          "n": 100
+        }
+      },
+      "lengths": {
+        "8192": {
+          "vanilla": 56.0,
+          "qttt": null,
+          "teacher": 54.4,
+          "cartridge": 60.8,
+          "selective": 54.0,
+          "delta_teacher": 6.4,
+          "delta_selective": 6.8,
+          "n": 250
+        },
+        "16384": {
+          "vanilla": 50.8,
+          "qttt": null,
+          "teacher": 64.0,
+          "cartridge": 63.2,
+          "selective": 61.6,
+          "delta_teacher": -0.8,
+          "delta_selective": 1.6,
+          "n": 250
+        },
+        "32768": {
+          "vanilla": 50.0,
+          "qttt": null,
+          "teacher": 57.2,
+          "cartridge": 59.6,
+          "selective": 53.2,
+          "delta_teacher": 2.4,
+          "delta_selective": 6.4,
+          "n": 250
+        },
+        "65536": {
+          "vanilla": 38.0,
+          "qttt": null,
+          "teacher": 52.8,
+          "cartridge": 57.6,
+          "selective": 51.6,
+          "delta_teacher": 4.8,
+          "delta_selective": 6.0,
+          "n": 250
+        }
+      }
+    }
+  },
+  "source_description": {
+    "qwen_olmo": "archived 1000-case four-method paired correctness snapshot",
+    "selective_and_gpt_low": "published full-performance 1000-case aggregate, OLMo zero is a separate rerun",
+    "gpt_best": "complete 200+800 linked-selection source-disjoint combined aggregate"
+  }
+}
