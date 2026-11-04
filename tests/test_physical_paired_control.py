@@ -57,3 +57,53 @@ def test_hooks_are_restored_after_failure():
         with physical_paired_prompt_control():
             raise RuntimeError("intentional")
     assert pipeline.answer_standalone is answer and pipeline.decode_standalone is decode
+
+
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss"])
+def test_generic_suffix_decodes_from_independent_materialized_cartridge(architecture):
+    from masked_ttt.kv_only import kv_only_cartridge
+
+    engine = make_engine() if architecture == "qwen3" else gpt_engine()
+    engine.config = replace(engine.config, self_question_count=0, guard_enabled=False,
+        selected_transfer_weight=0., value_basis_source="document", standalone_answer_format="original",
+        release_full_before_cartridge=True, release_selected_source_before_decode=True)
+    request = Request(document="The old note is red. The current note is blue. " * 6,
+                      question="Which color is current?", max_new_tokens=3)
+
+    class Selector:
+        def prepare(self, backbone, item):
+            layout = prepare_layout(backbone, item)
+            return PreparedRequest(item, layout, [1, len(layout.chunks) - 2], dict(backend="unit"))
+
+    method = MaskedTTT(engine, Selector())
+    with physical_paired_prompt_control(verify_teacher_suffix_after_release=True):
+        result = method.answer(request)
+    controls = result["standalone_cartridge"]["paired_prompt_control"]
+    verification = controls["teacher_suffix_independent_decode"]
+    assert verification["source_and_training_released"] and verification["adapter_bytes"] == 0
+    assert not verification["teacher_answer_in_prompt"]
+    assert verification["generated_token_ids"] == controls["trained_teacher_suffix"]["tokens"]
+    assert result["generated_token_ids"] == controls["trained_original"]["tokens"]
+    assert result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] == 0
+
+    # An independently invoked generic-format cartridge follows the identical
+    # request-local training and must produce the materialized alternate output.
+    engine.config = replace(engine.config, standalone_answer_format="teacher_requirements")
+    with kv_only_cartridge():
+        direct = method.answer(request)
+    assert direct["generated_token_ids"] == verification["generated_token_ids"]
+    assert direct["standalone_cartridge"]["answer_format"] == "teacher_requirements"
+
+
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss"])
+def test_format_release_preflight_restores_configuration_and_rng(architecture):
+    import torch
+    from experiments.kv_only_cartridge.format_release_probe import validate_loaded_backbone_formats
+
+    engine = make_engine() if architecture == "qwen3" else gpt_engine()
+    config, state = engine.config, torch.get_rng_state()
+    checked = validate_loaded_backbone_formats(engine)
+    assert checked["passed"] and checked["generic_tokens_match_pre_release"]
+    assert checked["source_and_training_released"] and checked["adapter_bytes"] == 0
+    assert not checked["reference_answers_used"] and not checked["teacher_answer_in_prompt"]
+    assert engine.config is config and torch.equal(torch.get_rng_state(), state)

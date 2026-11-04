@@ -1,0 +1,52 @@
+{
+  "locked_utc": "2026-11-04T09:29:48.182294+00:00",
+  "decision": {
+    "model": "gpt",
+    "selected_format": "teacher_generic_requirements",
+    "development_cases": 200,
+    "development_source_questions": 50,
+    "holdout_cases": 800,
+    "holdout_source_questions": 200,
+    "selection_policy": "decision_entity_link_v1",
+    "keep_fraction": 0.1,
+    "selection_uses_only_development_report": true,
+    "online_api_calls": 0,
+    "metric": "answer_focused_lexical_v2",
+    "development": {
+      "n": 200,
+      "accuracy": {
+        "whole": 53.5,
+        "baseline10": 52.5,
+        "zero": 61.0,
+        "teacher": 62.0,
+        "cartridge": 61.0,
+        "zero_teacher_format": 62.0,
+        "cartridge_teacher_format": 62.5
+      },
+      "versus_teacher": {
+        "new_correct": 3,
+        "new_wrong": 2,
+        "delta_pp": 0.5
+      },
+      "versus_zero_same_format": {
+        "new_correct": 3,
+        "new_wrong": 2,
+        "delta_pp": 0.5
+      },
+      "versus_original_format": {
+        "new_correct": 7,
+        "new_wrong": 4,
+        "delta_pp": 1.5
+      },
+      "versus_whole": {
+        "new_correct": 36,
+        "new_wrong": 18,
+        "delta_pp": 9.0
+      }
+    },
+    "previously_viewed_holdout_sources": 2,
+    "selected_format_has_teacher_answer": false,
+    "holdout_generic_answer_is_pre_release_diagnostic": true,
+    "requires_loaded_model_release_verification": true
+  }
+}
