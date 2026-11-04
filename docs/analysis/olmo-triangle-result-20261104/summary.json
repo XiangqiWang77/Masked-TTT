@@ -1,0 +1,37 @@
+{
+  "model": "OLMo-3-7B",
+  "metric": "answer_focused_lexical_v2",
+  "answer_accuracy_requests": 1000,
+  "multihop_requests": 200,
+  "target_attention_requests": 48,
+  "target_attention_source_questions": 12,
+  "metrics": {
+    "whole": {
+      "answer_accuracy_pct": 36.1,
+      "target_attention_pct": 0.32735538349963156,
+      "multihop_accuracy_pct": 14.5
+    },
+    "icl": {
+      "answer_accuracy_pct": 41.2,
+      "target_attention_pct": 0.6610969533236737,
+      "multihop_accuracy_pct": 11.5
+    },
+    "qc": {
+      "answer_accuracy_pct": 44.6,
+      "target_attention_pct": 0.66157078572265,
+      "multihop_accuracy_pct": 13.5
+    }
+  },
+  "radial_display_maxima": {
+    "answer_accuracy_pct": 100,
+    "target_attention_pct": 1,
+    "multihop_accuracy_pct": 100
+  },
+  "axis_interpretation": {
+    "dilution": "lower dilution is represented by greater target attention",
+    "fragmentation": "QA2 and QA3 task accuracy is a functional diagnostic of multi-fact question answering, not a direct measurement of fragmentation"
+  },
+  "radial_polygon_area_is_not_a_composite_score": true,
+  "selected_icl_and_qc_have_same_textual_evidence": true,
+  "teacher_and_qc_answer_formats_differ": true
+}
