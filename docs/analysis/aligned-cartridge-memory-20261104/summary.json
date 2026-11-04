@@ -17,7 +17,9 @@
         "median_document_kv_reduction_percent": 85.87932008394961,
         "median_model_resident_gpu_bytes": 8112064000.0,
         "median_training_peak_gpu_allocated_bytes": 16845236736.0,
-        "median_allocated_gpu_before_decode_bytes": 8564188672.0
+        "max_training_peak_gpu_allocated_bytes": 39204823552,
+        "median_allocated_gpu_before_decode_bytes": 8564188672.0,
+        "max_allocated_gpu_before_decode_bytes": 9392323072
       },
       "groups": {
         "length:16384": {
@@ -29,7 +31,9 @@
           "median_document_kv_reduction_percent": 84.71496442353393,
           "median_model_resident_gpu_bytes": 8112064000.0,
           "median_training_peak_gpu_allocated_bytes": 13662086656.0,
-          "median_allocated_gpu_before_decode_bytes": 8463319552.0
+          "max_training_peak_gpu_allocated_bytes": 16029407744,
+          "median_allocated_gpu_before_decode_bytes": 8463319552.0,
+          "max_allocated_gpu_before_decode_bytes": 8480460800
         },
         "length:32768": {
           "n": 50,
@@ -40,7 +44,9 @@
           "median_document_kv_reduction_percent": 86.46959931506461,
           "median_model_resident_gpu_bytes": 8112064000.0,
           "median_training_peak_gpu_allocated_bytes": 19123953664.0,
-          "median_allocated_gpu_before_decode_bytes": 8731631872.0
+          "max_training_peak_gpu_allocated_bytes": 23850694144,
+          "median_allocated_gpu_before_decode_bytes": 8731631872.0,
+          "max_allocated_gpu_before_decode_bytes": 8759277568
         },
         "length:65536": {
           "n": 50,
@@ -51,7 +57,9 @@
           "median_document_kv_reduction_percent": 86.88760716951988,
           "median_model_resident_gpu_bytes": 8112064000.0,
           "median_training_peak_gpu_allocated_bytes": 30103414272.0,
-          "median_allocated_gpu_before_decode_bytes": 9318021632.0
+          "max_training_peak_gpu_allocated_bytes": 39204823552,
+          "median_allocated_gpu_before_decode_bytes": 9318021632.0,
+          "max_allocated_gpu_before_decode_bytes": 9392323072
         },
         "length:8192": {
           "n": 50,
@@ -62,7 +70,9 @@
           "median_document_kv_reduction_percent": 81.37820707098763,
           "median_model_resident_gpu_bytes": 8112064000.0,
           "median_training_peak_gpu_allocated_bytes": 10902770432.0,
-          "median_allocated_gpu_before_decode_bytes": 8324464384.0
+          "max_training_peak_gpu_allocated_bytes": 11726939136,
+          "median_allocated_gpu_before_decode_bytes": 8324464384.0,
+          "max_allocated_gpu_before_decode_bytes": 8344556544
         }
       }
     },
@@ -76,7 +86,9 @@
         "median_document_kv_reduction_percent": 79.18749154591177,
         "median_model_resident_gpu_bytes": 41898768896.0,
         "median_training_peak_gpu_allocated_bytes": 43485966592.0,
-        "median_allocated_gpu_before_decode_bytes": 42009952000.0
+        "max_training_peak_gpu_allocated_bytes": 47817927680,
+        "median_allocated_gpu_before_decode_bytes": 42009952000.0,
+        "max_allocated_gpu_before_decode_bytes": 42169616384
       },
       "groups": {
         "length:16384": {
@@ -88,7 +100,9 @@
           "median_document_kv_reduction_percent": 76.90580804432503,
           "median_model_resident_gpu_bytes": 41898768896.0,
           "median_training_peak_gpu_allocated_bytes": 43082659072.0,
-          "median_allocated_gpu_before_decode_bytes": 41991282688.0
+          "max_training_peak_gpu_allocated_bytes": 43144240128,
+          "median_allocated_gpu_before_decode_bytes": 41991282688.0,
+          "max_allocated_gpu_before_decode_bytes": 41994701824
         },
         "length:32768": {
           "n": 50,
@@ -99,7 +113,9 @@
           "median_document_kv_reduction_percent": 82.45408548407107,
           "median_model_resident_gpu_bytes": 41898768896.0,
           "median_training_peak_gpu_allocated_bytes": 44114779648.0,
-          "median_allocated_gpu_before_decode_bytes": 42033900800.0
+          "max_training_peak_gpu_allocated_bytes": 44912394240,
+          "median_allocated_gpu_before_decode_bytes": 42033900800.0,
+          "max_allocated_gpu_before_decode_bytes": 42044663296
         },
         "length:65536": {
           "n": 50,
@@ -110,7 +126,9 @@
           "median_document_kv_reduction_percent": 83.4194218123455,
           "median_model_resident_gpu_bytes": 41898768896.0,
           "median_training_peak_gpu_allocated_bytes": 46308762112.0,
-          "median_allocated_gpu_before_decode_bytes": 42152472064.0
+          "max_training_peak_gpu_allocated_bytes": 47817927680,
+          "median_allocated_gpu_before_decode_bytes": 42152472064.0,
+          "max_allocated_gpu_before_decode_bytes": 42169616384
         },
         "length:8192": {
           "n": 50,
@@ -121,7 +139,9 @@
           "median_document_kv_reduction_percent": 66.19951603636487,
           "median_model_resident_gpu_bytes": 41898768896.0,
           "median_training_peak_gpu_allocated_bytes": 42879749120.0,
-          "median_allocated_gpu_before_decode_bytes": 41969144832.0
+          "max_training_peak_gpu_allocated_bytes": 42950752768,
+          "median_allocated_gpu_before_decode_bytes": 41969144832.0,
+          "max_allocated_gpu_before_decode_bytes": 41972966912
         }
       }
     }

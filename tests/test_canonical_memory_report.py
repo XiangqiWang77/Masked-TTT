@@ -39,6 +39,7 @@ def test_ratio_is_median_of_per_case_ratios_not_ratio_of_medians():
     assert data["median_standalone_cartridge_bytes"] == 100
     assert data["median_cartridge_percent_of_full"] == 50
     assert data["median_document_kv_reduction_percent"] == 50
+    assert data["max_training_peak_gpu_allocated_bytes"] == 20000
     assert summarize([]) == {"n": 0}
     rows[0]["model_gpu"] = None
     with pytest.raises(ValueError, match="Partial CUDA"):

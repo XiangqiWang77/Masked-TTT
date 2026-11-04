@@ -53,11 +53,17 @@ def summarize(rows):
     for row in rows:
         for key in ("full", "cartridge", "selected_source"):
             positive_bytes(row[key])
-    def median(key):
+    def values(key):
         values = [row[key] for row in rows if row[key] is not None]
         if values and len(values) != n:
             raise ValueError("Partial CUDA accounting is not comparable")
-        return statistics.median(values) if values else None
+        return values
+    def median(key):
+        data = values(key)
+        return statistics.median(data) if data else None
+    def maximum(key):
+        data = values(key)
+        return max(data) if data else None
     median_ratio = statistics.median(100 * row["cartridge"] / row["full"] for row in rows)
     return dict(n=n, median_full_document_kv_bytes=median("full"),
         median_selected_source_kv_bytes=median("selected_source"),
@@ -65,7 +71,9 @@ def summarize(rows):
         median_cartridge_percent_of_full=median_ratio, median_document_kv_reduction_percent=100 - median_ratio,
         median_model_resident_gpu_bytes=median("model_gpu"),
         median_training_peak_gpu_allocated_bytes=median("training_peak_gpu"),
-        median_allocated_gpu_before_decode_bytes=median("decode_gpu"))
+        max_training_peak_gpu_allocated_bytes=maximum("training_peak_gpu"),
+        median_allocated_gpu_before_decode_bytes=median("decode_gpu"),
+        max_allocated_gpu_before_decode_bytes=maximum("decode_gpu"))
 
 
 def read_rows(root, model, saved_rows, allowed):
