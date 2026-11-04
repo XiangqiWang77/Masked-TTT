@@ -28,5 +28,10 @@ same cases, selected chunks, Teacher, rollout budget, optimizer and final
 question format. Report the same-cache zero-update and trained results, the
 Teacher result, and per-case gains and losses. A small-model CPU test checks
 the two question paths, both gradient branches, and frozen weights and KV; it
-does not establish an accuracy gain. No new GPU job has been submitted for this
-candidate yet.
+does not establish an accuracy gain.
+
+Development job **31986468** uses one GPU to run the same frozen 200 cases for
+Qwen3-4B and GPT-OSS-20B in sequence. It compares against the original 32-token,
+two-base-step checkpoints, reuses cached Decision scores, and performs a
+loaded-model preflight before evaluation. Reporting runs hourly; results are
+not yet available. The experiment is development only, not a 1,000-case result.
