@@ -1,0 +1,39 @@
+{
+  "scope": "200 source-only development cases per model, 50 sources at four lengths",
+  "model_weights_loaded": false,
+  "model_calls": 0,
+  "online_api_calls": 0,
+  "reference_answers_used": false,
+  "predictions_or_accuracy_measured": false,
+  "covers_selected_source_characters_not_support_annotations": true,
+  "models": {
+    "qwen": {
+      "cases": 200,
+      "cases_missing_selected_nonspace": 0,
+      "cases_including_adjacent_nonspace": 4,
+      "total_selected_chunks": 2449,
+      "total_missing_selected_spans": 0,
+      "total_requested_nonspace": 1987091,
+      "total_missing_nonspace": 0,
+      "total_adjacent_nonspace": 4,
+      "maximum_missing_nonspace_per_case": 0,
+      "missing_nonspace_histogram": {
+        "0": 200
+      }
+    },
+    "gpt": {
+      "cases": 200,
+      "cases_missing_selected_nonspace": 0,
+      "cases_including_adjacent_nonspace": 4,
+      "total_selected_chunks": 2449,
+      "total_missing_selected_spans": 0,
+      "total_requested_nonspace": 1987091,
+      "total_missing_nonspace": 0,
+      "total_adjacent_nonspace": 4,
+      "maximum_missing_nonspace_per_case": 0,
+      "missing_nonspace_histogram": {
+        "0": 200
+      }
+    }
+  }
+}
