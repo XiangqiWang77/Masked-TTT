@@ -88,6 +88,22 @@ def test_summary_extracts_only_aggregate_values(tmp_path):
     assert "private" not in json.dumps(out) and "rows" not in json.dumps(out)
 
 
+def test_reusable_probes_are_read_for_their_corresponding_hourly_job(tmp_path):
+    root=tmp_path/"query_cartridges_reusable_gpu_probe_20261104";root.mkdir()
+    (root/"qwen_result.json").write_text(json.dumps(dict(passed=True,gpu="B200",
+        full_and_source_kv_released=True, private="must not be returned")))
+    (root/"gpt_result.json").write_text(json.dumps(dict(passed=True,gpu="B200",
+        adapter_tensors_retained=False, private="must not be returned")))
+    qwen=due_check.read_probe(tmp_path,"rollout_value_qwen")
+    gpt=due_check.read_probe(tmp_path,"linked_value_gpt_holdout")
+    assert qwen["kind"]=="qwen_reusable_cartridge" and qwen["full_and_source_kv_released"]
+    assert gpt["kind"]=="gpt_reusable_cartridge" and gpt["adapter_tensors_retained"] is False
+    assert "private" not in json.dumps([qwen,gpt])
+    (root/"gpt_result.json").unlink()
+    (root/"gpt_failure.json").write_text(json.dumps(dict(attempts=1,error_type="AssertionError")))
+    assert due_check.read_probe(tmp_path,"linked_value_gpt_holdout")["status"]=="failed"
+
+
 def test_scheduler_unavailable_is_not_a_terminal_job(tmp_path,monkeypatch):
     def fail(*_args,**_kwargs):raise ValueError("synthetic")
     monkeypatch.setattr(due_check.subprocess,"run",fail)

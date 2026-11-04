@@ -98,13 +98,26 @@ def read_summary(workspace,name):
 
 
 def read_probe(workspace,name):
-    if name=="rollout_value_qwen":
-        path=Path(workspace)/"query_cartridges_reusable_gpu_probe_20261104/qwen_result.json"
+    reusable_models={"rollout_value_qwen":"qwen", "linked_value_gpt_holdout":"gpt"}
+    if name in reusable_models:
+        model=reusable_models[name]
+        path=Path(workspace)/"query_cartridges_reusable_gpu_probe_20261104"/(model+"_result.json")
         if path.is_file():
             try:data=json.loads(path.read_text())
             except (OSError,ValueError):return dict(status="report_unavailable")
             if not isinstance(data,dict):return dict(status="report_invalid")
-            return dict(kind="qwen_reusable_cartridge",passed=data.get("passed"),gpu=data.get("gpu"))
+            allowed=("passed","gpu","same_first_tokens","same_teacher_tokens",
+                     "same_first_and_replay_logits","repeatable_original_question",
+                     "full_and_source_kv_released","adapter_tensors_retained",
+                     "reference_answers_used","online_api_calls")
+            return dict(kind=model+"_reusable_cartridge",**{key:data[key] for key in allowed if key in data})
+        failure=path.with_name(model+"_failure.json")
+        if failure.is_file():
+            try:data=json.loads(failure.read_text())
+            except (OSError,ValueError):return dict(status="report_unavailable")
+            if not isinstance(data,dict):return dict(status="report_invalid")
+            return dict(kind=model+"_reusable_cartridge",status="failed",attempts=data.get("attempts"),
+                        error_type=data.get("error_type"))
     if name=="gain_rate_pair":
         path=Path(workspace)/"query_cartridges_physical_counterfactual_probe_20261104/latest.json"
         if path.is_file():
