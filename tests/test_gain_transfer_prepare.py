@@ -29,6 +29,9 @@ def test_manifest_freezes_original_method_and_source_aligned_cases(tmp_path):
     assert manifest["models"] == ["qwen", "gpt"] and len(manifest["case_ids"]) == 40
     assert manifest["keep_fraction"] == .1 and manifest["selected_transfer_weight"] == 0
     assert manifest["online_api_calls"] == 0 and manifest["diagnosis_only"]
+    assert manifest["value_alignment_diagnostic"] is False
+    aligned, _ = make_manifest(workspace, value_alignment=True)
+    assert aligned["value_alignment_diagnostic"] is True
     path = workspace / "query_cartridges_value_lr_20261104/olmo_profile.json"
     profile = json.loads(path.read_text())
     profile["student_rollout_tokens"] = 32
@@ -47,6 +50,8 @@ def test_script_requests_one_low_priority_compatible_gpu(tmp_path):
     assert "unset OPENAI_API_KEY OPENAI_API_KEY_FILE" in script
     assert "value_lr_physical/run_gain_transfer.py" in script
     assert "--rootdir" in script and "--confcutdir" in script
+    assert "--value-alignment" not in script
+    assert "--value-alignment" in make_slurm(root, value_alignment=True)
 
 
 def test_submission_obeys_gpu_cap_and_is_idempotent(tmp_path, monkeypatch):
@@ -56,6 +61,7 @@ def test_submission_obeys_gpu_cap_and_is_idempotent(tmp_path, monkeypatch):
     workspace, root = create_workspace(tmp_path)
     root.mkdir()
     (root / "cpu_validation_passed.json").write_text(json.dumps(dict(cpu_tests_passed=True)))
+    (root / "manifest.json").write_text(json.dumps(dict(value_alignment_diagnostic=False)))
     (root / "job.sbatch").write_text("test")
     available = [True]
 

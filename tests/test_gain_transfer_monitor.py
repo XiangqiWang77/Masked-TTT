@@ -29,12 +29,11 @@ def test_live_job_updates_hourly_state_without_restart(tmp_path, monkeypatch):
     assert json.loads(root.joinpath("monitor.json").read_text())["job_id"] == "123"
 
 
-@pytest.mark.parametrize("history,expected", [("123|COMPLETED\n", "COMPLETED"),
-                                              ("123|CANCELLED by user\n", "CANCELLED"),
-                                              ("", "UNKNOWN")])
-def test_missing_queue_record_requires_accounting_evidence(history, expected, monkeypatch):
-    outputs = iter(("", history))
-    monkeypatch.setattr(monitor.subprocess, "run", lambda *args, **kwargs: SimpleNamespace(stdout=next(outputs)))
+@pytest.mark.parametrize("confirmed,expected", [("COMPLETED", "COMPLETED"),
+                                                ("CANCELLED", "CANCELLED"), (None, "UNKNOWN")])
+def test_missing_queue_record_requires_confirmed_terminal_state(confirmed, expected, monkeypatch):
+    monkeypatch.setattr(monitor.subprocess, "run", lambda *args, **kwargs: SimpleNamespace(stdout=""))
+    monkeypatch.setattr(monitor, "confirmed_terminal", lambda _job: confirmed)
     state, reason = monitor.scheduler_state("123")
     assert state == expected and reason is None
 

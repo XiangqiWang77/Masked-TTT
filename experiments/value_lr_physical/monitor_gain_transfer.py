@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-TERMINAL = {"COMPLETED", "FAILED", "CANCELLED", "TIMEOUT", "NODE_FAIL", "OUT_OF_MEMORY", "PREEMPTED", "BOOT_FAIL"}
+TERMINAL = {"COMPLETED", "FAILED", "CANCELLED", "TIMEOUT", "NODE_FAIL", "OUT_OF_MEMORY", "PREEMPTED", "BOOT_FAIL", "DEADLINE"}
 
 
 def atomic(path, data):
@@ -16,19 +16,24 @@ def atomic(path, data):
     temporary.replace(path)
 
 
+def confirmed_terminal(job):
+    # A deployed monitor lives directly under the job directory; the shared
+    # scheduler watcher is in its workspace parent. Tests import the package.
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    try:
+        from cartridge_job_watch import observed_terminal
+    except ImportError:
+        from experiments.value_lr_physical.cartridge_job_watch import observed_terminal
+    return observed_terminal(job)
+
+
 def scheduler_state(job):
     active = subprocess.run(["squeue", "-j", job, "-h", "-o", "%T|%R"],
                             check=True, capture_output=True, text=True, timeout=15).stdout.strip()
     if active:
         state, reason = active.split("|", 1)
         return state, reason
-    history = subprocess.run(["sacct", "-n", "-X", "-j", job, "--format=JobIDRaw,State", "--parsable2"],
-                             check=True, capture_output=True, text=True, timeout=15).stdout
-    for line in history.splitlines():
-        fields = line.split("|")
-        if len(fields) >= 2 and fields[0] == job:
-            return fields[1].split()[0].split("+")[0], None
-    return "UNKNOWN", None
+    return confirmed_terminal(job) or "UNKNOWN", None
 
 
 def monitor(root, schedule):

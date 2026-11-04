@@ -18,11 +18,14 @@ from experiments.long_rollout_steps.extend import isolate_gpu_preflight
 
 CPU_TESTS = ["tests/test_gain_transfer_probe.py", "tests/test_gain_transfer_job.py",
              "tests/test_gain_transfer_prepare.py", "tests/test_gain_transfer_report.py", "tests/test_gain_transfer_monitor.py",
+             "tests/test_value_alignment_probe.py", "tests/test_cartridge_job_watch_safe.py",
              "tests/test_freeze_readout_summary.py", "tests/test_kv_only_cartridge.py",
              "tests/test_gpt_request_date.py"]
 
 
-def make_manifest(workspace):
+def make_manifest(workspace, *, value_alignment=False):
+    if type(value_alignment) is not bool:
+        raise ValueError("Value alignment must be explicitly enabled or disabled")
     development = workspace / "query_cartridges_value_lr_20261104"
     source = json.loads((development / "manifest.json").read_text())
     anchor = json.loads((workspace / "query_cartridges_basis_dev_20261104/manifest.json").read_text())
@@ -46,11 +49,13 @@ def make_manifest(workspace):
         case_ids=keys, models=["qwen", "gpt"], model_protocols=source["model_protocols"],
         keep_fraction=.1, selected_transfer_weight=0., reference_answers_used=False,
         online_api_calls=0, random_order_seed=20261104, max_gpu_hours=6,
-        diagnosis_only=True, same_olmo_objective=True)
+        diagnosis_only=True, same_olmo_objective=True, value_alignment_diagnostic=value_alignment)
     return manifest, profile
 
 
-def make_slurm(root):
+def make_slurm(root, *, value_alignment=False):
+    if type(value_alignment) is not bool:
+        raise ValueError("Value alignment must be explicitly enabled or disabled")
     script = slurm_script(root)
     changes = {
         "qc-gqa-gain-dev": "qc-gain-transfer",
@@ -64,6 +69,11 @@ def make_slurm(root):
         if script.count(old) != 1:
             raise ValueError("Unexpected single-GPU script")
         script = script.replace(old, new, 1)
+    if value_alignment:
+        old = 'value_lr_physical/run_gain_transfer.py" --job-root "$TASK_ROOT"'
+        if script.count(old) != 1:
+            raise ValueError("Unexpected diagnostic driver invocation")
+        script = script.replace(old, old + " --value-alignment", 1)
     return isolate_gpu_preflight(script)
 
 
@@ -89,11 +99,13 @@ def validate_frozen(root, python, manifest, profile):
     return result
 
 
-def prepare(workspace, root, python):
+def prepare(workspace, root, python, *, value_alignment=False):
     workspace, root = workspace.resolve(), root.resolve()
-    if root.parent != workspace or root.name != "query_cartridges_gain_transfer_20261104":
+    name = ("query_cartridges_gain_value_transfer_20261104" if value_alignment else
+            "query_cartridges_gain_transfer_20261104")
+    if root.parent != workspace or root.name != name:
         raise ValueError("Use the dedicated transfer-diagnostic directory")
-    manifest, profile = make_manifest(workspace)
+    manifest, profile = make_manifest(workspace, value_alignment=value_alignment)
     root.mkdir(exist_ok=True)
     with (root / "submission.lock").open("a+") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
@@ -113,13 +125,14 @@ def prepare(workspace, root, python):
         (root / "logs").mkdir(exist_ok=True)
         atomic(root / "manifest.json", json.dumps(manifest, indent=2) + "\n")
         atomic(root / "olmo_profile.json", json.dumps(profile, indent=2) + "\n")
-        atomic(root / "job.sbatch", make_slurm(root))
+        atomic(root / "job.sbatch", make_slurm(root, value_alignment=value_alignment))
         return validate_frozen(root, python, manifest, profile)
 
 
 def submit(workspace, root):
     workspace, root = workspace.resolve(), root.resolve()
-    if root.parent != workspace or root.name != "query_cartridges_gain_transfer_20261104":
+    if root.parent != workspace or root.name not in ("query_cartridges_gain_transfer_20261104",
+                                                     "query_cartridges_gain_value_transfer_20261104"):
         raise ValueError("The diagnostic must use its dedicated directory")
     sys.path.insert(0, str(workspace))
     from gpu_slot_budget import submission_slot
@@ -131,6 +144,12 @@ def submit(workspace, root):
         validation = json.loads((root / "cpu_validation_passed.json").read_text())
         if not validation.get("cpu_tests_passed"):
             raise ValueError("Frozen diagnostic tests have not passed")
+        manifest = json.loads((root / "manifest.json").read_text())
+        value_alignment = manifest.get("value_alignment_diagnostic", False)
+        expected = ("query_cartridges_gain_value_transfer_20261104" if value_alignment else
+                    "query_cartridges_gain_transfer_20261104")
+        if type(value_alignment) is not bool or root.name != expected:
+            raise ValueError("The diagnostic directory and frozen mode differ")
         with submission_slot() as available:
             if not available:
                 raise RuntimeError("The shared 12-GPU cap is full")
@@ -140,7 +159,8 @@ def submit(workspace, root):
             if not job.isdigit():
                 raise ValueError("Unexpected scheduler response")
             data = dict(job_id=job, gpus=1, models=["qwen", "gpt"], cases_per_model=40,
-                        cached_scores=True, online_api_calls=0, low_priority=True, created=time.time())
+                        cached_scores=True, online_api_calls=0, low_priority=True,
+                        value_alignment_diagnostic=value_alignment, created=time.time())
             atomic(target, json.dumps(data, indent=2) + "\n")
             return data
 
@@ -150,8 +170,9 @@ def main():
     for name in ("workspace", "job-root", "python"):
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--submit", action="store_true")
+    parser.add_argument("--value-alignment", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(prepare(args.workspace, args.job_root, args.python), indent=2))
+    print(json.dumps(prepare(args.workspace, args.job_root, args.python, value_alignment=args.value_alignment), indent=2))
     if args.submit:
         print(json.dumps(submit(args.workspace, args.job_root), indent=2))
 

@@ -46,6 +46,13 @@ def test_partial_report_counts_available_cases_and_excludes_answers(tmp_path):
     assert summary["median_selected_over_full_first_token_change"] == 2
     assert report["models"]["gpt"]["overall"]["cases"] == 0
     assert "private answer" not in (tmp_path / "latest.json").read_text()
+    row["value_alignment"] = dict(reference_answers_used=False, model_or_cache_modified=False,
+        sampled_tokens=2, selected_tokens=8, layers=[dict(layer=0)], median_layer_native_cosine=.5,
+        median_layer_basis_coordinate_cosine=.4, median_layer_written_delta_cosine=.3)
+    (folder / (keys[0] + ".json")).write_text(json.dumps(row))
+    augmented = collect(tmp_path)["models"]["qwen"]["overall"]
+    assert augmented["value_alignment_cases"] == 1
+    assert augmented["median_value_native_cosine"] == .5
     row["checks"]["full_cache_released"] = False
     (folder / (keys[0] + ".json")).write_text(json.dumps(row))
     with pytest.raises(ValueError):

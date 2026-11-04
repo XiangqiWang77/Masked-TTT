@@ -26,6 +26,11 @@ def summarize(rows):
     first_gradient = [x for x in first_gradient if x is not None]
     first_update = [x for x in first_update if x is not None]
     readout = [row["readout"] for row in rows if "unavailable" not in row["readout"]]
+    alignment = [row["value_alignment"] for row in rows
+                 if row.get("value_alignment") and "unavailable" not in row["value_alignment"]]
+    def alignment_median(name):
+        values = [row[name] for row in alignment if row.get(name) is not None]
+        return median(values)
     ratios = [r["kl_selected_native_to_selected_adapted"] / r["kl_full_native_to_full_adapted"]
               for r in readout if r["kl_full_native_to_full_adapted"] > 1e-8]
     return dict(cases=len(rows), steps=len(steps), first_steps=len(first), readouts=len(readout),
@@ -36,6 +41,10 @@ def summarize(rows):
         update_common_over_90_percent=sum(value > .9 for value in update),
         nonzero_updates=len(update),
         median_selected_over_full_first_token_change=median(ratios), effect_ratio_count=len(ratios),
+        value_alignment_cases=len(alignment),
+        median_value_native_cosine=alignment_median("median_layer_native_cosine"),
+        median_value_basis_coordinate_cosine=alignment_median("median_layer_basis_coordinate_cosine"),
+        median_value_written_delta_cosine=alignment_median("median_layer_written_delta_cosine"),
         closer_to_full=sum(r["kl_full_native_to_selected_adapted"] < r["kl_full_native_to_selected_native"] for r in readout),
         farther_from_full=sum(r["kl_full_native_to_selected_adapted"] > r["kl_full_native_to_selected_native"] for r in readout))
 
@@ -92,6 +101,21 @@ def collect(root):
                         "kl_full_native_to_selected_native", "kl_full_native_to_selected_adapted",
                         "kl_full_native_to_full_adapted", "kl_selected_native_to_selected_adapted"))):
                     raise ValueError("Invalid first-token readout")
+            alignment = row.get("value_alignment")
+            if alignment and "unavailable" in alignment:
+                if alignment["unavailable"] != "not_requested":
+                    unavailable["value_alignment:" + alignment["unavailable"]] += 1
+            elif alignment:
+                if (alignment.get("reference_answers_used") is not False or
+                    alignment.get("model_or_cache_modified") is not False or
+                    not 0 < alignment.get("sampled_tokens", 0) <= alignment.get("selected_tokens", 0) or
+                    not alignment.get("layers")):
+                    raise ValueError("Invalid Value alignment diagnostic")
+                for key in ("median_layer_native_cosine", "median_layer_basis_coordinate_cosine",
+                            "median_layer_written_delta_cosine"):
+                    value = alignment.get(key)
+                    if value is not None and (not math.isfinite(value) or not -1 <= value <= 1):
+                        raise ValueError("Invalid Value alignment cosine")
             rows.append(row)
         groups = defaultdict(list)
         for row in rows:
