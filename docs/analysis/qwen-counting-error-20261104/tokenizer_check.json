@@ -1,0 +1,15 @@
+{
+  "model": "Qwen/Qwen3-4B-Instruct-2507",
+  "cases": 10,
+  "source_questions": 5,
+  "context_lengths": [
+    8192,
+    32768
+  ],
+  "full_document_prefix_matches": true,
+  "selected_teacher_prefix_matches": true,
+  "original_and_reframed_suffixes_nonempty": true,
+  "model_weights_loaded": false,
+  "reference_answers_used": false,
+  "online_api_calls": 0
+}

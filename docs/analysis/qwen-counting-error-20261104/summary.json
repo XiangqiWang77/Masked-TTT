@@ -1,0 +1,573 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "cases": 100,
+  "source_questions": 25,
+  "question_type": "count_objects",
+  "prior_development_coverage_checks": 20,
+  "question_answer_and_annotations_used_only_posthoc": true,
+  "no_new_model_calls": true,
+  "online_api_calls": 0,
+  "source_story_actor_events_are_descriptive_not_proven_necessary": true,
+  "overall": {
+    "n": 100,
+    "source_questions": 25,
+    "reference_counts": {
+      "0": 68,
+      "1": 32
+    },
+    "support_coverage": {
+      "complete": 77,
+      "incomplete": 23,
+      "ambiguous": 0,
+      "unavailable": 0
+    },
+    "extra_actor_story_coverage": {
+      "all_present": 46,
+      "some_missing": 18,
+      "ambiguous": 0,
+      "no_extra_events": 36
+    },
+    "self_study": {
+      "verified_at_least_one": 5,
+      "invalid_json": 77,
+      "invalid_json_generated_tokens_median": 2,
+      "invalid_json_at_token_cap": 0
+    },
+    "arms": {
+      "whole": {
+        "correct": 41,
+        "overcount": 52,
+        "undercount": 7,
+        "numeric_match": 41,
+        "unparsed": 0
+      },
+      "teacher": {
+        "correct": 42,
+        "overcount": 50,
+        "undercount": 8,
+        "numeric_match": 42,
+        "unparsed": 0
+      },
+      "zero": {
+        "correct": 28,
+        "overcount": 65,
+        "undercount": 7,
+        "numeric_match": 28,
+        "unparsed": 0
+      },
+      "cartridge": {
+        "correct": 32,
+        "overcount": 62,
+        "undercount": 6,
+        "numeric_match": 32,
+        "unparsed": 0
+      },
+      "zero_teacher_format": {
+        "correct": 42,
+        "overcount": 50,
+        "undercount": 8,
+        "numeric_match": 42,
+        "unparsed": 0
+      },
+      "cartridge_teacher_format": {
+        "correct": 43,
+        "overcount": 49,
+        "undercount": 8,
+        "numeric_match": 43,
+        "unparsed": 0
+      }
+    }
+  },
+  "groups": {
+    "teacher_wrong": {
+      "n": 58,
+      "source_questions": 25,
+      "reference_counts": {
+        "0": 41,
+        "1": 17
+      },
+      "support_coverage": {
+        "complete": 49,
+        "incomplete": 9,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 31,
+        "some_missing": 6,
+        "ambiguous": 0,
+        "no_extra_events": 21
+      },
+      "self_study": {
+        "verified_at_least_one": 4,
+        "invalid_json": 40,
+        "invalid_json_generated_tokens_median": 2.0,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 21,
+          "overcount": 32,
+          "undercount": 5,
+          "numeric_match": 21,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 0,
+          "overcount": 50,
+          "undercount": 8,
+          "numeric_match": 0,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 2,
+          "overcount": 50,
+          "undercount": 6,
+          "numeric_match": 2,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 2,
+          "overcount": 50,
+          "undercount": 6,
+          "numeric_match": 2,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 0,
+          "overcount": 50,
+          "undercount": 8,
+          "numeric_match": 0,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 1,
+          "overcount": 49,
+          "undercount": 8,
+          "numeric_match": 1,
+          "unparsed": 0
+        }
+      }
+    },
+    "teacher_correct": {
+      "n": 42,
+      "source_questions": 22,
+      "reference_counts": {
+        "0": 27,
+        "1": 15
+      },
+      "support_coverage": {
+        "complete": 28,
+        "incomplete": 14,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 15,
+        "some_missing": 12,
+        "ambiguous": 0,
+        "no_extra_events": 15
+      },
+      "self_study": {
+        "verified_at_least_one": 1,
+        "invalid_json": 37,
+        "invalid_json_generated_tokens_median": 4,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 20,
+          "overcount": 20,
+          "undercount": 2,
+          "numeric_match": 20,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 42,
+          "overcount": 0,
+          "undercount": 0,
+          "numeric_match": 42,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 26,
+          "overcount": 15,
+          "undercount": 1,
+          "numeric_match": 26,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 30,
+          "overcount": 12,
+          "undercount": 0,
+          "numeric_match": 30,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 42,
+          "overcount": 0,
+          "undercount": 0,
+          "numeric_match": 42,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 42,
+          "overcount": 0,
+          "undercount": 0,
+          "numeric_match": 42,
+          "unparsed": 0
+        }
+      }
+    },
+    "teacher_wrong_full_correct": {
+      "n": 21,
+      "source_questions": 13,
+      "reference_counts": {
+        "0": 11,
+        "1": 10
+      },
+      "support_coverage": {
+        "complete": 19,
+        "incomplete": 2,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 13,
+        "some_missing": 2,
+        "ambiguous": 0,
+        "no_extra_events": 6
+      },
+      "self_study": {
+        "verified_at_least_one": 1,
+        "invalid_json": 15,
+        "invalid_json_generated_tokens_median": 2,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 21,
+          "overcount": 0,
+          "undercount": 0,
+          "numeric_match": 21,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 0,
+          "overcount": 18,
+          "undercount": 3,
+          "numeric_match": 0,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 2,
+          "overcount": 18,
+          "undercount": 1,
+          "numeric_match": 2,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 2,
+          "overcount": 18,
+          "undercount": 1,
+          "numeric_match": 2,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 0,
+          "overcount": 18,
+          "undercount": 3,
+          "numeric_match": 0,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 0,
+          "overcount": 18,
+          "undercount": 3,
+          "numeric_match": 0,
+          "unparsed": 0
+        }
+      }
+    },
+    "reference:0": {
+      "n": 68,
+      "source_questions": 17,
+      "reference_counts": {
+        "0": 68
+      },
+      "support_coverage": {
+        "complete": 49,
+        "incomplete": 19,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 31,
+        "some_missing": 13,
+        "ambiguous": 0,
+        "no_extra_events": 24
+      },
+      "self_study": {
+        "verified_at_least_one": 5,
+        "invalid_json": 51,
+        "invalid_json_generated_tokens_median": 2,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 23,
+          "overcount": 45,
+          "undercount": 0,
+          "numeric_match": 23,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 27,
+          "overcount": 41,
+          "undercount": 0,
+          "numeric_match": 27,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 13,
+          "overcount": 55,
+          "undercount": 0,
+          "numeric_match": 13,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 16,
+          "overcount": 52,
+          "undercount": 0,
+          "numeric_match": 16,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 27,
+          "overcount": 41,
+          "undercount": 0,
+          "numeric_match": 27,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 28,
+          "overcount": 40,
+          "undercount": 0,
+          "numeric_match": 28,
+          "unparsed": 0
+        }
+      }
+    },
+    "reference:1": {
+      "n": 32,
+      "source_questions": 8,
+      "reference_counts": {
+        "1": 32
+      },
+      "support_coverage": {
+        "complete": 28,
+        "incomplete": 4,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 15,
+        "some_missing": 5,
+        "ambiguous": 0,
+        "no_extra_events": 12
+      },
+      "self_study": {
+        "verified_at_least_one": 0,
+        "invalid_json": 26,
+        "invalid_json_generated_tokens_median": 2.0,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 18,
+          "overcount": 7,
+          "undercount": 7,
+          "numeric_match": 18,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 15,
+          "overcount": 9,
+          "undercount": 8,
+          "numeric_match": 15,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 15,
+          "overcount": 10,
+          "undercount": 7,
+          "numeric_match": 15,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 16,
+          "overcount": 10,
+          "undercount": 6,
+          "numeric_match": 16,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 15,
+          "overcount": 9,
+          "undercount": 8,
+          "numeric_match": 15,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 15,
+          "overcount": 9,
+          "undercount": 8,
+          "numeric_match": 15,
+          "unparsed": 0
+        }
+      }
+    }
+  },
+  "splits": {
+    "development": {
+      "n": 20,
+      "source_questions": 5,
+      "reference_counts": {
+        "0": 12,
+        "1": 8
+      },
+      "support_coverage": {
+        "complete": 16,
+        "incomplete": 4,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 1,
+        "some_missing": 3,
+        "ambiguous": 0,
+        "no_extra_events": 16
+      },
+      "self_study": {
+        "verified_at_least_one": 1,
+        "invalid_json": 15,
+        "invalid_json_generated_tokens_median": 4,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 9,
+          "overcount": 5,
+          "undercount": 6,
+          "numeric_match": 9,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 8,
+          "overcount": 8,
+          "undercount": 4,
+          "numeric_match": 8,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 6,
+          "overcount": 9,
+          "undercount": 5,
+          "numeric_match": 6,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 7,
+          "overcount": 9,
+          "undercount": 4,
+          "numeric_match": 7,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 8,
+          "overcount": 8,
+          "undercount": 4,
+          "numeric_match": 8,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 8,
+          "overcount": 8,
+          "undercount": 4,
+          "numeric_match": 8,
+          "unparsed": 0
+        }
+      }
+    },
+    "holdout": {
+      "n": 80,
+      "source_questions": 20,
+      "reference_counts": {
+        "0": 56,
+        "1": 24
+      },
+      "support_coverage": {
+        "complete": 61,
+        "incomplete": 19,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "extra_actor_story_coverage": {
+        "all_present": 45,
+        "some_missing": 15,
+        "ambiguous": 0,
+        "no_extra_events": 20
+      },
+      "self_study": {
+        "verified_at_least_one": 4,
+        "invalid_json": 62,
+        "invalid_json_generated_tokens_median": 2.0,
+        "invalid_json_at_token_cap": 0
+      },
+      "arms": {
+        "whole": {
+          "correct": 32,
+          "overcount": 47,
+          "undercount": 1,
+          "numeric_match": 32,
+          "unparsed": 0
+        },
+        "teacher": {
+          "correct": 34,
+          "overcount": 42,
+          "undercount": 4,
+          "numeric_match": 34,
+          "unparsed": 0
+        },
+        "zero": {
+          "correct": 22,
+          "overcount": 56,
+          "undercount": 2,
+          "numeric_match": 22,
+          "unparsed": 0
+        },
+        "cartridge": {
+          "correct": 25,
+          "overcount": 53,
+          "undercount": 2,
+          "numeric_match": 25,
+          "unparsed": 0
+        },
+        "zero_teacher_format": {
+          "correct": 34,
+          "overcount": 42,
+          "undercount": 4,
+          "numeric_match": 34,
+          "unparsed": 0
+        },
+        "cartridge_teacher_format": {
+          "correct": 35,
+          "overcount": 41,
+          "undercount": 4,
+          "numeric_match": 35,
+          "unparsed": 0
+        }
+      }
+    }
+  }
+}
