@@ -1,0 +1,77 @@
+{
+  "model": "GPT-OSS-20B",
+  "metric": "answer_focused_lexical_v2",
+  "source_snapshot": 1793770000.506296,
+  "evaluation_answers_used_only_posthoc": true,
+  "new_model_calls": 0,
+  "online_api_calls": 0,
+  "overall": {
+    "n": 181,
+    "source_questions": 50,
+    "rates": {
+      "lr_0.0001": {
+        "answer_accuracy": 53.591160220994475,
+        "median_changed_components_percent": 23.849169413248696,
+        "median_written_relative_l2_percent": 0.08821947923353196,
+        "median_squared_write_error_percent": 62.866447691411324,
+        "versus_zero": {
+          "new_correct": 1,
+          "new_wrong": 1,
+          "delta_pp": 0.0
+        },
+        "versus_teacher": {
+          "new_correct": 5,
+          "new_wrong": 6,
+          "delta_pp": -0.5524861878453039
+        },
+        "versus_original_rate": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        }
+      },
+      "lr_0.0003": {
+        "answer_accuracy": 54.69613259668508,
+        "median_changed_components_percent": 54.69169616699219,
+        "median_written_relative_l2_percent": 0.3333710353750936,
+        "median_squared_write_error_percent": 22.377749308547042,
+        "versus_zero": {
+          "new_correct": 2,
+          "new_wrong": 0,
+          "delta_pp": 1.1049723756906078
+        },
+        "versus_teacher": {
+          "new_correct": 6,
+          "new_wrong": 5,
+          "delta_pp": 0.5524861878453039
+        },
+        "versus_original_rate": {
+          "new_correct": 2,
+          "new_wrong": 0,
+          "delta_pp": 1.1049723756906078
+        }
+      },
+      "lr_0.0010": {
+        "answer_accuracy": 54.69613259668508,
+        "median_changed_components_percent": 82.22757975260416,
+        "median_written_relative_l2_percent": 1.045918296024988,
+        "median_squared_write_error_percent": 2.55900374942497,
+        "versus_zero": {
+          "new_correct": 3,
+          "new_wrong": 1,
+          "delta_pp": 1.1049723756906078
+        },
+        "versus_teacher": {
+          "new_correct": 5,
+          "new_wrong": 4,
+          "delta_pp": 0.5524861878453039
+        },
+        "versus_original_rate": {
+          "new_correct": 3,
+          "new_wrong": 1,
+          "delta_pp": 1.1049723756906078
+        }
+      }
+    }
+  }
+}
