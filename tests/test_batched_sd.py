@@ -83,6 +83,29 @@ def test_batched_joint_gradients_match_incremental(setup):
     assert all(not p.requires_grad and p.grad is None for p in engine.model.parameters())
 
 
+def test_32_token_rollout_keeps_causal_logits_and_joint_gradients(setup):
+    engine,cache,memory,reader=setup
+    suffix=torch.tensor([20,21,22])
+    targets=torch.tensor([30+(index%20) for index in range(32)])
+    changed=targets.clone();changed[16:]=55
+    params=(memory.gain,memory.value_coefficients)
+    with torch.no_grad():
+        incremental=matched_incremental_logits(engine,reader,cache,suffix,targets)
+        batched=batched_teacher_logits(engine,reader,cache,suffix,targets)
+        alternative=batched_teacher_logits(engine,reader,cache,suffix,changed)
+    torch.testing.assert_close(batched,incremental,atol=3e-6,rtol=3e-5)
+    # A change at position 16 must not affect the prediction of that token.
+    torch.testing.assert_close(alternative[:17],batched[:17],atol=1e-7,rtol=1e-6)
+    reference=layer_checkpointed_logits(engine,reader,cache,suffix,targets)
+    expected=torch.autograd.grad(reference.square().mean(),params)
+    value=batched_teacher_logits(engine,reader,cache,suffix,targets)
+    actual=torch.autograd.grad(value.square().mean(),params)
+    for a,b in zip(actual,expected):
+        assert a.float().norm()>0
+        torch.testing.assert_close(a,b,atol=3e-6,rtol=5e-4)
+    assert all(not p.requires_grad and p.grad is None for p in engine.model.parameters())
+
+
 def test_answer_position_uses_the_same_causal_logits_and_gradients(setup):
     engine,cache,memory,reader=setup
     suffix=torch.tensor([20,21,22]);targets=torch.tensor([30,31,32]);index=torch.tensor([1])
@@ -114,6 +137,29 @@ def test_teacher_scores_student_prefix_causally_and_matches_incremental(setup):
                     memory.document_length+len(suffix)+index,branch)
     torch.testing.assert_close(scored,torch.cat(values),atol=3e-6,rtol=3e-5)
     torch.testing.assert_close(scored[:2],altered[:2],atol=1e-7,rtol=1e-6)
+
+
+def test_teacher_scores_32_token_student_prefix_without_future_leak(setup):
+    engine,cache,memory,reader=setup
+    native=SimpleNamespace(model=engine.model.model,lm_head=engine.model.lm_head)
+    suffix=torch.tensor([20,21,22])
+    trajectory=torch.tensor([30+(index%20) for index in range(32)])
+    changed=trajectory.clone();changed[16:]=55
+    teacher=TeacherSignal(trajectory,torch.empty(0),'',False,0.,0.,0,False,
+                          cache,suffix,memory.document_length)
+    with torch.no_grad():
+        scored=score_student_prefix(engine,native,teacher,trajectory)
+        altered=score_student_prefix(engine,native,teacher,changed)
+        branch=fork_prefix(cache,memory.document_length)
+        output=private_forward(native,suffix,memory.document_length,branch)
+        values=[]
+        for index in range(len(trajectory)):
+            values.append(engine.model.lm_head(output.last_hidden_state[0,-1:]).float().softmax(-1))
+            if index+1<len(trajectory):
+                output=private_forward(native,trajectory[index:index+1],
+                    memory.document_length+len(suffix)+index,branch)
+    torch.testing.assert_close(scored,torch.cat(values),atol=3e-6,rtol=3e-5)
+    torch.testing.assert_close(scored[:17],altered[:17],atol=1e-7,rtol=1e-6)
 
 
 class ByteTokenizer:
