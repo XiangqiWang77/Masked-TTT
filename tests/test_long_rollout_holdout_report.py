@@ -4,7 +4,7 @@ import pytest
 
 from experiments.babilong_linked_selection.long_rollout_protocol import holdout_decision, summarize
 from experiments.long_rollout_steps.holdout_execute import model_paths
-from experiments.long_rollout_steps.holdout_report import combine, collect
+from experiments.long_rollout_steps.holdout_report import combine, collect, render
 from experiments.long_rollout_steps.selection import development_choices
 from test_long_rollout_step_selection import fixture_development
 
@@ -65,6 +65,9 @@ def test_combine_200_and_800_without_selecting_on_holdout(tmp_path):
         assert result["models"][model]["holdout"]["n"] == 800
         assert result["models"][model]["holdout_excluding_viewed_examples"]["n"] == 792
         assert result["fixed_final_base_steps"][model] == 2
+    note = render(result)
+    assert "entity-linked context" in note and "32 tokens" in note
+    assert "rather than an exact configuration reproduction" in note
 
 
 def test_combine_rejects_a_holdout_selected_on_its_own_scores(tmp_path):

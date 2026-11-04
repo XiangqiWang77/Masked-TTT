@@ -102,6 +102,10 @@ def render(report):
         "run chooses the model-specific step before the 800 source-disjoint cases are generated. "
         "The original Teacher has an additional generic response-format instruction; the paired "
         "selected-zero and Cartridge use the same original question format.",
+        "Selection reserves part of the 10% chunk budget for entity-linked context derived from "
+        "cached Decision scores; the Student rollout cap is 32 tokens. The original OLMo profile "
+        "used score-ranked chunks and an 8-token rollout, so this is an SD variant rather than "
+        "an exact configuration reproduction.",
         "The final holdout output is a physically independent selected-KV cartridge, after releasing "
         "the full and source KV and request-local training state. No extra transfer loss or online API "
         "call is used.",
