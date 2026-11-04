@@ -37,9 +37,11 @@ loaded-model preflight before evaluation. Reporting runs hourly; results are
 not yet available. The experiment is development only, not a 1,000-case result.
 
 An hourly promotion controller will submit one additional single-GPU job for
-the eligible models if, on all 200 fully matched development cases, the aligned
-candidate exceeds the full-context model, selected zero-update, ICL Teacher,
-and the original two-step SD checkpoint. The fixed configuration is then
+the eligible models if, on all 200 valid development cases, the aligned
+candidate exceeds its same-run full-context model, selected zero-update and ICL
+Teacher. The original two-step SD checkpoint remains a separately reported
+strictly matched comparison, because self-study outputs can differ across GPU
+runs. The fixed configuration is then
 evaluated on 800 source-disjoint cases per eligible model. The combined 1,000
 includes the 200 development cases used to select it; the holdout is reported
 separately, with two previously inspected holdout source questions disclosed.

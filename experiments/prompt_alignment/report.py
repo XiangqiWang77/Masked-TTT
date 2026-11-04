@@ -12,14 +12,20 @@ from experiments.babilong_linked_selection.long_rollout_protocol import validate
 from experiments.long_rollout_steps.report import validate_result as validate_steps
 
 
-def validate_pair(candidate, baseline, case, model, task):
+def validate_candidate(candidate, case, model, task):
     validate_new(case, candidate, model, task)
-    validate_steps(baseline, case, model, task)
     train = candidate["training"]
     if (not train.get("student_question_matches_teacher") or
         train["gain_head_mode"] != "kv" or
         len(train["steps"]) != 2 + candidate["self_study"]["verified"]):
         raise ValueError("Unexpected aligned-question candidate")
+    if candidate["standalone_cartridge"].get("answer_format") != "original":
+        raise ValueError("Final question format changed")
+
+
+def validate_pair(candidate, baseline, case, model, task):
+    validate_candidate(candidate, case, model, task)
+    validate_steps(baseline, case, model, task)
     fields = ("selected_original_chunks", "selected_chunks", "total_chunks", "selected_tokens")
     if any(candidate["selection"][key] != baseline["selection"][key] for key in fields):
         raise ValueError("Selected chunks differ")
@@ -31,8 +37,22 @@ def validate_pair(candidate, baseline, case, model, task):
     old = baseline["standalone_cartridge"]["original_question_controls"]
     if can["zero"]["tokens"] != old["zero"]["tokens"]:
         raise ValueError("Same-format zero-update answer differs")
-    if candidate["standalone_cartridge"].get("answer_format") != "original":
-        raise ValueError("Final question format changed")
+
+
+def summarize_all(rows):
+    n = len(rows)
+    fields = ("whole", "zero", "teacher", "aligned")
+    if any(type(row[key]) is not int or row[key] not in (0, 1) for row in rows for key in fields):
+        raise ValueError("Scores must be binary")
+    def paired(old):
+        correct = sum(row["aligned"] and not row[old] for row in rows)
+        wrong = sum(row[old] and not row["aligned"] for row in rows)
+        return dict(new_correct=correct, new_wrong=wrong,
+                    delta_pp=100 * (correct - wrong) / n if n else None)
+    return dict(n=n, source_questions=len({row["case"].split("-", 2)[2] for row in rows}),
+                accuracy={key: 100 * sum(row[key] for row in rows) / n if n else None
+                          for key in fields}, aligned_vs_teacher=paired("teacher"),
+                aligned_vs_zero=paired("zero"), aligned_vs_whole=paired("whole"))
 
 
 def summarize(rows):
@@ -64,9 +84,9 @@ def collect(manifest, root, baseline_root, references, score):
         manifest.get("align_student_teacher_prompt") is not True or
         manifest["reference_answers_used_in_inference"] is not False or manifest["online_api_calls"] != 0):
         raise ValueError("The aligned-question development protocol changed")
-    models, invalid, errors = {}, [], []
+    models, invalid, errors, unmatched_baselines = {}, [], [], []
     for model in manifest["models"]:
-        rows, unmatched, completed = [], 0, 0
+        rows, all_rows, unmatched, completed = [], [], 0, 0
         for case in manifest["case_ids"]:
             folder = Path(root) / "cases" / model / case
             path = folder / "result.json"
@@ -76,41 +96,58 @@ def collect(manifest, root, baseline_root, references, score):
                     errors.append(dict(model=model, case=case, type=error.get("type")))
                 continue
             completed += 1
-            old_path = Path(baseline_root) / "cases" / model / case / "result.json"
-            if not old_path.is_file():
-                unmatched += 1
-                continue
-            result, old = json.loads(path.read_text()), json.loads(old_path.read_text())
+            result = json.loads(path.read_text())
             ref = references[case]
             try:
-                validate_pair(result, old, case, model, ref["task"])
+                validate_candidate(result, case, model, ref["task"])
             except (KeyError, TypeError, ValueError) as exc:
                 invalid.append(dict(model=model, case=case, reason=str(exc)))
                 continue
             grade = lambda text: int(score(text, ref["answers"], "babilong", ref["task"])[0])
             control = result["standalone_cartridge"]["original_question_controls"]
-            checkpoint = old["standalone_cartridge"]["step_probe"]["checkpoints"]["2"]
-            rows.append(dict(case=case, task=ref["task"], length=result["length"],
+            candidate_row = dict(case=case, task=ref["task"], length=result["length"],
                 whole=grade(result["self_judge"]["native_prediction"]),
                 zero=grade(control["zero"]["prediction"]), teacher=grade(result["teacher"]["prediction"]),
-                baseline=grade(checkpoint["prediction"]), aligned=grade(result["prediction"])))
+                aligned=grade(result["prediction"]))
+            all_rows.append(candidate_row)
+            old_path = Path(baseline_root) / "cases" / model / case / "result.json"
+            if not old_path.is_file():
+                unmatched += 1
+                continue
+            old = json.loads(old_path.read_text())
+            try:
+                validate_pair(result, old, case, model, ref["task"])
+            except (KeyError, TypeError, ValueError) as exc:
+                unmatched_baselines.append(dict(model=model, case=case, reason=str(exc)))
+                continue
+            checkpoint = old["standalone_cartridge"]["step_probe"]["checkpoints"]["2"]
+            rows.append(dict(candidate_row, baseline=grade(checkpoint["prediction"])))
         groups = defaultdict(list)
         for row in rows:
             groups["task:" + row["task"]].append(row)
             groups["length:" + str(row["length"])].append(row)
         models[model] = dict(candidate_completed=completed, baseline_not_yet_available=unmatched,
+            candidate_all=summarize_all(all_rows), candidate_rows=all_rows,
             overall=summarize(rows), groups={key: summarize(group) for key, group in groups.items()}, rows=rows)
     return dict(created_utc=datetime.now(timezone.utc).isoformat(), metric="answer_focused_lexical_v2",
                 expected_per_model=200, cached_scores=True, online_api_calls=0,
                 evaluation_answers_used_only_posthoc=True, same_main_teacher_prompt=True,
-                models=models, errors=errors, invalid=invalid)
+                models=models, errors=errors, invalid=invalid, unmatched_baselines=unmatched_baselines)
 
 
 def render(report):
-    lines = ["# Aligned-question on-policy SD — matched development cases", "",
+    lines = ["# Aligned-question on-policy SD — development cases", "",
+             "| Model | n | whole | selected zero | ICL Teacher | aligned SD | Δ vs Teacher |",
+             "|---|---:|---:|---:|---:|---:|---:|"]
+    fmt = lambda value: "—" if value is None else f"{value:.2f}"
+    for model, item in report["models"].items():
+        stats = item["candidate_all"]; a = stats["accuracy"]
+        lines.append(f"| {model} | {stats['n']} | " + " | ".join(fmt(a[key])
+            for key in ("whole", "zero", "teacher", "aligned")) +
+            f" | {fmt(stats['aligned_vs_teacher']['delta_pp'])} |")
+    lines += ["", "The table above includes every valid candidate case and its same-run controls.", "",
              "| Model | matched n | whole | selected zero | ICL Teacher | original SD | aligned SD | new right / wrong | Δ pp |",
              "|---|---:|---:|---:|---:|---:|---:|---:|---:|"]
-    fmt = lambda value: "—" if value is None else f"{value:.2f}"
     for model, item in report["models"].items():
         stats = item["overall"]; a = stats["accuracy"]; pair = stats["aligned_vs_baseline"]
         lines.append(f"| {model} | {stats['n']} | " + " | ".join(fmt(a[key])

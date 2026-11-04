@@ -16,8 +16,10 @@ def example_manifest():
 
 def report_for(manifest):
     def item(accuracy):
-        return dict(candidate_completed=200, overall=dict(n=200, accuracy=accuracy),
-                    rows=[dict(case=case) for case in manifest["case_ids"]])
+        return dict(candidate_completed=200, candidate_all=dict(n=200, accuracy=accuracy),
+                    candidate_rows=[dict(case=case) for case in manifest["case_ids"]],
+                    overall=dict(n=100, aligned_vs_baseline=dict(new_correct=2, new_wrong=1, delta_pp=1.)),
+                    rows=[])
     return dict(metric="answer_focused_lexical_v2", expected_per_model=200,
         models=dict(qwen=item(dict(whole=50, zero=57, teacher=60, baseline=59, aligned=61)),
                     gpt=item(dict(whole=50, zero=57, teacher=60, baseline=59, aligned=59))),
@@ -36,7 +38,7 @@ def test_only_strictly_better_complete_model_is_promoted(monkeypatch):
     assert held["holdout_used_for_configuration_selection"] is False
     report["invalid"].append(dict(model="qwen"))
     models, decisions = promote.choose_models(manifest, report)
-    assert not models and decisions["qwen"]["reason"] == "incomplete_or_unmatched"
+    assert not models and decisions["qwen"]["reason"] == "incomplete_or_invalid"
 
 
 def test_summary_and_combined_cases_are_checked():
@@ -45,7 +47,7 @@ def test_summary_and_combined_cases_are_checked():
         return [dict(case=case, task="qa1", length=8, whole=0, zero=0,
                      teacher=0, aligned=trained) for case in cases]
     development = dict(metric="answer_focused_lexical_v2",
-        models=dict(qwen=dict(rows=rows(manifest["development_case_ids"], 1))))
+        models=dict(qwen=dict(rows=[], candidate_rows=rows(manifest["development_case_ids"], 1))))
     holdout = dict(metric="answer_focused_lexical_v2", errors=[], invalid=[],
         models=dict(qwen=dict(rows=rows(manifest["holdout_case_ids"], 1))))
     manifest["models"] = ["qwen"]
@@ -81,6 +83,6 @@ def test_promotion_distinguishes_waiting_and_terminal_prerequisite(tmp_path, mon
     states = {"123": None, "456": None}
     monkeypatch.setitem(sys.modules, "cartridge_job_watch", SimpleNamespace(observed_terminal=states.get))
     assert promote.freeze(tmp_path) == dict(state="waiting")
-    states["456"] = "FAILED"
-    assert promote.freeze(tmp_path) == dict(state="prerequisite_terminal", prerequisite="baseline",
-                                               job_id="456", scheduler_state="FAILED")
+    states["123"] = "FAILED"
+    assert promote.freeze(tmp_path) == dict(state="prerequisite_terminal", prerequisite="candidate",
+                                               job_id="123", scheduler_state="FAILED")

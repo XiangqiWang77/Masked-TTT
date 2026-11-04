@@ -88,7 +88,7 @@ def combine(manifest, development, holdout):
         raise ValueError("The paired reports are not valid")
     output = {}
     for model in manifest["models"]:
-        dev = development["models"][model]["rows"]
+        dev = development["models"][model].get("candidate_rows", development["models"][model]["rows"])
         held = holdout["models"][model]["rows"]
         if (len(dev) != 200 or len(held) != 800 or len({row["case"] for row in dev + held}) != 1000 or
             {row["case"] for row in dev} != set(manifest["development_case_ids"]) or

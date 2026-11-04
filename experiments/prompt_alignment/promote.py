@@ -35,18 +35,19 @@ def choose_models(manifest, report):
     selected, decisions = [], {}
     for model in manifest["models"]:
         item = report["models"][model]
-        stats, rows = item["overall"], item["rows"]
+        stats, rows = item["candidate_all"], item["candidate_rows"]
         model_errors = [x for x in report["errors"] + report["invalid"] if x["model"] == model]
         complete = (item["candidate_completed"] == 200 and stats["n"] == 200 and
                     len({row["case"] for row in rows}) == 200 and
                     {row["case"] for row in rows} == set(manifest["development_case_ids"]) and not model_errors)
         accuracy = stats["accuracy"]
         if not complete:
-            decisions[model] = dict(eligible=False, reason="incomplete_or_unmatched")
+            decisions[model] = dict(eligible=False, reason="incomplete_or_invalid")
             continue
-        comparisons = ("whole", "zero", "teacher", "baseline")
+        comparisons = ("whole", "zero", "teacher")
         eligible = all(accuracy["aligned"] > accuracy[key] for key in comparisons)
         decisions[model] = dict(eligible=eligible, accuracy=accuracy,
+            matched_original_sd=item["overall"]["aligned_vs_baseline"],
             reason="beats_all_controls" if eligible else "does_not_beat_all_controls")
         if eligible:
             selected.append(model)
@@ -85,17 +86,14 @@ def holdout_script(root):
 def freeze(workspace):
     workspace = workspace.resolve()
     development = workspace / "query_cartridges_prompt_aligned_dev_20261104"
-    baseline = workspace / "query_cartridges_longsteps_200dev_20261104"
-    if not (development / "finished.json").is_file() or not (baseline / "finished.json").is_file():
+    if not (development / "finished.json").is_file():
         sys.path.insert(0, str(workspace))
         from cartridge_job_watch import observed_terminal
-        for label, root in (("candidate", development), ("baseline", baseline)):
-            if (root / "finished.json").is_file() or not (root / "submission.json").is_file():
-                continue
-            job = str(json.loads((root / "submission.json").read_text())["job_id"])
+        if (development / "submission.json").is_file():
+            job = str(json.loads((development / "submission.json").read_text())["job_id"])
             state = observed_terminal(job)
             if state is not None:
-                return dict(state="prerequisite_terminal", prerequisite=label,
+                return dict(state="prerequisite_terminal", prerequisite="candidate",
                             job_id=job, scheduler_state=state)
         return dict(state="waiting")
     # Re-score completed answers under the same frozen scorer immediately before promotion.

@@ -24,6 +24,13 @@ def advance(workspace, root):
         return dict(stage="both_runs_complete", paired={model: item["overall"]["n"]
                     for model, item in report["models"].items()}, invalid=len(report["invalid"]))
     if (root / "finished.json").exists():
+        if (baseline / "submission.json").is_file():
+            sys.path.insert(0, str(workspace))
+            from cartridge_job_watch import observed_terminal
+            job = json.loads((baseline / "submission.json").read_text())["job_id"]
+            terminal = observed_terminal(job)
+            if terminal is not None:
+                return dict(stage="baseline_terminal_without_complete_results", scheduler_state=terminal)
         return dict(stage="waiting_for_baseline")
     sys.path.insert(0, str(workspace))
     from cartridge_job_watch import record_terminal
@@ -47,7 +54,8 @@ def main():
         raise
     atomic(root / "monitor_status.json", json.dumps(dict(result, updated=time.time()), indent=2) + "\n")
     print(json.dumps(result))
-    if result["stage"] in ("both_runs_complete", "terminal_without_complete_results"):
+    if result["stage"] in ("both_runs_complete", "terminal_without_complete_results",
+                            "baseline_terminal_without_complete_results"):
         subprocess.run(["systemctl", "--user", "stop", args.timer], check=True, capture_output=True, text=True)
 
 
