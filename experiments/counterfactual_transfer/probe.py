@@ -160,14 +160,17 @@ def run_pair(engine,*,steps=2,max_new_tokens=8,rollout_tokens=3,time_budget_seco
             with trace_selected_cache(full_limit=max_new_tokens) as (traces,full):
                 result=MaskedTTT(engine,FixedSelector(spans)).answer(request,time_budget_seconds=time_budget_seconds)
             if len(traces)!=1 or len(full)!=1:raise AssertionError('Expected one full and one standalone decode')
+            standalone=result['standalone_cartridge']
             if (not result['backbone_unchanged'] or not result['original_document_KV_unchanged'] or
                 result['training']['selected_transfer_weight']!=0 or
                 result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']!=0 or
-                result['generated_token_ids']!=traces[0]['learned_output']['tokens']):
+                standalone['generated_token_ids']!=traces[0]['learned_output']['tokens'] or
+                (result.get('output_source')=='standalone_cartridge' and
+                 result['generated_token_ids']!=standalone['generated_token_ids'])):
                 raise AssertionError('The original method or standalone decoding contract changed')
             answers.append(dict(correct=correct,whole=full[0]['prediction'],
                 teacher=result['teacher']['prediction'],zero=traces[0]['zero_output']['prediction'],
-                cartridge=result['prediction'],training_steps=len(result['training']['steps'])))
+                cartridge=standalone['prediction'],training_steps=len(result['training']['steps'])))
             all_traces.append(traces[0])
         x,y=all_traces
         same_selected=(x['selected_document_ids']==y['selected_document_ids'] and
