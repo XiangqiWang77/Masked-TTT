@@ -11,6 +11,7 @@ import masked_ttt
 from masked_ttt import FrozenJSONSelector, MaskedTTT, Request
 from masked_ttt.linked_selection import LinkedFrozenSelector
 from test_materialization_equivalence import gpt_gqa_engine
+from test_local_checkpoint_loading import test_load_unquantized_checkpoint_from_disk_without_network
 from test_standalone import make_engine
 
 
@@ -80,6 +81,11 @@ def main():
                     raise AssertionError("The packaged " + policy + " cartridge failed on " + name + ": " +
                                          ", ".join(failed) + "; selected=" + str(result["selection"]["selected_chunks"]))
                 print(name + " / " + policy + ": selected chunks, SD and independent KV-only decode passed")
+        for architecture in ("qwen3", "gpt_oss"):
+            directory = root / ("checkpoint-" + architecture)
+            directory.mkdir()
+            test_load_unquantized_checkpoint_from_disk_without_network(directory, architecture)
+            print(architecture + ": offline checkpoint loading and standalone cartridge passed")
 
 
 if __name__ == "__main__":

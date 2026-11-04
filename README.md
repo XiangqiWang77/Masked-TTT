@@ -192,9 +192,12 @@ used concurrently.
 For a benchmark reproduction, pass its original task prompt and generation
 limit to `Request`; the example's default prompt is only a general-purpose
 starting point.
-GPT-OSS expert weights are dequantized to preserve input gradients; the GPU
-memory required depends on context length. The linked policy is still being
-validated beyond the development set.
+Native MXFP4 GPT-OSS expert weights are dequantized to preserve input
+gradients; an already unquantized checkpoint is loaded directly. GPU memory
+required depends on context length. The linked policy is still being validated
+beyond the development set.
+The loader preserves the checkpoint's original RoPE configuration and caps the
+requested working context at its native position limit.
 
 ## Verify
 
@@ -207,7 +210,8 @@ python tests/run_wheel_smoke.py --work-dir /path/to/new/scratch-directory
 
 This smoke test uses tiny randomly initialized Qwen and grouped-query GPT-OSS
 models with synthetic cached scores. It verifies selection, joint SD gradients,
-materialized KV-only decoding, and source/training-state release. The actual
+offline loading from saved unquantized checkpoints, materialized KV-only
+decoding, and source/training-state release. The actual
 checkpoints and GPU backend still need their own preflight and evaluation.
 
 Evaluation compares paired answers with the same task-aware

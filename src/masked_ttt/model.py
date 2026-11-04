@@ -1,4 +1,4 @@
-"""Load a frozen Qwen3 backbone; make all request-specific state disposable."""
+"""Load a supported frozen backbone; keep request-specific state disposable."""
 
 from contextlib import nullcontext
 from dataclasses import dataclass, replace
@@ -74,14 +74,12 @@ class Backbone:
             torch.utils.deterministic.fill_uninitialized_memory = False
         tokenizer = AutoTokenizer.from_pretrained(model_path, local_files_only=local_files_only)
         model_config = AutoConfig.from_pretrained(model_path, local_files_only=local_files_only)
-        # Preserve each checkpoint's native RoPE/YARN and context contract.
-        if model_config.model_type == "qwen3":
-            model_config.max_position_embeddings = config.max_context
-            model_config.rope_scaling = None
-        else:
-            config = replace(
-                config, max_context=min(config.max_context, model_config.max_position_embeddings)
-            )
+        # Keep the checkpoint's position encoding intact. The requested working
+        # context is a runtime limit, not an instruction to rewrite its RoPE
+        # parameters or silently extend the model's native position range.
+        config = replace(
+            config, max_context=min(config.max_context, model_config.max_position_embeddings)
+        )
         device_map = {"": str(target)}
         if shard_gpus > 1:
             if target.type != "cuda" or shard_gpus > torch.cuda.device_count():
@@ -96,11 +94,18 @@ class Backbone:
                 device_map[f"model.layers.{i}"] = i * shard_gpus // model_config.num_hidden_layers
         options = {}
         if model_config.model_type == "gpt_oss":
-            from transformers import Mxfp4Config
+            quantization = getattr(model_config, "quantization_config", None)
+            if quantization is not None:
+                method = (quantization.get("quant_method") if isinstance(quantization, dict)
+                          else getattr(quantization, "quant_method", None))
+                method = getattr(method, "value", method)
+                if not isinstance(method, str) or method.lower() != "mxfp4":
+                    raise ValueError("GPT-OSS requires an unquantized or native MXFP4 checkpoint")
+                from transformers import Mxfp4Config
 
-            # Frozen expert weights are dequantized once; input gradients remain
-            # available on A40/L40S as well as newer GPUs.
-            options["quantization_config"] = Mxfp4Config(dequantize=True)
+                # Frozen MXFP4 expert weights are dequantized once; input
+                # gradients remain available on all supported CUDA backends.
+                options["quantization_config"] = Mxfp4Config(dequantize=True)
         model = AutoModelForCausalLM.from_pretrained(
             model_path,
             config=model_config,
