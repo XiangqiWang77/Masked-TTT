@@ -10,7 +10,7 @@ import statistics
 import sys
 
 
-def validate_candidate(result, case, model, task):
+def validate_candidate(result, case, model, task, gain_head_mode="query"):
     selection, train = result["selection"], result["training"]
     final = result["standalone_cartridge"]
     controls, memory = final["original_question_controls"], final["memory"]
@@ -22,7 +22,7 @@ def validate_candidate(result, case, model, task):
         selection["entity_reserve_fraction"] != .25 or
         len(selection["selected_chunks"]) != max(1, math.ceil(selection["total_chunks"] * .1)) or
         not selection["complete_original_document"] or selection["reference_answers_used"] or
-        selection["online_api_calls"] != 0 or train["gain_head_mode"] != "query" or
+        selection["online_api_calls"] != 0 or train["gain_head_mode"] != gain_head_mode or
         train["objective"] != "on-policy KL(teacher || student)" or
         train["value_basis_source"] != "document" or train["selected_transfer_weight"] != 0 or
         train["student_rollout_limit"] != 8 or not train["steps"] or
