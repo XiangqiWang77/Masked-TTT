@@ -7,7 +7,9 @@ import pytest
 import torch
 
 from experiments.counterfactual_transfer import enable_in_job_probe as enable
+from experiments.counterfactual_transfer import enable_hourly_report as hourly
 from experiments.counterfactual_transfer import in_job_probe as probe
+from experiments.counterfactual_transfer import report_in_job as report
 
 
 def valid_result():
@@ -77,3 +79,49 @@ def test_enable_uses_compatible_frozen_runtime_and_never_replaces_other_hook(tmp
     with pytest.raises(ValueError,match="supporting runtime"):
         enable.enable(tmp_path,root)
     assert (central/"probe.py").is_file()
+
+
+def test_hourly_report_handles_pending_failure_and_valid_models(tmp_path,monkeypatch):
+    first=report.collect(tmp_path)
+    assert not first["all_models_valid"] and first["models"]["qwen"]["status"]=="pending"
+    (tmp_path/"gpt_failure.json").write_text(json.dumps(dict(attempts=2,error_type="RuntimeError")))
+    assert report.collect(tmp_path)["models"]["gpt"]["status"]=="failed"
+    for model in ("qwen","gpt"):
+        data=dict(valid_result(),probe_validated=True,model=model,gpu="test",timestamp=1.,
+            reference_answers_used=False,online_api_calls=0,extra_gpu_jobs=0,training_runtime_changed=False,
+            zero_cache_max_logprob_difference=0.,dynamic_physical_max_abs_logprob_difference=0.,
+            state_difference_norms=dict(gain=.1,value_coefficients=.2,fixed_value_basis=.3),
+            full_baseline_mentions_expected_for_both=True,cartridge_mentions_expected_for_both=False)
+        (tmp_path/(model+"_result.json")).write_text(json.dumps(data))
+    data=report.collect(tmp_path)
+    assert data["all_models_valid"] and data["models"]["gpt"]["status"]=="valid"
+    assert "0.200000" in report.render(data) and "general accuracy" in report.render(data)
+    monkeypatch.setattr("sys.argv",["report","--results-root",str(tmp_path)])
+    report.main()
+    assert json.loads((tmp_path/"latest.json").read_text())["all_models_valid"]
+    assert (tmp_path/"latest.md").is_file()
+    bad=json.loads((tmp_path/"qwen_result.json").read_text());bad["model"]="gpt"
+    (tmp_path/"qwen_result.json").write_text(json.dumps(bad))
+    assert report.collect(tmp_path)["models"]["qwen"]["status"]=="invalid"
+
+
+def test_hourly_report_installs_without_overwriting_existing_service(tmp_path):
+    root=tmp_path/enable.TARGET
+    frozen=root/"runtime/repo/src/masked_ttt"
+    shutil.copytree(enable.REPO/"src/masked_ttt",frozen,
+                    ignore=shutil.ignore_patterns("__pycache__","*.pyc"))
+    (root/"runtime/rollout_driver.py").write_text("disabled_optional_probe")
+    (root/"submission.json").write_text('{"job_id":"synthetic"}')
+    enable.enable(tmp_path,root)
+    units=tmp_path/"units";units.mkdir()
+    (units/hourly.SERVICE).write_text("[Service]\nExecStart=/usr/bin/python3 "+str(root)+"\n")
+    installed=hourly.install(tmp_path,root,unit_root=units,reload=False)
+    assert installed["installed"] and installed["extra_gpu_jobs"]==0
+    assert installed["reporting_interval"]=="existing hourly timer"
+    dropin=Path(installed["dropin"])
+    assert "ExecStartPost=/usr/bin/python3" in dropin.read_text()
+    assert hourly.install(tmp_path,root,unit_root=units,reload=False)==installed
+    dropin.write_text("different")
+    with pytest.raises(ValueError,match="different content"):
+        hourly.install(tmp_path,root,unit_root=units,reload=False)
+    assert dropin.read_text()=="different"
