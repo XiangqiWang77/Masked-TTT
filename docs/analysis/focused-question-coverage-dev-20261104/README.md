@@ -20,7 +20,12 @@ annotations are consulted only after selection.
 
 Compared with the location rule, the final candidate covers three additional
 cases completely; one is in the group where the saved full-context model was
-correct and the saved Teacher was wrong. The additional question patterns were
+correct and the saved Teacher was wrong. The saved Teacher had already
+answered the other two correctly. The three cases come from three source
+questions. This is an annotation and saved-output join, not an answer test of
+the new selector. [Outcome audit](outcomes.json) · [script](../../../experiments/babilong_linked_selection/focused_question_outcomes.py).
+
+The additional question patterns were
 designed after reviewing these same development outcomes. They are exploratory
 and have not been evaluated with a model or on a disjoint holdout; support
 coverage is not answer accuracy.

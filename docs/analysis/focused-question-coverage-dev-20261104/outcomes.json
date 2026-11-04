@@ -1,0 +1,18 @@
+{
+  "summary": {
+    "cases": 200,
+    "newly_complete": 3,
+    "lost_complete": 0,
+    "newly_complete_source_questions": 3,
+    "newly_complete_old_teacher_wrong": 1,
+    "newly_complete_old_full_correct_teacher_wrong": 1,
+    "newly_complete_old_teacher_correct": 2
+  },
+  "selection_before_annotations": true,
+  "selection_uses_labels": false,
+  "answers_only_used_post_generation": true,
+  "candidate_answers_not_generated": true,
+  "online_api_calls": 0,
+  "new_model_calls": 0,
+  "selector_designed_after_reviewing_development_outcomes": true
+}
