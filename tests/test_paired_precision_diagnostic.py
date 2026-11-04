@@ -83,3 +83,32 @@ def test_hooks_restore_on_failure():
     with pytest.raises(RuntimeError,match='intentional'):
         with capture_precision_paired():raise RuntimeError('intentional')
     assert pipeline.answer_standalone is answer and pipeline.decode_standalone is decode
+
+
+@pytest.mark.parametrize('architecture',['qwen3','gpt_oss'])
+def test_precision_diagnostic_keeps_original_olmo_prompt_and_matched_controls(architecture):
+    from experiments.anchored_short_verifier.paired_controls import original_question_controls
+
+    engine=make_engine() if architecture=='qwen3' else gpt_engine()
+    engine.model.to(dtype=torch.bfloat16)
+    engine.config=replace(engine.config,self_question_count=0,guard_enabled=False,
+        selected_transfer_weight=0.,release_full_before_cartridge=True,
+        release_selected_source_before_decode=True)
+    request=Request(document='Old note is red. Current note is blue. '*6,
+                    question='Which color is current?',max_new_tokens=3)
+    method=MaskedTTT(engine,Selector())
+    torch.manual_seed(119)
+    with original_question_controls():baseline=method.answer(request)
+    after_baseline=torch.get_rng_state().clone()
+    torch.manual_seed(119)
+    with capture_precision_paired(),original_question_controls():
+        result=method.answer(request)
+    assert torch.equal(after_baseline,torch.get_rng_state())
+    assert result['teacher']['tokens']==baseline['teacher']['tokens']
+    assert result['generated_token_ids']==baseline['generated_token_ids']
+    assert result['standalone_cartridge']['original_question_controls']==baseline['standalone_cartridge']['original_question_controls']
+    info=result['standalone_cartridge']['precision_paired_diagnostic']
+    assert info['passed'] and info['same_selected_kv'] and info['same_question_suffix']
+    assert info['same_generation_limit'] and info['same_precision_backend']
+    assert info['selected_source_bytes_before_decode']==info['training_bytes_before_decode']==0
+    assert not info['reference_answers_used'] and not info['teacher_answer_in_student_prompt']
