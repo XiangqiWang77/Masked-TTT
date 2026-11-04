@@ -13,6 +13,7 @@
   "overall": {
     "n": 200,
     "source_questions": 50,
+    "verified_at_least_one": 73,
     "coverage": {
       "complete": 157,
       "incomplete": 43,
@@ -134,10 +135,263 @@
       }
     }
   },
+  "by_verified": {
+    "none": {
+      "n": 127,
+      "source_questions": 46,
+      "verified_at_least_one": 0,
+      "coverage": {
+        "complete": 94,
+        "incomplete": 33,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "versus": {
+        "teacher": {
+          "n": 127,
+          "source_questions": 46,
+          "new_correct": 2,
+          "new_wrong": 3,
+          "delta_pp": -0.7874015748031497,
+          "source_outcomes": {
+            "improved_only": 1,
+            "regressed_only": 2,
+            "mixed": 1,
+            "unchanged": 42
+          },
+          "changed_lengths_per_source": {
+            "0": 42,
+            "1": 3,
+            "2": 1,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "zero": {
+          "n": 127,
+          "source_questions": 46,
+          "new_correct": 2,
+          "new_wrong": 3,
+          "delta_pp": -0.7874015748031497,
+          "source_outcomes": {
+            "improved_only": 2,
+            "regressed_only": 3,
+            "mixed": 0,
+            "unchanged": 41
+          },
+          "changed_lengths_per_source": {
+            "0": 41,
+            "1": 5,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "baseline": {
+          "n": 124,
+          "source_questions": 46,
+          "new_correct": 2,
+          "new_wrong": 2,
+          "delta_pp": 0.0,
+          "source_outcomes": {
+            "improved_only": 2,
+            "regressed_only": 2,
+            "mixed": 0,
+            "unchanged": 42
+          },
+          "changed_lengths_per_source": {
+            "0": 42,
+            "1": 4,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "whole": {
+          "n": 127,
+          "source_questions": 46,
+          "new_correct": 23,
+          "new_wrong": 14,
+          "delta_pp": 7.086614173228346,
+          "source_outcomes": {
+            "improved_only": 10,
+            "regressed_only": 5,
+            "mixed": 4,
+            "unchanged": 27
+          },
+          "changed_lengths_per_source": {
+            "0": 27,
+            "1": 7,
+            "2": 6,
+            "3": 6,
+            "4": 0
+          }
+        }
+      },
+      "full_correct_teacher_wrong": {
+        "n": 12,
+        "source_questions": 9,
+        "cartridge_correct": 1,
+        "zero_correct": 3,
+        "versus_zero": {
+          "n": 12,
+          "source_questions": 9,
+          "new_correct": 0,
+          "new_wrong": 2,
+          "delta_pp": -16.666666666666668,
+          "source_outcomes": {
+            "improved_only": 0,
+            "regressed_only": 2,
+            "mixed": 0,
+            "unchanged": 7
+          },
+          "changed_lengths_per_source": {
+            "0": 7,
+            "1": 2,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "coverage": {
+          "complete": 6,
+          "incomplete": 6,
+          "ambiguous": 0,
+          "unavailable": 0
+        }
+      }
+    },
+    "at_least_one": {
+      "n": 73,
+      "source_questions": 36,
+      "verified_at_least_one": 73,
+      "coverage": {
+        "complete": 63,
+        "incomplete": 10,
+        "ambiguous": 0,
+        "unavailable": 0
+      },
+      "versus": {
+        "teacher": {
+          "n": 73,
+          "source_questions": 36,
+          "new_correct": 2,
+          "new_wrong": 0,
+          "delta_pp": 2.73972602739726,
+          "source_outcomes": {
+            "improved_only": 2,
+            "regressed_only": 0,
+            "mixed": 0,
+            "unchanged": 34
+          },
+          "changed_lengths_per_source": {
+            "0": 34,
+            "1": 2,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "zero": {
+          "n": 73,
+          "source_questions": 36,
+          "new_correct": 4,
+          "new_wrong": 0,
+          "delta_pp": 5.47945205479452,
+          "source_outcomes": {
+            "improved_only": 4,
+            "regressed_only": 0,
+            "mixed": 0,
+            "unchanged": 32
+          },
+          "changed_lengths_per_source": {
+            "0": 32,
+            "1": 4,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "baseline": {
+          "n": 72,
+          "source_questions": 36,
+          "new_correct": 3,
+          "new_wrong": 0,
+          "delta_pp": 4.166666666666667,
+          "source_outcomes": {
+            "improved_only": 3,
+            "regressed_only": 0,
+            "mixed": 0,
+            "unchanged": 33
+          },
+          "changed_lengths_per_source": {
+            "0": 33,
+            "1": 3,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "whole": {
+          "n": 73,
+          "source_questions": 36,
+          "new_correct": 13,
+          "new_wrong": 4,
+          "delta_pp": 12.32876712328767,
+          "source_outcomes": {
+            "improved_only": 11,
+            "regressed_only": 3,
+            "mixed": 1,
+            "unchanged": 21
+          },
+          "changed_lengths_per_source": {
+            "0": 21,
+            "1": 13,
+            "2": 2,
+            "3": 0,
+            "4": 0
+          }
+        }
+      },
+      "full_correct_teacher_wrong": {
+        "n": 4,
+        "source_questions": 4,
+        "cartridge_correct": 0,
+        "zero_correct": 0,
+        "versus_zero": {
+          "n": 4,
+          "source_questions": 4,
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0,
+          "source_outcomes": {
+            "improved_only": 0,
+            "regressed_only": 0,
+            "mixed": 0,
+            "unchanged": 4
+          },
+          "changed_lengths_per_source": {
+            "0": 4,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0
+          }
+        },
+        "coverage": {
+          "complete": 1,
+          "incomplete": 3,
+          "ambiguous": 0,
+          "unavailable": 0
+        }
+      }
+    }
+  },
   "by_coverage": {
     "complete": {
       "n": 157,
       "source_questions": 48,
+      "verified_at_least_one": 63,
       "coverage": {
         "complete": 157,
         "incomplete": 0,
@@ -262,6 +516,7 @@
     "incomplete": {
       "n": 43,
       "source_questions": 24,
+      "verified_at_least_one": 10,
       "coverage": {
         "complete": 0,
         "incomplete": 43,
@@ -386,6 +641,7 @@
     "ambiguous": {
       "n": 0,
       "source_questions": 0,
+      "verified_at_least_one": 0,
       "coverage": {
         "complete": 0,
         "incomplete": 0,
@@ -510,6 +766,7 @@
     "unavailable": {
       "n": 0,
       "source_questions": 0,
+      "verified_at_least_one": 0,
       "coverage": {
         "complete": 0,
         "incomplete": 0,
@@ -636,6 +893,7 @@
     "qa1": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 1,
       "coverage": {
         "complete": 14,
         "incomplete": 6,
@@ -760,6 +1018,7 @@
     "qa10": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 6,
       "coverage": {
         "complete": 19,
         "incomplete": 1,
@@ -884,6 +1143,7 @@
     "qa2": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 6,
       "coverage": {
         "complete": 12,
         "incomplete": 8,
@@ -1008,6 +1268,7 @@
     "qa3": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 4,
       "coverage": {
         "complete": 6,
         "incomplete": 14,
@@ -1132,6 +1393,7 @@
     "qa4": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 13,
       "coverage": {
         "complete": 20,
         "incomplete": 0,
@@ -1256,6 +1518,7 @@
     "qa5": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 14,
       "coverage": {
         "complete": 18,
         "incomplete": 2,
@@ -1380,6 +1643,7 @@
     "qa6": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 2,
       "coverage": {
         "complete": 17,
         "incomplete": 3,
@@ -1504,6 +1768,7 @@
     "qa7": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 12,
       "coverage": {
         "complete": 16,
         "incomplete": 4,
@@ -1628,6 +1893,7 @@
     "qa8": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 10,
       "coverage": {
         "complete": 16,
         "incomplete": 4,
@@ -1752,6 +2018,7 @@
     "qa9": {
       "n": 20,
       "source_questions": 5,
+      "verified_at_least_one": 5,
       "coverage": {
         "complete": 19,
         "incomplete": 1,

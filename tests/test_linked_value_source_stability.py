@@ -7,9 +7,9 @@ from experiments.linked_value.source_stability import source_pairs, summarize
 from test_study_job import sources
 
 
-def row(source, teacher, cartridge, *, baseline=0, zero=0, whole=0, coverage="complete"):
+def row(source, teacher, cartridge, *, baseline=0, zero=0, whole=0, coverage="complete", verified=0):
     return dict(source=source, teacher=teacher, cartridge=cartridge, baseline=baseline,
-                zero=zero, whole=whole, coverage=coverage)
+                zero=zero, whole=whole, coverage=coverage, verified=verified)
 
 
 def test_counts_mixed_gains_and_regressions_by_source_without_double_counting():
@@ -42,7 +42,8 @@ def test_joins_only_same_source_chunks_and_exports_aggregates(tmp_path, monkeypa
                                 outcomes=dict(entity10=dict(status="complete", selected=[0, 2]))))
         folder = tmp_path / "cases/gpt" / key
         folder.mkdir(parents=True)
-        (folder / "result.json").write_text(json.dumps(dict(selection=dict(selected_original_chunks=[[0], [2]]))))
+        (folder / "result.json").write_text(json.dumps(dict(selection=dict(selected_original_chunks=[[0], [2]]),
+                                                            self_study=dict(verified=0))))
     (tmp_path / "latest.json").write_text(json.dumps(dict(rows=rows)))
     coverage = tmp_path / "coverage.json"
     coverage.write_text(json.dumps(dict(rows=annotations, answers_and_annotations_used_only_posthoc=True,

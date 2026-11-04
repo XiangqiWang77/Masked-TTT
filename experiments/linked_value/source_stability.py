@@ -43,8 +43,11 @@ def summarize(rows):
     if any(row["coverage"] not in STATUSES or row["whole"] not in (0, 1) or row["teacher"] not in (0, 1)
            for row in rows):
         raise ValueError("Invalid post-generation answer or support coverage")
+    if any(type(row["verified"]) is not int or row["verified"] not in (0, 1, 2) for row in rows):
+        raise ValueError("Invalid source-verified practice count")
     whole_only = [row for row in rows if row["whole"] and not row["teacher"]]
     return dict(n=len(rows), source_questions=len({row["source"] for row in rows}),
+        verified_at_least_one=sum(row["verified"] > 0 for row in rows),
         coverage={status: sum(row["coverage"] == status for row in rows) for status in STATUSES},
         versus={base: source_pairs(rows, base) for base in ("teacher", "zero", "baseline", "whole")},
         full_correct_teacher_wrong=dict(n=len(whole_only),
@@ -78,7 +81,7 @@ def collect(root, coverage_path):
         lengths[source].add(int(key.split("-", 2)[1]))
         rows.append(dict(source=source, task=row["task"], length=row["length"], coverage=entity["status"],
             whole=row["whole"], teacher=row["teacher"], zero=row["zero"],
-            cartridge=row["cartridge"], baseline=row["baseline"]))
+            cartridge=row["cartridge"], baseline=row["baseline"], verified=result["self_study"]["verified"]))
     if len(lengths) != 50 or any(value != {8, 16, 32, 64} for value in lengths.values()):
         raise ValueError("The development cohort is not 50 sources at four lengths")
     return dict(model="GPT-OSS-20B", metric=validated["metric"], cases=200, source_questions=50,
@@ -87,6 +90,8 @@ def collect(root, coverage_path):
         coverage_means_annotated_support_fact_spans_covered=True,
         coverage_does_not_prove_facts_were_read_or_all_necessary_context_was_present=True,
         overall=summarize(rows),
+        by_verified={label: summarize([row for row in rows if (row["verified"] > 0) == present])
+                     for label, present in (("none", False), ("at_least_one", True))},
         by_coverage={status: summarize([row for row in rows if row["coverage"] == status]) for status in STATUSES},
         by_task={task: summarize([row for row in rows if row["task"] == task])
                  for task in sorted({row["task"] for row in rows})})
