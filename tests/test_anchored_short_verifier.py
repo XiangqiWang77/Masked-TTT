@@ -4,6 +4,7 @@ import json
 import pytest
 
 from experiments.anchored_short_verifier.verifier import accepted,anchored_short_verifier
+from experiments.anchored_short_verifier.paired_controls import original_question_controls
 from masked_ttt import MaskedTTT,Request
 from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
@@ -61,7 +62,7 @@ def test_new_verifier_adds_only_selected_quote_based_practice(monkeypatch):
     monkeypatch.setattr(runtime,'generate_from_cache',lambda *args,**kwargs:([1],payload))
     monkeypatch.setattr(runtime,'answer_quote',lambda *args,**kwargs:'The garden.')
     method=MaskedTTT(engine,Selector());original=method.answer(request)
-    with anchored_short_verifier() as stats:
+    with original_question_controls(),anchored_short_verifier() as stats:
         result=method.answer(request)
     assert original['self_study']['verified']==0 and result['self_study']['verified']==1
     assert stats['verified_anchored_subspan']==1 and stats['rejected']==0
@@ -72,6 +73,7 @@ def test_new_verifier_adds_only_selected_quote_based_practice(monkeypatch):
     assert not result['self_study']['reference_answers_used']
     assert not result['self_study']['student_answer_hint_used']
     assert not result['teacher_answer_in_final_prompt']
+    assert result['standalone_cartridge']['original_question_controls']['adapted']['tokens']==result['generated_token_ids']
     assert result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']==0
     assert result['original_document_KV_unchanged'] and result['backbone_unchanged']
 
