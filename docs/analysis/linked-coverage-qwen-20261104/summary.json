@@ -1,0 +1,70 @@
+{
+  "model": "Qwen3-4B",
+  "expected": 200,
+  "overall": {
+    "n": 200,
+    "score10": 53.0,
+    "linked": 58.5,
+    "linked_zero": 57.5,
+    "linked_teacher": 59.5,
+    "gains": 22,
+    "losses": 11,
+    "delta_pp": 5.5
+  },
+  "groups": {
+    "newly_complete": {
+      "n": 36,
+      "score10": 19.444444444444443,
+      "linked": 58.333333333333336,
+      "linked_zero": 61.111111111111114,
+      "linked_teacher": 63.888888888888886,
+      "gains": 16,
+      "losses": 2,
+      "delta_pp": 38.888888888888886
+    },
+    "lost_complete": {
+      "n": 4,
+      "score10": 75.0,
+      "linked": 50.0,
+      "linked_zero": 50.0,
+      "linked_teacher": 50.0,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -25.0
+    },
+    "both_complete": {
+      "n": 121,
+      "score10": 69.42148760330579,
+      "linked": 66.94214876033058,
+      "linked_zero": 64.46280991735537,
+      "linked_teacher": 66.94214876033058,
+      "gains": 2,
+      "losses": 5,
+      "delta_pp": -2.479338842975207
+    },
+    "both_incomplete": {
+      "n": 39,
+      "score10": 30.76923076923077,
+      "linked": 33.333333333333336,
+      "linked_zero": 33.333333333333336,
+      "linked_teacher": 33.333333333333336,
+      "gains": 3,
+      "losses": 2,
+      "delta_pp": 2.5641025641025643
+    },
+    "ambiguous": {
+      "n": 0,
+      "score10": null,
+      "linked": null,
+      "linked_zero": null,
+      "linked_teacher": null,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": null
+    }
+  },
+  "new_model_calls": 0,
+  "online_api_calls": 0,
+  "reference_answers_used_in_inference": false,
+  "unavailable_count": 0
+}
