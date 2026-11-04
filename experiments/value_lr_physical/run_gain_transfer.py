@@ -52,7 +52,7 @@ def validate_result(result, observations, entry):
             raise ValueError("The observed gain gradient differs from the training log")
 
 
-def preflight(engine, *, value_alignment=False):
+def preflight(engine, *, value_alignment=False, zero_path_parity=False):
     from masked_ttt import MaskedTTT, Request
     from masked_ttt.kv_only import kv_only_cartridge
     from masked_ttt.request import prepare_layout
@@ -60,6 +60,7 @@ def preflight(engine, *, value_alignment=False):
     from experiments.value_lr_physical.gain_transfer_probe import capture_gain_transfer
     from experiments.value_lr_physical.readout_transfer_probe import capture_first_answer_readout
     from experiments.value_lr_physical.value_alignment_probe import capture_value_alignment
+    from experiments.value_lr_physical.zero_path_probe import capture_zero_path_parity
 
     document = "The old note is red. " + "Ordinary material. " * 30 + "The current note is blue."
     request = Request(document=document, question="What is the current note?", max_new_tokens=3)
@@ -78,8 +79,9 @@ def preflight(engine, *, value_alignment=False):
         with kv_only_cartridge():
             baseline = method.answer(request, time_budget_seconds=300)
         value_context = capture_value_alignment() if value_alignment else nullcontext({})
+        parity_context = capture_zero_path_parity() if zero_path_parity else nullcontext({})
         with capture_gain_transfer() as observations, capture_first_answer_readout() as readout, \
-             value_context as alignment, kv_only_cartridge():
+             value_context as alignment, parity_context as parity, kv_only_cartridge():
             observed = method.answer(request, time_budget_seconds=300)
         if (baseline["teacher"]["tokens"] != observed["teacher"]["tokens"] or
             baseline["generated_token_ids"] != observed["generated_token_ids"] or
@@ -101,12 +103,16 @@ def preflight(engine, *, value_alignment=False):
             raise AssertionError("The observer retained a training cache")
         statistics = readout.get("statistics", {"unavailable": "no_capture"})
         value_statistics = alignment.get("statistics", {"unavailable": "not_requested"})
+        parity_statistics = parity.get("statistics", {"unavailable": "not_requested"})
         return dict(passed=True, gain_observer_neutral=True, full_and_source_released=True,
                     readout_available="unavailable" not in statistics,
                     readout_unavailable=statistics.get("unavailable"),
                     value_alignment_requested=value_alignment,
                     value_alignment_available=value_alignment and "unavailable" not in value_statistics,
-                    value_alignment_unavailable=value_statistics.get("unavailable"))
+                    value_alignment_unavailable=value_statistics.get("unavailable"),
+                    zero_path_parity_requested=zero_path_parity,
+                    zero_path_parity_available=zero_path_parity and "unavailable" not in parity_statistics,
+                    zero_path_parity_unavailable=parity_statistics.get("unavailable"))
     finally:
         engine.config = original
 
@@ -119,6 +125,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--job-root", type=Path, required=True)
     parser.add_argument("--value-alignment", action="store_true")
+    parser.add_argument("--zero-path-parity", action="store_true")
     args = parser.parse_args()
     root = args.job_root.resolve()
     if not os.environ.get("SLURM_JOB_ID"):
@@ -129,6 +136,7 @@ def main():
     if (len(manifest["case_ids"]) != 40 or len(set(manifest["case_ids"])) != 40 or
         manifest["models"] != ["qwen", "gpt"] or manifest["keep_fraction"] != .1 or
         manifest.get("value_alignment_diagnostic", False) is not args.value_alignment or
+        manifest.get("zero_path_parity_diagnostic", False) is not args.zero_path_parity or
         manifest["reference_answers_used"] is not False or manifest["online_api_calls"] != 0):
         raise ValueError("The fixed diagnostic protocol changed")
     import torch
@@ -138,6 +146,7 @@ def main():
     from experiments.value_lr_physical.gain_transfer_probe import capture_gain_transfer
     from experiments.value_lr_physical.readout_transfer_probe import capture_first_answer_readout
     from experiments.value_lr_physical.value_alignment_probe import capture_value_alignment
+    from experiments.value_lr_physical.zero_path_probe import capture_zero_path_parity
     from experiments.value_lr_physical.report_gain_transfer import write_report
 
     def no_network(*_args, **_kwargs):
@@ -182,7 +191,8 @@ def main():
                          release_selected_source_before_decode=True,
                          selected_transfer_weight=0., value_basis_source="document")
         engine = Backbone.load(spec["model_path"], config, local_files_only=True)
-        checks = preflight(engine, value_alignment=args.value_alignment)
+        checks = preflight(engine, value_alignment=args.value_alignment,
+                           zero_path_parity=args.zero_path_parity)
         save(root / "preflight" / (model + "_" + job + "_" + identity["restart"] + ".json"), checks)
         selector = FrozenJSONSelector(spec["shared_scores"], source_index=spec["index"], source_cases=spec["source_cases"])
         method = MaskedTTT(engine, selector)
@@ -203,8 +213,9 @@ def main():
                 request = Request(document=case["document"], question=case["query"], prompt=case["prompt"],
                                   answer_prefix=case.get("answer_prefix", ""), max_new_tokens=case["max_new_tokens"])
                 value_context = capture_value_alignment() if args.value_alignment else nullcontext({})
+                parity_context = capture_zero_path_parity() if args.zero_path_parity else nullcontext({})
                 with capture_gain_transfer() as observations, capture_first_answer_readout() as readout, \
-                     value_context as alignment, kv_only_cartridge():
+                     value_context as alignment, parity_context as parity, kv_only_cartridge():
                     result = method.answer(request, time_budget_seconds=max(1, budget.deadline - time.monotonic()))
                 validate_result(result, observations, entry)
                 save(path, dict(key=key, model=model, task=entry["task"], length=entry["length_bucket"],
@@ -212,6 +223,7 @@ def main():
                     selection=result["selection"], training=result["training"], observations=observations,
                     readout=readout.get("statistics", {"unavailable": "no_capture"}),
                     value_alignment=alignment.get("statistics", {"unavailable": "not_requested"}),
+                    zero_path_parity=parity.get("statistics", {"unavailable": "not_requested"}),
                     memory=result["standalone_cartridge"]["memory"],
                     checks=dict(backbone_unchanged=result["backbone_unchanged"],
                         original_document_KV_unchanged=result["original_document_KV_unchanged"],

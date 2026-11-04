@@ -13,10 +13,13 @@ the short generated sequences differ. It checks that the selected source KV is
 unchanged and does not use references or the Teacher answer.
 
 The Qwen3 and GPT-OSS miniature CPU tests passed with matching short outputs and
-unchanged original state. The probe has not yet been run on the actual models
-or GPUs, and no production training, prediction or active job is modified by
-these checks. A real-model discrepancy would identify an implementation or
-numerical control to investigate; a match would not by itself establish an
-accuracy improvement.
+unchanged original state. The probe composes with the existing gain, readout,
+and Value-alignment observers; the paired training trajectory and standalone
+cache release remain unchanged. A combined 40-case-per-model, single-GPU
+diagnostic has been frozen and passed 66 CPU checks, but **has not been
+submitted**. It requires an additional loaded-model GPU preflight if used.
+No production training, prediction or active job is modified. A real-model
+discrepancy would identify an implementation or numerical control to
+investigate; a match would not by itself establish an accuracy improvement.
 
 [Probe](zero_path_probe.py) · [Tests](../../tests/test_zero_path_probe.py)

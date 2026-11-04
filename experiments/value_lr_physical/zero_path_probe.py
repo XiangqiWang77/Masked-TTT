@@ -1,5 +1,6 @@
 """Read-only check of native versus zero-correction materialized KV decoding."""
 
+from contextlib import contextmanager
 import torch
 
 
@@ -71,3 +72,59 @@ def measure_zero_path_parity(engine, layout, selected, teacher, trained, *, max_
         native_generated_count=len(native_tokens), augmented_generated_count=len(augmented_tokens),
         teacher_answer_used=False, reference_answers_used=False, source_cache_modified=False,
     )
+
+
+@contextmanager
+def capture_zero_path_parity(max_new_tokens=8):
+    """Observe after training, then release all diagnostic tensor references."""
+    import masked_ttt.pipeline as pipeline
+    from masked_ttt.memory import KVReadMemory
+
+    old_teacher, old_reader = pipeline.build_teacher, pipeline.MemoryReader
+    old_select = KVReadMemory.select_actual_read_path
+    captured = {}
+
+    def teacher(engine, reader, request, layout, selected):
+        result = old_teacher(engine, reader, request, layout, selected)
+        captured.update(_engine=engine, _layout=layout, _selected=list(selected), _teacher=result,
+                        _decode_limit=min(max_new_tokens, request.max_new_tokens))
+        return result
+
+    def reader(engine, memory):
+        result = old_reader(engine, memory)
+        if "_full_reader" not in captured:
+            captured["_full_reader"] = result
+        return result
+
+    def clear_tensors():
+        for key in tuple(captured):
+            if key.startswith("_"):
+                captured.pop(key, None)
+
+    def select(memory):
+        old_select(memory)
+        full_reader = captured.get("_full_reader")
+        if full_reader is None or full_reader.memory is not memory:
+            return
+        try:
+            engine = captured["_engine"]
+            if (engine.device.type == "cuda" and
+                torch.cuda.get_device_properties(engine.device).total_memory < 70 * 1024 ** 3):
+                captured["statistics"] = dict(unavailable="diagnostic_memory_budget", reference_answers_used=False)
+            else:
+                captured["statistics"] = measure_zero_path_parity(engine, captured["_layout"],
+                    captured["_selected"], captured["_teacher"], memory, max_new_tokens=captured["_decode_limit"])
+        except (ValueError, RuntimeError, FloatingPointError, IndexError, TypeError) as exc:
+            captured["statistics"] = dict(unavailable=type(exc).__name__, reason=str(exc),
+                                          reference_answers_used=False, source_cache_modified=False)
+        finally:
+            clear_tensors()
+
+    pipeline.build_teacher, pipeline.MemoryReader = teacher, reader
+    KVReadMemory.select_actual_read_path = select
+    try:
+        yield captured
+    finally:
+        pipeline.build_teacher, pipeline.MemoryReader = old_teacher, old_reader
+        KVReadMemory.select_actual_read_path = old_select
+        clear_tensors()

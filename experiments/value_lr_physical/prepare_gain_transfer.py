@@ -23,9 +23,11 @@ CPU_TESTS = ["tests/test_gain_transfer_probe.py", "tests/test_gain_transfer_job.
              "tests/test_gpt_request_date.py"]
 
 
-def make_manifest(workspace, *, value_alignment=False):
+def make_manifest(workspace, *, value_alignment=False, zero_path_parity=False):
     if type(value_alignment) is not bool:
         raise ValueError("Value alignment must be explicitly enabled or disabled")
+    if type(zero_path_parity) is not bool or (zero_path_parity and not value_alignment):
+        raise ValueError("Zero-path parity requires the combined Value alignment probe")
     development = workspace / "query_cartridges_value_lr_20261104"
     source = json.loads((development / "manifest.json").read_text())
     anchor = json.loads((workspace / "query_cartridges_basis_dev_20261104/manifest.json").read_text())
@@ -50,12 +52,16 @@ def make_manifest(workspace, *, value_alignment=False):
         keep_fraction=.1, selected_transfer_weight=0., reference_answers_used=False,
         online_api_calls=0, random_order_seed=20261104, max_gpu_hours=6,
         diagnosis_only=True, same_olmo_objective=True, value_alignment_diagnostic=value_alignment)
+    if zero_path_parity:
+        manifest["zero_path_parity_diagnostic"] = True
     return manifest, profile
 
 
-def make_slurm(root, *, value_alignment=False):
+def make_slurm(root, *, value_alignment=False, zero_path_parity=False):
     if type(value_alignment) is not bool:
         raise ValueError("Value alignment must be explicitly enabled or disabled")
+    if type(zero_path_parity) is not bool or (zero_path_parity and not value_alignment):
+        raise ValueError("Zero-path parity requires the combined Value alignment probe")
     script = slurm_script(root)
     changes = {
         "qc-gqa-gain-dev": "qc-gain-transfer",
@@ -74,6 +80,11 @@ def make_slurm(root, *, value_alignment=False):
         if script.count(old) != 1:
             raise ValueError("Unexpected diagnostic driver invocation")
         script = script.replace(old, old + " --value-alignment", 1)
+    if zero_path_parity:
+        old = 'value_lr_physical/run_gain_transfer.py" --job-root "$TASK_ROOT" --value-alignment'
+        if script.count(old) != 1:
+            raise ValueError("Unexpected combined diagnostic driver invocation")
+        script = script.replace(old, old + " --zero-path-parity", 1)
     return isolate_gpu_preflight(script)
 
 
@@ -87,25 +98,27 @@ def validate_frozen(root, python, manifest, profile):
         raise ValueError("The diagnostic runtime is incomplete or uses another protocol")
     env = dict(os.environ, PYTHONPATH="src:tests:.", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
                OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1")
+    tests = CPU_TESTS + (["tests/test_zero_path_probe.py"] if manifest.get("zero_path_parity_diagnostic") else [])
     checked = subprocess.run([str(python), "-m", "pytest", "--rootdir", str(frozen),
-        "--confcutdir", str(frozen), "-q", *CPU_TESTS], cwd=frozen, env=env,
+        "--confcutdir", str(frozen), "-q", *tests], cwd=frozen, env=env,
         text=True, capture_output=True, timeout=180)
     match = re.search(r"\b(\d+) passed\b", checked.stdout)
     if checked.returncode or not match:
         raise RuntimeError("Frozen diagnostic tests failed:\n" + checked.stdout + checked.stderr)
-    result = dict(cpu_tests_passed=True, passed_count=int(match.group(1)), tests=CPU_TESTS,
+    result = dict(cpu_tests_passed=True, passed_count=int(match.group(1)), tests=tests,
                   loaded_model_gpu_preflight_required=True, online_api_calls=0, created=time.time())
     atomic(root / "cpu_validation_passed.json", json.dumps(result, indent=2) + "\n")
     return result
 
 
-def prepare(workspace, root, python, *, value_alignment=False):
+def prepare(workspace, root, python, *, value_alignment=False, zero_path_parity=False):
     workspace, root = workspace.resolve(), root.resolve()
-    name = ("query_cartridges_gain_value_transfer_20261104" if value_alignment else
+    name = ("query_cartridges_gain_value_zero_transfer_20261104" if zero_path_parity else
+            "query_cartridges_gain_value_transfer_20261104" if value_alignment else
             "query_cartridges_gain_transfer_20261104")
     if root.parent != workspace or root.name != name:
         raise ValueError("Use the dedicated transfer-diagnostic directory")
-    manifest, profile = make_manifest(workspace, value_alignment=value_alignment)
+    manifest, profile = make_manifest(workspace, value_alignment=value_alignment, zero_path_parity=zero_path_parity)
     root.mkdir(exist_ok=True)
     with (root / "submission.lock").open("a+") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX)
@@ -125,14 +138,15 @@ def prepare(workspace, root, python, *, value_alignment=False):
         (root / "logs").mkdir(exist_ok=True)
         atomic(root / "manifest.json", json.dumps(manifest, indent=2) + "\n")
         atomic(root / "olmo_profile.json", json.dumps(profile, indent=2) + "\n")
-        atomic(root / "job.sbatch", make_slurm(root, value_alignment=value_alignment))
+        atomic(root / "job.sbatch", make_slurm(root, value_alignment=value_alignment, zero_path_parity=zero_path_parity))
         return validate_frozen(root, python, manifest, profile)
 
 
 def submit(workspace, root):
     workspace, root = workspace.resolve(), root.resolve()
     if root.parent != workspace or root.name not in ("query_cartridges_gain_transfer_20261104",
-                                                     "query_cartridges_gain_value_transfer_20261104"):
+                                                     "query_cartridges_gain_value_transfer_20261104",
+                                                     "query_cartridges_gain_value_zero_transfer_20261104"):
         raise ValueError("The diagnostic must use its dedicated directory")
     sys.path.insert(0, str(workspace))
     from gpu_slot_budget import submission_slot
@@ -146,9 +160,12 @@ def submit(workspace, root):
             raise ValueError("Frozen diagnostic tests have not passed")
         manifest = json.loads((root / "manifest.json").read_text())
         value_alignment = manifest.get("value_alignment_diagnostic", False)
-        expected = ("query_cartridges_gain_value_transfer_20261104" if value_alignment else
+        zero_path_parity = manifest.get("zero_path_parity_diagnostic", False)
+        expected = ("query_cartridges_gain_value_zero_transfer_20261104" if zero_path_parity else
+                    "query_cartridges_gain_value_transfer_20261104" if value_alignment else
                     "query_cartridges_gain_transfer_20261104")
-        if type(value_alignment) is not bool or root.name != expected:
+        if (type(value_alignment) is not bool or type(zero_path_parity) is not bool or
+            (zero_path_parity and not value_alignment) or root.name != expected):
             raise ValueError("The diagnostic directory and frozen mode differ")
         with submission_slot() as available:
             if not available:
@@ -160,7 +177,8 @@ def submit(workspace, root):
                 raise ValueError("Unexpected scheduler response")
             data = dict(job_id=job, gpus=1, models=["qwen", "gpt"], cases_per_model=40,
                         cached_scores=True, online_api_calls=0, low_priority=True,
-                        value_alignment_diagnostic=value_alignment, created=time.time())
+                        value_alignment_diagnostic=value_alignment,
+                        zero_path_parity_diagnostic=zero_path_parity, created=time.time())
             atomic(target, json.dumps(data, indent=2) + "\n")
             return data
 
@@ -171,8 +189,10 @@ def main():
         parser.add_argument("--" + name, type=Path, required=True)
     parser.add_argument("--submit", action="store_true")
     parser.add_argument("--value-alignment", action="store_true")
+    parser.add_argument("--zero-path-parity", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(prepare(args.workspace, args.job_root, args.python, value_alignment=args.value_alignment), indent=2))
+    print(json.dumps(prepare(args.workspace, args.job_root, args.python, value_alignment=args.value_alignment,
+                             zero_path_parity=args.zero_path_parity), indent=2))
     if args.submit:
         print(json.dumps(submit(args.workspace, args.job_root), indent=2))
 

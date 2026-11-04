@@ -13,8 +13,9 @@ def test_loaded_model_preflight_checks_observation_and_release(architecture):
     assert result["passed"] and result["gain_observer_neutral"]
     assert result["full_and_source_released"] and result["readout_available"]
     assert not result["value_alignment_requested"]
-    aligned = preflight(engine, value_alignment=True)
+    aligned = preflight(engine, value_alignment=True, zero_path_parity=True)
     assert aligned["passed"] and aligned["value_alignment_requested"] and aligned["value_alignment_available"]
+    assert aligned["zero_path_parity_requested"] and aligned["zero_path_parity_available"]
     assert aligned["gain_observer_neutral"] and aligned["full_and_source_released"]
     assert engine.config is initial
 

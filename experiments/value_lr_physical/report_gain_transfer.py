@@ -28,6 +28,8 @@ def summarize(rows):
     readout = [row["readout"] for row in rows if "unavailable" not in row["readout"]]
     alignment = [row["value_alignment"] for row in rows
                  if row.get("value_alignment") and "unavailable" not in row["value_alignment"]]
+    parity = [row["zero_path_parity"] for row in rows
+              if row.get("zero_path_parity") and "unavailable" not in row["zero_path_parity"]]
     def alignment_median(name):
         values = [row[name] for row in alignment if row.get(name) is not None]
         return median(values)
@@ -45,6 +47,11 @@ def summarize(rows):
         median_value_native_cosine=alignment_median("median_layer_native_cosine"),
         median_value_basis_coordinate_cosine=alignment_median("median_layer_basis_coordinate_cosine"),
         median_value_written_delta_cosine=alignment_median("median_layer_written_delta_cosine"),
+        zero_path_parity_cases=len(parity),
+        zero_path_first_token_changes=sum(row["first_token_top1_changed"] for row in parity),
+        zero_path_sequence_changes=sum(row["generated_tokens_changed"] for row in parity),
+        median_zero_path_first_token_kl=median([row["first_token_kl"] for row in parity]),
+        median_zero_path_logit_rms_difference=median([row["first_logit_rms_difference"] for row in parity]),
         closer_to_full=sum(r["kl_full_native_to_selected_adapted"] < r["kl_full_native_to_selected_native"] for r in readout),
         farther_from_full=sum(r["kl_full_native_to_selected_adapted"] > r["kl_full_native_to_selected_native"] for r in readout))
 
@@ -116,6 +123,20 @@ def collect(root):
                     value = alignment.get(key)
                     if value is not None and (not math.isfinite(value) or not -1 <= value <= 1):
                         raise ValueError("Invalid Value alignment cosine")
+            parity = row.get("zero_path_parity")
+            if parity and "unavailable" in parity:
+                if parity["unavailable"] != "not_requested":
+                    unavailable["zero_path:" + parity["unavailable"]] += 1
+            elif parity:
+                if (parity.get("reference_answers_used") is not False or
+                    parity.get("teacher_answer_used") is not False or
+                    parity.get("source_cache_modified") is not False or
+                    type(parity.get("first_token_top1_changed")) is not bool or
+                    type(parity.get("generated_tokens_changed")) is not bool or
+                    (parity["first_token_top1_changed"] and not parity["generated_tokens_changed"]) or
+                    any(not math.isfinite(parity[key]) or parity[key] < 0 for key in (
+                        "first_token_kl", "first_logit_max_absolute_difference", "first_logit_rms_difference"))):
+                    raise ValueError("Invalid zero-path parity diagnostic")
             rows.append(row)
         groups = defaultdict(list)
         for row in rows:
@@ -147,6 +168,15 @@ def write_report(root):
     lines += ["", "Common fractions are squared-norm fractions across selected chunks, within each layer/head. "
               "The first-token ratio compares two view-specific KL changes and is not a correctness or information-transfer score. "
               "Missing readouts and incomplete cases are separate from wrong answers. No references or API are used here."]
+    if any(data["overall"]["zero_path_parity_cases"] for data in result["models"].values()):
+        lines += ["", "| Model | Zero-path cases | First token changed | Sequence changed | Median first-token KL |",
+                  "|---|---:|---:|---:|---:|"]
+        for model, data in result["models"].items():
+            item = data["overall"]
+            lines.append(f"| {model} | {item['zero_path_parity_cases']} | {item['zero_path_first_token_changes']} | "
+                         f"{item['zero_path_sequence_changes']} | {fmt(item['median_zero_path_first_token_kl'])} |")
+        lines += ["", "Zero-path results compare the same selected cache and original question with exactly zero "
+                  "read corrections; they do not measure an accuracy improvement."]
     temporary = root / "report.md.tmp"
     temporary.write_text("\n".join(lines) + "\n")
     temporary.replace(root / "report.md")

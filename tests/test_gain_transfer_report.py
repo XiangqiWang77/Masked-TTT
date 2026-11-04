@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from experiments.value_lr_physical.report_gain_transfer import collect, write_report
+from experiments.value_lr_physical.report_gain_transfer import collect, summarize, write_report
 
 
 def component(common, contrast):
@@ -53,6 +53,15 @@ def test_partial_report_counts_available_cases_and_excludes_answers(tmp_path):
     augmented = collect(tmp_path)["models"]["qwen"]["overall"]
     assert augmented["value_alignment_cases"] == 1
     assert augmented["median_value_native_cosine"] == .5
+    row["zero_path_parity"] = dict(reference_answers_used=False, teacher_answer_used=False,
+        source_cache_modified=False, first_token_top1_changed=False, generated_tokens_changed=True,
+        first_token_kl=.0001, first_logit_max_absolute_difference=.03,
+        first_logit_rms_difference=.01)
+    parity = summarize([row])
+    assert parity["zero_path_parity_cases"] == 1
+    assert parity["zero_path_first_token_changes"] == 0
+    assert parity["zero_path_sequence_changes"] == 1
+    assert parity["median_zero_path_first_token_kl"] == .0001
     row["checks"]["full_cache_released"] = False
     (folder / (keys[0] + ".json")).write_text(json.dumps(row))
     with pytest.raises(ValueError):

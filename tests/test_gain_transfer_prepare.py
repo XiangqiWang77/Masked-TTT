@@ -32,6 +32,10 @@ def test_manifest_freezes_original_method_and_source_aligned_cases(tmp_path):
     assert manifest["value_alignment_diagnostic"] is False
     aligned, _ = make_manifest(workspace, value_alignment=True)
     assert aligned["value_alignment_diagnostic"] is True
+    combined, _ = make_manifest(workspace, value_alignment=True, zero_path_parity=True)
+    assert combined["zero_path_parity_diagnostic"] is True
+    with pytest.raises(ValueError):
+        make_manifest(workspace, zero_path_parity=True)
     path = workspace / "query_cartridges_value_lr_20261104/olmo_profile.json"
     profile = json.loads(path.read_text())
     profile["student_rollout_tokens"] = 32
@@ -52,6 +56,8 @@ def test_script_requests_one_low_priority_compatible_gpu(tmp_path):
     assert "--rootdir" in script and "--confcutdir" in script
     assert "--value-alignment" not in script
     assert "--value-alignment" in make_slurm(root, value_alignment=True)
+    combined = make_slurm(root, value_alignment=True, zero_path_parity=True)
+    assert "--value-alignment --zero-path-parity" in combined
 
 
 def test_submission_obeys_gpu_cap_and_is_idempotent(tmp_path, monkeypatch):
