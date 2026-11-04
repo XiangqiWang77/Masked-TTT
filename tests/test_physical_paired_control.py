@@ -104,6 +104,7 @@ def test_format_release_preflight_restores_configuration_and_rng(architecture):
     config, state = engine.config, torch.get_rng_state()
     checked = validate_loaded_backbone_formats(engine)
     assert checked["passed"] and checked["generic_tokens_match_pre_release"]
+    assert checked["direct_request_tokens_and_logits_match"]
     assert checked["source_and_training_released"] and checked["adapter_bytes"] == 0
     assert not checked["reference_answers_used"] and not checked["teacher_answer_in_prompt"]
     assert engine.config is config and torch.equal(torch.get_rng_state(), state)

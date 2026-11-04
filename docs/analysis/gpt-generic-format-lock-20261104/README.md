@@ -8,7 +8,7 @@
 
 现有留出作业中，通用格式答案由独立选中 KV 生成，但生成时全文缓存及训练状态仍在内存中；作业的正式原问题格式答案则在物理释放之后生成。因此，通用格式的留出结果先标为**释放前配对结果**。新的可选验证会对同一物化卡带在释放后再次生成通用格式答案，并核对 token 一致；Qwen 和 GPT-OSS 的小模型测试不能代替真实模型 GPU 验证。
 
-真实模型预检入口是 `experiments.kv_only_cartridge.format_release_probe.validate_loaded_backbone_formats(engine)`。它只用一条合成请求，完成两步原式 SD，再检查全文 KV、选中源 KV 和训练参数释放后，两种问题后缀都能读取同一物化卡带；预检不访问评测答案或调用 API，也不改变已冻结作业的训练流程。
+真实模型预检入口是 `experiments.kv_only_cartridge.format_release_probe.validate_loaded_backbone_formats(engine)`。它只用一条合成请求，完成两步原式 SD，再检查全文 KV、选中源 KV 和训练参数释放后，两种问题后缀都能读取同一物化卡带；还会比较请求级直接入口与既有配对路径的 token 和 logits。预检不访问评测答案或调用 API，也不改变已冻结作业的训练流程。
 
 如有完整留出结果，使用 [report script](../../../experiments/babilong_linked_selection/gpt_generic_format_report.py) 输出 Teacher、同格式零更新和训练后卡带的配对结果，并单列开发集、800 题留出集及合计 1,000 题。参考答案只用于生成之后的评分；训练与推理不使用它们。
 

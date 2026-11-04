@@ -9,7 +9,6 @@ from tempfile import TemporaryDirectory
 
 import masked_ttt
 from masked_ttt import FrozenJSONSelector, MaskedTTT, Request
-from masked_ttt.kv_only import kv_only_cartridge
 from masked_ttt.linked_selection import LinkedFrozenSelector
 from test_materialization_equivalence import gpt_gqa_engine
 from test_standalone import make_engine
@@ -62,8 +61,7 @@ def main():
                 selector = selector_type(root, source_index=index_path, source_cases=source_path)
                 selector.bind_case("case")
                 request = Request(document=document, question=question, max_new_tokens=3)
-                with kv_only_cartridge():
-                    result = MaskedTTT(engine, selector).answer(request)
+                result = MaskedTTT(engine, selector).answer(request, compact_standalone=True)
                 memory, training = result["standalone_cartridge"]["memory"], result["training"]
                 checks = dict(selection=result["selection"]["selected_chunks"] == selected,
                     source_matches=result["selection"]["source_document_matches_index"],

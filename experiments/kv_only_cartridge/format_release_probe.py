@@ -10,6 +10,7 @@ from dataclasses import replace
 import torch
 
 from experiments.kv_only_cartridge.paired_control import physical_paired_prompt_control
+from experiments.kv_only_cartridge.real_model_probe import _capture_standalone_logits
 from masked_ttt import MaskedTTT, Request
 from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
@@ -35,22 +36,38 @@ def validate_loaded_backbone_formats(engine):
                 return PreparedRequest(item, layout, [len(layout.chunks) // 2],
                                        dict(backend="synthetic_format_release_check"))
 
-        with physical_paired_prompt_control(verify_teacher_suffix_after_release=True):
-            result = MaskedTTT(engine, Selector()).answer(request, time_budget_seconds=300)
+        method = MaskedTTT(engine, Selector())
+        with _capture_standalone_logits() as paired_logits, \
+                physical_paired_prompt_control(verify_teacher_suffix_after_release=True):
+            result = method.answer(request, time_budget_seconds=300)
+        with _capture_standalone_logits() as direct_logits:
+            direct = method.answer(request, time_budget_seconds=300, compact_standalone=True)
         memory = result["standalone_cartridge"]["memory"]
         controls = result["standalone_cartridge"]["paired_prompt_control"]
         verified = controls["teacher_suffix_independent_decode"]
+        direct_memory = direct["standalone_cartridge"]["memory"]
+        same_direct_logits = (len(direct_logits) > 0 and len(paired_logits) >= len(direct_logits) and
+            all(a.shape == b.shape and torch.allclose(a, b, atol=1e-5, rtol=1e-5)
+                for a, b in zip(paired_logits, direct_logits)))
         if (not result["backbone_unchanged"] or not result["original_document_KV_unchanged"] or
             result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] != 0 or
             memory["additional_source_kv_bytes_before_decode"] != 0 or
             memory["additional_training_adapter_bytes_before_decode"] != 0 or
             memory["cartridge_adapter_bytes"] != 0 or
             not verified["source_and_training_released"] or verified["adapter_bytes"] != 0 or
-            verified["teacher_answer_in_prompt"] or
+            verified["teacher_answer_in_prompt"] or not same_direct_logits or
+            not direct["backbone_unchanged"] or not direct["original_document_KV_unchanged"] or
+            direct["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] != 0 or
+            direct["generated_token_ids"] != result["generated_token_ids"] or
+            direct["teacher"]["tokens"] != result["teacher"]["tokens"] or
+            direct_memory["cartridge_adapter_bytes"] != 0 or
+            direct_memory["additional_source_kv_bytes_before_decode"] != 0 or
+            direct_memory["additional_training_adapter_bytes_before_decode"] != 0 or
             verified["generated_token_ids"] != controls["trained_teacher_suffix"]["tokens"]):
             raise AssertionError("Both formats require a physically independent cartridge")
         return dict(passed=True, original_and_generic_same_materialized_kv=True,
-            generic_tokens_match_pre_release=True, source_and_training_released=True,
+            generic_tokens_match_pre_release=True, direct_request_tokens_and_logits_match=True,
+            source_and_training_released=True,
             adapter_bytes=0, teacher_answer_in_prompt=False, online_api_calls=0,
             reference_answers_used=False, model_type=engine.model.config.model_type)
     finally:

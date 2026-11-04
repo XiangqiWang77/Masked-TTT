@@ -1,7 +1,6 @@
 """Run the method on one user-provided document and question."""
 
 import argparse
-from contextlib import nullcontext
 import json
 from pathlib import Path
 
@@ -14,7 +13,6 @@ from . import (
     Request,
     TTTConfig,
 )
-from .kv_only import kv_only_cartridge
 
 
 def load_method_config(path=None, **overrides):
@@ -116,13 +114,12 @@ def main():
         local_files_only=args.local_files_only,
         shard_gpus=args.shard_gpus,
     )
-    # The CLI handles one request per process, so it can safely materialize a
-    # compact KV-only artifact without leaving duplicate adapter tensors live.
-    # Full-context-only requests keep the normal reader path.
-    compact = config.standalone_cartridge_enabled and config.release_selected_source_before_decode
-    context = kv_only_cartridge() if compact else nullcontext()
-    with context:
-        result = MaskedTTT(backbone, selector).answer(request, time_budget_seconds=args.time_budget)
+    # Keep the compact choice in this request rather than patching the shared
+    # pipeline. Explicit source-retention settings preserve the debug path.
+    compact = (config.standalone_cartridge_enabled and config.release_full_before_cartridge and
+               config.release_selected_source_before_decode)
+    result = MaskedTTT(backbone, selector).answer(
+        request, time_budget_seconds=args.time_budget, compact_standalone=compact)
     text = json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

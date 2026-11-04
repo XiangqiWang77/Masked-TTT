@@ -129,11 +129,10 @@ the primary answer then comes from the full-context path. `self_judge.applies_to
 identifies which path the judge can affect.
 
 The CLI automatically uses KV-only materialization for standalone requests
-when source-cache release is enabled. With the default release settings, its
+when both source caches are released. With the default release settings, its
 memory diagnostics record zero extra source KV and zero extra training-adapter
-bytes at standalone decode. The
-context used to materialize the cache is process-local; the CLI handles one
-request per process.
+bytes at standalone decode. The choice is request-local and does not install
+process-wide decoding hooks.
 
 `timing.ttft_seconds` measures through the first token of the primary output,
 including preceding online work and selected-cache materialization. Model
@@ -154,7 +153,6 @@ selected cache.
 
 ```python
 from masked_ttt import Backbone, MaskedTTT, Request, TTTConfig
-from masked_ttt.kv_only import kv_only_cartridge
 from masked_ttt.linked_selection import LinkedFrozenSelector
 
 config = TTTConfig(
@@ -171,16 +169,18 @@ selector = LinkedFrozenSelector("/path/to/shared_scores")
 selector.bind_case("your-case-id")
 request = Request(document=document, question=question)
 
-with kv_only_cartridge():
-    result = MaskedTTT(backbone, selector).answer(request)
+result = MaskedTTT(backbone, selector).answer(request, compact_standalone=True)
 
 print(result["prediction"])
 print(result["standalone_cartridge"]["memory"]["standalone_cartridge_bytes"])
 ```
 
 The document, question and case ID must match the saved scores. No online API
-call is made by this selector. `kv_only_cartridge()` temporarily patches
-process-local decoding hooks, so use one request at a time in that process.
+call is made by this selector. `compact_standalone=True` removes the duplicate
+adapter after materialization and requires both source caches to be released;
+it is scoped to this request. The legacy `kv_only_cartridge()` context remains
+available for existing experiments, but its process-wide hooks must not be
+used concurrently.
 For a benchmark reproduction, pass its original task prompt and generation
 limit to `Request`; the example's default prompt is only a general-purpose
 starting point.

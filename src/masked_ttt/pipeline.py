@@ -34,12 +34,26 @@ class MaskedTTT:
         self.backbone = backbone
         self.selector = selector or OpenAIChunkSelector()
 
-    def answer(self, request, *, time_budget_seconds=None):
+    def answer(self, request, *, time_budget_seconds=None, compact_standalone=False):
+        """Answer one request; optionally discard all materialized read-state copies.
+
+        ``compact_standalone`` is request-local and does not install global
+        hooks. It requires both original source caches to be released before
+        the independently materialized cartridge starts decoding.
+        """
+        if type(compact_standalone) is not bool:
+            raise ValueError("compact_standalone must be boolean")
+        if compact_standalone:
+            config = self.backbone.config
+            if (not config.standalone_cartridge_enabled or not config.release_full_before_cartridge or
+                not config.release_selected_source_before_decode):
+                raise ValueError("Compact standalone decoding requires release of both source caches")
         scope = getattr(self.backbone.tokenizer, "request_scope", None)
         with (scope() if callable(scope) else nullcontext()):
-            return self._answer(request, time_budget_seconds=time_budget_seconds)
+            return self._answer(request, time_budget_seconds=time_budget_seconds,
+                                compact_standalone=compact_standalone)
 
-    def _answer(self, request, *, time_budget_seconds=None):
+    def _answer(self, request, *, time_budget_seconds=None, compact_standalone=False):
         started = time.perf_counter()
         # The backbone tensors are shared; the deadline, readers, KV, and optimizer
         # belong to this request. No adaptation state is stored on self.
@@ -311,7 +325,12 @@ class MaskedTTT:
             memory=reader=selected_reader=optimizer=params=parameter=None
             engine._defer_standalone_decode=False
             if isinstance(standalone,StandaloneReady):
+                if compact_standalone and not standalone.accounting.get('kv_only_materialized', False):
+                    from .kv_only import _drop_redundant_tensors
+                    _drop_redundant_tensors(standalone)
                 standalone=decode_standalone(engine,standalone)
+            elif compact_standalone:
+                raise RuntimeError('Compact standalone decoding requires a deferred materialized cache')
         engine.synchronize()
         total_peak_bytes=cuda_peak(engine.device)
 

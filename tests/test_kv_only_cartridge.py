@@ -88,6 +88,93 @@ def test_hook_is_restored_after_error():
     assert pipeline.answer_standalone is original
 
 
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss", "gpt_oss_gqa"])
+@pytest.mark.parametrize("steps", [0, 2])
+def test_request_local_compact_path_matches_existing_kv_only(architecture, steps):
+    import masked_ttt.pipeline as pipeline
+    from test_materialization_equivalence import gpt_gqa_engine
+
+    engine = (make_engine() if architecture == "qwen3" else
+              gpt_engine() if architecture == "gpt_oss" else gpt_gqa_engine())
+    engine.config = replace(engine.config, steps=steps, self_question_count=0,
+        guard_enabled=False, selected_transfer_weight=0., value_basis_source="document",
+        release_full_before_cartridge=True, release_selected_source_before_decode=True)
+    request = Request(document="The old note is red. The current note is blue. " * 6,
+                      question="Which color is current?", max_new_tokens=3)
+
+    class Selector:
+        def prepare(self, backbone, item):
+            layout = prepare_layout(backbone, item)
+            return PreparedRequest(item, layout, [1, len(layout.chunks) - 2], dict(backend="unit"))
+
+    method = MaskedTTT(engine, Selector())
+    with kv_only_cartridge():
+        legacy = method.answer(request)
+    answer_hook, decode_hook = pipeline.answer_standalone, pipeline.decode_standalone
+    direct = method.answer(request, compact_standalone=True)
+    assert pipeline.answer_standalone is answer_hook and pipeline.decode_standalone is decode_hook
+    assert direct["generated_token_ids"] == legacy["generated_token_ids"]
+    assert direct["teacher"]["tokens"] == legacy["teacher"]["tokens"]
+    assert direct["training"]["objective"] == legacy["training"]["objective"]
+    assert direct["training"]["accepted_steps"] == legacy["training"]["accepted_steps"]
+    assert direct["backbone_unchanged"] and direct["original_document_KV_unchanged"]
+    assert direct["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] == 0
+    memory = direct["standalone_cartridge"]["memory"]
+    assert memory["kv_only_materialized"] and memory["cartridge_adapter_bytes"] == 0
+    assert memory["additional_source_kv_bytes_before_decode"] == 0
+    assert memory["additional_training_adapter_bytes_before_decode"] == 0
+    assert memory["standalone_cartridge_bytes"] == legacy["standalone_cartridge"]["memory"]["standalone_cartridge_bytes"]
+
+
+@pytest.mark.parametrize("overrides", [
+    dict(release_full_before_cartridge=False),
+    dict(release_selected_source_before_decode=False),
+    dict(standalone_cartridge_enabled=False, release_full_before_cartridge=False),
+])
+def test_request_local_compaction_rejects_source_retention_before_selection(overrides):
+    engine = make_engine()
+    engine.config = replace(engine.config, **overrides)
+    class Selector:
+        def prepare(self, *_args):
+            pytest.fail("Invalid compact settings must be rejected before selection")
+    method = MaskedTTT(engine, Selector())
+    request = Request(document="A short document.", question="What is it?", max_new_tokens=3)
+    with pytest.raises(ValueError, match="release of both source caches"):
+        method.answer(request, compact_standalone=True)
+    with pytest.raises(ValueError, match="must be boolean"):
+        method.answer(request, compact_standalone="true")
+
+
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss_gqa"])
+def test_request_local_compaction_keeps_parallel_requests_isolated(architecture):
+    from concurrent.futures import ThreadPoolExecutor
+    from test_materialization_equivalence import gpt_gqa_engine
+
+    engine = make_engine() if architecture == "qwen3" else gpt_gqa_engine()
+    engine.config = replace(engine.config, self_question_count=0, guard_enabled=False,
+        selected_transfer_weight=0., release_full_before_cartridge=True,
+        release_selected_source_before_decode=True)
+
+    class Selector:
+        def prepare(self, backbone, item):
+            layout = prepare_layout(backbone, item)
+            return PreparedRequest(item, layout, [1, len(layout.chunks) - 2], dict(backend="unit"))
+
+    method = MaskedTTT(engine, Selector())
+    requests = [Request(document="The old note is red. The current note is blue. " * 6,
+                        question=question, max_new_tokens=3)
+                for question in ("Which color is current?", "Which color is old?")]
+    expected = [method.answer(request, compact_standalone=True) for request in requests]
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        futures = [pool.submit(method.answer, request, compact_standalone=True) for request in requests]
+        observed = [future.result() for future in futures]
+    for baseline, result in zip(expected, observed):
+        assert result["generated_token_ids"] == baseline["generated_token_ids"]
+        assert result["teacher"]["tokens"] == baseline["teacher"]["tokens"]
+        assert result["backbone_unchanged"] and result["original_document_KV_unchanged"]
+        assert result["standalone_cartridge"]["memory"]["cartridge_adapter_bytes"] == 0
+
+
 @pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss"])
 def test_loaded_backbone_probe_preserves_configuration(architecture):
     from experiments.kv_only_cartridge.real_model_probe import validate_loaded_backbone

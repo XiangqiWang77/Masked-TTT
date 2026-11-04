@@ -143,11 +143,15 @@ def test_cli_respects_explicit_retention_of_selected_source_cache(tmp_path,monke
     selector=SimpleNamespace(bind_case=lambda _case:None)
     monkeypatch.setattr(cli,'FrozenJSONSelector',lambda _path:selector)
     monkeypatch.setattr(cli.Backbone,'load',lambda *_args,**_kwargs:object())
+    calls=[]
+    def answer(*_args,**kwargs):
+        calls.append(kwargs)
+        return dict(prediction='ok')
     monkeypatch.setattr(cli,'MaskedTTT',lambda *_args:SimpleNamespace(
-        answer=lambda *_a,**_kw:dict(prediction='ok')))
-    monkeypatch.setattr(cli,'kv_only_cartridge',lambda:pytest.fail('source release was disabled'))
+        answer=answer))
     monkeypatch.setattr(sys,'argv',['masked-ttt','--model','synthetic','--request',str(request),
         '--score-json-dir',str(tmp_path),'--case-id','case','--config-json',str(profile),
         '--output',str(result_path)])
     main()
     assert json.loads(result_path.read_text())['prediction']=='ok'
+    assert calls[0]['compact_standalone'] is False
