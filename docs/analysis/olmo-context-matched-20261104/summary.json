@@ -1,0 +1,95 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "online_api_calls": 0,
+  "new_model_calls": 0,
+  "evaluation_answers_used_only_posthoc": true,
+  "teacher_and_original_cartridge_formats_differ": true,
+  "default_baseline": "selected ICL Teacher with generic format instruction",
+  "same_format_training_baseline": "selected zero-update with teacher-format instruction",
+  "groups": {
+    "complete": {
+      "olmo": {
+        "n": 838,
+        "baseline_accuracy": 42.124105011933175,
+        "cartridge_accuracy": 45.58472553699284,
+        "new_correct": 47,
+        "new_wrong": 18,
+        "delta_points": 3.460620525059666
+      },
+      "qwen": {
+        "n": 838,
+        "baseline_accuracy": 58.114558472553696,
+        "cartridge_accuracy": 57.637231503579955,
+        "new_correct": 11,
+        "new_wrong": 15,
+        "delta_points": -0.477326968973747,
+        "same_format_training": {
+          "n": 838,
+          "baseline_accuracy": 58.114558472553696,
+          "cartridge_accuracy": 58.353221957040574,
+          "new_correct": 8,
+          "new_wrong": 6,
+          "delta_points": 0.2386634844868735
+        }
+      },
+      "gpt": {
+        "n": 838,
+        "baseline_accuracy": 58.472553699284006,
+        "cartridge_accuracy": 56.563245823389025,
+        "new_correct": 21,
+        "new_wrong": 37,
+        "delta_points": -1.909307875894988,
+        "same_format_training": {
+          "n": 838,
+          "baseline_accuracy": 58.472553699284006,
+          "cartridge_accuracy": 58.711217183770884,
+          "new_correct": 8,
+          "new_wrong": 6,
+          "delta_points": 0.2386634844868735
+        }
+      }
+    },
+    "compacted": {
+      "olmo": {
+        "n": 162,
+        "baseline_accuracy": 36.41975308641975,
+        "cartridge_accuracy": 39.50617283950617,
+        "new_correct": 11,
+        "new_wrong": 6,
+        "delta_points": 3.0864197530864197
+      },
+      "qwen": {
+        "n": 162,
+        "baseline_accuracy": 48.76543209876543,
+        "cartridge_accuracy": 51.851851851851855,
+        "new_correct": 6,
+        "new_wrong": 1,
+        "delta_points": 3.0864197530864197,
+        "same_format_training": {
+          "n": 162,
+          "baseline_accuracy": 48.76543209876543,
+          "cartridge_accuracy": 48.76543209876543,
+          "new_correct": 2,
+          "new_wrong": 2,
+          "delta_points": 0.0
+        }
+      },
+      "gpt": {
+        "n": 162,
+        "baseline_accuracy": 50.0,
+        "cartridge_accuracy": 49.382716049382715,
+        "new_correct": 7,
+        "new_wrong": 8,
+        "delta_points": -0.6172839506172839,
+        "same_format_training": {
+          "n": 162,
+          "baseline_accuracy": 50.0,
+          "cartridge_accuracy": 51.23456790123457,
+          "new_correct": 2,
+          "new_wrong": 0,
+          "delta_points": 1.2345679012345678
+        }
+      }
+    }
+  }
+}
