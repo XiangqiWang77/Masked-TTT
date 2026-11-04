@@ -11,6 +11,14 @@ from experiments.babilong_linked_selection.long_rollout_protocol import summariz
 from experiments.value_lr_physical.report import validate_result
 
 
+def same_baseline_protocol(manifest, baseline):
+    return (baseline.get("case_ids") == manifest.get("development_case_ids") and
+            baseline.get("model_protocols") == manifest.get("model_protocols") and
+            baseline.get("keep_fraction") == manifest.get("keep_fraction") == .1 and
+            baseline.get("selected_transfer_weight") == 0 and
+            baseline.get("reference_answers_used") is False and baseline.get("online_api_calls", 0) == 0)
+
+
 def same_baseline(candidate, baseline):
     control = candidate["standalone_cartridge"]["original_question_controls"]
     old = baseline["standalone_cartridge"]["paired_prompt_control"]
@@ -20,6 +28,7 @@ def same_baseline(candidate, baseline):
         candidate["self_study"]["checks"] != baseline["self_study"]["checks"] or
         candidate["training"]["steps"][0]["student_rollout_tokens"] != baseline["training"]["steps"][0]["student_rollout_tokens"] or
         control["zero"]["tokens"] != old["zero_original"]["tokens"] or
+        baseline["selection"]["reference_answers_used"] or baseline["selection"]["online_api_calls"] != 0 or
         baseline["value_learning_rate"] != .001 or baseline["gain_learning_rate"] != .01 or
         baseline["training"]["objective"] != "on-policy KL(teacher || student)" or
         baseline["training"]["selected_transfer_weight"] != 0):
@@ -50,6 +59,11 @@ def collect(manifest, root, baseline_root, references, score):
         manifest["selected_transfer_weight"] != 0 or manifest["reference_answers_used_in_inference"] is not False or
         manifest["online_api_calls"] != 0 or manifest["holdout_evaluated_at_selection"] is not False):
         raise ValueError("The fixed stronger-Value protocol changed")
+    baseline_manifest = Path(baseline_root) / "manifest.json"
+    try:
+        baseline_protocol_valid = same_baseline_protocol(manifest, json.loads(baseline_manifest.read_text()))
+    except (OSError, ValueError, TypeError):
+        baseline_protocol_valid = False
     rows, errors, invalid, unmatched = [], [], [], []
     for case in manifest["case_ids"]:
         folder = Path(root) / "cases/gpt" / case
@@ -77,7 +91,9 @@ def collect(manifest, root, baseline_root, references, score):
             linked8=None, baseline=None, cartridge_percent=100 * card_bytes / full_bytes)
         if mode == "development":
             baseline_path = Path(baseline_root) / "cases/gpt" / case / "lr_0.0010.json"
-            if baseline_path.is_file():
+            if not baseline_protocol_valid:
+                unmatched.append(dict(case=case, reason="baseline_protocol_unverified"))
+            elif baseline_path.is_file():
                 old = json.loads(baseline_path.read_text())
                 try:
                     same_baseline(result, old)
@@ -95,6 +111,7 @@ def collect(manifest, root, baseline_root, references, score):
     return dict(created_utc=datetime.now(timezone.utc).isoformat(), mode=mode, model="gpt",
         expected=manifest["case_count"], fixed_value_learning_rate=.003,
         metric="answer_focused_lexical_v2", cached_scores=True, online_api_calls=0,
+        baseline_protocol_valid=baseline_protocol_valid,
         reference_answers_used_only_posthoc=True, overall=summarize(rows),
         versus_fixed_baseline=paired(rows), groups={name: summarize(items) for name, items in groups.items()},
         rows=rows, errors=errors, invalid=invalid, unmatched_baselines=unmatched)

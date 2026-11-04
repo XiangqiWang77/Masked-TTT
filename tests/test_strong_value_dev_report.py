@@ -1,10 +1,10 @@
 from copy import deepcopy
 import pytest
-from experiments.value_lr_physical.strong_dev_report import paired, same_baseline
+from experiments.value_lr_physical.strong_dev_report import paired, same_baseline, same_baseline_protocol
 
 
 def pair():
-    selection = dict(selected_original_chunks=[[1]])
+    selection = dict(selected_original_chunks=[[1]], reference_answers_used=False, online_api_calls=0)
     training = dict(steps=[dict(student_rollout_tokens=[2])],
                     objective="on-policy KL(teacher || student)", selected_transfer_weight=0)
     student = dict(key="case", model="gpt", selection=selection, teacher=dict(tokens=[3]),
@@ -30,3 +30,12 @@ def test_pair_summary_counts_new_correct_and_wrong():
                      dict(baseline=None, cartridge=1)])
     assert result["n"] == 2 and result["new_correct"] == result["new_wrong"] == 1
     assert result["delta_pp"] == 0
+
+
+def test_same_baseline_source_requires_identical_cases_and_protocols():
+    candidate = dict(development_case_ids=["case"], model_protocols=dict(gpt="path"), keep_fraction=.1)
+    baseline = dict(case_ids=["case"], model_protocols=dict(gpt="path"), keep_fraction=.1,
+                    selected_transfer_weight=0, reference_answers_used=False, online_api_calls=0)
+    assert same_baseline_protocol(candidate, baseline)
+    baseline["model_protocols"] = dict(gpt="different")
+    assert not same_baseline_protocol(candidate, baseline)
