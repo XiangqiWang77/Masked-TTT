@@ -1,0 +1,32 @@
+{
+  "qwen": {
+    "cases": 200,
+    "cases_with_verified_practice": 40,
+    "invalid_json_cases": 62,
+    "invalid_json_at_token_limit": 2,
+    "invalid_json_below_token_limit": 60,
+    "invalid_json_token_histogram": {
+      "2": 7,
+      "4": 53,
+      "192": 2
+    },
+    "model": "qwen",
+    "source_questions": 50,
+    "max_tokens": 192
+  },
+  "gpt": {
+    "cases": 200,
+    "cases_with_verified_practice": 73,
+    "invalid_json_cases": 0,
+    "invalid_json_at_token_limit": 0,
+    "invalid_json_below_token_limit": 0,
+    "invalid_json_token_histogram": {},
+    "model": "gpt",
+    "source_questions": 50,
+    "max_tokens": 192
+  },
+  "no_model_or_api_calls": true,
+  "prediction_text_and_reference_labels_not_used": true,
+  "generated_text_not_saved_in_source_records": true,
+  "token_count_alone_does_not_establish_why_json_failed": true
+}
