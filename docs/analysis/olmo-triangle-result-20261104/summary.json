@@ -8,24 +8,45 @@
   "metrics": {
     "whole": {
       "answer_accuracy_pct": 36.1,
+      "target_attention_mass": 0.003273553834996316,
       "target_attention_pct": 0.32735538349963156,
+      "multihop_correct": 29,
       "multihop_accuracy_pct": 14.5
     },
     "icl": {
       "answer_accuracy_pct": 41.2,
+      "target_attention_mass": 0.006610969533236736,
       "target_attention_pct": 0.6610969533236737,
+      "multihop_correct": 23,
       "multihop_accuracy_pct": 11.5
     },
     "qc": {
       "answer_accuracy_pct": 44.6,
+      "target_attention_mass": 0.006615707857226501,
       "target_attention_pct": 0.66157078572265,
+      "multihop_correct": 27,
       "multihop_accuracy_pct": 13.5
     }
   },
-  "radial_display_maxima": {
-    "answer_accuracy_pct": 100,
-    "target_attention_pct": 1,
-    "multihop_accuracy_pct": 100
+  "normalization": {
+    "method": "per-axis min-max across all three method means",
+    "radial_min": 0.14,
+    "radial_max": 0.86,
+    "raw_metric_bounds": {
+      "answer_accuracy_pct": [
+        36.1,
+        44.6
+      ],
+      "target_attention_pct": [
+        0.32735538349963156,
+        0.66157078572265
+      ],
+      "multihop_accuracy_pct": [
+        11.5,
+        14.5
+      ]
+    },
+    "labels": "raw accuracy percent, attention probability mass, and multi-hop correct count / 200"
   },
   "axis_interpretation": {
     "dilution": "lower dilution is represented by greater target attention",
