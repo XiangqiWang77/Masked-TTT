@@ -49,3 +49,11 @@ def test_teacher_requirements_change_only_standalone_question_suffix(kind):
 
 def test_invalid_answer_format_is_rejected():
     with pytest.raises(ValueError):TTTConfig(standalone_answer_format='teacher_answer')
+
+
+def test_teacher_requirements_respect_final_generation_context():
+    engine=make_engine()
+    _,layout,selected,_,teacher,trained,_=setup_views(engine)
+    engine.config=replace(engine.config,standalone_answer_format='teacher_requirements')
+    with pytest.raises(ValueError,match='exceed the model context'):
+        answer_standalone(engine,layout,selected,teacher,trained,engine.config.max_context)

@@ -75,6 +75,8 @@ def answer_standalone(engine,layout,selected,teacher,trained,limit):
         if teacher.question_tokens is None or teacher.question_tokens.ndim!=1 or not len(teacher.question_tokens):
             raise ValueError('Teacher question requirements are missing')
         suffix=teacher.question_tokens.to(engine.device)
+    if limit<1 or length+len(suffix)+limit>engine.config.max_context:
+        raise ValueError('Standalone question and generation exceed the model context')
     engine.budget.check()
     output=private_forward(reader.reader,suffix,length,branch)
     tokens=[]
