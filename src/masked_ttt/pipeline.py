@@ -16,6 +16,7 @@ from .memory_accounting import (cache_tensors,cuda_allocated,cuda_peak,module_te
 from .model import Budget
 from .on_policy import student_rollout
 from .optimizer import distribution_kl
+from .prompt_alignment import main_student_suffix
 from .output_guard_runtime import guard_answers
 from .reader import MemoryReader
 from .runtime import private_forward, private_module_tree
@@ -131,7 +132,11 @@ class MaskedTTT:
         began=time.perf_counter()
         if usable:
             memory.native_mode=False
-            paths=[dict(name='main',student_suffix=suffix,teacher=teacher,
+            training_suffix=main_student_suffix(
+                suffix,teacher,align=engine.config.align_student_teacher_prompt,
+                document_length=length,max_context=engine.config.max_context,
+                rollout_tokens=min(working.max_new_tokens,engine.config.student_rollout_tokens))
+            paths=[dict(name='main',student_suffix=training_suffix,teacher=teacher,
                         question=working.question)]+practice_paths
             required_steps=engine.config.steps+len(practice_paths)
             params=(memory.gain,memory.value_coefficients)
@@ -379,6 +384,7 @@ class MaskedTTT:
                 teacher_target_scope=engine.config.teacher_target_scope,
                 teacher_target_positions=positions or list(range(len(rollout))) if usable else [],
                 student_rollout_limit=engine.config.student_rollout_tokens,
+                student_question_matches_teacher=engine.config.align_student_teacher_prompt,
                 student_rollouts_refreshed_each_step=True,
                 teacher_conditioned_on_student_prefix=True,
                 selected_transfer_weight=engine.config.selected_transfer_weight,

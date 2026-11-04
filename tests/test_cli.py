@@ -28,6 +28,7 @@ def test_recorded_olmo_profile_is_loaded_exactly_and_can_be_overridden():
     assert effective.pop('value_basis_source') == 'document'
     assert effective.pop('gain_head_mode') == 'kv'
     assert effective.pop('standalone_answer_format') == 'original'
+    assert effective.pop('align_student_teacher_prompt') is False
     assert effective==saved
     assert (config.keep_fraction,config.steps,config.value_rank)==(.1,2,8)
     assert (config.max_context,config.context_reserve_tokens)==(65536,4096)
@@ -36,6 +37,7 @@ def test_recorded_olmo_profile_is_loaded_exactly_and_can_be_overridden():
     assert config.guard_enabled and config.standalone_cartridge_enabled
     assert load_method_config(path,steps=3).steps==3
     assert load_method_config(path,selected_transfer_weight=.25).selected_transfer_weight==.25
+    assert load_method_config(path,align_student_teacher_prompt=True).align_student_teacher_prompt
     assert load_method_config(path,value_learning_rate=.001,gain_learning_rate=.02).value_learning_rate==.001
 
 

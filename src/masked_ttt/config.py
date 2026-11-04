@@ -21,6 +21,7 @@ class TTTConfig:
     sink_tokens: int = 4
     teacher_max_new_tokens: int = 32
     student_rollout_tokens: int = 8
+    align_student_teacher_prompt: bool = False
     self_question_count: int = 2
     self_question_max_tokens: int = 192
     self_question_verify_tokens: int = 16
@@ -66,6 +67,8 @@ class TTTConfig:
             raise ValueError('self_question_count must be between 0 and 4')
         if type(self.practice_boundary_fallback) is not bool:
             raise ValueError('practice_boundary_fallback must be boolean')
+        if type(self.align_student_teacher_prompt) is not bool:
+            raise ValueError('align_student_teacher_prompt must be boolean')
         if type(self.guard_enabled) is not bool or type(self.standalone_cartridge_enabled) is not bool:
             raise ValueError('guard and standalone settings must be boolean')
         if self.standalone_answer_format not in ('original','teacher_requirements'):

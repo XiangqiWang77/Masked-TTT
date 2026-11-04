@@ -64,6 +64,8 @@ def main():
     parser.add_argument("--value-learning-rate", type=float)
     parser.add_argument("--value-basis-source",choices=("document","selected"),default=None)
     parser.add_argument("--standalone-answer-format",choices=("original","teacher_requirements"),default=None)
+    parser.add_argument("--align-student-teacher-prompt", action="store_true", default=None,
+                        help="Use the Teacher's question-only formatting for the main SD path")
     parser.add_argument("--max-answer-steps", type=int)
     parser.add_argument("--teacher-max-new-tokens", type=int)
     parser.add_argument("--answer-kl-stop", type=float)
@@ -84,6 +86,7 @@ def main():
             gain_learning_rate=args.gain_learning_rate,value_learning_rate=args.value_learning_rate,
             value_basis_source=args.value_basis_source,
             standalone_answer_format=args.standalone_answer_format,
+            align_student_teacher_prompt=args.align_student_teacher_prompt,
             max_context=args.max_context, context_reserve_tokens=args.context_reserve_tokens,
             max_answer_steps=args.max_answer_steps,teacher_max_new_tokens=args.teacher_max_new_tokens,
             answer_KL_stop=args.answer_kl_stop,selected_transfer_weight=args.selected_transfer_weight,
