@@ -21,6 +21,7 @@ from experiments.value_lr_physical.prepare import physical_driver
 DEV = "query_cartridges_canonical_pair_dev_20261104"
 HOLDOUT = "query_cartridges_canonical_pair_holdout_20261104"
 CPU_TESTS = ["tests/test_canonical_pair.py", "tests/test_canonical_pair_runner.py", "tests/test_canonical_report.py",
+             "tests/test_canonical_report_integration.py",
              "tests/test_canonical_job.py", "tests/test_canonical_monitor.py",
              "tests/test_canonical_evidence_context.py", "tests/test_selected_tokenization_audit.py",
              "tests/test_same_gpu_pair.py", "tests/test_batched_sd.py", "tests/test_frozen_scores.py",
