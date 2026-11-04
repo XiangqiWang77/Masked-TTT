@@ -26,6 +26,10 @@ def test_counterfactual_probe_preserves_selected_input_and_full_release(model):
     result=run_pair(engine,steps=1,max_new_tokens=3,rollout_tokens=2)
     assert engine.config is old and result['selected_inputs_identical']
     assert result['whole_cache_released_before_cartridge']
+    assert result['source_cache_released_before_scoring']
+    assert result['training_adapter_released_before_scoring']
+    assert result['probabilities_from_materialized_kv']
+    assert result['dynamic_physical_max_abs_logprob_difference']<1e-4
     assert result['candidates_used_after_training_only']
     assert not result['teacher_answer_in_final_prompt']
     assert result['zero_cache_max_logprob_difference']<1e-4

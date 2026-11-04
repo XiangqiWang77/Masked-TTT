@@ -13,7 +13,9 @@ import torch
 from torch.nn import functional as F
 
 from masked_ttt import MaskedTTT,Request
+from masked_ttt.cache import fork_prefix
 from masked_ttt.frozen_scores import layout_on_source_spans
+from masked_ttt.memory_accounting import module_tensors
 from masked_ttt.reader import matched_incremental_logits
 from masked_ttt.runtime import private_forward
 from masked_ttt.selection import PreparedRequest
@@ -62,6 +64,35 @@ def _score(engine,reader,source,suffix,target):
     value=float(logp)
     if not math.isfinite(value):raise ValueError('Non-finite candidate likelihood')
     return dict(log_probability=value,token_count=len(tokens))
+
+
+@torch.no_grad()
+def _score_physical(cartridge,target):
+    """Score a candidate using only released, materialized cartridge KV.
+
+    The target tokens are fed after training and after constructing a fresh
+    question suffix branch. They never enter the adaptation loss or prompt.
+    """
+    cartridge._assert_intact()
+    engine=cartridge._engine
+    targets=torch.tensor(engine.tokenizer.encode(' '+target,add_special_tokens=False),
+                         dtype=torch.long,device=engine.device)
+    if not len(targets):raise ValueError('Candidate needs at least one token')
+    branch=fork_prefix(cartridge._branch,cartridge._length)
+    engine.budget.check()
+    output=private_forward(cartridge._reader.reader,cartridge._suffix,cartridge._length,branch)
+    values=[]
+    for index,token in enumerate(targets):
+        logits=engine.model.lm_head(output.last_hidden_state[0,-1:]).float()
+        values.append(F.log_softmax(logits,dim=-1)[0,token])
+        if index+1<len(targets):
+            engine.budget.check()
+            output=private_forward(cartridge._reader.reader,targets[index:index+1],
+                cartridge._length+len(cartridge._suffix)+index,branch)
+    value=float(torch.stack(values).sum())
+    if not math.isfinite(value):raise ValueError('Non-finite physical candidate likelihood')
+    cartridge._assert_intact()
+    return dict(log_probability=value,token_count=len(targets))
 
 
 @torch.no_grad()
@@ -153,26 +184,44 @@ def run_pair(engine,*,steps=2,max_new_tokens=8,rollout_tokens=3,time_budget_seco
         engine.config=replace(old,keep_fraction=.1,steps=steps,max_answer_steps=steps,
             self_question_count=0,student_rollout_tokens=rollout_tokens,guard_enabled=False,
             selected_transfer_weight=0.,value_basis_source='document',
-            standalone_cartridge_enabled=True,release_full_before_cartridge=True)
+            standalone_cartridge_enabled=True,release_full_before_cartridge=True,
+            release_selected_source_before_decode=True)
         answers=[];all_traces=[]
         for document,spans,correct in make_pair():
             request=Request(document=document,question='Where is the milk?',max_new_tokens=max_new_tokens)
-            with trace_selected_cache(full_limit=max_new_tokens) as (traces,full):
-                result=MaskedTTT(engine,FixedSelector(spans)).answer(request,time_budget_seconds=time_budget_seconds)
-            if len(traces)!=1 or len(full)!=1:raise AssertionError('Expected one full and one standalone decode')
-            standalone=result['standalone_cartridge']
-            if (not result['backbone_unchanged'] or not result['original_document_KV_unchanged'] or
-                result['training']['selected_transfer_weight']!=0 or
-                result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']!=0 or
-                standalone['generated_token_ids']!=traces[0]['learned_output']['tokens'] or
-                (result.get('output_source')=='standalone_cartridge' and
-                 result['generated_token_ids']!=standalone['generated_token_ids'])):
-                raise AssertionError('The original method or standalone decoding contract changed')
-            answers.append(dict(correct=correct,whole=full[0]['prediction'],
-                teacher=result['teacher']['prediction'],teacher_tokens=result['teacher']['tokens'],
-                zero=traces[0]['zero_output']['prediction'],
-                cartridge=standalone['prediction'],training_steps=len(result['training']['steps'])))
-            all_traces.append(traces[0])
+            cartridge=None
+            try:
+                with trace_selected_cache(full_limit=max_new_tokens) as (traces,full):
+                    cartridge,result=MaskedTTT(engine,FixedSelector(spans)).prepare_cartridge(
+                        request,time_budget_seconds=time_budget_seconds)
+                if len(traces)!=1 or len(full)!=1:raise AssertionError('Expected one full and one standalone decode')
+                standalone=result['standalone_cartridge'];physical=standalone['memory']
+                if (not result['backbone_unchanged'] or not result['original_document_KV_unchanged'] or
+                    result['training']['selected_transfer_weight']!=0 or
+                    result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']!=0 or
+                    not physical['kv_only_materialized'] or physical['cartridge_adapter_bytes']!=0 or
+                    physical['additional_source_kv_bytes_before_decode']!=0 or
+                    physical['additional_training_adapter_bytes_before_decode']!=0 or
+                    module_tensors(cartridge._reader.memory) or
+                    standalone['generated_token_ids']!=traces[0]['learned_output']['tokens'] or
+                    cartridge.answer(time_budget_seconds=time_budget_seconds)['generated_token_ids']!=standalone['generated_token_ids'] or
+                    result['generated_token_ids']!=standalone['generated_token_ids']):
+                    raise AssertionError('The physical standalone cartridge contract changed')
+                physical_scores={candidate:_score_physical(cartridge,candidate) for candidate in ('garden','office')}
+                differences=[abs(physical_scores[c]['log_probability']-traces[0]['learned'][c]['log_probability'])
+                             for c in ('garden','office')]
+                if any(not math.isclose(physical_scores[c]['log_probability'],traces[0]['learned'][c]['log_probability'],
+                                        rel_tol=.005,abs_tol=.02) for c in ('garden','office')):
+                    raise AssertionError('Dynamic and physically materialized candidate scores differ')
+                traces[0]['physical']=physical_scores
+                traces[0]['dynamic_physical_max_abs_logprob_difference']=max(differences)
+                answers.append(dict(correct=correct,whole=full[0]['prediction'],
+                    teacher=result['teacher']['prediction'],teacher_tokens=result['teacher']['tokens'],
+                    zero=traces[0]['zero_output']['prediction'],
+                    cartridge=standalone['prediction'],training_steps=len(result['training']['steps'])))
+                all_traces.append(traces[0])
+            finally:
+                if cartridge is not None:cartridge.close()
         x,y=all_traces
         same_selected=(x['selected_document_ids']==y['selected_document_ids'] and
                        x['suffix_ids']==y['suffix_ids'] and x['teacher_suffix_ids']==y['teacher_suffix_ids'])
@@ -185,7 +234,7 @@ def run_pair(engine,*,steps=2,max_new_tokens=8,rollout_tokens=3,time_budget_seco
             raise AssertionError('The unmodified selected-cache control changed')
         def margin(record,state):
             return record[state]['garden']['log_probability']-record[state]['office']['log_probability']
-        m_a=margin(x,'learned');m_b=margin(y,'learned');baseline=margin(x,'zero')
+        m_a=margin(x,'physical');m_b=margin(y,'physical');baseline=margin(x,'zero')
         pair_correct=all(_mentions_only(a['cartridge'],a['correct'],
             'office' if a['correct']=='garden' else 'garden') for a in answers)
         whole_correct=all(_mentions_only(a['whole'],a['correct'],
@@ -195,7 +244,11 @@ def run_pair(engine,*,steps=2,max_new_tokens=8,rollout_tokens=3,time_budget_seco
             intervention='Change only the unselected location between garden and office.',
             selected_inputs_identical=True,zero_cache_max_logprob_difference=zero_delta,
             candidates_used_after_training_only=True,teacher_answer_in_final_prompt=False,
-            whole_cache_released_before_cartridge=True,answers=answers,
+            whole_cache_released_before_cartridge=True,source_cache_released_before_scoring=True,
+            training_adapter_released_before_scoring=True,probabilities_from_materialized_kv=True,
+            dynamic_physical_max_abs_logprob_difference=max(
+                x['dynamic_physical_max_abs_logprob_difference'],y['dynamic_physical_max_abs_logprob_difference']),
+            answers=answers,
             candidate_token_counts={k:x['zero'][k]['token_count'] for k in ('garden','office')},
             zero_margin_garden_minus_office=baseline,
             cartridge_margin_garden_context=m_a,cartridge_margin_office_context=m_b,
