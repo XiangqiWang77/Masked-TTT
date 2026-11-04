@@ -1,0 +1,114 @@
+{
+  "qwen": {
+    "model": "Qwen/Qwen3-4B-Instruct-2507",
+    "snapshot_time": 1793761555.9439433,
+    "expected_snapshot_cases": 693,
+    "groups": {
+      "all": {
+        "n": 693,
+        "student_prefix_reaches_cap": 207,
+        "student_cap_without_eos": 159,
+        "teacher_generation_incomplete": 7,
+        "zero_accuracy": 55.98845598845599,
+        "cartridge_accuracy": 56.42135642135642,
+        "new_correct": 9,
+        "new_wrong": 6,
+        "delta_pp": 0.4329004329004329
+      },
+      "at_prefix_cap": {
+        "n": 207,
+        "student_prefix_reaches_cap": 207,
+        "student_cap_without_eos": 159,
+        "teacher_generation_incomplete": 7,
+        "zero_accuracy": 37.19806763285024,
+        "cartridge_accuracy": 37.68115942028985,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 0.4830917874396135
+      },
+      "shorter_than_prefix_cap": {
+        "n": 486,
+        "student_prefix_reaches_cap": 0,
+        "student_cap_without_eos": 0,
+        "teacher_generation_incomplete": 0,
+        "zero_accuracy": 63.991769547325106,
+        "cartridge_accuracy": 64.40329218106996,
+        "new_correct": 8,
+        "new_wrong": 6,
+        "delta_pp": 0.411522633744856
+      },
+      "teacher_incomplete": {
+        "n": 7,
+        "student_prefix_reaches_cap": 7,
+        "student_cap_without_eos": 0,
+        "teacher_generation_incomplete": 7,
+        "zero_accuracy": 0.0,
+        "cartridge_accuracy": 0.0,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      }
+    },
+    "new_model_calls": 0,
+    "online_api_calls": 0,
+    "evaluation_answers_used_in_training": false,
+    "eos_ids_supplied": true,
+    "unavailable_cases": 0
+  },
+  "gpt": {
+    "model": "openai/gpt-oss-20b",
+    "snapshot_time": 1793761554.030948,
+    "expected_snapshot_cases": 563,
+    "groups": {
+      "all": {
+        "n": 563,
+        "student_prefix_reaches_cap": 163,
+        "student_cap_without_eos": 108,
+        "teacher_generation_incomplete": 0,
+        "zero_accuracy": 55.239786856127886,
+        "cartridge_accuracy": 55.772646536412076,
+        "new_correct": 6,
+        "new_wrong": 3,
+        "delta_pp": 0.5328596802841918
+      },
+      "at_prefix_cap": {
+        "n": 163,
+        "student_prefix_reaches_cap": 163,
+        "student_cap_without_eos": 108,
+        "teacher_generation_incomplete": 0,
+        "zero_accuracy": 32.515337423312886,
+        "cartridge_accuracy": 33.74233128834356,
+        "new_correct": 2,
+        "new_wrong": 0,
+        "delta_pp": 1.2269938650306749
+      },
+      "shorter_than_prefix_cap": {
+        "n": 400,
+        "student_prefix_reaches_cap": 0,
+        "student_cap_without_eos": 0,
+        "teacher_generation_incomplete": 0,
+        "zero_accuracy": 64.5,
+        "cartridge_accuracy": 64.75,
+        "new_correct": 4,
+        "new_wrong": 3,
+        "delta_pp": 0.25
+      },
+      "teacher_incomplete": {
+        "n": 0,
+        "student_prefix_reaches_cap": 0,
+        "student_cap_without_eos": null,
+        "teacher_generation_incomplete": 0,
+        "zero_accuracy": null,
+        "cartridge_accuracy": null,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": null
+      }
+    },
+    "new_model_calls": 0,
+    "online_api_calls": 0,
+    "evaluation_answers_used_in_training": false,
+    "eos_ids_supplied": true,
+    "unavailable_cases": 0
+  }
+}
