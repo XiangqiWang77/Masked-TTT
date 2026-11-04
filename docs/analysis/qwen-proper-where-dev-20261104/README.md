@@ -27,6 +27,14 @@ trained Cartridge have the same correctness on all seven, so the changed-set
 gain here is evidence about selection, not evidence that SD caused the gain.
 The Teacher and Cartridge use different generic answer-format instructions.
 
+A post-hoc annotated-span check finds that six of the seven changed cases move
+from incomplete to complete support coverage; the other already had complete
+coverage. All four new correct cases for the Teacher, zero-update cache and
+Cartridge are among the six newly covered cases. This connects the improvement
+to recovered evidence in these examples, though coverage alone does not prove
+which tokens the model used. The selector did not receive the annotations.
+[Coverage transition audit](coverage_transition.json) · [reproduction script](../../../experiments/babilong_linked_selection/audit_proper_where_coverage.py).
+
 The candidate Cartridge remains **1.50 points below its own Teacher** (1 newly
 correct, 4 newly wrong). It did not pass the predeclared rule requiring it to
 beat all controls, so the 800-case evaluation was not launched. All 200 cases

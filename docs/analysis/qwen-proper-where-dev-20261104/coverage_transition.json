@@ -1,0 +1,29 @@
+{
+  "summary": {
+    "cases": 7,
+    "coverage_transitions": {
+      "complete->complete": 1,
+      "incomplete->complete": 6
+    },
+    "teacher_new_correct": 4,
+    "teacher_new_wrong": 0,
+    "teacher_gains_by_coverage_transition": {
+      "incomplete->complete": 4
+    },
+    "cartridge_new_correct": 4,
+    "cartridge_new_wrong": 0,
+    "cartridge_gains_by_coverage_transition": {
+      "incomplete->complete": 4
+    },
+    "zero_new_correct": 4,
+    "zero_new_wrong": 0,
+    "zero_gains_by_coverage_transition": {
+      "incomplete->complete": 4
+    }
+  },
+  "selection_before_annotation": true,
+  "source_annotations_used_for_selection": false,
+  "new_model_calls": 0,
+  "online_api_calls": 0,
+  "development_selection_designed_after_reviewing_development_results": true
+}
