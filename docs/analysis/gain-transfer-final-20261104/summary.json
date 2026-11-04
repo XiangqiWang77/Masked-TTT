@@ -1,0 +1,39 @@
+{
+  "scope": "completed 40-case development diagnostic per model",
+  "source_questions": 10,
+  "context_lengths_per_source": 4,
+  "same_original_question_first_answer_position": true,
+  "selected_cache_independently_prefilled": true,
+  "reference_answers_used": false,
+  "online_api_calls": 0,
+  "extra_training_loss": false,
+  "quality_or_correctness_not_measured": true,
+  "models": {
+    "qwen": {
+      "n": 40,
+      "median_full_first_token_kl": 0.0019870151299983263,
+      "median_selected_first_token_kl": 1.105938508771942e-05,
+      "median_selected_over_full_first_token_kl": 0.011684151721615832,
+      "ratio_count": 38,
+      "closer_to_native_full": 10,
+      "farther_from_native_full": 30,
+      "median_first_gain_gradient_common_squared_fraction": 0.12227418392525405,
+      "median_first_gain_update_common_squared_fraction": 0.2690234381309611,
+      "update_common_over_90_percent": 0,
+      "total_nonzero_updates": 87
+    },
+    "gpt": {
+      "n": 40,
+      "median_full_first_token_kl": 1.028838687489042e-05,
+      "median_selected_first_token_kl": 1.077990782505367e-05,
+      "median_selected_over_full_first_token_kl": 0.8588165000946704,
+      "ratio_count": 35,
+      "closer_to_native_full": 15,
+      "farther_from_native_full": 25,
+      "median_first_gain_gradient_common_squared_fraction": 0.11454190749039014,
+      "median_first_gain_update_common_squared_fraction": 0.1866351134769889,
+      "update_common_over_90_percent": 0,
+      "total_nonzero_updates": 104
+    }
+  }
+}
