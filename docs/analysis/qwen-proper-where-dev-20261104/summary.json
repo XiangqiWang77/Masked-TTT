@@ -1,0 +1,177 @@
+{
+  "metric": "answer_focused_lexical_v2",
+  "model": "qwen",
+  "overall": {
+    "cases": 200,
+    "source_questions": 50,
+    "correct": {
+      "whole": 116,
+      "zero": 119,
+      "teacher": 123,
+      "cartridge": 120,
+      "old_whole": 117,
+      "old_zero": 115,
+      "old_teacher": 119,
+      "old_cartridge": 117
+    },
+    "accuracy_percent": {
+      "whole": 58.0,
+      "zero": 59.5,
+      "teacher": 61.5,
+      "cartridge": 60.0,
+      "old_whole": 58.5,
+      "old_zero": 57.5,
+      "old_teacher": 59.5,
+      "old_cartridge": 58.5
+    },
+    "cartridge_vs_teacher": {
+      "new_correct": 1,
+      "new_wrong": 4,
+      "new_correct_sources": 1,
+      "new_wrong_sources": 4,
+      "delta_pp": -1.5
+    },
+    "cartridge_vs_zero": {
+      "new_correct": 4,
+      "new_wrong": 3,
+      "new_correct_sources": 4,
+      "new_wrong_sources": 3,
+      "delta_pp": 0.5
+    },
+    "cartridge_vs_old_cartridge": {
+      "new_correct": 4,
+      "new_wrong": 1,
+      "new_correct_sources": 4,
+      "new_wrong_sources": 1,
+      "delta_pp": 1.5
+    },
+    "teacher_vs_old_teacher": {
+      "new_correct": 4,
+      "new_wrong": 0,
+      "new_correct_sources": 4,
+      "new_wrong_sources": 0,
+      "delta_pp": 2.0
+    }
+  },
+  "changed": {
+    "cases": 7,
+    "source_questions": 4,
+    "correct": {
+      "whole": 6,
+      "zero": 5,
+      "teacher": 5,
+      "cartridge": 5,
+      "old_whole": 6,
+      "old_zero": 1,
+      "old_teacher": 1,
+      "old_cartridge": 1
+    },
+    "accuracy_percent": {
+      "whole": 85.7143,
+      "zero": 71.4286,
+      "teacher": 71.4286,
+      "cartridge": 71.4286,
+      "old_whole": 85.7143,
+      "old_zero": 14.2857,
+      "old_teacher": 14.2857,
+      "old_cartridge": 14.2857
+    },
+    "cartridge_vs_teacher": {
+      "new_correct": 0,
+      "new_wrong": 0,
+      "new_correct_sources": 0,
+      "new_wrong_sources": 0,
+      "delta_pp": 0.0
+    },
+    "cartridge_vs_zero": {
+      "new_correct": 0,
+      "new_wrong": 0,
+      "new_correct_sources": 0,
+      "new_wrong_sources": 0,
+      "delta_pp": 0.0
+    },
+    "cartridge_vs_old_cartridge": {
+      "new_correct": 4,
+      "new_wrong": 0,
+      "new_correct_sources": 4,
+      "new_wrong_sources": 0,
+      "delta_pp": 57.1429
+    },
+    "teacher_vs_old_teacher": {
+      "new_correct": 4,
+      "new_wrong": 0,
+      "new_correct_sources": 4,
+      "new_wrong_sources": 0,
+      "delta_pp": 57.1429
+    }
+  },
+  "unchanged": {
+    "cases": 193,
+    "source_questions": 50,
+    "correct": {
+      "whole": 110,
+      "zero": 114,
+      "teacher": 118,
+      "cartridge": 115,
+      "old_whole": 111,
+      "old_zero": 114,
+      "old_teacher": 118,
+      "old_cartridge": 116
+    },
+    "accuracy_percent": {
+      "whole": 56.9948,
+      "zero": 59.0674,
+      "teacher": 61.1399,
+      "cartridge": 59.5855,
+      "old_whole": 57.513,
+      "old_zero": 59.0674,
+      "old_teacher": 61.1399,
+      "old_cartridge": 60.1036
+    },
+    "cartridge_vs_teacher": {
+      "new_correct": 1,
+      "new_wrong": 4,
+      "new_correct_sources": 1,
+      "new_wrong_sources": 4,
+      "delta_pp": -1.5544
+    },
+    "cartridge_vs_zero": {
+      "new_correct": 4,
+      "new_wrong": 3,
+      "new_correct_sources": 4,
+      "new_wrong_sources": 3,
+      "delta_pp": 0.5181
+    },
+    "cartridge_vs_old_cartridge": {
+      "new_correct": 0,
+      "new_wrong": 1,
+      "new_correct_sources": 0,
+      "new_wrong_sources": 1,
+      "delta_pp": -0.5181
+    },
+    "teacher_vs_old_teacher": {
+      "new_correct": 0,
+      "new_wrong": 0,
+      "new_correct_sources": 0,
+      "new_wrong_sources": 0,
+      "delta_pp": 0.0
+    }
+  },
+  "changed_by_task": {
+    "qa1": 7
+  },
+  "changed_by_length": {
+    "16384": 2,
+    "32768": 1,
+    "65536": 4
+  },
+  "same_outputs": {
+    "same_whole_output": 197,
+    "same_teacher_tokens": 194,
+    "same_zero_tokens": 193,
+    "same_cartridge_tokens": 190
+  },
+  "exploratory_selection_designed_on_development_data": true,
+  "cross_run_hardware_may_differ": true,
+  "teacher_and_cartridge_question_formats_differ": true
+}
