@@ -1,0 +1,17 @@
+{
+  "observed_utc": "2026-11-04T15:06:25.986248+00:00",
+  "source": "hourly due_check for linked_value_gpt_holdout / reusable GPU probe",
+  "model": "GPT-OSS-20B",
+  "gpu": "NVIDIA B200",
+  "synthetic_request": true,
+  "passed": true,
+  "same_first_tokens": true,
+  "same_teacher_tokens": true,
+  "same_first_and_replay_logits": true,
+  "repeatable_original_question": true,
+  "full_and_source_kv_released": true,
+  "adapter_tensors_retained": false,
+  "reference_answers_used": false,
+  "online_api_calls": 0,
+  "benchmark_accuracy_test": false
+}
