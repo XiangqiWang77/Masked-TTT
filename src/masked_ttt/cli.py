@@ -47,6 +47,10 @@ def main():
     )
     selection.add_argument("--online-decisions", action="store_true", help="Score source chunks with the Decision API")
     parser.add_argument("--case-id", help="Case ID in the precomputed source-score index")
+    parser.add_argument("--source-index", type=Path,
+                        help="Optional original-case index for exact document verification")
+    parser.add_argument("--source-jsonl", type=Path,
+                        help="Original indexed JSONL; must contain no evaluation answers")
     parser.add_argument("--shard-gpus", type=int, default=1)
     parser.add_argument(
         "--api-key-file", help="Private credential file; alternatively use OPENAI_API_KEY"
@@ -89,10 +93,16 @@ def main():
     decision_options = dict(api_key_file=args.api_key_file, max_cost_usd=args.max_api_cost)
     if args.cache_dir:
         decision_options["cache_dir"] = args.cache_dir
+    if (args.source_index is None) != (args.source_jsonl is None):
+        parser.error('--source-index and --source-jsonl must be supplied together')
+    if args.online_decisions and args.source_index is not None:
+        parser.error('source verification applies to precomputed scores')
     if args.score_json_dir:
         if not args.case_id:
             parser.error('--case-id is required with --score-json-dir')
-        selector = FrozenJSONSelector(args.score_json_dir)
+        selector = (FrozenJSONSelector(args.score_json_dir, source_index=args.source_index,
+                                       source_cases=args.source_jsonl)
+                    if args.source_index is not None else FrozenJSONSelector(args.score_json_dir))
         selector.bind_case(args.case_id)
     else:
         selector = OpenAIChunkSelector(DecisionConfig(**decision_options))

@@ -22,7 +22,7 @@ CPU_TESTS = ["tests/test_value_lr_physical.py", "tests/test_value_lr_physical_re
              "tests/test_value_lr_physical_handoff.py",
              "tests/test_value_lr_physical_launch.py",
              "tests/test_value_lr_frozen_driver.py",
-             "tests/test_cli.py",
+             "tests/test_cli.py", "tests/test_frozen_scores.py",
              "tests/test_batched_sd.py", "tests/test_memory.py", "tests/test_hybrid_backbones.py",
              "tests/test_materialization_equivalence.py", "tests/test_kv_only_cartridge.py",
              "tests/test_gpt_request_date.py"]

@@ -110,6 +110,16 @@ rates under `training`. The GPT-OSS `0.001` Value-rate candidate is a
 development-selected setting whose independent evaluation is in progress;
 see [the experiment protocol](experiments/value_lr_physical/README.md).
 
+To check that a request uses the exact document and question from an indexed
+source, add `--source-index /path/to/index.json --source-jsonl /path/to/cases.jsonl`.
+The index is a JSON list with a case `key`, byte `offset` and record `bytes`;
+the JSONL records contain the case key, document and query, without evaluation
+answers. The comparison is direct and does not calculate a hash. A successful
+check sets `selection.source_document_matches_index` to `true`. It verifies the
+request against the supplied source index; the score files must still come from
+that source. With no source index, the existing cached-score interface remains
+available and the flag is `false`.
+
 `prediction`, `generated_token_ids`, and `finish_reason` describe the primary
 output. With standalone enabled, they match `standalone_cartridge` and
 `output_source` is `standalone_cartridge`; the paired full-context answer is

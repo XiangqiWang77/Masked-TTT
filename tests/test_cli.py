@@ -66,6 +66,16 @@ def test_cached_selection_requires_an_explicit_case_id(tmp_path,monkeypatch,caps
     assert '--case-id is required' in capsys.readouterr().err
 
 
+def test_cached_source_verification_requires_both_files(tmp_path,monkeypatch,capsys):
+    request=tmp_path/'request.json'
+    request.write_text(json.dumps(dict(document='A short document.',question='What is it?')))
+    monkeypatch.setattr(sys,'argv',['masked-ttt','--model','unused','--request',str(request),
+        '--score-json-dir',str(tmp_path),'--case-id','case','--source-index','index.json'])
+    with pytest.raises(SystemExit) as error:
+        main()
+    assert error.value.code==2 and '--source-index and --source-jsonl' in capsys.readouterr().err
+
+
 @pytest.mark.parametrize('architecture', ['qwen3', 'gpt_oss_gqa'])
 def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypatch,architecture):
     from masked_ttt import Backbone
@@ -76,6 +86,11 @@ def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypat
     document,question,_,_=_source(tmp_path)
     request=tmp_path/'request.json'
     request.write_text(json.dumps(dict(document=document,question=question,max_new_tokens=3)))
+    source=tmp_path/'source.jsonl'
+    record=(json.dumps(dict(key='case',document=document,query=question))+'\n').encode()
+    source.write_bytes(record)
+    index=tmp_path/'source_index.json'
+    index.write_text(json.dumps([dict(key='case',offset=0,bytes=len(record))]))
     profile=tmp_path/'profile.json'
     profile.write_text(json.dumps(dict(chunk_tokens=32,max_context=2048,context_reserve_tokens=128,
         prefill_chunk_tokens=64,steps=2,max_answer_steps=2,value_rank=2,student_rollout_tokens=3,
@@ -92,6 +107,7 @@ def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypat
     monkeypatch.setattr(Backbone,'load',classmethod(load))
     monkeypatch.setattr(sys,'argv',['masked-ttt','--model','synthetic','--request',str(request),
         '--score-json-dir',str(tmp_path),'--case-id','case','--config-json',str(profile),
+        '--source-index',str(index),'--source-jsonl',str(source),
         '--value-learning-rate','0.001','--gain-learning-rate','0.02','--output',str(result_path)])
     main()
     result=json.loads(result_path.read_text())
@@ -103,6 +119,7 @@ def test_cli_returns_physically_independent_kv_only_cartridge(tmp_path,monkeypat
     assert any(step['gain_gradient_norm']>0 for step in result['training']['steps'])
     assert any(step['value_gradient_norm']>0 for step in result['training']['steps'])
     assert result['selection']['backend']=='precomputed_source_JSON'
+    assert result['selection']['source_document_matches_index']
     assert result['selection']['online_api_calls']==0 and not result['selection']['reference_answers_used']
     assert result['backbone_unchanged'] and result['original_document_KV_unchanged']
     assert result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']==0

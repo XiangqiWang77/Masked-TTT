@@ -1,0 +1,22 @@
+{
+  "cases": 1000,
+  "models": [
+    "qwen",
+    "gpt"
+  ],
+  "shared_index_source_and_scores": true,
+  "query_and_chunk_spans_checked": true,
+  "indexed_record_reloaded": true,
+  "online_api_calls": 0,
+  "hash_calculations": 0,
+  "reference_answers_used": false,
+  "length_bucket_counts": {
+    "16384": 250,
+    "32768": 250,
+    "65536": 250,
+    "8192": 250
+  },
+  "min_chunks": 20,
+  "max_chunks": 269,
+  "scope": "Indexed records and score key/question/span structure; score provenance is supplied by the saved files"
+}

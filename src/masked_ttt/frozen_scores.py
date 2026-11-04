@@ -83,13 +83,53 @@ def layout_on_source_spans(backbone, request, spans):
     return Layout(encoded["input_ids"], chunks, initial, [tuple(x) for x in spans])
 
 
+class IndexedSource:
+    """Check cached cases against the exact original document, without hashing."""
+
+    def __init__(self, index_path, source_cases):
+        self.source_cases = Path(source_cases)
+        records = json.loads(Path(index_path).read_text())
+        if not isinstance(records, list):
+            raise ValueError("Source index must be a JSON list")
+        self.entries = {}
+        for row in records:
+            if not isinstance(row, dict):
+                raise ValueError("Each source index entry must be an object")
+            key, offset, size = row.get("key"), row.get("offset"), row.get("bytes")
+            if (not isinstance(key, str) or not key or key in self.entries or
+                type(offset) is not int or offset < 0 or type(size) is not int or size <= 0):
+                raise ValueError("Invalid or duplicate source index entry")
+            self.entries[key] = (offset, size)
+
+    def verify(self, case_key, document, question):
+        if case_key not in self.entries:
+            raise KeyError("No indexed source for " + case_key)
+        offset, size = self.entries[case_key]
+        with self.source_cases.open("rb") as stream:
+            stream.seek(offset)
+            raw = stream.read(size)
+        if len(raw) != size:
+            raise ValueError("The indexed source record is incomplete")
+        case = json.loads(raw)
+        if not isinstance(case, dict) or set(case) & {"answer", "answers", "references", "gold", "answer_spans"}:
+            raise ValueError("Source cases must not contain evaluation answers")
+        source_question = case.get("query", case.get("question"))
+        if (case.get("key") != case_key or case.get("document") != document or
+            source_question != question):
+            raise ValueError("The cached case does not match the original document and question")
+
+
 class FrozenJSONSelector:
     """Consume exactly one immutable source-score file. Never constructs an API client."""
 
-    def __init__(self, directory):
+    def __init__(self, directory, *, source_index=None, source_cases=None):
         self.directory = Path(directory)
         self.by_case = json.loads((self.directory/'case_to_score_file.json').read_text())
         self.case_key = None
+        if (source_index is None) != (source_cases is None):
+            raise ValueError("Source index and source JSONL must be supplied together")
+        self.indexed_source = (IndexedSource(source_index, source_cases)
+                               if source_index is not None else None)
 
     def bind_case(self,case_key):
         if case_key not in self.by_case:raise KeyError('No cached Decision score for '+case_key)
@@ -98,6 +138,8 @@ class FrozenJSONSelector:
     def prepare(self, backbone, original):
         began = time.perf_counter()
         if self.case_key is None:raise ValueError('Bind a case ID before reusing cached scores')
+        if self.indexed_source is not None:
+            self.indexed_source.verify(self.case_key, original.document, original.question)
         data = load_scores(self.directory, original.document, original.question,self.case_key,self.by_case)
         spans = data["source_spans"]
         layout = layout_on_source_spans(backbone, original, spans)
@@ -148,6 +190,7 @@ class FrozenJSONSelector:
                 complete_original_document=mapping is None,
                 source_mapping=mapping,
                 source_case_key=self.case_key,
+                source_document_matches_index=self.indexed_source is not None,
                 working_source_length=len(working.document),
                 reference_answers_used=False,
                 online_api_calls=0,

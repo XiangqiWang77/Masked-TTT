@@ -44,6 +44,10 @@ def main():
             question=question, reference_answers_used=False, source_spans=spans,
             canonical_tokenizer="test", scoring_seconds=0., estimated_cost_usd=0., records=records,
         )))
+        source_record = (json.dumps(dict(key="case", document=document, query=question)) + "\n").encode()
+        source_path, index_path = root / "source.jsonl", root / "source_index.json"
+        source_path.write_bytes(source_record)
+        index_path.write_text(json.dumps([dict(key="case", offset=0, bytes=len(source_record))]))
         for name, factory in (("qwen", make_engine), ("gpt-gqa", gpt_gqa_engine)):
             for policy, selector_type, selected in (
                 ("score-ranked", FrozenJSONSelector, [0,1,3,6]),
@@ -55,13 +59,14 @@ def main():
                     selected_transfer_weight=0., release_full_before_cartridge=True,
                     release_selected_source_before_decode=True,
                 )
-                selector = selector_type(root)
+                selector = selector_type(root, source_index=index_path, source_cases=source_path)
                 selector.bind_case("case")
                 request = Request(document=document, question=question, max_new_tokens=3)
                 with kv_only_cartridge():
                     result = MaskedTTT(engine, selector).answer(request)
                 memory, training = result["standalone_cartridge"]["memory"], result["training"]
                 checks = dict(selection=result["selection"]["selected_chunks"] == selected,
+                    source_matches=result["selection"]["source_document_matches_index"],
                     teacher_kl=training["objective"] == "on-policy KL(teacher || student)",
                     no_extra_loss=training["selected_transfer_weight"] == 0,
                     gain_gradient=any(step["gain_gradient_norm"] > 0 for step in training["steps"]),
