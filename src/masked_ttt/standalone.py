@@ -69,6 +69,12 @@ def build_standalone(engine,layout,selected,teacher,trained):
 def answer_standalone(engine,layout,selected,teacher,trained,limit):
     reader,branch,suffix,length,accounting=build_standalone(
         engine,layout,selected,teacher,trained)
+    if engine.config.standalone_answer_format=='teacher_requirements':
+        # Reuse only the question and generic output requirements. Teacher
+        # answer tokens are never part of this suffix.
+        if teacher.question_tokens is None or teacher.question_tokens.ndim!=1 or not len(teacher.question_tokens):
+            raise ValueError('Teacher question requirements are missing')
+        suffix=teacher.question_tokens.to(engine.device)
     engine.budget.check()
     output=private_forward(reader.reader,suffix,length,branch)
     tokens=[]
@@ -81,4 +87,5 @@ def answer_standalone(engine,layout,selected,teacher,trained,limit):
             length+len(suffix)+len(tokens)-1,branch)
     return dict(prediction=engine.tokenizer.decode(tokens,skip_special_tokens=True),
                 generated_token_ids=tokens,memory=accounting,
+                answer_format=engine.config.standalone_answer_format,
                 teacher_answer_in_final_prompt=False)
