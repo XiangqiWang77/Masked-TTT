@@ -169,13 +169,16 @@ def run_pair(engine,*,steps=2,max_new_tokens=8,rollout_tokens=3,time_budget_seco
                  result['generated_token_ids']!=standalone['generated_token_ids'])):
                 raise AssertionError('The original method or standalone decoding contract changed')
             answers.append(dict(correct=correct,whole=full[0]['prediction'],
-                teacher=result['teacher']['prediction'],zero=traces[0]['zero_output']['prediction'],
+                teacher=result['teacher']['prediction'],teacher_tokens=result['teacher']['tokens'],
+                zero=traces[0]['zero_output']['prediction'],
                 cartridge=standalone['prediction'],training_steps=len(result['training']['steps'])))
             all_traces.append(traces[0])
         x,y=all_traces
         same_selected=(x['selected_document_ids']==y['selected_document_ids'] and
                        x['suffix_ids']==y['suffix_ids'] and x['teacher_suffix_ids']==y['teacher_suffix_ids'])
         if not same_selected:raise AssertionError('The selected teacher input or question changed')
+        if answers[0]['teacher_tokens']!=answers[1]['teacher_tokens']:
+            raise AssertionError('The fixed selected teacher generated different answers')
         zero_delta=max(abs(x['zero'][candidate]['log_probability']-y['zero'][candidate]['log_probability'])
                        for candidate in ('garden','office'))
         if zero_delta>1e-4 or x['zero_output']['tokens']!=y['zero_output']['tokens']:

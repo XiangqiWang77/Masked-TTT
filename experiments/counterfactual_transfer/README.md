@@ -27,6 +27,8 @@
 
 Qwen 与 GPT-OSS 架构的小模型已通过路径和缓存释放测试。两种实际模型的 tokenizer 也已检查：两个版本的选中输入完全相同，两个候选词各是一个 token。**这不是实际模型的输出结果**；真实模型的候选概率和答案需要在 GPU 上运行后记录。
 
+该诊断已挂到现有实验的下一次合适的 GPU 分配，每种模型最多执行一次，复用已经加载的模型；不会另开作业。运行后恢复模型配置和随机状态，诊断失败也不会中断主实验。
+
 ```python
 from experiments.counterfactual_transfer.probe import run_pair
 
