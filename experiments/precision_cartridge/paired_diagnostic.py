@@ -33,7 +33,7 @@ def _release_ready(ready):
 
 
 @contextmanager
-def capture_precision_paired():
+def capture_precision_paired(*,include_noop=False):
     """Attach a same-trained-state precision diagnostic to the normal answer."""
     import masked_ttt.pipeline as pipeline
     from masked_ttt.standalone import StandaloneReady
@@ -43,13 +43,17 @@ def capture_precision_paired():
 
     def prepare(engine,layout,selected,teacher,trained,limit):
         precision_ready=None;controls=None;error=None
-        rng=_rng_snapshot()
+        rng=_rng_snapshot();was_native=trained.native_mode
         try:
-            if trained.native_mode:
+            if trained.native_mode and not include_noop:
                 error='no_active_update'
             elif engine.config.standalone_answer_format!='original':
                 error='unsupported_answer_format'
             else:
+                # A no-op update is still a valid paired case. Materialize the
+                # same zero correction through the FP32 path so its zero
+                # control also measures backend differences honestly.
+                if was_native:trained.native_mode=False
                 controls=_paired_precision_controls(engine,layout,selected,teacher,trained,limit)
                 # A shallow Teacher view shares the independent selected source
                 # only during materialization; no source KV is modified.
@@ -62,7 +66,9 @@ def capture_precision_paired():
         except Exception as exc:
             error=type(exc).__name__+': '+str(exc)
             _release_ready(precision_ready);precision_ready=None;controls=None
-        finally:_restore_rng(rng)
+        finally:
+            trained.native_mode=was_native
+            _restore_rng(rng)
         try:
             ready=original_answer(engine,layout,selected,teacher,trained,limit)
         except BaseException:
@@ -71,6 +77,22 @@ def capture_precision_paired():
         if not isinstance(ready,StandaloneReady):
             _release_ready(precision_ready)
             raise RuntimeError('Deferred standalone decode is required')
+        if include_noop and was_native and precision_ready is not None:
+            # A zero-update native branch normally shares the source cache.
+            # The concurrent precision artifact must not keep that source
+            # alive solely through the comparison artifact, so copy this small
+            # BF16 artifact and drop the branch's source-owner reference.
+            from masked_ttt.memory_accounting import cache_tensors,storage_bytes
+            with torch.no_grad():
+                for layer in ready.branch.layers:
+                    layer.keys=layer.keys.clone()
+                    layer.values=layer.values.clone()
+                if hasattr(ready.branch,'_document_storage_owner'):
+                    del ready.branch._document_storage_owner
+            size=storage_bytes(cache_tensors(ready.branch))
+            ready.accounting.update(materialized_selected_kv_bytes=size,
+                                    standalone_cartridge_bytes=size+ready.accounting['cartridge_adapter_bytes'],
+                                    paired_noop_artifact_isolated=True)
         ready._precision_diagnostic=dict(ready=precision_ready,controls=controls,error=error)
         return ready
 
@@ -95,8 +117,11 @@ def capture_precision_paired():
                     raise AssertionError('The precision cartridge or matched controls changed')
                 data=dict(passed=True,error=None,precision_prediction=result['prediction'],
                     precision_tokens=result['generated_token_ids'],precision_zero=controls['zero'],
+                    precision_matched_adapted_tokens=controls['adapted']['tokens'],
                     selected_source_bytes_before_decode=0,training_bytes_before_decode=0,
                     precision_cartridge_bytes=memory['standalone_cartridge_bytes'],
+                    precision_adapter_bytes=memory['cartridge_adapter_bytes'],
+                    precision_kv_only_materialized=memory.get('kv_only_materialized',False),
                     precision_value_dtypes=dtypes,
                     float_attention_calls=statistics['float32_value_attention_calls'],
                     same_selected_kv=True,same_question_suffix=True,same_generation_limit=True,
