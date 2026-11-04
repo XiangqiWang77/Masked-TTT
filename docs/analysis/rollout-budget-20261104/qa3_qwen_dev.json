@@ -1,0 +1,173 @@
+{
+  "cases_expected": 20,
+  "cases_observed": 20,
+  "source_questions": 5,
+  "prefixes_at_cap": 20,
+  "prefixes_ending_at_location_slot": 20,
+  "both": 20,
+  "missing_cases": [],
+  "references_read": false,
+  "new_model_calls": 0,
+  "rows": [
+    {
+      "case": "babilong-16-qa3-300060",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-16-qa3-300063",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-16-qa3-300065",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-16-qa3-300069",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-16-qa3-300072",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-32-qa3-300063",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-32-qa3-300065",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-32-qa3-300069",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-32-qa3-300072",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-64-qa3-300063",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-64-qa3-300065",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-64-qa3-300069",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-64-qa3-300072",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-8-qa3-300063",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-8-qa3-300065",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-8-qa3-300069",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    },
+    {
+      "case": "babilong-8-qa3-300072",
+      "tokens": 8,
+      "limit": 8,
+      "reached_cap": true,
+      "ends_at_location_slot": true,
+      "target_positions": 8
+    }
+  ]
+}
