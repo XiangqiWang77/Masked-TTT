@@ -4,11 +4,16 @@ import pytest
 import torch
 
 from experiments.kv_only_cartridge.compact import kv_only_cartridge
+from masked_ttt.kv_only import kv_only_cartridge as installed_kv_only_cartridge
 from masked_ttt import MaskedTTT, Request
 from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
 from test_selected_transfer import gpt_engine
 from test_standalone import make_engine
+
+
+def test_installed_and_experimental_entrypoints_share_the_same_runtime():
+    assert installed_kv_only_cartridge is kv_only_cartridge
 
 
 @pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss"])

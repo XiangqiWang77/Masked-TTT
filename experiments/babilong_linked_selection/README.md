@@ -50,7 +50,7 @@ GPT-OSS 的开发运行和配对仍未完成。按各自已经生成的全部题
 将仓库安装到 Python 环境后，可从本目录导入实验性选择器：
 
 ```python
-from experiments.babilong_linked_selection.linked_frozen import LinkedFrozenSelector
+from masked_ttt.linked_selection import LinkedFrozenSelector
 
 selector = LinkedFrozenSelector("/path/to/cached/decision_scores")
 selector.bind_case("case-id")

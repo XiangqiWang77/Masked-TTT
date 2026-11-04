@@ -117,6 +117,50 @@ actual request path. If a document exceeds a backbone's native window, the
 cached selector constructs a source-prioritized working document and records
 its source mapping.
 
+### Optional linked selection and KV-only decoding
+
+The same request path supports Qwen3-4B and GPT-OSS-20B with cached Decision
+scores. The experimental linked selector keeps the same chunk budget while
+reserving some slots for related source context. The KV-only option discards
+the duplicate read-state tensors after they have been materialized into the
+selected cache.
+
+```python
+from masked_ttt import Backbone, MaskedTTT, Request, TTTConfig
+from masked_ttt.kv_only import kv_only_cartridge
+from masked_ttt.linked_selection import LinkedFrozenSelector
+
+config = TTTConfig(
+    keep_fraction=0.10,
+    max_context=131072,
+    practice_boundary_fallback=True,
+    selected_transfer_weight=0.0,
+    release_full_before_cartridge=True,
+    release_selected_source_before_decode=True,
+)
+# Also accepts a local GPT-OSS-20B checkpoint.
+backbone = Backbone.load("/path/to/Qwen3-4B-Instruct-2507", config, local_files_only=True)
+selector = LinkedFrozenSelector("/path/to/shared_scores")
+selector.bind_case("your-case-id")
+request = Request(document=document, question=question)
+
+with kv_only_cartridge():
+    result = MaskedTTT(backbone, selector).answer(request)
+
+print(result["prediction"])
+print(result["standalone_cartridge"]["memory"]["standalone_cartridge_bytes"])
+```
+
+The document, question and case ID must match the saved scores. No online API
+call is made by this selector. `kv_only_cartridge()` temporarily patches
+process-local decoding hooks, so use one request at a time in that process.
+For a benchmark reproduction, pass its original task prompt and generation
+limit to `Request`; the example's default prompt is only a general-purpose
+starting point.
+GPT-OSS expert weights are dequantized to preserve input gradients; the GPU
+memory required depends on context length. The linked policy is still being
+validated beyond the development set.
+
 ## Verify
 
 Run `pytest -q`. Evaluation compares paired answers with the same task-aware
