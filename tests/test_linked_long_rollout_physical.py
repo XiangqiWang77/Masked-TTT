@@ -1,8 +1,12 @@
 """Integration of cached linked evidence, a long on-policy rollout, and KV-only decode."""
 from dataclasses import replace
+from types import SimpleNamespace
 
 import pytest
 
+import masked_ttt as runtime
+import experiments.anchored_short_verifier.paired_controls as paired_controls
+from experiments.babilong_linked_selection.long_rollout_runtime import linked_long_rollout_runner
 from experiments.kv_only_cartridge.original_controls import kv_only_original_question_controls
 from masked_ttt import MaskedTTT, Request
 from masked_ttt.linked_selection import LinkedFrozenSelector
@@ -24,10 +28,19 @@ def test_long_on_policy_rollout_has_physical_independent_final_cache(architectur
     # rollout length; production model EOS behavior is unchanged.
     engine.eos_ids = {-1}
     request = Request(document=document, question=question, max_new_tokens=32)
-    selector = LinkedFrozenSelector(tmp_path)
-    selector.bind_case("case")
-    with kv_only_original_question_controls():
-        result = MaskedTTT(engine, selector).answer(request)
+    implementation = SimpleNamespace(ROOT="original", validate_manifest=lambda _: None,
+                                     validate=lambda _result, _entry: None)
+    old_selector, old_controls = runtime.FrozenJSONSelector, paired_controls.original_question_controls
+    with linked_long_rollout_runner(implementation, runtime, paired_controls, root="combined",
+                                    linked_selector=LinkedFrozenSelector,
+                                    physical_controls=kv_only_original_question_controls):
+        selector = runtime.FrozenJSONSelector(tmp_path)
+        selector.bind_case("case")
+        with paired_controls.original_question_controls():
+            result = MaskedTTT(engine, selector).answer(request)
+        implementation.validate(result, {"key": "case"})
+    assert runtime.FrozenJSONSelector is old_selector
+    assert paired_controls.original_question_controls is old_controls
     first = result["training"]["steps"][0]
     standalone = result["standalone_cartridge"]
     controls, memory = standalone["original_question_controls"], standalone["memory"]
