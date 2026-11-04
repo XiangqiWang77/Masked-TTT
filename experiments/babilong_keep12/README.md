@@ -29,8 +29,15 @@ the same task-aware loose lexical scorer, after generation. Report both new
 correct and new wrong answers, with the artifact and actual runtime memory
 scopes kept distinct.
 
-A source-disjoint 800-case test is useful only after the development comparison
-has selected a fixed configuration. The goal is for the independent Cartridge to
-beat the Teacher, full KV, and zero-update selected KV; success remains an
-empirical result. This development probe has been submitted as one single-GPU
-job; it is not a completed 1,000-case result.
+After both models have all 200 development results and their 10% counterparts,
+a model qualifies for the source-disjoint 800-case test only if its 12%
+Cartridge beats its full-KV, zero-update and Teacher controls, and also beats
+the paired 10% Cartridge. The development report and the source of each
+paired baseline are frozen before this decision. At most one single-GPU
+holdout job is submitted for the qualifying models; if none qualifies, no
+holdout job is submitted.
+
+The holdout target is at least +3 percentage points versus ICL Teacher, with
+positive gains versus full KV, selected zero-update and matched 10% Cartridge.
+The combined report retains separate development and holdout rows. This
+development probe has been submitted; these are criteria, not completed results.
