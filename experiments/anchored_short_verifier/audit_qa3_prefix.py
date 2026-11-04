@@ -30,8 +30,9 @@ def audit_result(case, saved, decode):
     if any(type(i) is not int or i < 0 or i >= len(tokens) for i in targets):
         raise ValueError("A target position falls outside the saved rollout")
     signals = (step["teacher_KL_before"], step["gain_gradient_norm"], step["value_gradient_norm"])
-    if any(type(value) not in (int, float) or not math.isfinite(value) or value < 0 for value in signals):
-        raise ValueError("The first-step KL and gradient norms must be finite and nonnegative")
+    if (any(type(value) not in (int, float) or not math.isfinite(value) for value in signals) or
+        any(value < 0 for value in signals[1:])):
+        raise ValueError("The first-step signals must be finite and gradient norms nonnegative")
     text = decode(tokens)
     pair = saved.get("standalone_cartridge", {}).get("paired_prompt_control")
     return {

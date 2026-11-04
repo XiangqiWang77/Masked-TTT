@@ -19,4 +19,6 @@
 
 两组按源问题分开，但上表的历史快照包含其中一部分留出题，且其分组准确率已作为汇总被查看；因此这不是完全盲的留出评估。前缀长度候选由未结束的 token 日志提出，最终仍按配对结果报告，不把它当作已验证的提升。
 
+[长短前缀对照检查脚本](../../../experiments/anchored_short_verifier/audit_qa3_rollout_comparison.py)会核对同题的选块、Teacher、零更新输出、练习和前 8 个学生 token，分别统计能匹配的 QA3 题中地点词是否进入了更长的蒸馏前缀、第一步梯度与最终 token 序列如何变化。两个长度的 KL 是分别在各自前缀位置上求平均，不能把它们的差直接当成相同位置的 KL 改善；准确率继续使用独立的配对评测报告。
+
 [summary.json](summary.json) 保存聚合数据；[审计脚本](../../../experiments/anchored_short_verifier/audit_rollout_budget.py)和[测试](../../../tests/test_rollout_budget_audit.py)不需要参考答案参与训练。
