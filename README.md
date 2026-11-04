@@ -77,13 +77,16 @@ and includes model weights and training; it is not presented as a separately
 measured standalone peak. Source and question/output suffix KV are identified
 separately so that the compared cache scope is clear.
 
-For standalone decoding, the implementation can release the selected source
-cache after materialization. `standalone_cartridge_bytes` is the deployable
+For standalone decoding, the implementation releases the training adapter and,
+by default, the selected source cache after materialization. The cartridge
+keeps any storage it still needs. `standalone_cartridge_bytes` is the deployable
 artifact size; `live_document_state_before_decode_bytes` additionally counts
-the original training adapter and any source KV still live, with shared storage
-counted only once. Both exclude model weights and question/output suffix KV.
-`additional_source_kv_bytes_before_decode` records any retained source KV
-outside the artifact. This runtime count is distinct from construction peak.
+any training or source tensors still live, with shared storage counted once.
+Both exclude model weights and question/output suffix KV. The
+`additional_source_kv_bytes_before_decode` and
+`additional_training_adapter_bytes_before_decode` fields report any retained
+storage outside the artifact. This runtime count is distinct from construction
+peak.
 
 ## Run
 

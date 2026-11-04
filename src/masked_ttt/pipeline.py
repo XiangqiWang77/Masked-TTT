@@ -22,7 +22,7 @@ from .selection import OpenAIChunkSelector
 from .selected_transfer import selected_transfer_loss
 from .self_study_runtime import generate_from_cache,generate_self_study
 from .shared_selected import shared_selected_reader
-from .standalone import answer_standalone
+from .standalone import StandaloneReady,answer_standalone,decode_standalone
 from .teacher import build_teacher, prefill_document, score_student_prefix
 from .teacher_targeting import choice_positions
 
@@ -118,6 +118,7 @@ class MaskedTTT:
             selected_cache_stamp=[(weakref.ref(x),x._version,x.data_ptr()) for x in cache_tensors(teacher.document_cache)]
         engine.synchronize();setup_seconds=time.perf_counter()-began
         initial_kl=final_kl=None;steps=[];positions=[];optimizer_bytes=0
+        optimizer=params=parameter=None
         use_choice=(engine.config.teacher_target_scope=='choice_or_all' and 'Choices:' in working.question)
         teacher_version=teacher.probabilities._version
         began=time.perf_counter()
@@ -251,6 +252,8 @@ class MaskedTTT:
                for ref,version,pointer in selected_cache_stamp):
             raise AssertionError("The original selected evidence cache was changed")
         verified_practice_questions=len(practice_paths)
+        adapted_layers=list(memory.adapted_layers)
+        uses_selected_transfer=selected_reader is not None
         # Practice teacher paths share the selected document cache. Release
         # those request-local references once training is complete so that
         # materialization can drop an otherwise redundant source cache.
@@ -261,6 +264,7 @@ class MaskedTTT:
             teacher.probabilities=None
         engine._release_selected_source_before_decode=(
             engine.config.standalone_cartridge_enabled and engine.config.release_selected_source_before_decode)
+        engine._defer_standalone_decode=engine.config.standalone_cartridge_enabled
         release_info=dict(requested=engine.config.release_full_before_cartridge,
                           full_cache_tensors_live_before_standalone=None,
                           cuda_allocated_before_release_bytes=None,
@@ -289,6 +293,13 @@ class MaskedTTT:
         standalone_started=time.perf_counter()
         standalone=(answer_standalone(engine,layout,selected,teacher,memory,working.max_new_tokens)
                     if engine.config.standalone_cartridge_enabled else None)
+        if engine.config.standalone_cartridge_enabled:
+            # The materialization call has returned, so its argument stack no
+            # longer retains the full-view training adapter.
+            memory=reader=selected_reader=optimizer=params=parameter=None
+            engine._defer_standalone_decode=False
+            if isinstance(standalone,StandaloneReady):
+                standalone=decode_standalone(engine,standalone)
         engine.synchronize()
         total_peak_bytes=cuda_peak(engine.device)
 
@@ -348,7 +359,7 @@ class MaskedTTT:
             training=dict(
                 objective=("on-policy KL(selected teacher || full student) + weighted "
                            "KL(detached full student || selected student)"
-                           if selected_reader is not None else "on-policy KL(teacher || student)"),
+                           if uses_selected_transfer else "on-policy KL(teacher || student)"),
                 initial_kl=initial_kl,
                 final_kl=final_kl,
                 steps=steps,
@@ -362,14 +373,14 @@ class MaskedTTT:
                 teacher_conditioned_on_student_prefix=True,
                 selected_transfer_weight=engine.config.selected_transfer_weight,
                 value_basis_source=engine.config.value_basis_source,
-                selected_transfer_uses_selected_student_prefix=selected_reader is not None,
-                selected_transfer_full_target_detached=selected_reader is not None,
+                selected_transfer_uses_selected_student_prefix=uses_selected_transfer,
+                selected_transfer_full_target_detached=uses_selected_transfer,
                 kl_initial_and_final_may_use_different_student_prefixes=True,
                 kl_initial_and_final_may_use_different_questions=bool(verified_practice_questions),
                 verified_practice_questions=verified_practice_questions,
                 adaptive_max_answer_steps=engine.config.max_answer_steps,
                 adaptive_answer_KL_stop=engine.config.answer_KL_stop,
-                adapted_layers=memory.adapted_layers,
+                adapted_layers=adapted_layers,
                 checkpointed_layers=True,causal_batched_teacher_forcing=True,
             ),
             timing=dict(

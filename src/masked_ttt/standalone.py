@@ -3,6 +3,7 @@
 import gc
 import time
 import weakref
+from dataclasses import dataclass
 import torch
 
 from ._layout import selected_read_plan
@@ -68,6 +69,23 @@ def build_standalone(engine,layout,selected,teacher,trained):
     return reader,branch,suffix,plan.document_end,accounting
 
 
+@dataclass
+class StandaloneReady:
+    reader: object
+    branch: object
+    suffix: torch.Tensor
+    length: int
+    limit: int
+    accounting: dict
+    began: float
+    source_stamp: list
+    training_refs: list
+    release_source: bool
+    release_training: bool
+    before_release: object
+    reserved_before_release: object
+
+
 @torch.no_grad()
 def answer_standalone(engine,layout,selected,teacher,trained,limit):
     began=time.perf_counter()
@@ -89,37 +107,57 @@ def answer_standalone(engine,layout,selected,teacher,trained,limit):
     if any(x._version!=version or x.data_ptr()!=pointer
            for x,(_,version,pointer) in zip(original,source_stamp)):
         raise AssertionError('The selected source cache changed during materialization')
+    training_refs=[weakref.ref(x) for x in module_tensors(trained)]
     release_source=getattr(engine,'_release_selected_source_before_decode',False)
+    release_training=getattr(engine,'_defer_standalone_decode',False)
     engine.synchronize()
     before_release=cuda_allocated(engine.device)
     reserved_before_release=cuda_reserved(engine.device)
     if release_source:
         teacher.document_cache=None
-    del original
-    if release_source:
+    ready=StandaloneReady(reader,branch,suffix,length,limit,accounting,began,source_stamp,
+                          training_refs,release_source,release_training,before_release,
+                          reserved_before_release)
+    del original,trained,teacher
+    # Returning to the caller first lets its call frame release the trained
+    # memory before the independent cartridge begins decoding.
+    if release_training:return ready
+    return decode_standalone(engine,ready)
+
+
+@torch.no_grad()
+def decode_standalone(engine,ready):
+    reader,branch,suffix,length,limit=(ready.reader,ready.branch,ready.suffix,ready.length,ready.limit)
+    accounting=ready.accounting
+    if ready.release_source or ready.release_training:
         gc.collect()
         if engine.device.type=='cuda':
             with engine.device_context():torch.cuda.empty_cache()
     engine.synchronize()
-    alive=[ref() for ref,_,_ in source_stamp if ref() is not None]
+    alive=[ref() for ref,_,_ in ready.source_stamp if ref() is not None]
+    live_training=[ref() for ref in ready.training_refs if ref() is not None]
     if any(ref() is not None and (ref()._version!=version or ref().data_ptr()!=pointer)
-           for ref,version,pointer in source_stamp):
+           for ref,version,pointer in ready.source_stamp):
         raise AssertionError('The selected source cache changed during materialization')
     artifact=cache_tensors(branch)+module_tensors(reader.memory)
     artifact_bytes=storage_bytes(artifact)
     with_source=storage_bytes(artifact+alive)
+    with_training=storage_bytes(artifact+alive+live_training)
     accounting.update(
-        source_release_requested=release_source,
+        source_release_requested=ready.release_source,
+        training_adapter_release_requested=ready.release_training,
         source_tensor_views_live_before_decode=len(alive),
+        training_tensor_views_live_before_decode=len(live_training),
         additional_source_kv_bytes_before_decode=with_source-artifact_bytes,
-        live_document_state_before_decode_bytes=storage_bytes(artifact+alive+module_tensors(trained)),
-        live_document_state_includes_training_adapter=True,
-        cuda_allocated_before_source_release_bytes=before_release,
+        additional_training_adapter_bytes_before_decode=with_training-with_source,
+        live_document_state_before_decode_bytes=with_training,
+        live_document_state_includes_training_adapter=bool(live_training),
+        cuda_allocated_before_source_release_bytes=ready.before_release,
         cuda_allocated_before_decode_bytes=cuda_allocated(engine.device),
-        cuda_reserved_before_source_release_bytes=reserved_before_release,
+        cuda_reserved_before_source_release_bytes=ready.reserved_before_release,
         cuda_reserved_before_decode_bytes=cuda_reserved(engine.device),
     )
-    del alive,artifact
+    del alive,artifact,live_training
     engine.budget.check()
     output=private_forward(reader.reader,suffix,length,branch)
     tokens=[];first_token_seconds=None
@@ -128,7 +166,7 @@ def answer_standalone(engine,layout,selected,teacher,trained,limit):
         tokens.append(token)
         if first_token_seconds is None:
             engine.synchronize()
-            first_token_seconds=time.perf_counter()-began
+            first_token_seconds=time.perf_counter()-ready.began
         if token in engine.eos_ids or len(tokens)==limit:break
         engine.budget.check()
         output=private_forward(reader.reader,torch.tensor([token],device=engine.device),

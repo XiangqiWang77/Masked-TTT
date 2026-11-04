@@ -101,6 +101,8 @@ def test_releasing_selected_source_preserves_output_and_counts_live_storage(arch
     assert not before['source_release_requested'] and after['source_release_requested']
     assert before['additional_source_kv_bytes_before_decode']>0
     assert after['additional_source_kv_bytes_before_decode']==0
+    assert after['training_adapter_release_requested']
+    assert after['additional_training_adapter_bytes_before_decode']==0
     assert after['live_document_state_before_decode_bytes']>=after['standalone_cartridge_bytes']
     assert after['live_document_state_before_decode_bytes']<before['live_document_state_before_decode_bytes']
     assert released['generated_token_ids']==retained['generated_token_ids']
@@ -122,5 +124,6 @@ def test_zero_update_reuses_only_the_required_selected_cache_storage(architectur
     usage=result['standalone_cartridge']['memory']
     assert usage['source_release_requested']
     assert usage['additional_source_kv_bytes_before_decode']==0
+    assert usage['additional_training_adapter_bytes_before_decode']==0
     assert usage['live_document_state_before_decode_bytes']>=usage['standalone_cartridge_bytes']
     assert result['prediction']==result['standalone_cartridge']['prediction']

@@ -40,6 +40,7 @@ def test_release_selected_source_cuda_preserves_answer_and_memory(architecture):
             assert math.isclose(a[key],b[key],rel_tol=1e-3,abs_tol=1e-4)
     assert before['additional_source_kv_bytes_before_decode']>0
     assert after['additional_source_kv_bytes_before_decode']==0
+    assert after['additional_training_adapter_bytes_before_decode']==0
     assert after['live_document_state_before_decode_bytes']<before['live_document_state_before_decode_bytes']
     assert after['cuda_allocated_before_decode_bytes']<=after['cuda_allocated_before_source_release_bytes']
     assert after['cuda_reserved_before_decode_bytes']<=after['cuda_reserved_before_source_release_bytes']
