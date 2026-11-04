@@ -4,7 +4,7 @@ from dataclasses import replace
 import pytest
 import torch
 
-from experiments.prompt_alignment.same_gpu_pair import run_pair, validate_configs, validate_pair
+from experiments.prompt_alignment.same_gpu_pair import run_pair, run_study_prompt_pair, validate_configs, validate_pair
 from masked_ttt import Request
 from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
@@ -55,3 +55,61 @@ def test_no_confounded_teacher_or_training_objective_changes():
     with pytest.raises(ValueError, match="original standalone"):
         guarded = replace(config, guard_enabled=True)
         validate_configs(guarded, guarded)
+
+
+def test_study_only_pair_changes_only_study_prompt_and_restores_hook(monkeypatch):
+    import masked_ttt.pipeline as pipeline
+    engine = make_engine()
+    config = replace(engine.config, steps=2, self_question_count=1, self_question_max_tokens=8,
+        guard_enabled=False, selected_transfer_weight=0, value_basis_source="document",
+        standalone_answer_format="original", release_full_before_cartridge=True,
+        release_selected_source_before_decode=True)
+    request = Request(document="The old note is red. The current note is blue. " * 6,
+                      question="Which color is current?", max_new_tokens=3)
+    calls, main_suffixes = [], []
+    original = pipeline.generate_self_study
+    original_main = pipeline.main_student_suffix
+
+    def capture(*args):
+        calls.append(args[3].prompt)
+        return original(*args)
+
+    def capture_main(*args, **kwargs):
+        value = original_main(*args, **kwargs)
+        main_suffixes.append(value.clone())
+        return value
+
+    monkeypatch.setattr(pipeline, "generate_self_study", capture)
+    monkeypatch.setattr(pipeline, "main_student_suffix", capture_main)
+    result = run_study_prompt_pair(engine, Selector(), request, config)
+    assert pipeline.generate_self_study is capture
+    assert len(calls) == 2 and calls[0] == request.prompt
+    assert "for identifying study facts only; do not answer it:" in calls[1]
+    assert result["changed_settings"] == ["self_study_prompt"]
+    assert result["left"]["teacher"]["tokens"] == result["right"]["teacher"]["tokens"]
+    assert len(main_suffixes) == 2 and torch.equal(*main_suffixes)
+    assert result["left"]["training"]["objective"] == result["right"]["training"]["objective"]
+    assert not result["reference_answers_used"]
+    changed = deepcopy(result["right"])
+    changed["self_study"]["checks"] = [dict(accepted=True)]
+    with pytest.raises(ValueError, match="practice sets differ"):
+        validate_pair(result["left"], changed)
+    assert not validate_pair(result["left"], changed, require_same_practices=False)
+
+
+def test_cannot_compare_study_prompts_when_study_disabled():
+    engine = make_engine()
+    config = replace(engine.config, self_question_count=0)
+    with pytest.raises(ValueError, match="self-study enabled"):
+        run_study_prompt_pair(engine, Selector(), None, config)
+
+
+def test_study_prompt_hook_restores_after_error():
+    import masked_ttt.pipeline as pipeline
+    from experiments.self_study_prompt.study_context import study_only_prompt
+    original = pipeline.generate_self_study
+    with pytest.raises(RuntimeError, match="deliberate"):
+        with study_only_prompt():
+            assert pipeline.generate_self_study is not original
+            raise RuntimeError("deliberate")
+    assert pipeline.generate_self_study is original

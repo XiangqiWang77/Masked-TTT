@@ -38,7 +38,9 @@ def validate_configs(left, right):
     return sorted(changed)
 
 
-def validate_pair(left, right):
+def validate_pair(left, right, *, require_same_practices=True):
+    if type(require_same_practices) is not bool:
+        raise ValueError("Practice comparison must be explicitly enabled or disabled")
     for result in (left, right):
         if (not result["backbone_unchanged"] or not result["original_document_KV_unchanged"] or
             result["teacher_answer_in_final_prompt"] or
@@ -61,19 +63,17 @@ def validate_pair(left, right):
         raise ValueError("The two selections differ")
     if left["teacher"]["tokens"] != right["teacher"]["tokens"]:
         raise ValueError("The two Teacher output sequences differ")
-    if left["self_study"]["checks"] != right["self_study"]["checks"]:
+    same_practices = left["self_study"]["checks"] == right["self_study"]["checks"]
+    if require_same_practices and not same_practices:
         raise ValueError("The two verified practice sets differ")
     zero = lambda result: result["standalone_cartridge"]["original_question_controls"]["zero"]["tokens"]
     if zero(left) != zero(right):
         raise ValueError("The two same-format zero-update sequences differ")
+    return same_practices
 
 
-def run_pair(engine, selector, request, left_config, right_config, *, time_budget_seconds=None):
-    """Run two strict controls sequentially on the same loaded frozen model.
-
-    The two cache prefills are independent. This returns raw results to the
-    caller for post-generation scoring and never reads reference answers.
-    """
+def _run_pair(engine, selector, request, left_config, right_config, *, contexts,
+              require_same_practices, time_budget_seconds):
     changed = validate_configs(left_config, right_config)
     devices = {parameter.device for parameter in engine.model.parameters()}
     if devices != {engine.device}:
@@ -85,16 +85,17 @@ def run_pair(engine, selector, request, left_config, right_config, *, time_budge
     results = []
     try:
         with (scope() if callable(scope) else nullcontext()), original_question_controls():
-            for config in (left_config, right_config):
+            for config, context in zip((left_config, right_config), contexts):
                 torch.set_rng_state(cpu_rng)
                 if gpu_rng is not None:
                     torch.cuda.set_rng_state(gpu_rng, engine.device)
                 local = copy(engine)
                 local.config = config
-                results.append(MaskedTTT(local, selector).answer(request,
-                    time_budget_seconds=time_budget_seconds, compact_standalone=True))
+                with context():
+                    results.append(MaskedTTT(local, selector).answer(request,
+                        time_budget_seconds=time_budget_seconds, compact_standalone=True))
         engine.assert_frozen(stamp)
-        validate_pair(*results)
+        same_practices = validate_pair(*results, require_same_practices=require_same_practices)
     finally:
         torch.set_rng_state(cpu_rng)
         if gpu_rng is not None:
@@ -103,4 +104,32 @@ def run_pair(engine, selector, request, left_config, right_config, *, time_budge
                 same_loaded_model=True, same_device=True, same_gpu=engine.device.type == "cuda",
                 device_type=engine.device.type, same_request=True,
                 independently_prefilled_caches=True, reference_answers_used=False,
-                teacher_probability_tensors_compared=False)
+                teacher_probability_tensors_compared=False, same_practice_checks=same_practices)
+
+
+def run_pair(engine, selector, request, left_config, right_config, *, time_budget_seconds=None):
+    """Run two strict SD controls sequentially on the same loaded frozen model.
+
+    The two cache prefills are independent. This returns raw results to the
+    caller for post-generation scoring and never reads reference answers.
+    """
+    return _run_pair(engine, selector, request, left_config, right_config,
+                     contexts=(nullcontext, nullcontext), require_same_practices=True,
+                     time_budget_seconds=time_budget_seconds)
+
+
+def run_study_prompt_pair(engine, selector, request, config, *, time_budget_seconds=None):
+    """Compare the existing and the study-only question prompt, without labels.
+
+    Different practices are expected, but Teacher output, selection and the
+    zero-update answer still have to agree. Both arms use the same SD settings.
+    """
+    if config.self_question_count < 1:
+        raise ValueError("The study-prompt comparison needs self-study enabled")
+    from experiments.self_study_prompt.study_context import study_only_prompt
+    result = _run_pair(engine, selector, request, config, config,
+        contexts=(nullcontext, study_only_prompt), require_same_practices=False,
+        time_budget_seconds=time_budget_seconds)
+    result.update(changed_settings=["self_study_prompt"],
+                  left_study_prompt="original", right_study_prompt="study_only")
+    return result
