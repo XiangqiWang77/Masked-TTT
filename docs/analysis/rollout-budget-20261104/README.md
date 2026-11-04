@@ -25,4 +25,8 @@
 
 [长短前缀对照检查脚本](../../../experiments/anchored_short_verifier/audit_qa3_rollout_comparison.py)会核对同题的选块、Teacher、零更新输出、练习和前 8 个学生 token，分别统计能匹配的 QA3 题中地点词是否进入了更长的蒸馏前缀、第一步梯度与最终 token 序列如何变化。两个长度的 KL 是分别在各自前缀位置上求平均，不能把它们的差直接当成相同位置的 KL 改善；准确率继续使用独立的配对评测报告。
 
+Qwen 已完成的 32-token 开发运行中，有 **19 / 20 道 QA3 题**与 8-token 运行严格匹配，来自 5 个来源问题；另 1 题因配对条件不一致被排除。这 19 题的轨迹都由 8 个 token 延长至 11 个，地点词在长前缀中出现。第一步 Teacher KL 的中位数分别为 $1.85\times10^{-8}$ 和 0.359；两类梯度范数中位数分别由 $6.73\times10^{-9}$ 和 $8.12\times10^{-8}$ 变为 0.116 和 0.859。两次 KL 的平均位置不同，这些数字说明训练信号改变，而不是同位置的损失下降。[严格配对记录](qa3_rollout32_qwen.json)
+
+对同一批 19 题，长前缀训练后的**全文回答**与原全文回答完全一致，最终**独立 Cartridge 回答**也与同缓存零更新及 8-token 结果完全一致。按统一宽松词面评分，全文为 4 / 19，Teacher、零更新和 Cartridge 均为 3 / 19。参考答案只在生成后计分；这 19 题仅来自 5 个来源问题。这说明这里获得更强梯度仍未带来可观察的答案变化，值得进一步测试同样的 SD 目标在不同更新步数下是否能改变结果，而不是仅凭梯度大小宣称提升。[逐题二元评分](qa3_answer_transfer_qwen.json) · [复现脚本](../../../experiments/anchored_short_verifier/audit_qa3_answer_transfer.py)
+
 [summary.json](summary.json) 保存聚合数据；[审计脚本](../../../experiments/anchored_short_verifier/audit_rollout_budget.py)和[测试](../../../tests/test_rollout_budget_audit.py)不需要参考答案参与训练。
