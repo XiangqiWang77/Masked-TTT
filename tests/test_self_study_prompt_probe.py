@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from dataclasses import replace
 import json
 import torch
 
@@ -122,4 +123,35 @@ def test_hook_compares_both_prompts_without_mutating_model_or_rng(tmp_path,monke
     saved=json.loads((here/"qwen.json").read_text())
     assert seen==[False,True] and saved["complete"]
     assert saved["rows"][key]["variant"]["verified"]==1 and "checks" not in saved["rows"][key]["variant"]
+    assert torch.equal(rng,torch.get_rng_state());engine.assert_frozen(stamp)
+
+
+def test_hook_executes_real_selected_prefill_and_self_study_on_small_model(tmp_path,monkeypatch):
+    root=tmp_path/"job";here=root/"disabled_optional_probe";here.mkdir(parents=True)
+    key="babilong-8-qa7-1";question="How many objects is John carrying?"
+    document="John picked up the apple. "*6
+    case=dict(key=key,document=document,query=question,
+              prompt="<context>\n"+document+"\n</context>\nQuestion: "+question,max_new_tokens=4)
+    encoded=(json.dumps(case)+"\n").encode();source=root/"cases.jsonl";source.write_bytes(encoded)
+    index=root/"index.json";index.write_text(json.dumps([dict(key=key,offset=0,bytes=len(encoded))]))
+    protocol=root/"protocol.json";protocol.write_text(json.dumps(dict(index=str(index),source_cases=str(source),
+                                                                       shared_scores=str(root/"unused"))))
+    (root/"manifest.json").write_text(json.dumps(dict(models=["qwen"],selection_policy="decision_proper_where_v1",
+        reference_answers_used_in_inference=False,online_api_calls=0,model_protocols=dict(qwen=str(protocol)))))
+    class Selector:
+        def __init__(self,_path):pass
+        def bind_case(self,_key):pass
+        def prepare(self,engine,request):
+            return PreparedRequest(request,prepare_layout(engine,request),[0],dict())
+    monkeypatch.setattr(probe,"HERE",here)
+    monkeypatch.setattr(probe,"candidate_cases",lambda _manifest:[key])
+    monkeypatch.setattr(selector_module,"ProperWhereSelector",Selector)
+    engine=make_engine();engine.eos_ids={-1}
+    engine.config=replace(engine.config,self_question_count=1,self_question_max_tokens=4,
+                          self_question_verify_tokens=2,prefill_chunk_tokens=64)
+    rng=torch.get_rng_state().clone();stamp=engine.weight_stamp()
+    assert probe.run_if_needed(engine,"qwen",dict(gpu="CPU test"))=="complete"
+    result=json.loads((here/"qwen.json").read_text())
+    assert not result["errors"] and result["rows"][key]["base"]["generated_tokens"]==4
+    assert result["rows"][key]["variant"]["generated_tokens"]==4
     assert torch.equal(rng,torch.get_rng_state());engine.assert_frozen(stamp)
