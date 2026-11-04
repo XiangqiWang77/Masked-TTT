@@ -8,4 +8,6 @@ Because the evidence token IDs change, Teacher predictions, verified practices a
 
 One GPU job covers both models; GPT-OSS is routed to a high-memory GPU when needed. The job performs real-model synthetic preflight for both paths. Only a model whose aggregate accuracy exceeds its same-run whole, canonical zero, canonical Teacher and original-SD controls on the complete 200-case development set is eligible for its source-disjoint 800-case holdout. Hourly monitoring avoids repeated manual checks. No online Decision API calls are made.
 
+Development job **32010104** was submitted on 2026-11-04. Before submission, the frozen runtime passed **107 CPU tests**, and a fresh source-only audit built the candidate plan for 200/200 cases on each model. The loaded-checkpoint GPU preflight and answer-quality comparison are pending; there is no measured performance result for this variant yet.
+
 [Comparison](canonical_pair.py) · [Runner](canonical_runner.py) · [Scoring](canonical_report.py) · [Submission](canonical_job.py) · [Monitor](canonical_monitor.py) · [Source-only feasibility](../../docs/analysis/evidence-tokenization-20261104/README.md)
