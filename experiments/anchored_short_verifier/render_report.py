@@ -90,7 +90,8 @@ def render(result):
         "# Query Cartridge: paired BABILONG results",
         "",
         f"Scope: {result['mode']}; expected {result['expected_per_model']} cases per model.",
-        "All values use the same answer-focused lexical scorer after generation.",
+        "Accuracy is in percent; Δ is in percentage points. All values use the same "
+        "answer-focused lexical scorer after generation.",
         "Teacher retains the original OLMo response instruction; the selected-KV "
         "and Cartridge controls use the original question format.",
         "",
