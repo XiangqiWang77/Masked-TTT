@@ -10,6 +10,7 @@ from experiments.counterfactual_transfer import enable_in_job_probe as enable
 from experiments.counterfactual_transfer import enable_hourly_report as hourly
 from experiments.counterfactual_transfer import in_job_probe as probe
 from experiments.counterfactual_transfer import report_in_job as report
+from test_standalone import make_engine
 
 
 def valid_result():
@@ -61,6 +62,20 @@ def test_failures_restore_state_and_stop_after_two_attempts(tmp_path,monkeypatch
         probe.run_if_needed(SimpleNamespace(device=torch.device("cpu")),"gpt",{},_root=tmp_path)
 
 
+def test_probe_bypasses_benchmark_package_method_wrapper(tmp_path,monkeypatch):
+    """The paired benchmark temporarily replaces masked_ttt.MaskedTTT."""
+    import masked_ttt
+    engine=make_engine()
+    class BenchmarkWrapper:
+        def __init__(self,*_args,**_kwargs):
+            raise AssertionError("The benchmark wrapper must not run the diagnostic")
+    monkeypatch.setattr(masked_ttt,"MaskedTTT",BenchmarkWrapper)
+    shutil.copy2(enable.REPO/"experiments/counterfactual_transfer/probe.py",tmp_path/"probe.py")
+    loaded=probe._load_probe(tmp_path)
+    result=loaded.run_pair(engine,steps=1,max_new_tokens=2,rollout_tokens=2)
+    assert result["selected_inputs_identical"] and result["probabilities_from_materialized_kv"]
+
+
 def test_enable_uses_compatible_frozen_runtime_and_never_replaces_other_hook(tmp_path):
     root=tmp_path/enable.TARGET
     frozen=root/"runtime/repo/src/masked_ttt"
@@ -75,6 +90,18 @@ def test_enable_uses_compatible_frozen_runtime_and_never_replaces_other_hook(tmp
     assert json.loads((central/"protocol.json").read_text())["scores_after_full_and_source_release"]
     assert (root/"disabled_optional_probe/driver.py").is_file()
     assert enable.enable(tmp_path,root)==result
+    path=central/"probe.py";new=path.read_bytes()
+    new_import=b"from masked_ttt.pipeline import MaskedTTT\nfrom masked_ttt.request import Request\n"
+    old_import=b"from masked_ttt import MaskedTTT,Request\n"
+    assert new.count(new_import)==1
+    path.write_bytes(new.replace(new_import,old_import,1))
+    upgraded=enable.upgrade_method_binding(tmp_path,root)
+    assert upgraded["updated"] and path.read_bytes()==new
+    assert enable.upgrade_method_binding(tmp_path,root)["already_current"]
+    path.write_bytes(b"unexpected code")
+    with pytest.raises(ValueError,match="expected previous version"):
+        enable.upgrade_method_binding(tmp_path,root)
+    path.write_bytes(new)
     (frozen/"config.py").write_text("changed")
     with pytest.raises(ValueError,match="supporting runtime"):
         enable.enable(tmp_path,root)

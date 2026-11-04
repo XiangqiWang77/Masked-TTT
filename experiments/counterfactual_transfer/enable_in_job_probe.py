@@ -74,12 +74,49 @@ def enable(workspace, root):
                 training_runtime_changed=False, runs_only_if_allocation_reaches_optional_hook=True)
 
 
+def upgrade_method_binding(workspace, root):
+    """Update only the diagnostic import when its prior content is known.
+
+    Existing benchmark modules are never changed. The replacement is atomic,
+    so an allocation sees either the old complete file or the new complete
+    file; a process that already loaded the old probe is left untouched.
+    """
+    workspace,root=Path(workspace).resolve(),Path(root).resolve()
+    if root.parent!=workspace or root.name!=TARGET:
+        raise ValueError("Use the submitted gain-rate paired development job")
+    verify_supporting_runtime(root)
+    central=workspace/CENTRAL
+    ready=json.loads((root/"disabled_optional_probe/ready.json").read_text())
+    if ready.get("shared_probe")!=str(central):
+        raise ValueError("The existing optional hook targets another probe")
+    new=(REPO/"experiments/counterfactual_transfer/probe.py").read_bytes()
+    new_import=b"from masked_ttt.pipeline import MaskedTTT\nfrom masked_ttt.request import Request\n"
+    old_import=b"from masked_ttt import MaskedTTT,Request\n"
+    if new.count(new_import)!=1:
+        raise ValueError("The updated probe import is not unique")
+    old=new.replace(new_import,old_import,1)
+    path=central/"probe.py";current=path.read_bytes()
+    if current==new:
+        return dict(updated=False,already_current=True,extra_gpu_jobs=0,training_runtime_changed=False)
+    if current!=old:
+        raise ValueError("The installed probe is not the expected previous version")
+    fd,name=tempfile.mkstemp(prefix=".probe-upgrade-",dir=central)
+    try:
+        with os.fdopen(fd,"wb") as file:file.write(new)
+        os.replace(name,path)
+    finally:
+        Path(name).unlink(missing_ok=True)
+    return dict(updated=True,already_current=False,extra_gpu_jobs=0,training_runtime_changed=False)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace",required=True,type=Path)
     parser.add_argument("--job-root",required=True,type=Path)
+    parser.add_argument("--upgrade-method-binding",action="store_true")
     args=parser.parse_args()
-    print(json.dumps(enable(args.workspace,args.job_root),indent=2))
+    operation=upgrade_method_binding if args.upgrade_method_binding else enable
+    print(json.dumps(operation(args.workspace,args.job_root),indent=2))
 
 
 if __name__ == "__main__":

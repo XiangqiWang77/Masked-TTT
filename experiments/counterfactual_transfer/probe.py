@@ -12,7 +12,8 @@ import re
 import torch
 from torch.nn import functional as F
 
-from masked_ttt import MaskedTTT,Request
+from masked_ttt.pipeline import MaskedTTT
+from masked_ttt.request import Request
 from masked_ttt.cache import fork_prefix
 from masked_ttt.frozen_scores import layout_on_source_spans
 from masked_ttt.memory_accounting import module_tensors
