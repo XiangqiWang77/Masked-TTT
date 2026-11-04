@@ -35,3 +35,11 @@ Qwen3-4B and GPT-OSS-20B in sequence. It compares against the original 32-token,
 two-base-step checkpoints, reuses cached Decision scores, and performs a
 loaded-model preflight before evaluation. Reporting runs hourly; results are
 not yet available. The experiment is development only, not a 1,000-case result.
+
+An hourly promotion controller will submit one additional single-GPU job for
+the eligible models if, on all 200 fully matched development cases, the aligned
+candidate exceeds the full-context model, selected zero-update, ICL Teacher,
+and the original two-step SD checkpoint. The fixed configuration is then
+evaluated on 800 source-disjoint cases per eligible model. The combined 1,000
+includes the 200 development cases used to select it; the holdout is reported
+separately, with two previously inspected holdout source questions disclosed.
