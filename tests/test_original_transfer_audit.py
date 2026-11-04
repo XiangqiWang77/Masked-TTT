@@ -35,3 +35,14 @@ def test_coverage_is_only_counted_for_the_whole_only_cases():
     for item, value in zip(rows, ("complete", "incomplete", "complete")):
         item["coverage"] = value
     assert summarize(rows)["whole_only_evidence_coverage"] == {"complete": 1, "incomplete": 1}
+
+
+def test_teacher_format_and_training_changes_are_scored_on_the_same_cases():
+    rows = [row(1, 0, 0, 0, 1, 0), row(2, 1, 1, 1, 1, 1)]
+    rows[0].update(selective_teacher_format=0, cartridge_teacher_format=1)
+    rows[1].update(selective_teacher_format=1, cartridge_teacher_format=1)
+    formats = summarize(rows)["teacher_format_controls"]
+    assert formats["selected_zero_accuracy"] == 50.
+    assert formats["cartridge_accuracy"] == 100.
+    assert formats["training_effect"]["new_correct"] == 1
+    assert formats["cartridge_format_effect"]["delta_pp"] == 50.

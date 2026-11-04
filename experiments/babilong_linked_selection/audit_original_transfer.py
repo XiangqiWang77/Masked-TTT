@@ -30,6 +30,17 @@ def summarize(rows):
     selected_only = [row for row in rows if row["selective"] and not row["whole"]]
     full_gains = [row for row in rows if row["whole_adapted"] and not row["whole"]]
     outcomes = Counter((row["selective"], row["cartridge"]) for row in full_gains)
+    format_names = ("selective_teacher_format", "cartridge_teacher_format")
+    format_controls = None
+    if all(all(key in row for key in format_names) for row in rows):
+        if any(type(row[key]) is not int or row[key] not in (0, 1) for row in rows for key in format_names):
+            raise ValueError("Expected binary format-control scores")
+        format_controls = dict(
+            selected_zero_accuracy=100 * sum(row[format_names[0]] for row in rows) / n,
+            cartridge_accuracy=100 * sum(row[format_names[1]] for row in rows) / n,
+            training_effect=pair(format_names[1], format_names[0]),
+            cartridge_format_effect=pair(format_names[1], "cartridge"),
+        )
     return dict(
         n=n,
         source_questions=len({row["case"].split("-", 2)[2] for row in rows}),
@@ -37,6 +48,7 @@ def summarize(rows):
         full_update=pair("whole_adapted", "whole"),
         cartridge_update=pair("cartridge", "selective"),
         cartridge_vs_teacher=pair("cartridge", "teacher"),
+        teacher_format_controls=format_controls,
         whole_only=dict(n=len(whole_only),
             adapted_full_correct=sum(row["whole_adapted"] for row in whole_only),
             cartridge_correct=sum(row["cartridge"] for row in whole_only)),
@@ -55,13 +67,14 @@ def summarize(rows):
 
 
 def collect(report):
-    if (report["dataset"] != "BABILONG" or report["model"] != "Qwen/Qwen3-4B-Instruct-2507"
+    if (report["dataset"] != "BABILONG" or report["model"] not in
+            ("Qwen/Qwen3-4B-Instruct-2507", "openai/gpt-oss-20b")
             or report["metric"] != "answer_focused_lexical_v2"
             or report["expected"] != 1000 or report["completed"] != 1000
             or report["uses_extra_transfer_loss"] is not False
             or report["reference_answers_used_only_posthoc"] is not True
             or report["online_API_calls"] != 0 or report["errors"]):
-        raise ValueError("Expected the completed, original-method Qwen run")
+        raise ValueError("Expected a completed, original-method Qwen or GPT-OSS run")
     rows = report["rows"]
     if len(rows) != 1000 or len({row["case"] for row in rows}) != 1000:
         raise ValueError("Expected 1,000 distinct scored cases")
@@ -80,7 +93,8 @@ def collect(report):
 
 def render(result):
     overall = result["overall"]
-    lines = ["# Qwen 1,000-question whole-to-cartridge audit", "",
+    model_label = "Qwen-3-4B" if result["model"].startswith("Qwen/") else "GPT-OSS-20B"
+    lines = [f"# {model_label}: 1,000-question whole-to-cartridge audit", "",
              "| Group | n | Whole | Adapted whole | Selected zero | ICL Teacher | Cartridge |",
              "|---|---:|---:|---:|---:|---:|---:|"]
     for label, entry in [("All", overall), *sorted(result["groups"].items(),
@@ -95,6 +109,7 @@ def render(result):
     selected_only = overall["selected_only"]
     gains = overall["full_update_new_correct_selected_outcomes"]
     coverage = overall["whole_only_evidence_coverage"]
+    formats = overall["teacher_format_controls"]
     lines += ["", "## Paired changes", "",
         f"* Full Student: {full['new_correct']} new correct, {full['new_wrong']} new wrong "
         f"({full['delta_pp']:+.2f} percentage points).",
@@ -112,6 +127,13 @@ def render(result):
         f"correct and remained correct on {gains['selected_already_correct_retained']}; "
         f"selected zero was wrong on {gains['selected_wrong_corrected'] + gains['selected_wrong_still_wrong']}, "
         f"of which the Cartridge corrected {gains['selected_wrong_corrected']}.", "",
+        *([f"* With the Teacher's generic format instruction applied to both selected-cache controls, "
+           f"zero-update scores {formats['selected_zero_accuracy']:.2f}% and the trained Cartridge scores "
+           f"{formats['cartridge_accuracy']:.2f}% (training change "
+           f"{formats['training_effect']['delta_pp']:+.2f} points). For the trained Cartridge alone, "
+           f"changing only the question format changes accuracy by "
+           f"{formats['cartridge_format_effect']['delta_pp']:+.2f} points.", ""]
+          if formats is not None else []),
         "These groups are defined using post-generation answer labels. They describe paired "
         "outcomes and do not by themselves establish the causal reason for an answer change. "
         "The 1,000 rows represent 250 source questions at four context lengths.", "",

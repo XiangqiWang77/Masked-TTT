@@ -1,4 +1,4 @@
-# Qwen 1,000-question whole-to-cartridge audit
+# Qwen-3-4B: 1,000-question whole-to-cartridge audit
 
 | Group | n | Whole | Adapted whole | Selected zero | ICL Teacher | Cartridge |
 |---|---:|---:|---:|---:|---:|---:|
@@ -22,6 +22,8 @@
 * In those whole-only cases, annotated support was incomplete in 91 and complete in 39; support annotations are used only after generation.
 * Selected zero correct / whole wrong: 146 cases; the Cartridge remains correct on 144.
 * Of 33 new correct answers on the full path, selected zero was already correct and remained correct on 23; selected zero was wrong on 10, of which the Cartridge corrected 2.
+
+* With the Teacher's generic format instruction applied to both selected-cache controls, zero-update scores 56.60% and the trained Cartridge scores 56.80% (training change +0.20 points). For the trained Cartridge alone, changing only the question format changes accuracy by +0.10 points.
 
 These groups are defined using post-generation answer labels. They describe paired outcomes and do not by themselves establish the causal reason for an answer change. The 1,000 rows represent 250 source questions at four context lengths.
 

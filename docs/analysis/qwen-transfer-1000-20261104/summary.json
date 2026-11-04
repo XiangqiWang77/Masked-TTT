@@ -32,6 +32,20 @@
       "new_wrong": 16,
       "delta_pp": 0.1
     },
+    "teacher_format_controls": {
+      "selected_zero_accuracy": 56.6,
+      "cartridge_accuracy": 56.8,
+      "training_effect": {
+        "new_correct": 10,
+        "new_wrong": 8,
+        "delta_pp": 0.2
+      },
+      "cartridge_format_effect": {
+        "new_correct": 18,
+        "new_wrong": 17,
+        "delta_pp": 0.1
+      }
+    },
     "whole_only": {
       "n": 130,
       "adapted_full_correct": 119,
@@ -79,6 +93,20 @@
         "new_wrong": 1,
         "delta_pp": 0.0
       },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 56.0,
+        "cartridge_accuracy": 56.0,
+        "training_effect": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 1,
+          "new_wrong": 1,
+          "delta_pp": 0.0
+        }
+      },
       "whole_only": {
         "n": 36,
         "adapted_full_correct": 36,
@@ -124,6 +152,20 @@
         "new_correct": 1,
         "new_wrong": 1,
         "delta_pp": 0.0
+      },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 50.0,
+        "cartridge_accuracy": 51.0,
+        "training_effect": {
+          "new_correct": 2,
+          "new_wrong": 1,
+          "delta_pp": 1.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 2,
+          "new_wrong": 1,
+          "delta_pp": 1.0
+        }
       },
       "whole_only": {
         "n": 11,
@@ -171,6 +213,20 @@
         "new_wrong": 1,
         "delta_pp": 3.0
       },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 24.0,
+        "cartridge_accuracy": 25.0,
+        "training_effect": {
+          "new_correct": 1,
+          "new_wrong": 0,
+          "delta_pp": 1.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 1,
+          "new_wrong": 3,
+          "delta_pp": -2.0
+        }
+      },
       "whole_only": {
         "n": 18,
         "adapted_full_correct": 17,
@@ -215,6 +271,20 @@
         "new_correct": 1,
         "new_wrong": 2,
         "delta_pp": -1.0
+      },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 27.0,
+        "cartridge_accuracy": 26.0,
+        "training_effect": {
+          "new_correct": 0,
+          "new_wrong": 1,
+          "delta_pp": -1.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 2,
+          "new_wrong": 2,
+          "delta_pp": 0.0
+        }
       },
       "whole_only": {
         "n": 9,
@@ -261,6 +331,20 @@
         "new_wrong": 2,
         "delta_pp": 0.0
       },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 74.0,
+        "cartridge_accuracy": 71.0,
+        "training_effect": {
+          "new_correct": 0,
+          "new_wrong": 3,
+          "delta_pp": -3.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 1,
+          "new_wrong": 4,
+          "delta_pp": -3.0
+        }
+      },
       "whole_only": {
         "n": 5,
         "adapted_full_correct": 5,
@@ -305,6 +389,20 @@
         "new_correct": 1,
         "new_wrong": 0,
         "delta_pp": 1.0
+      },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 79.0,
+        "cartridge_accuracy": 80.0,
+        "training_effect": {
+          "new_correct": 1,
+          "new_wrong": 0,
+          "delta_pp": 1.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        }
       },
       "whole_only": {
         "n": 2,
@@ -352,6 +450,20 @@
         "new_wrong": 1,
         "delta_pp": 0.0
       },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 84.0,
+        "cartridge_accuracy": 83.0,
+        "training_effect": {
+          "new_correct": 0,
+          "new_wrong": 1,
+          "delta_pp": -1.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 1,
+          "new_wrong": 2,
+          "delta_pp": -1.0
+        }
+      },
       "whole_only": {
         "n": 7,
         "adapted_full_correct": 5,
@@ -397,6 +509,20 @@
         "new_correct": 3,
         "new_wrong": 7,
         "delta_pp": -4.0
+      },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 37.0,
+        "cartridge_accuracy": 37.0,
+        "training_effect": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 7,
+          "new_wrong": 3,
+          "delta_pp": 4.0
+        }
       },
       "whole_only": {
         "n": 21,
@@ -444,6 +570,20 @@
         "new_wrong": 0,
         "delta_pp": 2.0
       },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 49.0,
+        "cartridge_accuracy": 52.0,
+        "training_effect": {
+          "new_correct": 4,
+          "new_wrong": 1,
+          "delta_pp": 3.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 2,
+          "new_wrong": 1,
+          "delta_pp": 1.0
+        }
+      },
       "whole_only": {
         "n": 17,
         "adapted_full_correct": 16,
@@ -489,6 +629,20 @@
         "new_correct": 1,
         "new_wrong": 1,
         "delta_pp": 0.0
+      },
+      "teacher_format_controls": {
+        "selected_zero_accuracy": 86.0,
+        "cartridge_accuracy": 87.0,
+        "training_effect": {
+          "new_correct": 2,
+          "new_wrong": 1,
+          "delta_pp": 1.0
+        },
+        "cartridge_format_effect": {
+          "new_correct": 1,
+          "new_wrong": 0,
+          "delta_pp": 1.0
+        }
       },
       "whole_only": {
         "n": 4,
