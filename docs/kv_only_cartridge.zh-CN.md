@@ -7,3 +7,5 @@
 小模型配对测试覆盖 Qwen3 和 GPT-OSS 的原生零更新及非零适配路径，逐次检查预测分布和生成 token 是否一致，并核对释放后的字节数。[测试](../tests/test_kv_only_cartridge.py)也覆盖异常时恢复请求钩子。
 
 这是一个独立的内存实现候选，并未改变当前 BABILONG 作业的正式结果。[真实模型预检](../experiments/kv_only_cartridge/real_model_probe.py)可在已经加载的 GPU 模型上验证同一个人工构造请求中各生成位置的 logits、答案及存储释放；大模型验证和真实题目上的收益应单独记录。
+
+[可选预检驱动](../experiments/kv_only_cartridge/driver.py)支持复用现有单 GPU 作业中已经加载的模型，不再提交新 GPU 作业。驱动按模型加锁并保存结果，结束时恢复随机数状态和原配置；预检失败不会替换正式预测。只有预检通过后，才考虑将这项精简用于正式卡带。

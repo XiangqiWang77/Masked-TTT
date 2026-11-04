@@ -125,3 +125,48 @@ def test_kv_only_keeps_same_prompt_pairing_controls(architecture):
     assert standalone["original_question_controls"]["adapted"]["tokens"] == result["generated_token_ids"]
     assert standalone["memory"]["kv_only_materialized"]
     assert standalone["memory"]["cartridge_adapter_bytes"] == 0
+
+
+def test_optional_driver_restores_rng_and_configuration(tmp_path):
+    import json
+    from types import SimpleNamespace
+
+    from experiments.kv_only_cartridge.driver import run_if_enabled
+
+    original = object()
+    engine = SimpleNamespace(config=original)
+    assert run_if_enabled(engine, "qwen", {}, tmp_path) == "not_enabled"
+    (tmp_path / "ready.json").write_text(json.dumps({"allow_single_loaded_model_probe": True}))
+    before = torch.get_rng_state()
+
+    def probe(model):
+        model.config = object()
+        torch.manual_seed(123456)
+        return {"passed": True, "same_standalone_logits": True}
+
+    assert run_if_enabled(engine, "qwen", {"gpu": "test"}, tmp_path, probe=probe) == "passed"
+    assert engine.config is original and torch.equal(torch.get_rng_state(), before)
+    stored = json.loads((tmp_path / "qwen.json").read_text())
+    assert stored["same_standalone_logits"] and stored["identity"]["gpu"] == "test"
+    assert run_if_enabled(engine, "qwen", {}, tmp_path, probe=probe) == "already_passed"
+
+
+def test_optional_driver_saves_failure_without_disturbing_model(tmp_path):
+    import json
+    from types import SimpleNamespace
+
+    from experiments.kv_only_cartridge.driver import run_if_enabled
+
+    (tmp_path / "ready.json").write_text(json.dumps({"allow_single_loaded_model_probe": True}))
+    original = object()
+    engine = SimpleNamespace(config=original)
+    before = torch.get_rng_state()
+
+    def fail(model):
+        model.config = object()
+        torch.manual_seed(123456)
+        raise ValueError("probe failed")
+
+    assert run_if_enabled(engine, "gpt", {}, tmp_path, probe=fail) == "failed"
+    assert engine.config is original and torch.equal(torch.get_rng_state(), before)
+    assert json.loads((tmp_path / "gpt.json").read_text())["error"] == "ValueError"
