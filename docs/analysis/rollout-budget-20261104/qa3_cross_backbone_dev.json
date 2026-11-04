@@ -1,0 +1,184 @@
+{
+  "qa3_expected": 20,
+  "matched": 9,
+  "source_questions": 5,
+  "medians": {
+    "qwen": {
+      "teacher_KL_before": 1.7168984456361613e-08,
+      "gain_gradient_norm": 6.7252239333015496e-09,
+      "value_gradient_norm": 8.120468919514678e-08
+    },
+    "olmo": {
+      "teacher_KL_before": 0.051416561007499695,
+      "gain_gradient_norm": 0.010388270951807499,
+      "value_gradient_norm": 0.11712987720966339
+    }
+  },
+  "excluded": [
+    {
+      "case": "babilong-16-qa3-300065",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-16-qa3-300069",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-16-qa3-300072",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-32-qa3-300060",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-64-qa3-300060",
+      "reason": "One model used a compressed working document"
+    },
+    {
+      "case": "babilong-64-qa3-300063",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-64-qa3-300065",
+      "reason": "One model used a compressed working document"
+    },
+    {
+      "case": "babilong-64-qa3-300069",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-64-qa3-300072",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-8-qa3-300069",
+      "reason": "The token-by-token decoded prefixes differ"
+    },
+    {
+      "case": "babilong-8-qa3-300072",
+      "reason": "The token-by-token decoded prefixes differ"
+    }
+  ],
+  "rows": [
+    {
+      "case": "babilong-16-qa3-300060",
+      "qwen": {
+        "teacher_KL_before": 5.574009698250393e-09,
+        "gain_gradient_norm": 2.799280141019267e-09,
+        "value_gradient_norm": 2.8018702025178754e-08
+      },
+      "olmo": {
+        "teacher_KL_before": 0.051416561007499695,
+        "gain_gradient_norm": 0.012851113453507423,
+        "value_gradient_norm": 0.16169749200344086
+      }
+    },
+    {
+      "case": "babilong-16-qa3-300063",
+      "qwen": {
+        "teacher_KL_before": 2.873553839322085e-08,
+        "gain_gradient_norm": 1.2902457768859676e-08,
+        "value_gradient_norm": 8.590384226181413e-08
+      },
+      "olmo": {
+        "teacher_KL_before": 0.04623180627822876,
+        "gain_gradient_norm": 0.007046396378427744,
+        "value_gradient_norm": 0.03189139813184738
+      }
+    },
+    {
+      "case": "babilong-32-qa3-300063",
+      "qwen": {
+        "teacher_KL_before": 4.5940826254309286e-08,
+        "gain_gradient_norm": 1.636918334213533e-08,
+        "value_gradient_norm": 1.139430807484132e-07
+      },
+      "olmo": {
+        "teacher_KL_before": 1.1847419738769531,
+        "gain_gradient_norm": 0.07331521809101105,
+        "value_gradient_norm": 0.6058679819107056
+      }
+    },
+    {
+      "case": "babilong-32-qa3-300065",
+      "qwen": {
+        "teacher_KL_before": 0.003755293320864439,
+        "gain_gradient_norm": 0.018205495551228523,
+        "value_gradient_norm": 0.1490548551082611
+      },
+      "olmo": {
+        "teacher_KL_before": 0.07794277369976044,
+        "gain_gradient_norm": 0.0067967684008181095,
+        "value_gradient_norm": 0.049105774611234665
+      }
+    },
+    {
+      "case": "babilong-32-qa3-300069",
+      "qwen": {
+        "teacher_KL_before": 2.7861986495736346e-08,
+        "gain_gradient_norm": 1.24466232875875e-08,
+        "value_gradient_norm": 1.2225140721966454e-07
+      },
+      "olmo": {
+        "teacher_KL_before": 0.2675585448741913,
+        "gain_gradient_norm": 0.010388270951807499,
+        "value_gradient_norm": 0.11712987720966339
+      }
+    },
+    {
+      "case": "babilong-32-qa3-300072",
+      "qwen": {
+        "teacher_KL_before": 1.5145252163506484e-08,
+        "gain_gradient_norm": 6.7252239333015496e-09,
+        "value_gradient_norm": 8.120468919514678e-08
+      },
+      "olmo": {
+        "teacher_KL_before": 0.34683874249458313,
+        "gain_gradient_norm": 0.09476076811552048,
+        "value_gradient_norm": 0.7675949931144714
+      }
+    },
+    {
+      "case": "babilong-8-qa3-300060",
+      "qwen": {
+        "teacher_KL_before": 1.7168984456361613e-08,
+        "gain_gradient_norm": 3.3116747122363677e-09,
+        "value_gradient_norm": 4.452004631616546e-08
+      },
+      "olmo": {
+        "teacher_KL_before": 0.04665865749120712,
+        "gain_gradient_norm": 0.03239542618393898,
+        "value_gradient_norm": 0.2749215364456177
+      }
+    },
+    {
+      "case": "babilong-8-qa3-300063",
+      "qwen": {
+        "teacher_KL_before": 3.881645227465924e-09,
+        "gain_gradient_norm": 1.8537205104252052e-09,
+        "value_gradient_norm": 1.758995793466056e-08
+      },
+      "olmo": {
+        "teacher_KL_before": 0.026099087670445442,
+        "gain_gradient_norm": 0.001899813418276608,
+        "value_gradient_norm": 0.012396147474646568
+      }
+    },
+    {
+      "case": "babilong-8-qa3-300065",
+      "qwen": {
+        "teacher_KL_before": 1.5490650540073148e-08,
+        "gain_gradient_norm": 5.682438075638174e-09,
+        "value_gradient_norm": 4.395028341264151e-08
+      },
+      "olmo": {
+        "teacher_KL_before": 0.026137974113225937,
+        "gain_gradient_norm": 0.002511190716177225,
+        "value_gradient_norm": 0.023547876626253128
+      }
+    }
+  ],
+  "references_read": false,
+  "new_model_calls": 0
+}
