@@ -217,6 +217,8 @@ models with synthetic cached scores. It verifies selection, joint SD gradients,
 offline loading from saved unquantized checkpoints, materialized KV-only
 decoding, and source/training-state release. The actual
 checkpoints and GPU backend still need their own preflight and evaluation.
+The completed offline package check for both architectures is recorded
+[here](docs/analysis/packaged-cartridge-20261104/README.md).
 
 Evaluation compares paired answers with the same task-aware
 metric, reports gains and losses relative to each baseline, and reports
