@@ -1,0 +1,626 @@
+{
+  "created_utc": "2026-11-04T13:02:12.393559+00:00",
+  "model": "GPT-OSS-20B",
+  "cases": 200,
+  "source_questions": 50,
+  "metric": "answer_focused_lexical_v2",
+  "online_api_calls": 0,
+  "new_model_calls": 0,
+  "reference_answers_used_only_posthoc": true,
+  "teacher_and_original_cartridge_formats_differ": true,
+  "selected_transfer_weight": 0,
+  "gain_learning_rate": 0.01,
+  "value_learning_rate": 0.001,
+  "original_sd_training": true,
+  "physically_released_standalone": true,
+  "overall": {
+    "n": 200,
+    "accuracy": {
+      "whole": 53.5,
+      "zero": 61.0,
+      "teacher": 62.0,
+      "cartridge": 62.5
+    },
+    "versus_teacher": {
+      "n": 200,
+      "new_correct": 4,
+      "new_wrong": 3,
+      "delta_pp": 0.5
+    },
+    "versus_zero": {
+      "n": 200,
+      "new_correct": 6,
+      "new_wrong": 3,
+      "delta_pp": 1.5
+    },
+    "versus_whole": {
+      "n": 200,
+      "new_correct": 36,
+      "new_wrong": 18,
+      "delta_pp": 9.0
+    },
+    "strictly_paired": {
+      "n": 196,
+      "new_correct": 5,
+      "new_wrong": 2,
+      "delta_pp": 1.530612244897959
+    },
+    "paired_baseline_accuracy": 60.714285714285715,
+    "paired_candidate_accuracy": 62.244897959183675,
+    "median_cartridge_percent": 20.81250845408823
+  },
+  "groups": {
+    "length:16384": {
+      "n": 50,
+      "accuracy": {
+        "whole": 64.0,
+        "zero": 68.0,
+        "teacher": 72.0,
+        "cartridge": 70.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 2,
+        "delta_pp": -2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 7,
+        "new_wrong": 4,
+        "delta_pp": 6.0
+      },
+      "strictly_paired": {
+        "n": 50,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 70.0,
+      "paired_candidate_accuracy": 70.0,
+      "median_cartridge_percent": 23.094191955674965
+    },
+    "length:32768": {
+      "n": 50,
+      "accuracy": {
+        "whole": 54.0,
+        "zero": 66.0,
+        "teacher": 66.0,
+        "cartridge": 66.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 10,
+        "new_wrong": 4,
+        "delta_pp": 12.0
+      },
+      "strictly_paired": {
+        "n": 48,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0833333333333335
+      },
+      "paired_baseline_accuracy": 64.58333333333333,
+      "paired_candidate_accuracy": 66.66666666666667,
+      "median_cartridge_percent": 17.54591451592892
+    },
+    "length:65536": {
+      "n": 50,
+      "accuracy": {
+        "whole": 42.0,
+        "zero": 56.0,
+        "teacher": 52.0,
+        "cartridge": 54.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 2,
+        "delta_pp": -2.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 11,
+        "new_wrong": 5,
+        "delta_pp": 12.0
+      },
+      "strictly_paired": {
+        "n": 50,
+        "new_correct": 2,
+        "new_wrong": 2,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 54.0,
+      "paired_candidate_accuracy": 54.0,
+      "median_cartridge_percent": 16.580578187654496
+    },
+    "length:8192": {
+      "n": 50,
+      "accuracy": {
+        "whole": 54.0,
+        "zero": 54.0,
+        "teacher": 58.0,
+        "cartridge": 60.0
+      },
+      "versus_teacher": {
+        "n": 50,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 2.0
+      },
+      "versus_zero": {
+        "n": 50,
+        "new_correct": 3,
+        "new_wrong": 0,
+        "delta_pp": 6.0
+      },
+      "versus_whole": {
+        "n": 50,
+        "new_correct": 8,
+        "new_wrong": 5,
+        "delta_pp": 6.0
+      },
+      "strictly_paired": {
+        "n": 48,
+        "new_correct": 2,
+        "new_wrong": 0,
+        "delta_pp": 4.166666666666667
+      },
+      "paired_baseline_accuracy": 54.166666666666664,
+      "paired_candidate_accuracy": 58.333333333333336,
+      "median_cartridge_percent": 33.80048396363513
+    },
+    "task:qa1": {
+      "n": 20,
+      "accuracy": {
+        "whole": 55.0,
+        "zero": 70.0,
+        "teacher": 70.0,
+        "cartridge": 70.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 1,
+        "delta_pp": 15.0
+      },
+      "strictly_paired": {
+        "n": 19,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 73.6842105263158,
+      "paired_candidate_accuracy": 73.6842105263158,
+      "median_cartridge_percent": 19.52456623331502
+    },
+    "task:qa10": {
+      "n": 20,
+      "accuracy": {
+        "whole": 35.0,
+        "zero": 30.0,
+        "teacher": 35.0,
+        "cartridge": 30.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 3,
+        "new_wrong": 4,
+        "delta_pp": -5.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 30.0,
+      "paired_candidate_accuracy": 30.0,
+      "median_cartridge_percent": 20.682387315688842
+    },
+    "task:qa2": {
+      "n": 20,
+      "accuracy": {
+        "whole": 45.0,
+        "zero": 55.0,
+        "teacher": 60.0,
+        "cartridge": 55.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 1,
+        "delta_pp": -5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 2,
+        "delta_pp": 10.0
+      },
+      "strictly_paired": {
+        "n": 19,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 52.63157894736842,
+      "paired_candidate_accuracy": 52.63157894736842,
+      "median_cartridge_percent": 21.26558114951996
+    },
+    "task:qa3": {
+      "n": 20,
+      "accuracy": {
+        "whole": 35.0,
+        "zero": 30.0,
+        "teacher": 30.0,
+        "cartridge": 30.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 5,
+        "delta_pp": -5.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 30.0,
+      "paired_candidate_accuracy": 30.0,
+      "median_cartridge_percent": 20.8375189950739
+    },
+    "task:qa4": {
+      "n": 20,
+      "accuracy": {
+        "whole": 20.0,
+        "zero": 40.0,
+        "teacher": 40.0,
+        "cartridge": 50.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 0,
+        "delta_pp": 10.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 0,
+        "delta_pp": 10.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 6,
+        "new_wrong": 0,
+        "delta_pp": 30.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "paired_baseline_accuracy": 45.0,
+      "paired_candidate_accuracy": 50.0,
+      "median_cartridge_percent": 18.89536068890522
+    },
+    "task:qa5": {
+      "n": 20,
+      "accuracy": {
+        "whole": 90.0,
+        "zero": 90.0,
+        "teacher": 90.0,
+        "cartridge": 90.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 2,
+        "delta_pp": 0.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 90.0,
+      "paired_candidate_accuracy": 90.0,
+      "median_cartridge_percent": 20.59443290266732
+    },
+    "task:qa6": {
+      "n": 20,
+      "accuracy": {
+        "whole": 55.0,
+        "zero": 50.0,
+        "teacher": 55.0,
+        "cartridge": 55.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 1,
+        "delta_pp": 5.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 4,
+        "delta_pp": 0.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 2,
+        "new_wrong": 0,
+        "delta_pp": 10.0
+      },
+      "paired_baseline_accuracy": 45.0,
+      "paired_candidate_accuracy": 55.0,
+      "median_cartridge_percent": 21.451230220184236
+    },
+    "task:qa7": {
+      "n": 20,
+      "accuracy": {
+        "whole": 60.0,
+        "zero": 60.0,
+        "teacher": 60.0,
+        "cartridge": 60.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "strictly_paired": {
+        "n": 19,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 57.89473684210526,
+      "paired_candidate_accuracy": 57.89473684210526,
+      "median_cartridge_percent": 20.389580572785835
+    },
+    "task:qa8": {
+      "n": 20,
+      "accuracy": {
+        "whole": 60.0,
+        "zero": 85.0,
+        "teacher": 80.0,
+        "cartridge": 85.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 0,
+        "delta_pp": 5.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 5,
+        "new_wrong": 0,
+        "delta_pp": 25.0
+      },
+      "strictly_paired": {
+        "n": 20,
+        "new_correct": 1,
+        "new_wrong": 1,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 85.0,
+      "paired_candidate_accuracy": 85.0,
+      "median_cartridge_percent": 20.82912958813141
+    },
+    "task:qa9": {
+      "n": 20,
+      "accuracy": {
+        "whole": 80.0,
+        "zero": 100.0,
+        "teacher": 100.0,
+        "cartridge": 100.0
+      },
+      "versus_teacher": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_zero": {
+        "n": 20,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "versus_whole": {
+        "n": 20,
+        "new_correct": 4,
+        "new_wrong": 0,
+        "delta_pp": 20.0
+      },
+      "strictly_paired": {
+        "n": 19,
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "paired_baseline_accuracy": 100.0,
+      "paired_candidate_accuracy": 100.0,
+      "median_cartridge_percent": 21.931639823553105
+    }
+  },
+  "unmatched_baseline_count": 4,
+  "memory": {
+    "n": 200,
+    "median_full_document_kv_bytes": 535498752.0,
+    "median_selected_source_kv_bytes": 79060992.0,
+    "median_standalone_cartridge_bytes": 110997504.0,
+    "median_cartridge_percent_of_full": 20.81250845408823,
+    "median_document_kv_reduction_percent": 79.18749154591177,
+    "median_model_resident_gpu_bytes": 41898768896.0,
+    "median_training_peak_gpu_allocated_bytes": 43630551808.0,
+    "max_training_peak_gpu_allocated_bytes": 47807662080,
+    "median_allocated_gpu_before_decode_bytes": 42009952000.0,
+    "max_allocated_gpu_before_decode_bytes": 42169616384
+  },
+  "memory_by_length": {
+    "length:16384": {
+      "n": 50,
+      "median_full_document_kv_bytes": 397565952.0,
+      "median_selected_source_kv_bytes": 68653056.0,
+      "median_standalone_cartridge_bytes": 92387328.0,
+      "median_cartridge_percent_of_full": 23.094191955674965,
+      "median_document_kv_reduction_percent": 76.90580804432503,
+      "median_model_resident_gpu_bytes": 41898768896.0,
+      "median_training_peak_gpu_allocated_bytes": 43090804480.0,
+      "max_training_peak_gpu_allocated_bytes": 43434804224,
+      "median_allocated_gpu_before_decode_bytes": 41991282688.0,
+      "max_allocated_gpu_before_decode_bytes": 41994701824
+    },
+    "length:32768": {
+      "n": 50,
+      "median_full_document_kv_bytes": 766377984.0,
+      "median_selected_source_kv_bytes": 93081600.0,
+      "median_standalone_cartridge_bytes": 134879232.0,
+      "median_cartridge_percent_of_full": 17.54591451592892,
+      "median_document_kv_reduction_percent": 82.45408548407107,
+      "median_model_resident_gpu_bytes": 41898768896.0,
+      "median_training_peak_gpu_allocated_bytes": 44117775872.0,
+      "max_training_peak_gpu_allocated_bytes": 44898285056,
+      "median_allocated_gpu_before_decode_bytes": 42033900800.0,
+      "max_allocated_gpu_before_decode_bytes": 42044663296
+    },
+    "length:65536": {
+      "n": 50,
+      "median_full_document_kv_bytes": 1531809792.0,
+      "median_selected_source_kv_bytes": 173543424.0,
+      "median_standalone_cartridge_bytes": 253206528.0,
+      "median_cartridge_percent_of_full": 16.580578187654496,
+      "median_document_kv_reduction_percent": 83.4194218123455,
+      "median_model_resident_gpu_bytes": 41898768896.0,
+      "median_training_peak_gpu_allocated_bytes": 46315735808.0,
+      "max_training_peak_gpu_allocated_bytes": 47807662080,
+      "median_allocated_gpu_before_decode_bytes": 42152472064.0,
+      "max_allocated_gpu_before_decode_bytes": 42169616384
+    },
+    "length:8192": {
+      "n": 50,
+      "median_full_document_kv_bytes": 208871424.0,
+      "median_selected_source_kv_bytes": 55885824.0,
+      "median_standalone_cartridge_bytes": 70311936.0,
+      "median_cartridge_percent_of_full": 33.80048396363513,
+      "median_document_kv_reduction_percent": 66.19951603636487,
+      "median_model_resident_gpu_bytes": 41898768896.0,
+      "median_training_peak_gpu_allocated_bytes": 42879749120.0,
+      "max_training_peak_gpu_allocated_bytes": 42950752768,
+      "median_allocated_gpu_before_decode_bytes": 41969144832.0,
+      "max_allocated_gpu_before_decode_bytes": 41972966912
+    }
+  }
+}
