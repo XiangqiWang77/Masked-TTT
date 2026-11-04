@@ -14,4 +14,6 @@
 
 这 200 题对应 50 个源问题的四种长度，属于开发分析。覆盖标注表示选中范围包含事实，并不单独证明模型使用了这些事实；后续仍需在来源问题不重叠的题上测试。
 
+同一套关联选块的结果还显示了全文与选中视图的互补性。在全文正确、选中零更新错误的题上，Cartridge 分别修回 Qwen 的 **0 / 23** 题和 GPT-OSS 的 **0 / 16** 题；在选中零更新正确、全文错误的题上，分别保住 **21 / 21** 和 **30 / 31** 题。这些是事后配对结果，表明当前版本主要保留了选中视图的优势，而这批题里尚未观察到对全文独有正确答案的恢复。[两模型配对表](dual_view_development.md)
+
 [完整报告](report.md) · [聚合数据](summary.json) · [分析代码](../../../experiments/babilong_linked_selection/coverage_outcomes.py) · [测试](../../../tests/test_linked_coverage_outcomes.py)
