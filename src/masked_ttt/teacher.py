@@ -36,6 +36,8 @@ class TeacherSignal:
             first_token_seconds=self.first_token_seconds,
             first_token_scope='selected_prompt_planning_prefill_first_token',
             target_fixed=True,
+            target_fixed_scope='Teacher weights and selected document KV; probabilities depend on the student prefix',
+            on_policy_targets_recomputed=True,
             fresh_selected_context=True,
             response_instruction_applied=self.instruction_applied,
         )
