@@ -6,6 +6,8 @@ The existing 200-case source-disjoint development sweep uses the predeclared Val
 
 For GPT-OSS-20B, the completed development results selected `0.001`: **54.00%**, compared with **53.50%** Teacher and **52.50%** selected zero-update. This is a development result, not a 1,000-case conclusion. The GPT holdout uses one sufficiently large GPU, cached Decision scores, a frozen runtime, CPU checks and a real-GPU preflight. The report combines its 800 cases with the fixed 200-case development snapshot and also gives the source-disjoint holdout, paired new-correct/new-wrong counts, question-type results and selected-KV storage.
 
+If the CPU preflight fails transiently after the runtime was frozen, the Qwen launcher retries validation on that same intact runtime and frozen protocol at its next hourly check. It refuses to replace an existing submitted run or proceed with an incomplete or changed preparation.
+
 The original Teacher retains its generic response-format instruction; selected-zero and Cartridge use the same original question format. All arms use the same task-aware loose lexical scorer. Two previously inspected source questions are excluded from the 792-case target, and earlier aggregate results have been seen, so the holdout is not fully blind. A legacy launcher checks whether a matching physical holdout has already been submitted to avoid repeating it. Both model launchers and reports obey the shared limit of 12 single-GPU jobs and update hourly.
 
 [Archived versus physical runtime comparison](../../docs/analysis/value-runtime-compatibility-20261104/README.md) checks the Student trajectory and selected-cache output at both the original and candidate Value learning rates.

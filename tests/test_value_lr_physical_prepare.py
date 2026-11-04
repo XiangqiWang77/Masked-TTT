@@ -58,6 +58,45 @@ def test_prepare_freezes_only_the_completed_models_selected_configuration(tmp_pa
     assert len(calls) == 1
 
 
+def test_failed_cpu_check_retries_same_frozen_runtime_without_resubmitting(tmp_path, monkeypatch):
+    development, report, profile = fixture_value_development()
+    dev = tmp_path / "query_cartridges_value_lr_20261104"
+    dev.mkdir()
+    for name, data in (("manifest.json", development), ("latest.json", report), ("olmo_profile.json", profile)):
+        (dev / name).write_text(json.dumps(data))
+    old = tmp_path / "query_cartridges_rollout32_olmo_dev_20261104"
+    old.mkdir()
+    (old / "run.py").write_text(driver_source())
+    shared = tmp_path / "query_cartridges_linked_roll32_dev_20261104/runtime"
+    (shared / "helpers").mkdir(parents=True)
+    (shared / "scorer").mkdir()
+    root = tmp_path / "query_cartridges_value_lr_physical_gpt_holdout_20261104"
+    calls = []
+    def run(command, **kwargs):
+        calls.append(command)
+        if len(calls) == 1:
+            return SimpleNamespace(returncode=1, stdout="", stderr="temporary resource failure")
+        return SimpleNamespace(returncode=0, stdout="40 passed in 1s\n", stderr="")
+    monkeypatch.setattr(implementation.subprocess, "run", run)
+    with pytest.raises(RuntimeError, match="temporary resource failure"):
+        prepare(tmp_path, root, tmp_path / "python", "gpt")
+    marker = root / "runtime/repo/frozen_marker"
+    marker.write_text("preserved")
+    manifest_path = root / "manifest.json"
+    manifest_text = manifest_path.read_text()
+    altered = json.loads(manifest_text)
+    altered["fixed_value_learning_rate"] = .0003
+    manifest_path.write_text(json.dumps(altered))
+    with pytest.raises(ValueError, match="different protocol"):
+        prepare(tmp_path, root, tmp_path / "python", "gpt")
+    assert len(calls) == 1
+    manifest_path.write_text(manifest_text)
+    checks = prepare(tmp_path, root, tmp_path / "python", "gpt")
+    assert checks["cpu_tests_passed"] and checks["fixed_value_learning_rate"] == .001
+    assert marker.read_text() == "preserved" and len(calls) == 2
+    assert not (root / "submission.json").exists()
+
+
 def test_submission_is_single_gpu_guarded_and_idempotent(tmp_path, monkeypatch):
     development, report, profile = fixture_value_development()
     from experiments.value_lr_physical.protocol import holdout_manifest

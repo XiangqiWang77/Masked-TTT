@@ -71,6 +71,34 @@ def report_stub(workspace, root):
             "    fcntl.flock(lock, fcntl.LOCK_EX)\n    main()\n")
 
 
+def validate_frozen(root, python, model, manifest):
+    """Validate an already-frozen runtime, including after a transient failure."""
+    runtime, frozen = root / "runtime", root / "runtime/repo"
+    required = [root / "manifest.json", root / "development_manifest.json",
+                root / "development_snapshot.json", root / "report.py", root / "job.sbatch",
+                runtime / "rollout_driver.py", runtime / "olmo_profile.json",
+                runtime / "helpers", runtime / "scorer", frozen / "src", frozen / "experiments",
+                frozen / "tests", frozen / "examples"]
+    if any(not path.exists() for path in required):
+        raise ValueError("The unfinished frozen runtime is incomplete")
+    if json.loads((root / "manifest.json").read_text()) != manifest:
+        raise ValueError("The unfinished frozen runtime uses a different protocol")
+    env = dict(os.environ, PYTHONPATH="src:tests:.", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
+               OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
+               CARTRIDGE_VALUE_DRIVER_PATH=str(runtime / "rollout_driver.py"))
+    result = subprocess.run([str(python), "-m", "pytest", "--rootdir", str(frozen),
+        "--confcutdir", str(frozen), "-q", *CPU_TESTS], cwd=frozen, env=env,
+        text=True, capture_output=True, timeout=180)
+    matched = re.search(r"\b(\d+) passed\b", result.stdout)
+    if result.returncode or not matched:
+        raise RuntimeError("Frozen physical holdout validation failed:\n" + result.stdout + result.stderr)
+    data = dict(cpu_tests_passed=True, passed_count=int(matched.group(1)), tests=CPU_TESTS,
+                gpu_preflight_required=True, model=model, fixed_value_learning_rate=manifest["fixed_value_learning_rate"],
+                online_api_calls=0, created=time.time())
+    atomic(root / "cpu_validation_passed.json", json.dumps(data, indent=2) + "\n")
+    return data
+
+
 def prepare(workspace, root, python, model):
     workspace, root = workspace.resolve(), root.resolve()
     expected_name = "query_cartridges_value_lr_physical_" + model + "_holdout_20261104"
@@ -100,7 +128,9 @@ def prepare(workspace, root, python, model):
             raise ValueError("A submitted holdout has no valid preparation record")
         runtime = root / "runtime"
         if runtime.exists():
-            raise ValueError("Do not overwrite an existing frozen holdout runtime")
+            # A failed CPU validation may be transient. Keep the frozen files
+            # and re-run their checks only when the full protocol is intact.
+            return validate_frozen(root, python, model, manifest)
         runtime.mkdir()
         frozen = runtime / "repo"
         frozen.mkdir()
@@ -119,20 +149,7 @@ def prepare(workspace, root, python, model):
         atomic(root / "development_snapshot.json", json.dumps(dev_report, indent=2) + "\n")
         atomic(root / "report.py", report_stub(workspace, root))
         atomic(root / "job.sbatch", physical_slurm(root, model))
-        env = dict(os.environ, PYTHONPATH="src:tests:.", PYTEST_DISABLE_PLUGIN_AUTOLOAD="1",
-                   OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1",
-                   CARTRIDGE_VALUE_DRIVER_PATH=str(runtime / "rollout_driver.py"))
-        result = subprocess.run([str(python), "-m", "pytest", "--rootdir", str(frozen),
-            "--confcutdir", str(frozen), "-q", *CPU_TESTS], cwd=frozen, env=env,
-            text=True, capture_output=True, timeout=180)
-        matched = re.search(r"\b(\d+) passed\b", result.stdout)
-        if result.returncode or not matched:
-            raise RuntimeError("Frozen physical holdout validation failed:\n" + result.stdout + result.stderr)
-        data = dict(cpu_tests_passed=True, passed_count=int(matched.group(1)), tests=CPU_TESTS,
-                    gpu_preflight_required=True, model=model, fixed_value_learning_rate=manifest["fixed_value_learning_rate"],
-                    online_api_calls=0, created=time.time())
-        atomic(root / "cpu_validation_passed.json", json.dumps(data, indent=2) + "\n")
-        return data
+        return validate_frozen(root, python, model, manifest)
 
 
 def submit(workspace, root):
