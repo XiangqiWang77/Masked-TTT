@@ -69,9 +69,11 @@ def atomic(path, value):
 def run_if_needed(engine, model, identity):
     if model != "qwen":return "not_applicable"
     from experiments.babilong_linked_selection.proper_where_selector import ProperWhereSelector
+    from masked_ttt.linked_selection import LinkedFrozenSelector
     root = HERE.parent
     manifest = json.loads((root/"manifest.json").read_text())
-    if (manifest["models"] != ["qwen"] or manifest["selection_policy"] != "decision_proper_where_v1" or
+    if (manifest["models"] != ["qwen"] or manifest["selection_policy"] not in
+        ("decision_proper_where_v1", "decision_entity_link_v1") or
         manifest["reference_answers_used_in_inference"] is not False or manifest["online_api_calls"] != 0):
         raise ValueError("The probe does not match the frozen Qwen job")
     cases = candidate_cases(manifest)
@@ -86,7 +88,9 @@ def run_if_needed(engine, model, identity):
         if result["complete"]:return "already_complete"
         spec = json.loads(Path(manifest["model_protocols"]["qwen"]).read_text())
         entries = {entry["key"]:entry for entry in json.loads(Path(spec["index"]).read_text())}
-        selector = ProperWhereSelector(spec["shared_scores"])
+        selector_type = (ProperWhereSelector if manifest["selection_policy"] == "decision_proper_where_v1"
+                         else LinkedFrozenSelector)
+        selector = selector_type(spec["shared_scores"])
         local = copy(engine)
         # The driver invokes optional probes only with >15 minutes remaining.
         # Bound this diagnostic to six minutes for the whole allocation.

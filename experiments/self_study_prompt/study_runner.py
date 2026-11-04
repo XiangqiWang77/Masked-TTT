@@ -3,6 +3,7 @@ from contextlib import contextmanager, nullcontext
 from dataclasses import replace
 
 from experiments.prompt_alignment.same_gpu_pair import run_study_prompt_pair
+from experiments.self_study_prompt.inline_probe import run_inline_probe
 from masked_ttt.config import TTTConfig
 
 
@@ -59,6 +60,7 @@ def study_pair_runner(implementation, runtime, controls, *, root, selector, phys
             manifest.get("entity_reserve_fraction") != .25 or
             manifest.get("student_rollout_tokens") != 8 or
             manifest.get("self_study_prompt_comparison") != "original_vs_study_only" or
+            manifest.get("probe_gate_mode") != "in_job_before_dataset" or
             manifest.get("holdout_evaluated_at_selection") is not False):
             raise ValueError("The paired study-prompt protocol changed")
         return old_manifest(dict(manifest, selection_policy="cached_decision_score10"))
@@ -120,7 +122,7 @@ def study_pair_runner(implementation, runtime, controls, *, root, selector, phys
             baseline = old_preflight(engine)
         finally:
             runtime.MaskedTTT, controls.original_question_controls = StudyPair, nullcontext
-        return dict(baseline, **real_pair_preflight(engine))
+        return dict(baseline, **real_pair_preflight(engine), **run_inline_probe(engine, root))
 
     implementation.ROOT, implementation.validate_manifest = root, validate_manifest
     implementation.validate, implementation.replace, implementation.preflight = validate, configured, preflight

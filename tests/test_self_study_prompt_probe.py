@@ -8,6 +8,7 @@ import pytest
 from experiments.self_study_prompt.probe import candidate_cases,compact_stats,variant_request
 import experiments.self_study_prompt.probe as probe
 import experiments.babilong_linked_selection.proper_where_selector as selector_module
+import masked_ttt.linked_selection as linked_module
 from experiments.self_study_prompt.enable_in_job import JOB,MODULES,REPO,enable
 from experiments.self_study_prompt.report import summarize
 from masked_ttt import Request
@@ -126,7 +127,8 @@ def test_hook_compares_both_prompts_without_mutating_model_or_rng(tmp_path,monke
     assert torch.equal(rng,torch.get_rng_state());engine.assert_frozen(stamp)
 
 
-def test_hook_executes_real_selected_prefill_and_self_study_on_small_model(tmp_path,monkeypatch):
+@pytest.mark.parametrize("policy", ["decision_proper_where_v1", "decision_entity_link_v1"])
+def test_hook_executes_real_selected_prefill_and_self_study_on_small_model(tmp_path,monkeypatch,policy):
     root=tmp_path/"job";here=root/"disabled_optional_probe";here.mkdir(parents=True)
     key="babilong-8-qa7-1";question="How many objects is John carrying?"
     document="John picked up the apple. "*6
@@ -136,7 +138,7 @@ def test_hook_executes_real_selected_prefill_and_self_study_on_small_model(tmp_p
     index=root/"index.json";index.write_text(json.dumps([dict(key=key,offset=0,bytes=len(encoded))]))
     protocol=root/"protocol.json";protocol.write_text(json.dumps(dict(index=str(index),source_cases=str(source),
                                                                        shared_scores=str(root/"unused"))))
-    (root/"manifest.json").write_text(json.dumps(dict(models=["qwen"],selection_policy="decision_proper_where_v1",
+    (root/"manifest.json").write_text(json.dumps(dict(models=["qwen"],selection_policy=policy,
         reference_answers_used_in_inference=False,online_api_calls=0,model_protocols=dict(qwen=str(protocol)))))
     class Selector:
         def __init__(self,_path):pass
@@ -146,6 +148,7 @@ def test_hook_executes_real_selected_prefill_and_self_study_on_small_model(tmp_p
     monkeypatch.setattr(probe,"HERE",here)
     monkeypatch.setattr(probe,"candidate_cases",lambda _manifest:[key])
     monkeypatch.setattr(selector_module,"ProperWhereSelector",Selector)
+    monkeypatch.setattr(linked_module,"LinkedFrozenSelector",Selector)
     engine=make_engine();engine.eos_ids={-1}
     engine.config=replace(engine.config,self_question_count=1,self_question_max_tokens=4,
                           self_question_verify_tokens=2,prefill_chunk_tokens=64)

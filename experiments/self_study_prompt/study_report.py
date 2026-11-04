@@ -23,6 +23,7 @@ def collect(manifest, root, references, score):
         manifest["selection_policy"] != "decision_entity_link_v1" or
         manifest["entity_reserve_fraction"] != .25 or manifest["keep_fraction"] != .1 or
         manifest["self_study_prompt_comparison"] != "original_vs_study_only" or
+        manifest["probe_gate_mode"] != "in_job_before_dataset" or
         manifest["student_rollout_tokens"] != 8 or manifest["selected_transfer_weight"] != 0 or
         manifest["reference_answers_used_in_inference"] is not False or manifest["online_api_calls"] != 0 or
         manifest["holdout_evaluated_at_selection"] is not False):

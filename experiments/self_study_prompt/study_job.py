@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Freeze a one-GPU same-request study comparison; submit only after its probe."""
+"""Freeze one GPU job that gates development on its in-job source-only probe."""
 import argparse
 import fcntl
 import json
@@ -21,8 +21,7 @@ from experiments.value_lr_physical.prepare import physical_driver
 
 DEV = "query_cartridges_study_prompt_qwen_dev_20261104"
 HOLDOUT = "query_cartridges_study_prompt_qwen_holdout_20261104"
-PROBE = "query_cartridges_proper_where_qwen_dev_20261104/disabled_optional_probe/latest.json"
-CPU_TESTS = ["tests/test_study_pair_runner.py", "tests/test_study_gate.py", "tests/test_study_report.py", "tests/test_study_job.py",
+CPU_TESTS = ["tests/test_study_pair_runner.py", "tests/test_study_gate.py", "tests/test_study_report.py", "tests/test_study_job.py", "tests/test_inline_study_probe.py",
              "tests/test_same_gpu_pair.py", "tests/test_self_study_prompt_probe.py",
              "tests/test_batched_sd.py", "tests/test_frozen_scores.py",
              "tests/test_materialization_equivalence.py", "tests/test_kv_only_cartridge.py"]
@@ -46,6 +45,7 @@ def make_manifest(rollout, linked, profile):
         development_case_ids=list(development), holdout_case_ids=list(holdout),
         selection_policy="decision_entity_link_v1", entity_reserve_fraction=.25,
         student_rollout_tokens=8, self_study_prompt_comparison="original_vs_study_only",
+        probe_gate_mode="in_job_before_dataset", probe_cases=10,
         selected_transfer_weight=0., gain_head_mode="kv", steps=2, max_answer_steps=8,
         holdout_evaluated_at_selection=False, max_gpu_hours=36, online_api_calls=0,
         development_gate="Beat same-run full, zero, Teacher and original SD controls",
@@ -126,6 +126,8 @@ def prepare(workspace, root, python):
             shutil.copytree(shared / "helpers", runtime / "helpers", ignore=ignore)
             shutil.copytree(shared / "scorer", runtime / "scorer", ignore=ignore)
             (root / "logs").mkdir(exist_ok=True)
+            (root / "study_probe").mkdir(exist_ok=True)
+            shutil.copy2(REPO / "experiments/self_study_prompt/probe.py", root / "study_probe/driver.py")
             atomic(root / "manifest.json", json.dumps(manifest, indent=2) + "\n")
             atomic(root / "report.py", report_stub(workspace, root))
             atomic(root / "job.sbatch", batch_script(root))
@@ -137,11 +139,13 @@ def submit(workspace, root):
     if root.parent != workspace or root.name not in (DEV, HOLDOUT):
         raise ValueError("Unexpected study comparison directory")
     if root.name == DEV:
-        probe = workspace / PROBE
-        if not probe.is_file() or not probe_decision(json.loads(probe.read_text()))["eligible"]:
-            raise ValueError("A positive completed source-only prompt probe is required")
-    elif not development_decision(json.loads((root / "development_snapshot.json").read_text()))["eligible"]:
-        raise ValueError("The full paired development did not beat all controls")
+        manifest = json.loads((root / "manifest.json").read_text())
+        if (manifest.get("probe_gate_mode") != "in_job_before_dataset" or
+            not (root / "study_probe/driver.py").is_file()):
+            raise ValueError("The source-only in-job prompt gate is required")
+    elif (not development_decision(json.loads((root / "development_snapshot.json").read_text()))["eligible"] or
+          not probe_decision(json.loads((root / "probe_verified.json").read_text()))["eligible"]):
+        raise ValueError("The probe and paired development did not beat their controls")
     if not json.loads((root / "cpu_validation_passed.json").read_text())["cpu_tests_passed"]:
         raise ValueError("Frozen CPU tests did not pass")
     sys.path.insert(0, str(workspace))
@@ -182,31 +186,16 @@ def enable_monitor(workspace, root, python):
     subprocess.run(["systemctl", "--user", "enable", "--now", timer], check=True, capture_output=True, text=True)
 
 
-def install_trigger(workspace, root, python):
-    """Run after the existing once-per-hour no-label prompt-probe report."""
-    unit = Path(os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))) / "systemd/user"
-    dropin = unit / "query-cartridges-proper-where-dev.service.d"
-    dropin.mkdir(parents=True, exist_ok=True)
-    target = dropin / "zz-study-promotion.conf"
-    line = ("[Service]\nExecStartPost=/usr/bin/python3 " + str(root / "runtime/repo/experiments/self_study_prompt/study_trigger.py") +
-            " --workspace " + str(workspace) + " --job-root " + str(root) + " --python " + str(python) + "\n")
-    if target.exists() and target.read_text() != line:
-        raise ValueError("A different study-promotion trigger is already installed")
-    if not target.exists():
-        atomic(target, line)
-    subprocess.run(["systemctl", "--user", "daemon-reload"], check=True, capture_output=True, text=True)
-    return target
-
-
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("workspace", "job-root", "python"):
         parser.add_argument("--" + name, type=Path, required=True)
-    parser.add_argument("--install-trigger", action="store_true")
+    parser.add_argument("--submit", action="store_true")
     args = parser.parse_args()
     print(json.dumps(prepare(args.workspace, args.job_root, args.python), indent=2))
-    if args.install_trigger:
-        print("Conditional trigger:", install_trigger(args.workspace.resolve(), args.job_root.resolve(), args.python.resolve()))
+    if args.submit:
+        print(json.dumps(submit(args.workspace, args.job_root), indent=2))
+        enable_monitor(args.workspace.resolve(), args.job_root.resolve(), args.python.resolve())
 
 
 if __name__ == "__main__":

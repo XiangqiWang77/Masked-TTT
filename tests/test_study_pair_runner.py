@@ -41,12 +41,14 @@ def valid_manifest():
     return dict(mode="development", models=["qwen"], selection_policy="decision_entity_link_v1",
                 entity_reserve_fraction=.25, student_rollout_tokens=8,
                 self_study_prompt_comparison="original_vs_study_only",
+                probe_gate_mode="in_job_before_dataset",
                 holdout_evaluated_at_selection=False)
 
 
 def test_runner_preserves_real_preflight_and_restores_all_hooks(monkeypatch):
     impl, runtime, controls, old_method, old_selector, old_controls, physical, events = make_runner()
     monkeypatch.setattr(study_runner, "real_pair_preflight", lambda _: dict(paired_study_preflight=True))
+    monkeypatch.setattr(study_runner, "run_inline_probe", lambda *_: dict(source_probe_complete=True))
     with study_pair_runner(impl, runtime, controls, root="new", selector="linked", physical_controls=physical):
         assert impl.ROOT == "new" and runtime.FrozenJSONSelector == "linked"
         assert controls.original_question_controls is nullcontext

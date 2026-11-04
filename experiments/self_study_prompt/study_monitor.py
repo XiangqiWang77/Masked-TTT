@@ -16,7 +16,7 @@ sys.path[:0] = [str(REPO / "src"), str(REPO)]
 from experiments.babilong_linked_selection.long_rollout_protocol import validate_partition
 from experiments.gqa_head_gain.prepare import atomic
 from experiments.gqa_head_gain.report import summarize
-from experiments.self_study_prompt.study_gate import development_decision
+from experiments.self_study_prompt.study_gate import development_decision, probe_decision
 from experiments.self_study_prompt.study_job import (DEV, HOLDOUT, batch_script, enable_monitor,
                                                       report_stub, submit, validate_frozen)
 from experiments.self_study_prompt.study_report import render
@@ -29,6 +29,9 @@ def prepare_holdout(workspace, development, report):
     if not decision["eligible"]:
         atomic(development / "no_eligible_holdout.json", json.dumps(decision, indent=2) + "\n")
         return None, decision
+    probe = json.loads((development / "probe_verified.json").read_text())
+    if not probe_decision(probe)["eligible"]:
+        raise ValueError("A positive source-only probe is required for holdout")
     root = workspace / HOLDOUT
     root.mkdir(exist_ok=True)
     manifest = dict(source, mode="holdout", case_count=800, case_ids=list(source["holdout_case_ids"]),
@@ -46,6 +49,7 @@ def prepare_holdout(workspace, development, report):
             (root / "logs").mkdir(exist_ok=True)
             atomic(root / "manifest.json", json.dumps(manifest, indent=2) + "\n")
             atomic(root / "development_snapshot.json", json.dumps(report, indent=2) + "\n")
+            atomic(root / "probe_verified.json", json.dumps(probe, indent=2) + "\n")
             atomic(root / "report.py", report_stub(workspace, root))
             atomic(root / "job.sbatch", batch_script(root))
     return root, decision
@@ -85,6 +89,10 @@ def advance(workspace, root, python):
     workspace, root = workspace.resolve(), root.resolve()
     if root.parent != workspace or root.name not in (DEV, HOLDOUT):
         raise ValueError("Unexpected paired-study job directory")
+    for name, state in (("probe_rejected.json", "probe_not_eligible"),
+                        ("probe_failed.json", "probe_failed")):
+        if (root / name).is_file():
+            return dict(state=state, result=json.loads((root / name).read_text()))
     subprocess.run([sys.executable, str(root / "report.py")], check=True,
                    capture_output=True, text=True, timeout=120)
     if not (root / "finished.json").exists():
@@ -133,7 +141,8 @@ def main():
         raise
     atomic(root / "monitor_status.json", json.dumps(dict(result, updated=time.time()), indent=2) + "\n")
     print(json.dumps(result, default=str))
-    if result["state"] in ("terminal_without_complete_results", "not_eligible", "submitted", "complete"):
+    if result["state"] in ("terminal_without_complete_results", "probe_not_eligible", "probe_failed",
+                           "not_eligible", "submitted", "complete"):
         subprocess.run(["systemctl", "--user", "stop", args.timer], check=True, capture_output=True, text=True)
 
 

@@ -28,6 +28,7 @@ def test_scores_same_request_outcomes_and_rejects_invalid_pair(tmp_path, monkeyp
     manifest = dict(mode="development", models=["qwen"], case_count=200, case_ids=cases,
         development_case_ids=cases, holdout_case_ids=["held"], selection_policy="decision_entity_link_v1",
         entity_reserve_fraction=.25, keep_fraction=.1, self_study_prompt_comparison="original_vs_study_only",
+        probe_gate_mode="in_job_before_dataset",
         student_rollout_tokens=8, selected_transfer_weight=0., reference_answers_used_in_inference=False,
         online_api_calls=0, holdout_evaluated_at_selection=False)
     values = [candidate("bad", "good"), candidate("good", "bad"), candidate("bad", "good")]

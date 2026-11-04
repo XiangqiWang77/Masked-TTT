@@ -1,7 +1,11 @@
 import json
+from contextlib import contextmanager
 from pathlib import Path
+from types import SimpleNamespace
+import sys
 
-from experiments.self_study_prompt import study_job, study_monitor, study_trigger
+import pytest
+from experiments.self_study_prompt import study_job, study_monitor
 
 
 def sources():
@@ -34,28 +38,27 @@ def test_freezes_olmo_conditions_and_one_gpu():
         assert "self_study_prompt/execute.py" in script and "unset OPENAI_API_KEY" in script
 
 
-def test_trigger_waits_without_probe_and_submits_only_after_positive(tmp_path, monkeypatch):
+def test_submit_requires_in_job_probe_gate_and_one_gpu_slot(tmp_path, monkeypatch):
     workspace, root = tmp_path, tmp_path / study_job.DEV
     root.mkdir()
+    (root / "manifest.json").write_text(json.dumps(dict(probe_gate_mode="in_job_before_dataset")))
+    (root / "cpu_validation_passed.json").write_text(json.dumps(dict(cpu_tests_passed=True)))
+    with pytest.raises(ValueError, match="in-job prompt gate"):
+        study_job.submit(workspace, root)
+    (root / "study_probe").mkdir()
+    (root / "study_probe/driver.py").write_text("# gated probe\n")
+    (root / "job.sbatch").write_text("# test\n")
+    @contextmanager
+    def available():
+        yield True
+    monkeypatch.setitem(sys.modules, "gpu_slot_budget", SimpleNamespace(submission_slot=available))
     calls = []
-    monkeypatch.setattr(study_trigger, "submit", lambda *_: calls.append("submit") or dict(job_id="123"))
-    monkeypatch.setattr(study_trigger, "enable_monitor", lambda *_: calls.append("monitor"))
-    assert study_trigger.advance(workspace, root, Path("/python"))["state"] == "waiting_for_prompt_probe"
-    probe = workspace / study_job.PROBE
-    probe.parent.mkdir(parents=True)
-    report = dict(state="complete", n=10, expected=10, errors=0, reference_answers_used=False,
-        online_api_calls=0, training_runtime_changed=False, same_selected_teacher_cache=True,
-        downstream_accuracy_not_measured=True, base=dict(n=10, verified_exercises=1),
-        variant=dict(n=10, verified_exercises=1), more_verified=0, fewer_verified=0)
-    probe.write_text(json.dumps(report))
-    assert study_trigger.advance(workspace, root, Path("/python"))["state"] == "probe_not_eligible"
-    assert not calls
-    report.update(variant=dict(n=10, verified_exercises=3), more_verified=2)
-    probe.write_text(json.dumps(report))
-    assert study_trigger.advance(workspace, root, Path("/python"))["state"] == "submitted"
-    assert calls == ["submit", "monitor"]
-    assert study_trigger.advance(workspace, root, Path("/python"))["state"] == "submitted"
-    assert calls == ["submit", "monitor", "submit"]  # Do not restart a completed monitor.
+    monkeypatch.setattr(study_job.subprocess, "run", lambda args, **_kwargs:
+                        calls.append(args) or SimpleNamespace(stdout="123\n"))
+    result = study_job.submit(workspace, root)
+    assert result["job_id"] == "123" and result["gpus"] == 1 and result["cases"] == 200
+    assert len(calls) == 1 and calls[0][0] == "sbatch"
+    assert study_job.submit(workspace, root)["job_id"] == "123" and len(calls) == 1
 
 
 def test_combined_report_keeps_previously_inspected_sources_separate():
