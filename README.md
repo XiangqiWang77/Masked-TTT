@@ -147,3 +147,21 @@ OLMo 原始运行没有保存同轮零更新答案，因此不填该值；另一
 - [三模型完整配对汇总及不同选块设置](https://github.com/XiangqiWang77/Masked-TTT/blob/c0e5606/docs/analysis/three-model-babilong-20261104/README.md)
 - [逐题型、逐长度的配对结果](https://github.com/XiangqiWang77/Masked-TTT/blob/c0e5606/docs/analysis/query-cartridges-full-performance-20261104/README.md)；OLMo 题型本报告取原始运行，而该链接中的 OLMo 题型来自另一轮复跑。
 - [Teacher 与训练流程](https://github.com/XiangqiWang77/Masked-TTT/blob/c0e5606/src/masked_ttt/pipeline.py) · [KV 状态](https://github.com/XiangqiWang77/Masked-TTT/blob/c0e5606/src/masked_ttt/memory.py) · [独立卡带](https://github.com/XiangqiWang77/Masked-TTT/blob/c0e5606/src/masked_ttt/standalone.py)
+
+<details>
+<summary>写作与证据核对</summary>
+
+- **贡献是否明确？** 是：报告分别说明选块、KV 读取适配和 ICL 自蒸馏。
+- **流程是否清楚？** 是：按双视图、读取状态、训练、物化和回答的顺序描述。
+- **实验是否对应结论？** 是：三张图分别标注各自模型、测量对象与对照；图 2 是全文 KV 消融。
+- **评估范围是否可见？** 是：表格区分同轮对照、样本量、输出格式和 Teacher 选择范围。
+- **实现表述是否准确？** 是：区分低秩读取状态、原始缓存、独立卡带与全文诊断的 self-judge。
+
+| 要检验的论点 | 本报告证据 | 当前状态 |
+| --- | --- | --- |
+| OLMo 完整方法高于 ICL | 44.60% 对 41.20% | 已观察到；包含格式差异 |
+| SD 相对 NTP 改善答题 | 图 2 的 Qwen 全文 KV 对照 | 在该对照中观察到 |
+| 卡带减少文档状态 | 图 3 的逐请求中位比例 | 已观察到；不是总显存 |
+| QC 在每个模型都超过 Teacher | 三模型配对表 | 当前 GPT-OSS 结果不支持 |
+
+</details>
