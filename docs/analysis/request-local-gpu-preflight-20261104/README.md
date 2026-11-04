@@ -17,6 +17,8 @@ GPT-OSS 的聊天模板带有当前日期；配对的两次调用固定同一个
 
 当前提交作业的冻结加载器与公开加载器只在模型加载阶段有差别；预检启用时会核对其余运行时一致。Qwen 和 GPT-OSS 的本地检查点配置已在 CPU 上通过位置编码检查；真实模型 GPU 检查会再次对照已加载模型本身。
 
-该检查只验证部署与数值一致性；BABILONG 准确率仍由原作业单独评估。小模型测试已在当前代码和已提交作业的冻结运行时上通过。Qwen 的前一版真实 B200 请求级检查已通过，包含梯度、输出和通用格式释放验证；新增的原生 RoPE GPU 检查以及 GPT-OSS 请求级检查仍待执行。GPT-OSS 的既有物化路径已通过独立 B200 检查，见[真实模型检查汇总](../real-cartridge-parity-20261104/README.md)。
+真实模型结果现已确认：Qwen3-4B 的 v3 检查和 GPT-OSS-20B 的 v4 检查均在 **NVIDIA B200** 上通过。两者的 Teacher、学生前缀、两组梯度、独立卡带 logits 与输出一致，解码前均已释放全文 KV、选中源 KV 和训练参数；通用回答格式在释放前后的 token 也一致。GPT-OSS 的 v4 检查还核对了已加载模型的原生 RoPE 与检查点配置。Qwen 的检查点配置已在 CPU 上核对，但增加 RoPE 检查的 Qwen v4 GPU 检查仍待执行。
 
-[结果汇总脚本](../../../experiments/kv_only_cartridge/in_job_report.py)接入现有的每小时报告，只读取预检结果文件，不额外查询调度器。真实 GPU 通过、失败、尚未运行和记录不完整会分别标明。
+该合成请求检查验证部署与数值一致性；BABILONG 准确率由原作业单独评估。小模型测试也已在当前代码和已提交作业的冻结运行时上通过。GPT-OSS 的既有物化路径另有[独立 B200 检查](../real-cartridge-parity-20261104/README.md)。
+
+[已核验的脱敏结果](summary.json) · [冻结脚本](../../../experiments/kv_only_cartridge/freeze_real_preflight.py)。[每小时汇总脚本](../../../experiments/kv_only_cartridge/in_job_report.py)只读取预检结果文件，不额外查询调度器；真实 GPU 通过、失败、尚未运行和记录不完整会分别标明。

@@ -10,7 +10,8 @@ import statistics
 import sys
 
 
-def validate_candidate(result, case, model, task, gain_head_mode="query"):
+def validate_candidate(result, case, model, task, gain_head_mode="query",
+                       selection_policy="decision_entity_link_v1"):
     selection, train = result["selection"], result["training"]
     final = result["standalone_cartridge"]
     controls, memory = final["original_question_controls"], final["memory"]
@@ -18,7 +19,7 @@ def validate_candidate(result, case, model, task, gain_head_mode="query"):
     if (result["key"] != case or result["model_short"] != model or result["task"] != task or
         result["keep_fraction"] != .1 or selection["source_case_key"] != case or
         selection["backend"] != "precomputed_source_JSON" or
-        selection["selection_policy"] != "decision_entity_link_v1" or
+        selection["selection_policy"] != selection_policy or
         selection["entity_reserve_fraction"] != .25 or
         len(selection["selected_chunks"]) != max(1, math.ceil(selection["total_chunks"] * .1)) or
         not selection["complete_original_document"] or selection["reference_answers_used"] or

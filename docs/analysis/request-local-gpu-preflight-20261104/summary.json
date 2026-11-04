@@ -1,0 +1,40 @@
+{
+  "models": {
+    "qwen": {
+      "state": "passed",
+      "model_type": "qwen3",
+      "gpu": "NVIDIA B200",
+      "probe_version": 3,
+      "created_utc": "2026-11-04T10:25:26.405621+00:00",
+      "same_teacher_tokens": true,
+      "same_student_rollouts": true,
+      "same_training_gradients": true,
+      "same_standalone_tokens_and_logits": true,
+      "source_and_training_state_released": true,
+      "generic_tokens_match_after_release": true,
+      "teacher_answer_in_final_prompt": false,
+      "native_rope_on_gpu_checked": false
+    },
+    "gpt": {
+      "state": "passed",
+      "model_type": "gpt_oss",
+      "gpu": "NVIDIA B200",
+      "probe_version": 4,
+      "created_utc": "2026-11-04T10:47:10.136412+00:00",
+      "same_teacher_tokens": true,
+      "same_student_rollouts": true,
+      "same_training_gradients": true,
+      "same_standalone_tokens_and_logits": true,
+      "source_and_training_state_released": true,
+      "generic_tokens_match_after_release": true,
+      "teacher_answer_in_final_prompt": false,
+      "native_rope_on_gpu_checked": true
+    }
+  },
+  "synthetic_request": true,
+  "quality_not_measured": true,
+  "reference_answers_used": false,
+  "online_api_calls": 0,
+  "new_gpu_jobs": 0,
+  "qwen_v4_gpu_rope_check_pending": true
+}
