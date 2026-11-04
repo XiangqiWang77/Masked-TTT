@@ -62,3 +62,16 @@ def test_failed_candidate_restores_configuration_and_rng(tmp_path):
     assert engine.config is config and torch.equal(torch.get_rng_state(), state)
     assert (pipeline.answer_standalone, pipeline.decode_standalone) == hooks
     assert "masked_ttt._request_local_validation_pipeline" not in sys.modules
+
+
+def test_gpt_pair_pins_one_chat_date_across_both_calls(monkeypatch):
+    import masked_ttt.architectures as architectures
+
+    dates = []
+    def clock():
+        dates.append("read")
+        return "2026-11-03" if len(dates) == 1 else "2026-11-04"
+    monkeypatch.setattr(architectures, "_template_date", clock)
+    engine = gpt_gqa_engine()
+    assert load_probe(PROBE).validate_loaded_candidate(engine, CANDIDATE)["passed"]
+    assert dates == ["read"] and engine.tokenizer.masked_ttt_request_date is None

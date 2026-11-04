@@ -5,6 +5,7 @@ preflight runs the same OLMo-style SD and checks that a trained, independently
 materialized selected cache produces the generic-format control again after
 full KV, selected source KV, and training state are released.
 """
+from contextlib import nullcontext
 from dataclasses import replace
 
 import torch
@@ -37,11 +38,13 @@ def validate_loaded_backbone_formats(engine):
                                        dict(backend="synthetic_format_release_check"))
 
         method = MaskedTTT(engine, Selector())
-        with _capture_standalone_logits() as paired_logits, \
-                physical_paired_prompt_control(verify_teacher_suffix_after_release=True):
-            result = method.answer(request, time_budget_seconds=300)
-        with _capture_standalone_logits() as direct_logits:
-            direct = method.answer(request, time_budget_seconds=300, compact_standalone=True)
+        scope = getattr(engine.tokenizer, "request_scope", None)
+        with (scope() if callable(scope) else nullcontext()):
+            with _capture_standalone_logits() as paired_logits, \
+                    physical_paired_prompt_control(verify_teacher_suffix_after_release=True):
+                result = method.answer(request, time_budget_seconds=300)
+            with _capture_standalone_logits() as direct_logits:
+                direct = method.answer(request, time_budget_seconds=300, compact_standalone=True)
         memory = result["standalone_cartridge"]["memory"]
         controls = result["standalone_cartridge"]["paired_prompt_control"]
         verified = controls["teacher_suffix_independent_decode"]

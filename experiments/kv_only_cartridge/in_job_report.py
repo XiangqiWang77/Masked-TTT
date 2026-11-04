@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 REQUIRED = ("same_teacher_tokens", "same_student_rollouts", "same_training_gradients",
-            "same_standalone_tokens", "same_standalone_logits",
+            "same_standalone_tokens", "same_standalone_logits", "same_request_chat_date",
             "no_full_kv_or_extra_adapter_at_decode", "original_benchmark_runtime_unchanged")
 
 

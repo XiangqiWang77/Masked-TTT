@@ -5,7 +5,7 @@ loaded under a private module name, while its supporting modules and the
 already-loaded backbone come from the benchmark. The optional driver restores
 the engine configuration and CPU/GPU random states before evaluation resumes.
 """
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from dataclasses import replace
 import importlib.util
 import math
@@ -79,24 +79,29 @@ def validate_loaded_candidate(engine, candidate_path):
                 return PreparedRequest(item, layout, [len(layout.chunks) // 2],
                                        dict(backend="synthetic_request_local_probe"))
 
-        with candidate_pipeline(candidate_path) as candidate:
-            torch.set_rng_state(cpu_rng)
-            if gpu_rng is not None:
-                torch.cuda.set_rng_state_all(gpu_rng)
-            with capture_decode_logits(frozen_pipeline) as old_logits, kv_only_cartridge():
-                old = MaskedTTT(engine, Selector()).answer(request, time_budget_seconds=300)
-            # The benchmark's random state and the candidate's own inputs match.
-            torch.set_rng_state(cpu_rng)
-            if gpu_rng is not None:
-                torch.cuda.set_rng_state_all(gpu_rng)
-            with capture_decode_logits(candidate) as new_logits:
-                new = candidate.MaskedTTT(engine, Selector()).answer(
-                    request, time_budget_seconds=300, compact_standalone=True)
+        scope = getattr(engine.tokenizer, "request_scope", None)
+        # GPT-OSS inserts the current date into its chat template. Pin that
+        # context across both paired calls, even if midnight occurs between them.
+        with (scope() if callable(scope) else nullcontext()):
+            with candidate_pipeline(candidate_path) as candidate:
+                torch.set_rng_state(cpu_rng)
+                if gpu_rng is not None:
+                    torch.cuda.set_rng_state_all(gpu_rng)
+                with capture_decode_logits(frozen_pipeline) as old_logits, kv_only_cartridge():
+                    old = MaskedTTT(engine, Selector()).answer(request, time_budget_seconds=300)
+                # The benchmark's random state and the candidate's own inputs match.
+                torch.set_rng_state(cpu_rng)
+                if gpu_rng is not None:
+                    torch.cuda.set_rng_state_all(gpu_rng)
+                with capture_decode_logits(candidate) as new_logits:
+                    new = candidate.MaskedTTT(engine, Selector()).answer(
+                        request, time_budget_seconds=300, compact_standalone=True)
 
         if (not old_logits or len(old_logits) != len(new_logits) or
             any(a.shape != b.shape or not torch.allclose(a, b, atol=1e-5, rtol=1e-5)
                 for a, b in zip(old_logits, new_logits)) or
             old["generated_token_ids"] != new["generated_token_ids"] or
+            old["request_chat_date"] != new["request_chat_date"] or
             old["teacher"]["tokens"] != new["teacher"]["tokens"]):
             raise AssertionError("The request-local output or logits differ from the frozen runtime")
         if (frozen_pipeline.answer_standalone, frozen_pipeline.decode_standalone) != frozen_entrypoints:
@@ -120,6 +125,7 @@ def validate_loaded_candidate(engine, candidate_path):
                 raise AssertionError("Source KV or adaptation state survived the independent decode")
         return dict(passed=True, same_teacher_tokens=True, same_student_rollouts=True,
             same_training_gradients=True, same_standalone_tokens=True, same_standalone_logits=True,
+            same_request_chat_date=True,
             no_full_kv_or_extra_adapter_at_decode=True, original_benchmark_runtime_unchanged=True,
             model_type=engine.model.config.model_type, online_api_calls=0, reference_answers_used=False)
     finally:

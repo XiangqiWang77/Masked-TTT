@@ -64,7 +64,7 @@ def enable(workspace):
     files = {
         "driver.py": (REPO / "experiments/kv_only_cartridge/in_job_probe.py").read_bytes(),
         "pipeline_candidate.py": (REPO / "src/masked_ttt/pipeline.py").read_bytes(),
-        "ready.json": (json.dumps(dict(allow_single_loaded_model_probe=True, probe_version=1), indent=2) + "\n").encode(),
+        "ready.json": (json.dumps(dict(allow_single_loaded_model_probe=True, probe_version=2), indent=2) + "\n").encode(),
         "protocol.json": (json.dumps(dict(models=["qwen", "gpt"], synthetic_request=True,
             online_api_calls=0, reference_answers_used=False, new_gpu_jobs=0,
             training_runtime_changed=False, results_locked_per_model=True), indent=2) + "\n").encode(),
