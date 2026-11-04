@@ -1,0 +1,24 @@
+{
+  "created_utc": "2026-11-04T03:48:45.781253+00:00",
+  "source": "fixed 2026-11-04 01:32 UTC 221-Qwen / 264-GPT paired snapshot",
+  "only_saved_generated_questions_quotes_and_independent_verifier_answers_used": true,
+  "benchmark_answers_and_correctness_used": false,
+  "online_api_calls": 0,
+  "note": "Replayed verifier decisions only; added practice may still fail cache-boundary checks; no accuracy claim.",
+  "models": {
+    "qwen": {
+      "cases": 221,
+      "checked": 185,
+      "additional_verifier_accepts": 30,
+      "previously_verified": 50,
+      "cases_with_additional": 25
+    },
+    "gpt": {
+      "cases": 264,
+      "checked": 404,
+      "previously_verified": 137,
+      "additional_verifier_accepts": 7,
+      "cases_with_additional": 6
+    }
+  }
+}
