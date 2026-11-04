@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 from experiments.babilong_linked_selection.long_rollout_report import validate_new
+from experiments.babilong_linked_selection.long_rollout_protocol import validate_partition
 
 
 def validate_result(result, case, model, task):
@@ -44,13 +45,25 @@ def summarize(rows):
         step8_vs_teacher=paired("step8", "teacher"), step8_vs_zero=paired("step8", "zero"))
 
 
-def collect(manifest, root, references, score):
-    if (manifest["case_count"] != 56 or len(manifest["case_ids"]) != 56 or
-        len(set(manifest["case_ids"])) != 56 or manifest["step_budgets"] != [2, 4, 8] or
+def validate_manifest(manifest):
+    count = manifest["case_count"]
+    if (count not in (56, 200) or len(manifest["case_ids"]) != count or
+        len(set(manifest["case_ids"])) != count or manifest["step_budgets"] != [2, 4, 8] or
         manifest["student_rollout_tokens"] != 32 or manifest["selected_transfer_weight"] != 0 or
         manifest["selection_policy"] != "decision_entity_link_v1" or manifest["keep_fraction"] != .1 or
         manifest["reference_answers_used_in_inference"] is not False or manifest["online_api_calls"] != 0):
-        raise ValueError("The frozen pilot protocol changed")
+        raise ValueError("The frozen step-checkpoint protocol changed")
+    development, holdout = manifest["development_case_ids"], manifest["holdout_case_ids"]
+    validate_partition(development, holdout)
+    if not set(manifest["case_ids"]).issubset(development):
+        raise ValueError("Development checkpoints cannot include holdout cases")
+    if count == 200 and set(manifest["case_ids"]) != set(development):
+        raise ValueError("The expanded run must contain the entire development split")
+    return count
+
+
+def collect(manifest, root, references, score):
+    count = validate_manifest(manifest)
     models, errors, invalid = {}, [], []
     for model in manifest["models"]:
         rows = []
@@ -84,7 +97,7 @@ def collect(manifest, root, references, score):
         models[model] = dict(overall=summarize(rows),
                              groups={key: summarize(group) for key, group in groups.items()}, rows=rows)
     return dict(created_utc=datetime.now(timezone.utc).isoformat(), metric="answer_focused_lexical_v2",
-                expected_per_model=56, cached_scores=True, online_api_calls=0,
+                expected_per_model=count, cached_scores=True, online_api_calls=0,
                 evaluation_answers_used_only_posthoc=True, models=models, errors=errors, invalid=invalid)
 
 
@@ -104,8 +117,10 @@ def render(report):
               "each base budget also includes one update per accepted practice question. The 2/4-step outputs "
               "are matched selected-KV diagnostics; the formal 8-step output is decoded after source KV and "
               "training state are released. All reference answers are used only for post-generation scoring.",
-              "", "The 56-case pilot includes all five QA3 development sources and one fixed source from each "
-              "other type, each at four lengths. It is a focused development experiment, not a 1,000-case result.", ""]
+              "", ("The 56-case pilot includes all five QA3 development sources and one fixed source from each "
+                  "other type, each at four lengths." if report["expected_per_model"] == 56 else
+                  "The 200-case development run includes 50 source questions, each at four context lengths."),
+              "These development results are not a 1,000-case evaluation.", ""]
     return "\n".join(lines)
 
 

@@ -23,17 +23,31 @@ def decode(engine,reader,document_cache,suffix,length,limit):
 
 
 @contextmanager
-def capture_step_snapshots(base_steps=(2,4,8)):
+def capture_step_snapshots(base_steps=(2,4,8), *, final_base_step=None):
     """Decode checkpoints on the same independent selected KV after full release.
 
     An original request uses base steps plus one step per verified practice.
     For plain BABILONG questions, the first 2+P updates of an 8+P run match
     the default 2+P run. The probe never uses reference answers.
+
+    A caller may fix an earlier base step before the request. In that case
+    the final, physically released cartridge is materialized from exactly
+    that step's state, even though the diagnostic trajectory runs longer.
+    The selection itself is an experimental configuration; it is never made
+    from the request's generated answers or post-generation labels here.
     """
     import masked_ttt.pipeline as pipeline
     from masked_ttt.memory import KVReadMemory
     from masked_ttt.memory_accounting import storage_bytes
     from masked_ttt.standalone import build_standalone
+    base_steps=tuple(base_steps)
+    if (not base_steps or any(type(step) is not int or step < 1 for step in base_steps)
+            or tuple(sorted(set(base_steps))) != base_steps):
+        raise ValueError('Base step budgets must be sorted unique positive integers')
+    if final_base_step is None:
+        final_base_step=base_steps[-1]
+    if type(final_base_step) is not int or final_base_step not in base_steps:
+        raise ValueError('The fixed final step must be one of the recorded steps')
     old_reader=pipeline.MemoryReader
     old_study=pipeline.generate_self_study
     old_constrain=KVReadMemory.constrain
@@ -76,7 +90,7 @@ def capture_step_snapshots(base_steps=(2,4,8)):
     def answer(engine,layout,selected,teacher,trained,limit):
         if set(captured['snapshots'])!=set(base_steps):
             raise AssertionError('One or more requested step snapshots are missing')
-        saved=trained.snapshot();checkpoints={}
+        saved=trained.snapshot();checkpoints={};completed=False
         snapshot_bytes=storage_bytes(
             [value for snapshot in captured['snapshots'].values() for value in snapshot.values()
              if isinstance(value,torch.Tensor)])
@@ -90,13 +104,19 @@ def capture_step_snapshots(base_steps=(2,4,8)):
                 checkpoints[str(base)]=dict(base_steps=base,
                     total_steps=base+captured['practice_count'],
                     prediction=output['prediction'],tokens=output['tokens'])
+            # The final release path must use the predeclared checkpoint,
+            # not merely report its output while serving the last update.
+            trained.restore(captured['snapshots'][final_base_step])
+            completed=True
         finally:
-            trained.restore(saved)
+            if not completed:
+                trained.restore(saved)
             del saved
             # No checkpoint or paired-source tensors are carried into final decode.
             captured['snapshots'].clear()
         del reader,suffix,output
         diagnostics=dict(checkpoints=checkpoints,practice_count=captured['practice_count'],
+            fixed_final_base_step=final_base_step,
             same_selected_kv=True,full_kv_used_at_decode=False,
             reference_answers_used=False,teacher_answer_in_final_prompt=False,
             diagnostic_snapshot_bytes=snapshot_bytes,diagnostic_snapshots_offloaded_to_cpu=True,
