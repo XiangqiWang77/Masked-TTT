@@ -58,8 +58,9 @@ def test_request_local_canonical_matches_completed_experimental_path(architectur
     assert _CURRENT.get() is None
 
 
-def test_original_and_canonical_requests_are_isolated_between_threads():
-    engine, request = setup("qwen3")
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss"])
+def test_original_and_canonical_requests_are_isolated_between_threads(architecture):
+    engine, request = setup(architecture)
     original, canonical = copy(engine), copy(engine)
     canonical.config = replace(engine.config, selected_evidence_tokenization="canonical")
     methods = [MaskedTTT(original, Selector()), MaskedTTT(canonical, Selector())]
