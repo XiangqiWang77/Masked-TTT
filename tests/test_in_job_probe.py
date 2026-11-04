@@ -64,6 +64,22 @@ def test_generic_format_survives_source_release(architecture):
     assert engine.config is config and torch.equal(torch.get_rng_state(), state)
 
 
+@pytest.mark.parametrize("architecture", ["qwen3", "gpt_oss_gqa"])
+def test_position_check_uses_actual_local_checkpoint_config(architecture, tmp_path):
+    engine = make_engine() if architecture == "qwen3" else gpt_gqa_engine()
+    engine.model.config.save_pretrained(tmp_path)
+    engine.model.name_or_path = str(tmp_path)
+    probe = load_probe(PROBE)
+    result = probe.validate_loaded_checkpoint(engine)
+    assert result["same_checkpoint_rope"] and result["native_checkpoint_config_checked"]
+    bad = engine.model.config.to_dict()
+    bad["rope_theta"] *= 2
+    import json
+    (tmp_path / "config.json").write_text(json.dumps(bad))
+    with pytest.raises(AssertionError):
+        probe.validate_loaded_checkpoint(engine)
+
+
 def test_failed_candidate_restores_configuration_and_rng(tmp_path):
     import masked_ttt.pipeline as pipeline
 

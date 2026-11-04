@@ -9,7 +9,8 @@ from pathlib import Path
 REQUIRED = ("same_teacher_tokens", "same_student_rollouts", "same_training_gradients",
             "same_standalone_tokens", "same_standalone_logits", "same_request_chat_date",
             "no_full_kv_or_extra_adapter_at_decode", "original_benchmark_runtime_unchanged",
-            "same_generic_tokens_before_after_release")
+            "same_generic_tokens_before_after_release", "same_checkpoint_rope",
+            "native_checkpoint_config_checked")
 
 
 def collect(directory):
@@ -52,7 +53,7 @@ def render(report):
         lines.append(f"| {model} | {item['state']} | {item.get('gpu', '—')} |")
     lines += ["", "A pass requires matching Teacher tokens, student rollouts, joint gradients, "
               "standalone tokens and logits, together with release of full KV and extra adapter state. "
-              "It also checks that generic-format tokens match after source release. "
+              "It also checks generic-format tokens after source release and the native checkpoint RoPE. "
               "This synthetic preflight does not measure answer accuracy.", ""]
     return "\n".join(lines)
 

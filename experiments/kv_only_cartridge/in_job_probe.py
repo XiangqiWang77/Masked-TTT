@@ -6,6 +6,7 @@ already-loaded backbone come from the benchmark. The optional driver restores
 the engine configuration and CPU/GPU random states before evaluation resumes.
 """
 from contextlib import contextmanager, nullcontext
+from copy import deepcopy
 from dataclasses import replace
 import importlib.util
 import math
@@ -190,6 +191,49 @@ def validate_loaded_generic_format(engine, control_path):
             torch.cuda.set_rng_state_all(gpu_rng)
 
 
+def validate_loaded_checkpoint(engine):
+    """Compare this loaded model's position encoding to its local checkpoint."""
+    from transformers import AutoConfig
+
+    path = getattr(engine.model, "name_or_path", "")
+    if path:
+        if not Path(path).is_dir():
+            raise ValueError("The local checkpoint configuration is unavailable")
+        native = AutoConfig.from_pretrained(path, local_files_only=True)
+        loaded_from_checkpoint = True
+    else:
+        # The tiny CPU fixtures are constructed in memory rather than loaded.
+        native = deepcopy(engine.model.config)
+        loaded_from_checkpoint = False
+    kind = engine.model.config.model_type
+    if native.model_type != kind or engine.config.max_context > native.max_position_embeddings:
+        raise AssertionError("The request does not match its checkpoint context")
+    if native.rope_scaling != engine.model.config.rope_scaling:
+        raise AssertionError("The checkpoint position scaling changed")
+    if kind == "qwen3":
+        from transformers.models.qwen3.modeling_qwen3 import Qwen3RotaryEmbedding as RotaryEmbedding
+    elif kind == "gpt_oss":
+        from transformers.models.gpt_oss.modeling_gpt_oss import GptOssRotaryEmbedding as RotaryEmbedding
+    else:
+        raise ValueError("Unexpected backbone for this preflight")
+    expected = RotaryEmbedding(native, device=engine.device)
+    actual = engine.model.model.rotary_emb
+    reference = expected.inv_freq.to(dtype=actual.inv_freq.dtype).float()
+    tolerance = .008 if actual.inv_freq.dtype in (torch.float16, torch.bfloat16) else 1e-6
+    torch.testing.assert_close(actual.inv_freq.float(), reference, rtol=tolerance, atol=1e-8)
+    if (actual.rope_type != expected.rope_type or
+        not math.isclose(float(actual.attention_scaling), float(expected.attention_scaling),
+                         rel_tol=1e-6, abs_tol=1e-8)):
+        raise AssertionError("The checkpoint position encoding changed")
+    quantization = getattr(native, "quantization_config", None)
+    method = (quantization.get("quant_method") if isinstance(quantization, dict)
+              else getattr(quantization, "quant_method", None))
+    method = getattr(method, "value", method)
+    return dict(same_checkpoint_rope=True,
+                native_checkpoint_config_checked=loaded_from_checkpoint,
+                checkpoint_quantization=method or "none")
+
+
 def run_if_needed(engine, model, identity):
     """Entry point used by the existing optional-probe hook in a GPU job."""
     from experiments.kv_only_cartridge.driver import run_if_enabled
@@ -197,5 +241,6 @@ def run_if_needed(engine, model, identity):
     def probe(item):
         result = validate_loaded_candidate(item, directory / "pipeline_candidate.py")
         result.update(validate_loaded_generic_format(item, directory / "paired_control_candidate.py"))
+        result.update(validate_loaded_checkpoint(item))
         return result
     return run_if_enabled(engine, model, identity, directory, probe=probe)

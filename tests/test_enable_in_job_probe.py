@@ -51,6 +51,18 @@ def test_refuses_runtime_mismatch_before_enabling(tmp_path):
     assert not (root / setup.CENTRAL).exists()
 
 
+def test_runtime_check_allows_loader_only_difference(tmp_path):
+    root = workspace(tmp_path)
+    frozen = root / setup.TARGETS[0] / "runtime/repo/src/masked_ttt/model.py"
+    code = frozen.read_text()
+    assert 'device="cuda:0"' in code
+    frozen.write_text(code.replace('device="cuda:0"', 'device="cuda:1"'))
+    setup.verify_supporting_runtime(root / setup.TARGETS[0])
+    frozen.write_text(code.replace('time.monotonic() + seconds', 'time.monotonic() - seconds'))
+    with pytest.raises(ValueError, match="supporting runtime module differs: model.py"):
+        setup.verify_supporting_runtime(root / setup.TARGETS[0])
+
+
 def test_refuses_unrelated_optional_directory(tmp_path):
     root = workspace(tmp_path)
     option = root / setup.TARGETS[0] / "disabled_optional_probe"
@@ -74,15 +86,16 @@ def test_deployed_wrapper_uses_the_shared_probe(tmp_path):
     data = json.loads((Path(result["shared_results"]) / "qwen.json").read_text())
     assert data["same_standalone_logits"] and data["original_benchmark_runtime_unchanged"]
     assert data["same_generic_tokens_before_after_release"]
+    assert data["same_checkpoint_rope"]
 
 
-def test_upgrade_keeps_v2_results_and_routes_existing_hooks_to_v3(tmp_path):
+def test_upgrade_keeps_v3_results_and_routes_existing_hooks_to_v4(tmp_path):
     import json
 
     root = workspace(tmp_path)
     old = root / setup.OLD_CENTRAL
     old.mkdir()
-    (old / "ready.json").write_text('{"probe_version":2}')
+    (old / "ready.json").write_text('{"probe_version":3}')
     (old / "qwen.json").write_text('{"passed":true}')
     for target in setup.TARGETS:
         option = root / target / "disabled_optional_probe"
@@ -92,7 +105,7 @@ def test_upgrade_keeps_v2_results_and_routes_existing_hooks_to_v3(tmp_path):
     result = setup.upgrade_existing(root)
     assert json.loads((old / "qwen.json").read_text())["passed"]
     new = Path(result["shared_results"])
-    assert json.loads((new / "ready.json").read_text())["probe_version"] == 3
+    assert json.loads((new / "ready.json").read_text())["probe_version"] == 4
     assert (new / "paired_control_candidate.py").exists()
     for target in setup.TARGETS:
         option = root / target / "disabled_optional_probe"

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Enable one optional real-model check in existing jobs, without resubmitting."""
 import argparse
+import ast
 import json
 import os
 from pathlib import Path
@@ -9,8 +10,20 @@ import tempfile
 
 REPO = Path(__file__).resolve().parents[2]
 TARGETS = ("query_cartridges_prompt_aligned_dev_20261104", "query_cartridges_strong_value_gpt_dev_20261104")
-OLD_CENTRAL = "query_cartridges_request_local_real_probe_20261104"
-CENTRAL = "query_cartridges_request_local_real_probe_v3_20261104"
+OLD_CENTRAL = "query_cartridges_request_local_real_probe_v3_20261104"
+CENTRAL = "query_cartridges_request_local_real_probe_v4_20261104"
+
+
+def runtime_model_contract(path):
+    """Allow only the separately verified loader to differ from the frozen job."""
+    tree = ast.parse(path.read_text())
+    tree.body = [node for node in tree.body if not (isinstance(node, ast.Expr) and
+                 isinstance(node.value, ast.Constant) and isinstance(node.value.value, str))]
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef) and node.name == "Backbone":
+            node.body = [part for part in node.body if not
+                         (isinstance(part, (ast.FunctionDef, ast.AsyncFunctionDef)) and part.name == "load")]
+    return ast.dump(tree, include_attributes=False)
 
 
 def verify_supporting_runtime(root):
@@ -20,6 +33,10 @@ def verify_supporting_runtime(root):
         raise ValueError("The submitted job does not have its frozen runtime")
     for item in source.glob("*.py"):
         if item.name in ("pipeline.py", "cli.py"):
+            continue
+        if item.name == "model.py":
+            if not (frozen / item.name).is_file() or runtime_model_contract(frozen / item.name) != runtime_model_contract(item):
+                raise ValueError("A supporting runtime module differs: " + item.name)
             continue
         if not (frozen / item.name).is_file() or (frozen / item.name).read_bytes() != item.read_bytes():
             raise ValueError("A supporting runtime module differs: " + item.name)
@@ -64,7 +81,7 @@ def central_files():
         "driver.py": (REPO / "experiments/kv_only_cartridge/in_job_probe.py").read_bytes(),
         "pipeline_candidate.py": (REPO / "src/masked_ttt/pipeline.py").read_bytes(),
         "paired_control_candidate.py": (REPO / "experiments/kv_only_cartridge/paired_control.py").read_bytes(),
-        "ready.json": (json.dumps(dict(allow_single_loaded_model_probe=True, probe_version=3), indent=2) + "\n").encode(),
+        "ready.json": (json.dumps(dict(allow_single_loaded_model_probe=True, probe_version=4), indent=2) + "\n").encode(),
         "protocol.json": (json.dumps(dict(models=["qwen", "gpt"], synthetic_request=True,
             online_api_calls=0, reference_answers_used=False, new_gpu_jobs=0,
             training_runtime_changed=False, results_locked_per_model=True), indent=2) + "\n").encode(),
@@ -98,13 +115,13 @@ def enable(workspace):
 
 
 def upgrade_existing(workspace):
-    """Keep any in-flight v2 probe separate while routing future hooks to v3."""
+    """Keep any in-flight v3 probe separate while routing future hooks to v4."""
     workspace = Path(workspace).resolve()
     roots = validated_roots(workspace)
     old, central = workspace / OLD_CENTRAL, workspace / CENTRAL
     readiness = json.loads((old / "ready.json").read_text())
-    if readiness.get("probe_version") != 2:
-        raise ValueError("Expected the existing version 2 probe")
+    if readiness.get("probe_version") != 3:
+        raise ValueError("Expected the existing version 3 probe")
     old_driver, new_driver = wrapper(old).encode(), wrapper(central).encode()
     for root in roots:
         option = root / "disabled_optional_probe"
@@ -115,7 +132,7 @@ def upgrade_existing(workspace):
         option = root / "disabled_optional_probe"
         for name, data in (("driver.py", new_driver), ("ready.json", (json.dumps(
                 dict(enabled=True, shared_probe=str(central)), indent=2) + "\n").encode())):
-            temporary = option / ("." + name + ".v3.tmp")
+            temporary = option / ("." + name + ".v4.tmp")
             temporary.write_bytes(data)
             os.replace(temporary, option / name)
     return dict(enabled=True, roots=[str(root) for root in roots], shared_results=str(central),
