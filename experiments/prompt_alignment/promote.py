@@ -108,9 +108,9 @@ def freeze(workspace):
         source_runtime, runtime = development / "runtime", root / "runtime"
         if not runtime.exists():
             shutil.copytree(source_runtime, runtime, ignore=shutil.ignore_patterns("__pycache__", ".pytest_cache", "*.pyc"))
-            # The update/inference runtime is copied unchanged. These two new
-            # files only score generated answers and monitor the completed job.
-            for file in ("holdout_report.py", "holdout_monitor.py"):
+            # The update/inference runtime is copied unchanged. These files
+            # only manage, score, or monitor the post-development holdout.
+            for file in ("holdout_report.py", "holdout_monitor.py", "promote.py"):
                 shutil.copy2(REPO / "experiments/prompt_alignment" / file,
                              runtime / "repo/experiments/prompt_alignment" / file)
             shutil.copy2(REPO / "tests/test_prompt_alignment_holdout.py", runtime / "repo/tests/")
