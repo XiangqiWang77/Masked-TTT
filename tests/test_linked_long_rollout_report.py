@@ -25,13 +25,14 @@ def fixture_result(case):
         "same_question_suffix": True, "same_generation_limit": True, "teacher_suffix_matches_student": False}
     return {"key": case, "model": "Qwen/Qwen3-4B-Instruct-2507", "task": "qa3", "length": 8192,
         "keep_fraction": .1, "selection": selection, "training": training, "prediction": "yes",
+        "output_source": "standalone_cartridge", "generated_token_ids": [9],
         "teacher": {"tokens": [7], "prediction": "yes", "response_instruction_applied": True},
         "self_study": {"checks": [], "reference_answers_used": False, "student_answer_hint_used": False},
         "self_judge": {"native_prediction": "no"}, "backbone_unchanged": True,
         "original_document_KV_unchanged": True, "teacher_answer_in_final_prompt": False,
         "memory": {"full_document_kv_bytes": 1000, "full_cache_release_before_standalone":
                    {"requested": True, "full_cache_tensors_live_before_standalone": 0}},
-        "standalone_cartridge": {"teacher_answer_in_final_prompt": False, "generated_token_ids": [9],
+        "standalone_cartridge": {"teacher_answer_in_final_prompt": False, "prediction": "yes", "generated_token_ids": [9],
             "original_question_controls": controls, "memory": {"standalone_cartridge_bytes": 200,
                 "kv_only_materialized": True, "cartridge_adapter_bytes": 0,
                 "additional_source_kv_bytes_before_decode": 0,
@@ -55,12 +56,13 @@ def test_report_requires_the_original_full_student_and_released_final_state():
     case = "babilong-8-qa3-300100"
     result = fixture_result(case)
     validate_new(case, result, "qwen", "qa3")
-    for kind in ("selected_training", "retained_cache", "leaked_answer", "output_mismatch"):
+    for kind in ("selected_training", "retained_cache", "leaked_answer", "output_mismatch", "full_output"):
         bad = copy.deepcopy(result)
         if kind == "selected_training": bad["training"]["selected_transfer_weight"] = .25
         elif kind == "retained_cache": bad["standalone_cartridge"]["memory"]["additional_source_kv_bytes_before_decode"] = 5
         elif kind == "leaked_answer": bad["teacher_answer_in_final_prompt"] = True
-        else: bad["standalone_cartridge"]["generated_token_ids"] = [8]
+        elif kind == "output_mismatch": bad["standalone_cartridge"]["generated_token_ids"] = [8]
+        else: bad["output_source"] = "full_context"
         with pytest.raises(ValueError): validate_new(case, bad, "qwen", "qa3")
 
 

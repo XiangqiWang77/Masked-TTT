@@ -43,6 +43,8 @@ def validate_new(case, result, model, task):
         controls["reference_answers_used"] or controls["teacher_answer_in_student_prompt"] or
         not controls["same_selected_kv"] or not controls["same_question_suffix"] or
         not controls["same_generation_limit"] or controls["teacher_suffix_matches_student"] or
+        result["output_source"] != "standalone_cartridge" or result["prediction"] != final["prediction"] or
+        result["generated_token_ids"] != final["generated_token_ids"] or
         controls["adapted"]["tokens"] != final["generated_token_ids"] or
         not release["requested"] or release["full_cache_tensors_live_before_standalone"] != 0 or
         not memory["kv_only_materialized"] or memory["cartridge_adapter_bytes"] != 0 or

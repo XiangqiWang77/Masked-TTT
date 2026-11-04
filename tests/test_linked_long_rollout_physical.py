@@ -51,6 +51,8 @@ def test_long_on_policy_rollout_has_physical_independent_final_cache(architectur
     assert first["gain_gradient_norm"] > 0 and first["value_gradient_norm"] > 0
     assert result["training"]["selected_transfer_weight"] == 0
     assert result["backbone_unchanged"] and result["original_document_KV_unchanged"]
+    assert result["output_source"] == "standalone_cartridge"
+    assert result["prediction"] == standalone["prediction"]
     assert standalone["generated_token_ids"] == controls["adapted"]["tokens"]
     assert controls["same_question_suffix"] and controls["same_selected_kv"]
     assert memory["kv_only_materialized"] and memory["cartridge_adapter_bytes"] == 0

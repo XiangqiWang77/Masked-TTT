@@ -33,6 +33,9 @@ def linked_long_rollout_runner(implementation, runtime, paired_controls, *, root
         memory = result["standalone_cartridge"]["memory"]
         if (selection.get("selection_policy") != "decision_entity_link_v1" or
             selection.get("entity_reserve_fraction") != .25 or
+            result.get("output_source") != "standalone_cartridge" or
+            result.get("prediction") != result["standalone_cartridge"].get("prediction") or
+            result.get("generated_token_ids") != result["standalone_cartridge"].get("generated_token_ids") or
             not memory.get("kv_only_materialized") or memory.get("cartridge_adapter_bytes") != 0 or
             memory.get("additional_source_kv_bytes_before_decode") != 0 or
             memory.get("additional_training_adapter_bytes_before_decode") != 0):

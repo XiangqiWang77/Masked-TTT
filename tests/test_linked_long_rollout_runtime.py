@@ -20,9 +20,10 @@ def test_combination_validates_and_restores_single_request_hooks_on_failure():
     paired = SimpleNamespace(original_question_controls="original")
     manifest = {"selection_policy": "decision_entity_link_v1", "entity_reserve_fraction": .25,
                 "student_rollout_tokens": 32, "keep_fraction": .1}
-    result = {"training": {"selected_transfer_weight": 0},
+    result = {"training": {"selected_transfer_weight": 0}, "output_source": "standalone_cartridge",
+        "prediction": "yes", "generated_token_ids": [9],
         "selection": {"selection_policy": "decision_entity_link_v1", "entity_reserve_fraction": .25},
-        "standalone_cartridge": {"memory": {"kv_only_materialized": True,
+        "standalone_cartridge": {"prediction": "yes", "generated_token_ids": [9], "memory": {"kv_only_materialized": True,
             "cartridge_adapter_bytes": 0, "additional_source_kv_bytes_before_decode": 0,
             "additional_training_adapter_bytes_before_decode": 0}}}
     with pytest.raises(RuntimeError, match="stop"):
