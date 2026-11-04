@@ -5,13 +5,16 @@ import math
 from masked_ttt.linked_selection import SENTENCE,_names,_words,choose
 
 
-def two_hop(document,question,spans,records,fraction=.1,*,reserve_fraction=.25):
+def two_hop(document,question,spans,records,fraction=.1,*,reserve_fraction=.25,
+            require_score_improvement=False):
     """Replace at most half the linked slots with two-hop entity candidates.
 
     The score-ranked anchors are never removed. All candidates and links are
     derived from the document, the question and cached Decision probabilities;
     this function accepts no support labels or answer annotations.
     """
+    if type(require_score_improvement) is not bool:
+        raise ValueError("Score protection must be boolean")
     baseline=choose(document,question,spans,records,fraction,"entity",reserve_fraction)
     n,k=len(records),len(baseline)
     if k<3 or reserve_fraction==0:return baseline
@@ -62,6 +65,7 @@ def two_hop(document,question,spans,records,fraction=.1,*,reserve_fraction=.25):
         removable=chosen-anchors-protected-{source}
         if not removable:continue
         weakest=min(removable,key=lambda i:(probabilities[i],-i))
+        if require_score_improvement and probabilities[candidate]<=probabilities[weakest]:continue
         chosen.remove(weakest);chosen.add(candidate)
         protected.update((source,candidate));replaced+=1
     if len(chosen)!=k or not anchors.issubset(chosen):

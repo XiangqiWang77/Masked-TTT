@@ -33,6 +33,10 @@ def test_two_hop_keeps_the_linking_chunk_and_top_score_anchors():
     assert 10 in baseline and 10 in selected  # The Mary → John bridge remains visible.
     assert 12 in baseline and 12 not in selected and 15 in selected
     assert selected==two_hop(document,"Where is the milk?",spans,records,.1)
+    assert two_hop(document,"Where is the milk?",spans,records,.1,require_score_improvement=True)==baseline
+    records[15]["decision_probabilities"]["yes"]=.49
+    protected=two_hop(document,"Where is the milk?",spans,records,.1,require_score_improvement=True)
+    assert 10 in protected and 15 in protected and 12 not in protected
 
 
 def test_no_room_to_keep_a_bridge_leaves_the_baseline_unchanged():
@@ -66,11 +70,11 @@ def test_coverage_audit_restores_selector_and_uses_posthoc_only(monkeypatch,tmp_
     def fake(_workspace):
         assert audit.base.question_overlap is not original
         return dict(cases=200,source_questions=50,fraction=.1,
-            groups={"all":dict(entity25={"complete":100},mix=stats)})
+            groups={"all":dict(entity25={"complete":100},mix=stats,lexical=stats)})
     monkeypatch.setattr(audit.base,"collect",fake)
     data=audit.collect(tmp_path)
     assert audit.base.question_overlap is original
-    assert data["groups"]["all"]["two_hop"]==stats and data["decision"]["eligible_for_model_test"]
+    assert data["groups"]["all"]["two_hop"]==stats and data["decisions"]["two_hop"]["eligible_for_model_test"]
     assert data["selection_accepts_no_labels"] and data["support_and_answers_used_only_posthoc"]
     assert data["online_api_calls"]==0 and data["new_model_calls"]==0
     def fail(_workspace):raise RuntimeError("synthetic failure")

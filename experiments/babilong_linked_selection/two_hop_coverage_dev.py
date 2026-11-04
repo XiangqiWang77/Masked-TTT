@@ -16,16 +16,17 @@ def collect(workspace):
     old=base.question_overlap
     def candidate(document,question,spans,records,fraction,*,mode):
         if mode=="mix":return two_hop(document,question,spans,records,fraction)
+        if mode=="lexical":return two_hop(document,question,spans,records,fraction,require_score_improvement=True)
         return old(document,question,spans,records,fraction,mode=mode)
     base.question_overlap=candidate
     try:data=base.collect(Path(workspace))
     finally:base.question_overlap=old
     if data["cases"]!=200 or data["source_questions"]!=50 or data["fraction"]!=.1:
         raise ValueError("The fixed development coverage protocol changed")
-    groups={key:dict(entity25=value["entity25"],two_hop=value["mix"])
+    groups={key:dict(entity25=value["entity25"],two_hop=value["mix"],two_hop_score_guard=value["lexical"])
             for key,value in data["groups"].items()}
     return dict(cases=200,source_questions=50,fraction=.1,groups=groups,
-        decision=base.decision(groups["all"]["two_hop"]),
+        decisions={name:base.decision(groups["all"][name]) for name in ("two_hop","two_hop_score_guard")},
         graph_designed_after_previous_development_analysis=True,
         support_and_answers_used_only_posthoc=True,selection_accepts_no_labels=True,
         accuracy_of_new_selection_not_measured=True,online_api_calls=0,new_model_calls=0,
@@ -40,7 +41,7 @@ def main():
     data=collect(args.workspace.resolve());args.output.parent.mkdir(parents=True,exist_ok=True)
     temporary=args.output.with_suffix(args.output.suffix+".tmp")
     temporary.write_text(json.dumps(data,indent=2)+"\n");temporary.replace(args.output)
-    print(json.dumps(dict(overall=data["groups"]["all"],decision=data["decision"]),indent=2))
+    print(json.dumps(dict(overall=data["groups"]["all"],decisions=data["decisions"]),indent=2))
 
 
 if __name__=="__main__":main()
