@@ -1,0 +1,26 @@
+{
+  "scope": "200 source-only development cases per model, 50 sources at four lengths",
+  "model_weights_loaded": false,
+  "model_calls": 0,
+  "online_api_calls": 0,
+  "reference_answers_read": false,
+  "prediction_or_accuracy_measured": false,
+  "models": {
+    "qwen": {
+      "buildable": 200,
+      "evidence_token_sequence_changed": 197,
+      "mixed_boundary_tokens": 1458,
+      "source_document_tokens": 601305,
+      "canonical_document_tokens": 599869,
+      "cases": 200
+    },
+    "gpt": {
+      "buildable": 200,
+      "evidence_token_sequence_changed": 197,
+      "mixed_boundary_tokens": 1451,
+      "source_document_tokens": 591900,
+      "canonical_document_tokens": 590472,
+      "cases": 200
+    }
+  }
+}
