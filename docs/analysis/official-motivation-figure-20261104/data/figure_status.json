@@ -1,0 +1,18 @@
+{
+  "planned": 48,
+  "completed": 48,
+  "complete": true,
+  "attention_n_by_context": {
+    "8192": 12,
+    "16384": 12,
+    "32768": 12,
+    "65536": 12
+  },
+  "coverage_n_by_context": {
+    "8192": 250,
+    "16384": 250,
+    "32768": 250,
+    "65536": 88
+  },
+  "qc_and_icl_share_selected_text": true
+}
