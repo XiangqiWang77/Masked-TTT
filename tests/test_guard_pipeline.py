@@ -17,7 +17,8 @@ def test_rejected_candidate_returns_native_answer_and_waits_for_guard(monkeypatc
     model_config._attn_implementation='eager'
     options=TTTConfig(chunk_tokens=16,max_context=1024,context_reserve_tokens=128,
         value_rank=2,steps=2,teacher_max_new_tokens=3,self_question_count=0,
-        prefill_chunk_tokens=64,guard_enabled=True)
+        prefill_chunk_tokens=64,guard_enabled=True,
+        standalone_cartridge_enabled=False,release_full_before_cartridge=False)
     engine=Backbone(Qwen3ForCausalLM(model_config).eval(),ByteTokenizer(),options)
     class Selector:
         def prepare(self,backbone,request):
@@ -28,6 +29,8 @@ def test_rejected_candidate_returns_native_answer_and_waits_for_guard(monkeypatc
                     question='Which folder is new?',max_new_tokens=3)
     result=MaskedTTT(engine,Selector()).answer(request)
     assert result['prediction']==result['self_judge']['native_prediction']
+    assert result['output_source']=='full_context'
+    assert result['self_judge']['applies_to']=='primary_output'
     assert not result['self_judge']['use_adapted']
     assert result['timing']['ttft_seconds']>=result['timing']['candidate_first_token_seconds']
     assert result['backbone_unchanged'] and result['original_document_KV_unchanged']

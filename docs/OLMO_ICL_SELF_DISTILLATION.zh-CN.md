@@ -65,4 +65,4 @@ masked-ttt --model /path/to/Olmo-3-7B-Instruct \
   --local-files-only --output result.json
 ~~~
 
-输出中的 prediction 是全文回答，standalone_cartridge.prediction 是独立选中 KV 的回答；两者不能混成同一条结果。训练阶段使用全文 KV，因此独立回答时的缓存压缩并不等于整个请求的峰值显存或总耗时降低。
+当前接口默认将独立选中 KV 的回答放在 `prediction` 和 `standalone_cartridge.prediction`，全文对照保存在 `full_context.prediction`；全文 Self Judge 只影响全文对照，不改变独立 Cartridge 的答案。历史实验的评测使用的已经是独立答案，因此这一接口修复不改变历史分数。训练阶段使用全文 KV，因此独立回答时的缓存压缩并不等于整个请求的峰值显存或总耗时降低。

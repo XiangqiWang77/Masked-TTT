@@ -34,7 +34,11 @@ def main():
             layout=prepare_layout(backbone,original)
             return PreparedRequest(original,layout,[1,len(layout.chunks)-2],dict(backend="unit_test"))
     result=MaskedTTT(engine,Selector()).answer(request)
-    print(json.dumps(dict(prediction=result["prediction"],
+    # The public primary prediction now comes from the standalone cartridge.
+    # The archived implementation returned the full-context diagnostic there;
+    # compare that diagnostic explicitly without changing the training trace.
+    full_prediction=result.get("full_context",{}).get("prediction",result["prediction"])
+    print(json.dumps(dict(prediction=full_prediction,
         standalone=result["standalone_cartridge"]["prediction"],
         teacher=result["teacher"]["prediction"],steps=result["training"]["steps"],
         frozen=result["backbone_unchanged"],cache_unchanged=result["original_document_KV_unchanged"]),

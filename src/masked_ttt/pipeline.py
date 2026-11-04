@@ -274,6 +274,7 @@ class MaskedTTT:
                 torch.cuda.empty_cache()
             engine.synchronize()
             release_info["cuda_allocated_after_release_bytes"]=cuda_allocated(engine.device)
+        standalone_started=time.perf_counter()
         standalone=(answer_standalone(engine,layout,selected,teacher,memory,working.max_new_tokens)
                     if engine.config.standalone_cartridge_enabled else None)
         engine.synchronize()
@@ -282,13 +283,36 @@ class MaskedTTT:
         if any(x._version != version or x.data_ptr() != pointer for x,version,pointer in selected_cache_stamp):
             raise AssertionError("The original selected evidence cache was changed")
         engine.assert_frozen(weights_before)
+        full_prediction=engine.tokenizer.decode(generated,skip_special_tokens=True)
+        full_finish_reason="eos" if generated[-1] in engine.eos_ids else "length"
+        if standalone is not None:
+            final_tokens=standalone['generated_token_ids']
+            final_prediction=standalone['prediction']
+            source='standalone_cartridge'
+            standalone_first=standalone.get('first_token_seconds')
+            final_ttft=(standalone_started-started+standalone_first
+                        if standalone_first is not None else None)
+            ttft_scope=('Online request through the first standalone Cartridge token; '
+                        'includes selected-cache materialization, excludes model loading and offline scoring')
+        else:
+            final_tokens=generated
+            final_prediction=full_prediction
+            source='full_context'
+            final_ttft=ttft
+            ttft_scope=('Online request through the first final full-context token, including '
+                        'any full-context guard; excludes model loading and offline scoring')
+        if not final_tokens:raise AssertionError('The primary output contains no tokens')
         return dict(
-            prediction=engine.tokenizer.decode(generated, skip_special_tokens=True),
-            generated_token_ids=generated,
-            finish_reason="eos" if generated[-1] in engine.eos_ids else "length",
+            prediction=final_prediction,
+            generated_token_ids=final_tokens,
+            finish_reason="eos" if final_tokens[-1] in engine.eos_ids else "length",
+            output_source=source,
+            full_context=dict(prediction=full_prediction,generated_token_ids=generated,
+                              finish_reason=full_finish_reason),
             teacher=teacher.metadata(),
             self_study=self_study,
-            self_judge=dict(guard,native_prediction=native_prediction,
+            self_judge=dict(guard,applies_to=('full_context_diagnostic' if standalone is not None else 'primary_output'),
+                            native_prediction=native_prediction,
                             adapted_prediction=adapted_prediction),
             standalone_cartridge=standalone,
             memory=dict(
@@ -336,7 +360,8 @@ class MaskedTTT:
                 checkpointed_layers=True,causal_batched_teacher_forcing=True,
             ),
             timing=dict(
-                ttft_seconds=ttft,
+                ttft_seconds=final_ttft,
+                full_context_ttft_seconds=ttft,
                 prefill_seconds=prefill_seconds,
                 teacher_seconds=teacher.elapsed_seconds,
                 icl_teacher_first_token_seconds_segmented=(
@@ -354,11 +379,7 @@ class MaskedTTT:
                 offline_selection_seconds=prepared.metadata.get("offline_scoring_seconds", 0),
                 offline_selection_cost_usd=prepared.metadata.get("offline_scoring_cost_usd", 0),
                 offline_selection_in_ttft=False,
-                scope=(
-                    "Online request including selection, native answer, Teacher, self-study, adaptation, "
-                    "candidate generation and full-context guard through the first final token; excludes model loading, "
-                    "queue time, and previously completed shared offline selection"
-                ),
+                scope=ttft_scope,
             ),
             backbone_unchanged=True,
             original_document_KV_unchanged=True,

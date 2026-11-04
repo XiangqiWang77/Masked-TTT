@@ -29,7 +29,7 @@ class TTTConfig:
     guard_minimum_label_mass: float = 0.20
     standalone_cartridge_enabled: bool = True
     standalone_answer_format: str = 'original'
-    release_full_before_cartridge: bool = False
+    release_full_before_cartridge: bool = True
     gain_learning_rate: float = 0.01
     value_learning_rate: float = 0.0001
     gradient_clip: float = 10.0

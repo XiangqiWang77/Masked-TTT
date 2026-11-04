@@ -1,5 +1,6 @@
 """Build a self-contained selected-KV cartridge from one trained request."""
 
+import time
 import torch
 
 from ._layout import selected_read_plan
@@ -67,6 +68,7 @@ def build_standalone(engine,layout,selected,teacher,trained):
 
 @torch.no_grad()
 def answer_standalone(engine,layout,selected,teacher,trained,limit):
+    began=time.perf_counter()
     reader,branch,suffix,length,accounting=build_standalone(
         engine,layout,selected,teacher,trained)
     if engine.config.standalone_answer_format=='teacher_requirements':
@@ -79,15 +81,19 @@ def answer_standalone(engine,layout,selected,teacher,trained,limit):
         raise ValueError('Standalone question and generation exceed the model context')
     engine.budget.check()
     output=private_forward(reader.reader,suffix,length,branch)
-    tokens=[]
+    tokens=[];first_token_seconds=None
     while len(tokens)<limit:
         token=int(engine.model.lm_head(output.last_hidden_state[0,-1:])[0].argmax())
         tokens.append(token)
+        if first_token_seconds is None:
+            engine.synchronize()
+            first_token_seconds=time.perf_counter()-began
         if token in engine.eos_ids or len(tokens)==limit:break
         engine.budget.check()
         output=private_forward(reader.reader,torch.tensor([token],device=engine.device),
             length+len(suffix)+len(tokens)-1,branch)
     return dict(prediction=engine.tokenizer.decode(tokens,skip_special_tokens=True),
                 generated_token_ids=tokens,memory=accounting,
+                first_token_seconds=first_token_seconds,
                 answer_format=engine.config.standalone_answer_format,
                 teacher_answer_in_final_prompt=False)

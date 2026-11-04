@@ -23,7 +23,7 @@ def test_recorded_olmo_profile_is_loaded_exactly_and_can_be_overridden():
     effective=asdict(config)
     assert effective.pop('selected_transfer_weight')==0.0
     assert effective.pop('practice_boundary_fallback') is False
-    assert effective.pop('release_full_before_cartridge') is False
+    assert effective.pop('release_full_before_cartridge') is True
     assert effective.pop('value_basis_source') == 'document'
     assert effective.pop('standalone_answer_format') == 'original'
     assert effective==saved

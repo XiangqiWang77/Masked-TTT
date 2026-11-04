@@ -1,6 +1,7 @@
 # Query Cartridges: Learning to Read Long Contexts with Masked Test-Time Training
 
-Query Cartridges adapts a frozen language model to one long-context question.
+Query Cartridges, also referred to here as Masked TTT Cartridges, adapts a
+frozen language model to one long-context question.
 Question-conditioned Decision scores select a small number of document chunks.
 A frozen, selected-context ICL teacher supplies on-policy next-token
 distributions and proposes short source-grounded practice questions. The
@@ -8,8 +9,9 @@ full-context student jointly adapts two request-local reading corrections:
 chunk-level attention allocation and a low-rank value-read adjustment. Model
 weights and the original document KV remain immutable.
 
-This branch preserves the archived implementation used in the OLMo BABILONG
-run. The recorded profile is available at
+This branch preserves the training and materialization used in the OLMo BABILONG
+run. The public result interface returns the standalone answer by default; the
+full-context answer is retained as a diagnostic. The recorded profile is at
 [examples/olmo_babilong_icl_sd.json](examples/olmo_babilong_icl_sd.json).
 The [Chinese method description](docs/OLMO_ICL_SELF_DISTILLATION.zh-CN.md)
 explains the two cache paths, the paired results, and their scope.
@@ -47,10 +49,11 @@ one request and discarded afterwards.
    practice questions. Score each identical prefix with the focused teacher and
    minimize full-vocabulary forward KL on the student path. All exercises share
    the same selected-position attention and value-read state.
-5. Discard training suffixes and independently generate the original answer.
-   The full-context judge sees both the adapted and native answers, reads the
-   working document and can retain the native answer. Also generate an
-   independent answer with the standalone selected-KV cartridge.
+5. Discard training suffixes and, by default, release the full-document KV
+   before generating the original answer from the independent selected-KV
+   cartridge. A separately recorded full-context diagnostic can use a frozen
+   judge to compare native and adapted answers. That judge does not select or
+   alter the standalone cartridge's answer.
 
 At a selected document location $u$ in chunk $c$, the adapted read is
 
@@ -84,11 +87,22 @@ masked-ttt --model /path/to/model --request request.json \
   --local-files-only --output result.json
 ```
 
-The full answer is `prediction`; the independent selected-KV result is
-`standalone_cartridge.prediction`. The `self_study`, `self_judge`, `training`,
-and `memory` fields record the actual request path. If a document exceeds a
-backbone's native window, the cached selector constructs a source-prioritized
-working document and records its source mapping.
+`prediction`, `generated_token_ids`, and `finish_reason` describe the primary
+output. With standalone enabled, they match `standalone_cartridge` and
+`output_source` is `standalone_cartridge`; the paired full-context answer is
+available in `full_context`. With standalone disabled, explicitly set both
+`standalone_cartridge_enabled` and `release_full_before_cartridge` to `false`;
+the primary answer then comes from the full-context path. `self_judge.applies_to`
+identifies which path the judge can affect.
+
+`timing.ttft_seconds` measures through the first token of the primary output,
+including preceding online work and selected-cache materialization. Model
+loading and any previously cached offline Decision scoring are excluded;
+`full_context_ttft_seconds` records the separate full-context diagnostic.
+The `self_study`, `self_judge`, `training`, and `memory` fields record the
+actual request path. If a document exceeds a backbone's native window, the
+cached selector constructs a source-prioritized working document and records
+its source mapping.
 
 ## Verify
 

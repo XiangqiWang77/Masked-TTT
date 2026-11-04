@@ -16,7 +16,7 @@ def test_release_precedes_cartridge_decode_and_preserves_answers(architecture,mo
     import masked_ttt.pipeline as pipeline
     engine=make_engine() if architecture=="qwen3" else gpt_engine()
     engine.config=replace(engine.config,self_question_count=0,guard_enabled=False,
-        standalone_cartridge_enabled=True,selected_transfer_weight=0.)
+        standalone_cartridge_enabled=True,selected_transfer_weight=0.,release_full_before_cartridge=False)
     document="Old note says red. Current note says blue. "*6
     request=Request(document=document,question="What is in the current note?",max_new_tokens=3)
     class Selector:
@@ -42,6 +42,11 @@ def test_release_precedes_cartridge_decode_and_preserves_answers(architecture,mo
     assert observed==[True]
     assert released["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"]==0
     assert released["standalone_cartridge"]["generated_token_ids"]==normal["standalone_cartridge"]["generated_token_ids"]
+    assert released['prediction']==released['standalone_cartridge']['prediction']
+    assert released['generated_token_ids']==released['standalone_cartridge']['generated_token_ids']
+    assert released['output_source']=='standalone_cartridge'
+    assert released['self_judge']['applies_to']=='full_context_diagnostic'
+    assert released['timing']['ttft_seconds']>=released['timing']['full_context_ttft_seconds']
     assert released["teacher"]["tokens"]==normal["teacher"]["tokens"]
     assert released["training"]["steps"]==normal["training"]["steps"]
     assert released["backbone_unchanged"] and released["original_document_KV_unchanged"]
@@ -50,3 +55,25 @@ def test_release_precedes_cartridge_decode_and_preserves_answers(architecture,mo
 def test_release_requires_standalone_generation():
     with pytest.raises(ValueError):
         TTTConfig(standalone_cartridge_enabled=False,release_full_before_cartridge=True)
+
+
+def test_primary_answer_is_from_cartridge_even_if_full_answer_differs(monkeypatch):
+    import masked_ttt.pipeline as pipeline
+    engine=make_engine()
+    engine.config=replace(engine.config,self_question_count=0,guard_enabled=False,
+        standalone_cartridge_enabled=True,release_full_before_cartridge=True)
+    request=Request(document='Old note says red. Current note says blue. '*6,
+                    question='What is in the current note?',max_new_tokens=3)
+    class Selector:
+        def prepare(self,backbone,item):
+            layout=prepare_layout(backbone,item)
+            return PreparedRequest(item,layout,[1,len(layout.chunks)-2],dict(backend='unit_test'))
+    sentinel='independent-cartridge-output'
+    monkeypatch.setattr(pipeline,'answer_standalone',lambda *args:dict(
+        prediction=sentinel,generated_token_ids=[3],first_token_seconds=0.,
+        memory={},teacher_answer_in_final_prompt=False))
+    result=MaskedTTT(engine,Selector()).answer(request)
+    assert result['prediction']==sentinel and result['generated_token_ids']==[3]
+    assert result['full_context']['prediction']!=sentinel
+    assert result['output_source']=='standalone_cartridge'
+    assert result['memory']['full_cache_release_before_standalone']['full_cache_tensors_live_before_standalone']==0
