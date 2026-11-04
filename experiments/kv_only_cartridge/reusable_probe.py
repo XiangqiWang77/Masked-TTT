@@ -50,7 +50,8 @@ def capture_answer_logits(engine):
 def validate_loaded_reusable(engine, pipeline_path, cartridge_path):
     """Compare first and repeated decoding without altering the benchmark runtime."""
     import masked_ttt.pipeline as frozen_pipeline
-    from masked_ttt import MaskedTTT, Request
+    from masked_ttt import Request
+    from masked_ttt.pipeline import MaskedTTT
     from masked_ttt.memory_accounting import module_tensors
     from masked_ttt.request import prepare_layout
     from masked_ttt.selection import PreparedRequest

@@ -35,3 +35,20 @@ def test_optional_probe_restores_rng_and_configuration_on_failure(tmp_path):
     assert sys.modules.get("masked_ttt.cartridge") is previous
     with pytest.raises(ValueError, match="allocated GPU"):
         run_if_needed(engine, "qwen", {})
+
+
+def test_optional_probe_uses_native_pipeline_when_benchmark_overrides_public_method(monkeypatch):
+    import masked_ttt
+
+    class PairedBenchmarkMethod:
+        def __init__(self, *_args):
+            pass
+
+        def answer(self, request, *, time_budget_seconds=None):
+            raise AssertionError("The reusable probe must not call the benchmark wrapper")
+
+    monkeypatch.setattr(masked_ttt, "MaskedTTT", PairedBenchmarkMethod)
+    engine = make_engine()
+    result = validate_loaded_reusable(engine, ROOT / "src/masked_ttt/pipeline.py",
+                                     ROOT / "src/masked_ttt/cartridge.py")
+    assert result["passed"] and result["same_first_and_replay_logits"]
