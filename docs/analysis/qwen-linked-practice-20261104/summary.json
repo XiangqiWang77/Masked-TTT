@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-11-04T12:33:05.290084+00:00",
+  "created_utc": "2026-11-04T12:36:25.967118+00:00",
   "model": "Qwen3-4B-Instruct-2507",
   "metric": "answer_focused_lexical_v2",
   "no_new_model_calls": true,
@@ -45,7 +45,9 @@
       "invalid_json": 310,
       "invalid_lengths": 9,
       "quote_not_in_selected_chunk": 104
-    }
+    },
+    "original_tokens_changed": 48,
+    "teacher_format_tokens_changed": 46
   },
   "by_verified": {
     "0": {
@@ -84,7 +86,9 @@
         "invalid_json": 310,
         "invalid_lengths": 9,
         "quote_not_in_selected_chunk": 98
-      }
+      },
+      "original_tokens_changed": 41,
+      "teacher_format_tokens_changed": 38
     },
     "1": {
       "n": 134,
@@ -119,7 +123,9 @@
         "answer_not_in_quote": 7,
         "duplicate_or_original_question": 7,
         "quote_not_in_selected_chunk": 6
-      }
+      },
+      "original_tokens_changed": 6,
+      "teacher_format_tokens_changed": 7
     },
     "2": {
       "n": 37,
@@ -150,7 +156,9 @@
           "delta_pp": 2.7027027027027026
         }
       },
-      "rejection_counts": {}
+      "rejection_counts": {},
+      "original_tokens_changed": 1,
+      "teacher_format_tokens_changed": 1
     }
   },
   "verified_any": {
@@ -186,7 +194,9 @@
       "answer_not_in_quote": 7,
       "duplicate_or_original_question": 7,
       "quote_not_in_selected_chunk": 6
-    }
+    },
+    "original_tokens_changed": 7,
+    "teacher_format_tokens_changed": 8
   },
   "by_task": {
     "qa1": {
@@ -224,7 +234,9 @@
         "invalid_json": 4,
         "invalid_lengths": 6,
         "quote_not_in_selected_chunk": 20
-      }
+      },
+      "original_tokens_changed": 9,
+      "teacher_format_tokens_changed": 6
     },
     "qa10": {
       "n": 100,
@@ -260,7 +272,9 @@
         "duplicate_or_original_question": 4,
         "invalid_json": 54,
         "quote_not_in_selected_chunk": 1
-      }
+      },
+      "original_tokens_changed": 4,
+      "teacher_format_tokens_changed": 5
     },
     "qa2": {
       "n": 100,
@@ -295,7 +309,9 @@
         "answer_not_in_quote": 2,
         "invalid_json": 2,
         "quote_not_in_selected_chunk": 10
-      }
+      },
+      "original_tokens_changed": 7,
+      "teacher_format_tokens_changed": 6
     },
     "qa3": {
       "n": 100,
@@ -331,7 +347,9 @@
         "duplicate_or_original_question": 10,
         "invalid_json": 1,
         "quote_not_in_selected_chunk": 38
-      }
+      },
+      "original_tokens_changed": 2,
+      "teacher_format_tokens_changed": 0
     },
     "qa4": {
       "n": 100,
@@ -367,7 +385,9 @@
         "duplicate_or_original_question": 35,
         "invalid_fields": 2,
         "quote_not_in_selected_chunk": 6
-      }
+      },
+      "original_tokens_changed": 4,
+      "teacher_format_tokens_changed": 4
     },
     "qa5": {
       "n": 100,
@@ -403,7 +423,9 @@
         "duplicate_or_original_question": 26,
         "invalid_json": 5,
         "quote_not_in_selected_chunk": 2
-      }
+      },
+      "original_tokens_changed": 1,
+      "teacher_format_tokens_changed": 2
     },
     "qa6": {
       "n": 100,
@@ -438,7 +460,9 @@
         "answer_not_in_quote": 1,
         "invalid_json": 88,
         "quote_not_in_selected_chunk": 3
-      }
+      },
+      "original_tokens_changed": 7,
+      "teacher_format_tokens_changed": 7
     },
     "qa7": {
       "n": 100,
@@ -473,7 +497,9 @@
         "answer_not_in_quote": 2,
         "invalid_json": 77,
         "quote_not_in_selected_chunk": 7
-      }
+      },
+      "original_tokens_changed": 7,
+      "teacher_format_tokens_changed": 3
     },
     "qa8": {
       "n": 100,
@@ -510,7 +536,9 @@
         "invalid_json": 40,
         "invalid_lengths": 2,
         "quote_not_in_selected_chunk": 14
-      }
+      },
+      "original_tokens_changed": 4,
+      "teacher_format_tokens_changed": 7
     },
     "qa9": {
       "n": 100,
@@ -547,7 +575,9 @@
         "invalid_json": 39,
         "invalid_lengths": 1,
         "quote_not_in_selected_chunk": 3
-      }
+      },
+      "original_tokens_changed": 3,
+      "teacher_format_tokens_changed": 6
     }
   },
   "by_split": {
@@ -586,7 +616,9 @@
         "invalid_json": 62,
         "invalid_lengths": 3,
         "quote_not_in_selected_chunk": 23
-      }
+      },
+      "original_tokens_changed": 13,
+      "teacher_format_tokens_changed": 5
     },
     "holdout": {
       "n": 800,
@@ -624,7 +656,9 @@
         "invalid_json": 248,
         "invalid_lengths": 6,
         "quote_not_in_selected_chunk": 81
-      }
+      },
+      "original_tokens_changed": 35,
+      "teacher_format_tokens_changed": 41
     }
   },
   "by_split_verified": {
@@ -664,7 +698,9 @@
           "invalid_json": 62,
           "invalid_lengths": 3,
           "quote_not_in_selected_chunk": 22
-        }
+        },
+        "original_tokens_changed": 11,
+        "teacher_format_tokens_changed": 4
       },
       "at_least_one": {
         "n": 40,
@@ -699,7 +735,9 @@
           "answer_not_in_quote": 4,
           "duplicate_or_original_question": 4,
           "quote_not_in_selected_chunk": 1
-        }
+        },
+        "original_tokens_changed": 2,
+        "teacher_format_tokens_changed": 1
       }
     },
     "holdout": {
@@ -739,7 +777,9 @@
           "invalid_json": 248,
           "invalid_lengths": 6,
           "quote_not_in_selected_chunk": 76
-        }
+        },
+        "original_tokens_changed": 30,
+        "teacher_format_tokens_changed": 34
       },
       "at_least_one": {
         "n": 131,
@@ -774,8 +814,125 @@
           "answer_not_in_quote": 3,
           "duplicate_or_original_question": 3,
           "quote_not_in_selected_chunk": 5
-        }
+        },
+        "original_tokens_changed": 5,
+        "teacher_format_tokens_changed": 7
       }
+    }
+  },
+  "full_only": {
+    "n": 106,
+    "source_questions": 81,
+    "verified_at_least_one": 12,
+    "accuracy": {
+      "whole": 100.0,
+      "teacher": 0.0,
+      "zero": 5.660377358490566,
+      "cartridge": 2.830188679245283,
+      "zero_teacher_format": 0.0,
+      "cartridge_teacher_format": 0.0
+    },
+    "pairs": {
+      "zero": {
+        "new_correct": 0,
+        "new_wrong": 3,
+        "delta_pp": -2.830188679245283
+      },
+      "zero_teacher_format": {
+        "new_correct": 0,
+        "new_wrong": 0,
+        "delta_pp": 0.0
+      },
+      "teacher": {
+        "new_correct": 3,
+        "new_wrong": 0,
+        "delta_pp": 2.830188679245283
+      }
+    },
+    "rejection_counts": {
+      "answer_not_in_quote": 5,
+      "duplicate_or_original_question": 2,
+      "invalid_json": 34,
+      "invalid_lengths": 4,
+      "quote_not_in_selected_chunk": 18
+    },
+    "original_tokens_changed": 7,
+    "teacher_format_tokens_changed": 4
+  },
+  "full_only_by_verified": {
+    "none": {
+      "n": 94,
+      "source_questions": 72,
+      "verified_at_least_one": 0,
+      "accuracy": {
+        "whole": 100.0,
+        "teacher": 0.0,
+        "zero": 6.382978723404255,
+        "cartridge": 3.1914893617021276,
+        "zero_teacher_format": 0.0,
+        "cartridge_teacher_format": 0.0
+      },
+      "pairs": {
+        "zero": {
+          "new_correct": 0,
+          "new_wrong": 3,
+          "delta_pp": -3.1914893617021276
+        },
+        "zero_teacher_format": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        },
+        "teacher": {
+          "new_correct": 3,
+          "new_wrong": 0,
+          "delta_pp": 3.1914893617021276
+        }
+      },
+      "rejection_counts": {
+        "answer_not_in_quote": 5,
+        "duplicate_or_original_question": 2,
+        "invalid_json": 34,
+        "invalid_lengths": 4,
+        "quote_not_in_selected_chunk": 17
+      },
+      "original_tokens_changed": 7,
+      "teacher_format_tokens_changed": 3
+    },
+    "at_least_one": {
+      "n": 12,
+      "source_questions": 12,
+      "verified_at_least_one": 12,
+      "accuracy": {
+        "whole": 100.0,
+        "teacher": 0.0,
+        "zero": 0.0,
+        "cartridge": 0.0,
+        "zero_teacher_format": 0.0,
+        "cartridge_teacher_format": 0.0
+      },
+      "pairs": {
+        "zero": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        },
+        "zero_teacher_format": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        },
+        "teacher": {
+          "new_correct": 0,
+          "new_wrong": 0,
+          "delta_pp": 0.0
+        }
+      },
+      "rejection_counts": {
+        "quote_not_in_selected_chunk": 1
+      },
+      "original_tokens_changed": 0,
+      "teacher_format_tokens_changed": 1
     }
   },
   "by_task_verified": {
@@ -815,7 +972,9 @@
           "invalid_json": 4,
           "invalid_lengths": 6,
           "quote_not_in_selected_chunk": 19
-        }
+        },
+        "original_tokens_changed": 8,
+        "teacher_format_tokens_changed": 5
       },
       "1": {
         "n": 12,
@@ -849,7 +1008,9 @@
         "rejection_counts": {
           "answer_not_in_quote": 1,
           "quote_not_in_selected_chunk": 1
-        }
+        },
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 1
       },
       "2": {
         "n": 0,
@@ -880,7 +1041,9 @@
             "delta_pp": null
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa10": {
@@ -917,7 +1080,9 @@
           "answer_not_in_quote": 9,
           "duplicate_or_original_question": 4,
           "invalid_json": 54
-        }
+        },
+        "original_tokens_changed": 3,
+        "teacher_format_tokens_changed": 5
       },
       "1": {
         "n": 15,
@@ -951,7 +1116,9 @@
         "rejection_counts": {
           "answer_not_in_quote": 3,
           "quote_not_in_selected_chunk": 1
-        }
+        },
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 0
       },
       "2": {
         "n": 0,
@@ -982,7 +1149,9 @@
             "delta_pp": null
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa2": {
@@ -1019,7 +1188,9 @@
           "answer_not_in_quote": 2,
           "invalid_json": 2,
           "quote_not_in_selected_chunk": 10
-        }
+        },
+        "original_tokens_changed": 6,
+        "teacher_format_tokens_changed": 4
       },
       "1": {
         "n": 30,
@@ -1050,7 +1221,9 @@
             "delta_pp": -3.3333333333333335
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 2
       },
       "2": {
         "n": 1,
@@ -1081,7 +1254,9 @@
             "delta_pp": 0.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa3": {
@@ -1119,7 +1294,9 @@
           "duplicate_or_original_question": 10,
           "invalid_json": 1,
           "quote_not_in_selected_chunk": 38
-        }
+        },
+        "original_tokens_changed": 2,
+        "teacher_format_tokens_changed": 0
       },
       "1": {
         "n": 6,
@@ -1150,7 +1327,9 @@
             "delta_pp": 0.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       },
       "2": {
         "n": 0,
@@ -1181,7 +1360,9 @@
             "delta_pp": null
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa4": {
@@ -1219,7 +1400,9 @@
           "duplicate_or_original_question": 33,
           "invalid_fields": 2,
           "quote_not_in_selected_chunk": 3
-        }
+        },
+        "original_tokens_changed": 3,
+        "teacher_format_tokens_changed": 2
       },
       "1": {
         "n": 12,
@@ -1254,7 +1437,9 @@
           "answer_not_in_quote": 2,
           "duplicate_or_original_question": 2,
           "quote_not_in_selected_chunk": 3
-        }
+        },
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 1
       },
       "2": {
         "n": 20,
@@ -1285,7 +1470,9 @@
             "delta_pp": 5.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 1
       }
     },
     "qa5": {
@@ -1323,7 +1510,9 @@
           "duplicate_or_original_question": 21,
           "invalid_json": 5,
           "quote_not_in_selected_chunk": 2
-        }
+        },
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 2
       },
       "1": {
         "n": 34,
@@ -1356,7 +1545,9 @@
         },
         "rejection_counts": {
           "duplicate_or_original_question": 5
-        }
+        },
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 0
       },
       "2": {
         "n": 9,
@@ -1387,7 +1578,9 @@
             "delta_pp": 0.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa6": {
@@ -1424,7 +1617,9 @@
           "answer_not_in_quote": 1,
           "invalid_json": 88,
           "quote_not_in_selected_chunk": 3
-        }
+        },
+        "original_tokens_changed": 7,
+        "teacher_format_tokens_changed": 7
       },
       "1": {
         "n": 0,
@@ -1455,7 +1650,9 @@
             "delta_pp": null
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       },
       "2": {
         "n": 0,
@@ -1486,7 +1683,9 @@
             "delta_pp": null
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa7": {
@@ -1523,7 +1722,9 @@
           "answer_not_in_quote": 2,
           "invalid_json": 77,
           "quote_not_in_selected_chunk": 7
-        }
+        },
+        "original_tokens_changed": 6,
+        "teacher_format_tokens_changed": 3
       },
       "1": {
         "n": 3,
@@ -1554,7 +1755,9 @@
             "delta_pp": 0.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       },
       "2": {
         "n": 2,
@@ -1585,7 +1788,9 @@
             "delta_pp": 0.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa8": {
@@ -1624,7 +1829,9 @@
           "invalid_json": 40,
           "invalid_lengths": 2,
           "quote_not_in_selected_chunk": 13
-        }
+        },
+        "original_tokens_changed": 3,
+        "teacher_format_tokens_changed": 4
       },
       "1": {
         "n": 17,
@@ -1657,7 +1864,9 @@
         },
         "rejection_counts": {
           "quote_not_in_selected_chunk": 1
-        }
+        },
+        "original_tokens_changed": 1,
+        "teacher_format_tokens_changed": 3
       },
       "2": {
         "n": 5,
@@ -1688,7 +1897,9 @@
             "delta_pp": 0.0
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     },
     "qa9": {
@@ -1727,7 +1938,9 @@
           "invalid_json": 39,
           "invalid_lengths": 1,
           "quote_not_in_selected_chunk": 3
-        }
+        },
+        "original_tokens_changed": 3,
+        "teacher_format_tokens_changed": 6
       },
       "1": {
         "n": 5,
@@ -1760,7 +1973,9 @@
         },
         "rejection_counts": {
           "answer_not_in_quote": 1
-        }
+        },
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       },
       "2": {
         "n": 0,
@@ -1791,7 +2006,9 @@
             "delta_pp": null
           }
         },
-        "rejection_counts": {}
+        "rejection_counts": {},
+        "original_tokens_changed": 0,
+        "teacher_format_tokens_changed": 0
       }
     }
   }

@@ -33,10 +33,14 @@ def summarize(rows):
     rejections = Counter()
     for row in rows:
         rejections.update(row["rejections"])
+        if any(type(row[name]) is not bool for name in ("original_tokens_changed", "teacher_format_tokens_changed")):
+            raise ValueError("The generated-token pairing is incomplete")
     return dict(n=n, source_questions=len({row["source"] for row in rows}),
                 verified_at_least_one=sum(row["verified"] > 0 for row in rows),
                 accuracy={arm: 100 * sum(row[arm] for row in rows) / n if n else None for arm in ARMS},
-                pairs=pairs, rejection_counts=dict(sorted(rejections.items())))
+                pairs=pairs, rejection_counts=dict(sorted(rejections.items())),
+                original_tokens_changed=sum(row["original_tokens_changed"] for row in rows),
+                teacher_format_tokens_changed=sum(row["teacher_format_tokens_changed"] for row in rows))
 
 
 def collect(workspace, snapshot):
@@ -101,8 +105,14 @@ def collect(workspace, snapshot):
             rejections = study["rejections"]
             if not isinstance(rejections, dict) or any(type(v) is not int or v < 0 for v in rejections.values()):
                 raise ValueError("Invalid exercise rejection counts")
+            token_pairs = [(pair["zero_" + suffix]["tokens"], pair["trained_" + suffix]["tokens"])
+                           for suffix in ("original", "teacher_suffix")]
+            if any(not isinstance(tokens, list) for p in token_pairs for tokens in p):
+                raise ValueError("Missing paired token sequences")
             rows.append(dict(source=key.split("-", 2)[2], task=reference["task"], split=split,
-                             verified=count, rejections=rejections, **scores))
+                             verified=count, rejections=rejections,
+                             original_tokens_changed=token_pairs[0][0] != token_pairs[0][1],
+                             teacher_format_tokens_changed=token_pairs[1][0] != token_pairs[1][1], **scores))
     if len(rows) != 1000 or len({row["source"] for row in rows}) != 250:
         raise ValueError("Missing completed cases or source questions")
     overall = summarize(rows)
@@ -123,6 +133,10 @@ def collect(workspace, snapshot):
                                                     (row["verified"] > 0) == present)
                                    for label, present in (("none", False), ("at_least_one", True))}
                            for split in ("development", "holdout")},
+        full_only=subset(lambda row: row["whole"] and not row["teacher"]),
+        full_only_by_verified={label: subset(lambda row: row["whole"] and not row["teacher"] and
+                                                (row["verified"] > 0) == present)
+                               for label, present in (("none", False), ("at_least_one", True))},
         by_task_verified={task: {str(i): subset(lambda row: row["task"] == task and row["verified"] == i)
                                  for i in (0, 1, 2)} for task in sorted({row["task"] for row in rows})})
 

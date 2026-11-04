@@ -6,7 +6,9 @@ from experiments.babilong_linked_selection.qwen_practice_outcomes import summari
 def row(source, zero, cartridge, zero_teacher_format, cartridge_teacher_format, verified=0):
     return dict(source=source, verified=verified, rejections={"invalid_json": int(verified == 0)},
                 whole=0, teacher=1, zero=zero, cartridge=cartridge,
-                zero_teacher_format=zero_teacher_format, cartridge_teacher_format=cartridge_teacher_format)
+                zero_teacher_format=zero_teacher_format, cartridge_teacher_format=cartridge_teacher_format,
+                original_tokens_changed=bool(zero != cartridge),
+                teacher_format_tokens_changed=bool(zero_teacher_format != cartridge_teacher_format))
 
 
 def test_compares_both_suffix_formats_in_matched_pairs():
@@ -17,6 +19,7 @@ def test_compares_both_suffix_formats_in_matched_pairs():
     assert got["pairs"]["zero"] == dict(new_correct=2, new_wrong=1, delta_pp=25)
     assert got["pairs"]["zero_teacher_format"] == dict(new_correct=2, new_wrong=1, delta_pp=25)
     assert got["rejection_counts"] == {"invalid_json": 2}
+    assert got["original_tokens_changed"] == 3 and got["teacher_format_tokens_changed"] == 3
 
 
 def test_empty_and_nonbinary_outcomes():
@@ -28,4 +31,8 @@ def test_empty_and_nonbinary_outcomes():
     bad["zero"] = 1
     bad["verified"] = 3
     with pytest.raises(ValueError, match="verified"):
+        summarize([bad])
+    bad["verified"] = 0
+    bad["original_tokens_changed"] = None
+    with pytest.raises(ValueError, match="pairing"):
         summarize([bad])
