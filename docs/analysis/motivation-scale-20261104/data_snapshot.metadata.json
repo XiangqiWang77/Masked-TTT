@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-11-04T03:37:41.936405+00:00",
+  "sources": {
+    "Qwen3-4B": {
+      "completed": 792,
+      "source_folder": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cross_backbone_selective_sd_20261102/query_cartridges_qwen_olmo1000_20261104",
+      "report_utc": "2026-11-04T03:20:06.087463+00:00",
+      "metric": "answer_focused_lexical_v2",
+      "expected": 1000
+    },
+    "GPT-OSS-20B": {
+      "completed": 614,
+      "source_folder": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cross_backbone_selective_sd_20261102/query_cartridges_gpt_olmo1000_20261103",
+      "report_utc": "2026-11-04T03:21:24.125859+00:00",
+      "metric": "answer_focused_lexical_v2",
+      "expected": 1000
+    }
+  },
+  "support_source": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cross_backbone_selective_sd_20261102/query_cartridges_20261103/posthoc_diagnostics/selected_support.json",
+  "support_annotations_used_only_posthoc": true,
+  "reference_answers_used_only_posthoc": true,
+  "raw_text_or_answers_in_snapshot": false,
+  "selected_chunks": "cached Decision API scores; approximately 10%",
+  "accuracy": "answer_focused_lexical_v2",
+  "online_API_calls": 0,
+  "methods": "whole/selected/cartridge: same question suffix, same generation budget within each case"
+}
