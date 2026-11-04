@@ -18,23 +18,27 @@ from masked_ttt.request import prepare_layout
 from masked_ttt.selection import PreparedRequest
 
 
-@pytest.fixture(params=['qwen3','olmo3','gpt_oss'])
+@pytest.fixture(params=['qwen3','qwen3_gqa','olmo3','gpt_oss','gpt_oss_gqa'])
 def setup(request):
     torch.manual_seed(107);torch.set_num_threads(1)
     common=dict(vocab_size=64,hidden_size=16,intermediate_size=32,num_hidden_layers=2,
                 num_attention_heads=2,num_key_value_heads=2,max_position_embeddings=256,
                 pad_token_id=0,eos_token_id=2)
-    if request.param=='qwen3':
+    if request.param.startswith('qwen3'):
+        if request.param=='qwen3_gqa':
+            common.update(hidden_size=32,intermediate_size=64,num_attention_heads=4,num_key_value_heads=1)
         config=Qwen3Config(**common,head_dim=8);cls=Qwen3ForCausalLM
     elif request.param=='olmo3':
         config=Olmo3Config(**common,layer_types=['sliding_attention','full_attention'],sliding_window=4)
         cls=Olmo3ForCausalLM
     else:
+        if request.param=='gpt_oss_gqa':
+            common.update(hidden_size=64,intermediate_size=128,num_attention_heads=8,num_key_value_heads=1)
         config=GptOssConfig(**common,head_dim=8,num_local_experts=2,num_experts_per_tok=1,
                             rope_scaling=None,layer_types=['sliding_attention','full_attention'],sliding_window=4)
         cls=GptOssForCausalLM
     config._attn_implementation='eager';model=cls(config).eval()
-    if request.param=='gpt_oss':
+    if request.param.startswith('gpt_oss'):
         for block in model.model.layers:
             with torch.no_grad():block.self_attn.sinks.fill_(.2)
     engine=Backbone(model,SimpleNamespace(eos_token_id=2),
