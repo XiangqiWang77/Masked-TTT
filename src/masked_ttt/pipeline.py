@@ -94,6 +94,7 @@ class MaskedTTT:
             rank=engine.config.value_rank,
             value_radius=engine.config.value_radius,
             gain_bound=engine.config.gain_bound,
+            gain_head_mode=engine.config.gain_head_mode,
             sink_tokens=engine.config.sink_tokens,
             seed=engine.config.seed,
         ).to(engine.device)
@@ -380,6 +381,7 @@ class MaskedTTT:
                 teacher_conditioned_on_student_prefix=True,
                 selected_transfer_weight=engine.config.selected_transfer_weight,
                 value_basis_source=engine.config.value_basis_source,
+                gain_head_mode=engine.config.gain_head_mode,
                 selected_transfer_uses_selected_student_prefix=uses_selected_transfer,
                 selected_transfer_full_target_detached=uses_selected_transfer,
                 kl_initial_and_final_may_use_different_student_prefixes=True,

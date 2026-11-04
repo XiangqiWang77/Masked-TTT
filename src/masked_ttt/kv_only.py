@@ -9,6 +9,7 @@ from contextlib import contextmanager
 
 from .memory_accounting import cache_tensors, module_tensors, storage_bytes
 from .standalone import StandaloneReady
+from .attention import address_dimensions
 
 
 def _drop_redundant_tensors(ready):
@@ -20,7 +21,8 @@ def _drop_redundant_tensors(ready):
     if not memory.native_mode and not getattr(ready.branch, "_masked_ttt_augmented", False):
         raise ValueError("An active update must already be materialized into the cache")
     if not memory.native_mode:
-        padded = ((memory.dim + 1 + 31) // 32) * 32
+        _, padded = address_dimensions(memory.dim, memory.query_heads, memory.heads,
+                                       memory.gain_heads)
         for index in memory.adapted_layers:
             layer = ready.branch.layers[index]
             if (layer.keys is None or layer.values is None or

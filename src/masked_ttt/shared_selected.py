@@ -23,7 +23,8 @@ def shared_selected_reader(engine,layout,selected,teacher,full_memory):
     chunks=selected_chunk_positions(layout,selected,plan,len(separator))
     view=KVReadMemory(engine.model.config,chunks,list(range(len(chunks))),plan.document_end,
         rank=full_memory.value_basis.shape[-1],value_radius=full_memory.value_radius,
-        gain_bound=full_memory.gain_bound,sink_tokens=engine.config.sink_tokens,
+        gain_bound=full_memory.gain_bound,gain_head_mode=full_memory.gain_head_mode,
+        sink_tokens=engine.config.sink_tokens,
         seed=engine.config.seed).to(engine.device)
     mapping=torch.tensor(selected,dtype=torch.long,device=view.chunk_index.device)
     old=view.chunk_index

@@ -1,12 +1,11 @@
 """One causal reader for gradient updates, evaluation, and final decoding."""
 
-import math
 from types import MethodType, SimpleNamespace
 import torch
 from torch.nn import functional as F
 from torch.utils.checkpoint import checkpoint
 from transformers.models.qwen3.modeling_qwen3 import apply_rotary_pos_emb
-from .attention import native_attention, address_attention
+from .attention import native_attention, address_attention, address_dimensions, address_key, address_query
 from .cache import fork_prefix
 from .runtime import private_module_tree, private_forward
 
@@ -55,7 +54,7 @@ class MemoryReader:
                 augmented = getattr(past_key_values, "_masked_ttt_augmented", False)
                 if augmented:
                     d = module.head_dim
-                    padded = (d + 1 + 31) // 32 * 32
+                    _, padded = address_dimensions(d, memory.query_heads, memory.heads, memory.gain_heads)
                     (k, v) = (F.pad(k, (0, padded - d)), F.pad(v, (0, padded - d)))
                 if past_key_values is not None:
                     (k, v) = past_key_values.update(
@@ -69,10 +68,7 @@ class MemoryReader:
                 if memory.native_mode:
                     result = native_attention(q, k, v, scale=module.scaling)
                 elif augmented:
-                    qp = F.pad(
-                        torch.cat((q, torch.ones_like(q[..., :1])), -1),
-                        (0, k.shape[-1] - module.head_dim - 1),
-                    )
+                    qp = address_query(q, memory.heads, memory.gain_heads)
                     result = native_attention(qp, k, v, scale=module.scaling)[
                         ..., : module.head_dim
                     ]
@@ -100,9 +96,9 @@ class MemoryReader:
                 continue
             (k, v) = (item.keys, item.values)
             bias = self.memory.biases(layer, k.shape[-2]).to(k.device)
-            component = bias.to(k.dtype)[None, ..., None] * math.sqrt(d)
-            padded = (d + 1 + 31) // 32 * 32
-            item.keys = F.pad(torch.cat((k, component), -1), (0, padded - d - 1))
+            _, padded = address_dimensions(d, self.memory.query_heads, self.memory.heads,
+                                           self.memory.gain_heads)
+            item.keys = address_key(k, bias, self.memory.query_heads)
             item.values = F.pad(self.memory.values(layer, v), (0, padded - d))
         branch._masked_ttt_augmented = True
         return branch

@@ -6,13 +6,12 @@ The forward arithmetic and causal suffix dependencies are unchanged; no
 teacher token, attention layer, or prefix gradient is dropped.
 """
 
-import math
-
 import torch
 from torch.nn import functional as F
 from torch.utils.checkpoint import checkpoint
 
 from .cache import fork_prefix
+from .attention import address_dimensions, address_key
 
 
 def layer_checkpointed_logits(engine, reader, cache, suffix, targets, target_positions=None):
@@ -33,7 +32,7 @@ def layer_checkpointed_logits(engine, reader, cache, suffix, targets, target_pos
     history = [[] for _ in layers]
     values = []
     d = memory.dim
-    padded = ((d + 1 + 31) // 32) * 32
+    _, padded = address_dimensions(d, memory.query_heads, memory.heads, memory.gain_heads)
     for index in range(len(targets)):
         engine.budget.check()
         token_ids = suffix if index == 0 else targets[index - 1 : index]
@@ -67,8 +66,7 @@ def layer_checkpointed_logits(engine, reader, cache, suffix, targets, target_pos
                 k, v = item.keys, item.values
                 if layer_index in memory.adapted_layers:
                     bias = memory.biases(layer_index, k.shape[-2]).to(k.device)
-                    component = bias.to(k.dtype)[None, ..., None] * math.sqrt(d)
-                    item.keys = F.pad(torch.cat((k, component), -1), (0, padded - d - 1))
+                    item.keys = address_key(k, bias, memory.query_heads)
                     item.values = F.pad(memory.values(layer_index, v), (0, padded - d))
                 branch._masked_ttt_augmented = True
                 if past:

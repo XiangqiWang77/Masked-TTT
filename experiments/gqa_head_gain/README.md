@@ -6,4 +6,8 @@ OLMo-3-7B 的 32 个查询头各对应一个 KV 头；Qwen3-4B 的 32 个查询�
 
 这只是一个可选择的参数化：将同组偏置设为相同，数学上回到现有实现；全部设为零时回到原始注意力。在 Qwen 的 128 维头和 GPT-OSS 的 64 维头下，增加 4 或 8 个偏置维度后，仍分别填充到 160 或 96 维，和原来补一个偏置维度的缓存张量大小相同。
 
-[实验代码](attention.py)和[测试](../../tests/test_gqa_head_gain.py)在 CPU 上检查了不同分组、attention sink、因果掩码、前向以及 Q/K、偏置和 Value 的梯度，并检查共享偏置与零偏置的等价性。它还没有接入正式 Cartridge 路径，也没有真实模型上的准确率或 GPU 耗时结果；该设计能否改善 Qwen 和 GPT-OSS 的答题质量，需要后续配对实验。
+该参数化已作为可选配置接入全文 Student 的因果 SD、参数物化和独立 Cartridge 解码；默认配置仍然按 KV 头共享。实验保持 OLMo 的选中 Teacher、全文 Student、同一个 KL 目标和 Value 更新不变，只对比偏置的头间共享方式。Teacher 和学生的结果均在推理完成之后，使用同一套 BABILONG 宽松词面规则评分。
+
+[数学测试](../../tests/test_gqa_head_gain.py)与[完整路径测试](../../tests/test_query_head_integration.py)检查分组、attention sink、因果掩码、前向、梯度、零态和共享态等价性，以及物化后的缓存是否保留相同读取行为。真实 GPU 测试在作业启动时执行。是否改善 Qwen 或 GPT-OSS 的回答质量，仍需同题评测；现阶段不能把数学等价性当作质量提升。
+
+实验使用原有 Decision API 的缓存打分，保持 10% 的关联选块和 8-token Student 轨迹上限，先做每模型 200 题配对开发；只有优于同题全文、选中零更新和 Teacher 的模型才进入其余 800 题。保留未经更新的选中缓存作为对照，不使用答案标签进行推理或更新。

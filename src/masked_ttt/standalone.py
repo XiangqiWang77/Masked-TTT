@@ -41,7 +41,8 @@ def build_standalone(engine,layout,selected,teacher,trained):
     chunks=selected_chunk_positions(layout,selected,plan,len(separator))
     memory=KVReadMemory(engine.model.config,chunks,list(range(len(chunks))),plan.document_end,
         rank=trained.value_basis.shape[-1],value_radius=trained.value_radius,
-        gain_bound=trained.gain_bound,sink_tokens=engine.config.sink_tokens,
+        gain_bound=trained.gain_bound,gain_head_mode=trained.gain_head_mode,
+        sink_tokens=engine.config.sink_tokens,
         seed=engine.config.seed).to(engine.device)
     memory.gain.copy_(trained.gain[...,selected])
     memory.value_coefficients.copy_(trained.value_coefficients)

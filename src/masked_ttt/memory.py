@@ -23,10 +23,18 @@ class KVReadMemory(nn.Module):
         seed=42,
         value_parameterization="per_chunk",
         gain_scope="selected_only",
+        gain_head_mode="kv",
     ):
         super().__init__()
         self.layers = config.num_hidden_layers
         self.heads = config.num_key_value_heads
+        self.query_heads = config.num_attention_heads
+        if gain_head_mode not in ("kv", "query"):
+            raise ValueError("Gain heads must be kv or query")
+        if self.heads < 1 or self.query_heads % self.heads:
+            raise ValueError("Query heads must be grouped evenly over KV heads")
+        self.gain_head_mode = gain_head_mode
+        self.gain_heads = self.heads if gain_head_mode == "kv" else self.query_heads
         self.dim = getattr(config, "head_dim", config.hidden_size // config.num_attention_heads)
         types = getattr(config, "layer_types", ["full_attention"] * self.layers)
         self.adapted_layers = [i for i, kind in enumerate(types) if kind == "full_attention"]
@@ -79,7 +87,7 @@ class KVReadMemory(nn.Module):
         self.register_buffer("bank_scatter_slots", torch.tensor(source_slots, dtype=torch.long))
         self.register_buffer("value_layers", torch.zeros(self.layers, dtype=torch.bool))
         self.active_value_layers = set()
-        self.gain = nn.Parameter(torch.zeros(self.layers, self.heads, len(chunks)))
+        self.gain = nn.Parameter(torch.zeros(self.layers, self.gain_heads, len(chunks)))
         generator = torch.Generator().manual_seed(seed)
         basis = torch.randn(self.layers, self.heads, self.dim, rank, generator=generator)
         basis = torch.linalg.qr(basis, mode="reduced").Q

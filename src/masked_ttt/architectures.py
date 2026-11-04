@@ -9,7 +9,7 @@ from types import MethodType, SimpleNamespace
 import torch
 from torch.nn import functional as F
 
-from .attention import native_attention, address_attention
+from .attention import native_attention, address_attention, address_dimensions, address_query
 
 
 def model_head_dim(config):
@@ -56,7 +56,8 @@ def hybrid_attention(
     active = memory is not None and module.layer_idx in memory.adapted_layers
     augmented = active and getattr(past_key_values, "_masked_ttt_augmented", False)
     if augmented:
-        padded = ((module.head_dim + 1 + 31) // 32) * 32
+        _, padded = address_dimensions(module.head_dim, memory.query_heads, memory.heads,
+                                       memory.gain_heads)
         k, v = F.pad(k, (0, padded - module.head_dim)), F.pad(v, (0, padded - module.head_dim))
     if past_key_values is not None:
         k, v = past_key_values.update(k, v, module.layer_idx, dict(cache_position=cache_position))
@@ -70,9 +71,7 @@ def hybrid_attention(
     if not active or memory.native_mode:
         output = native_attention(q, k, v, **options)
     elif augmented:
-        qp = F.pad(
-            torch.cat((q, torch.ones_like(q[..., :1])), -1), (0, k.shape[-1] - module.head_dim - 1)
-        )
+        qp = address_query(q, memory.heads, memory.gain_heads)
         output = native_attention(qp, k, v, **options)[..., : module.head_dim]
     else:
         output = address_attention(

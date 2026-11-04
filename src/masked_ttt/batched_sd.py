@@ -3,13 +3,12 @@
 The document K/V are immutable. Only the selected document-read state receives
 gradients. Each layer's temporary branch is independently rebuilt on backward.
 """
-import math
-
 import torch
 from torch.nn import functional as F
 from torch.utils.checkpoint import checkpoint
 
 from .architectures import layer_rotary,rotary_embeddings
+from .attention import address_dimensions, address_key
 from .cache import fork_prefix
 
 
@@ -31,7 +30,8 @@ def batched_teacher_logits(engine,reader,cache,suffix,targets,*,checkpoint_layer
     hidden=model.embed_tokens(input_ids.to(embed_device)[None])
     with torch.no_grad():
         embeddings=rotary_embeddings(model,hidden,positions)
-    d=memory.dim;padded=((d+1+31)//32)*32
+    d=memory.dim
+    _,padded=address_dimensions(d,memory.query_heads,memory.heads,memory.gain_heads)
     for layer_index,block in enumerate(model.layers[:model.config.num_hidden_layers]):
         device=block.self_attn.q_proj.weight.device
         hidden=hidden.to(device);local_positions=positions.to(device)
@@ -47,8 +47,7 @@ def batched_teacher_logits(engine,reader,cache,suffix,targets,*,checkpoint_layer
             if layer_index in memory.adapted_layers:
                 k,v=item.keys,item.values
                 bias=memory.biases(layer_index,k.shape[-2]).to(k.device)
-                component=bias.to(k.dtype)[None,...,None]*math.sqrt(d)
-                item.keys=F.pad(torch.cat((k,component),-1),(0,padded-d-1))
+                item.keys=address_key(k,bias,memory.query_heads)
                 item.values=F.pad(memory.values(layer_index,v),(0,padded-d))
             branch._masked_ttt_augmented=True
             if getattr(item,'is_sliding',False):

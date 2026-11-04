@@ -6,22 +6,51 @@ from torch.nn import functional as F
 from transformers.models.qwen3.modeling_qwen3 import repeat_kv
 
 
-def padded_qkv(q, k, v, bias):
-    """Add exactly bias[KV-head,key-position] after native RoPE.
-
-    Original scale is retained. Only the first extra Q component is one;
-    the matching K component is bias*sqrt(original_head_dim).
-    """
-    d = q.shape[-1]
-    if k.shape[-1] != d or v.shape[-1] != d or bias.shape != k.shape[1:3]:
-        raise ValueError("Native Q/K/V dimensions and KV-head address biases required")
-    padded = ((d + 1 + 31) // 32) * 32
+def address_dimensions(dim, query_heads, kv_heads, gain_heads):
+    """Return the extra address width and the kernel-padded head dimension."""
+    if kv_heads < 1 or query_heads % kv_heads or gain_heads not in (kv_heads, query_heads):
+        raise ValueError("Address heads must be shared KV heads or individual query heads")
+    width = 1 if gain_heads == kv_heads else query_heads // kv_heads
+    padded = ((dim + width + 31) // 32) * 32
     if padded > 256:
         raise ValueError("This FlashAttention operator needs native head_dim below256")
-    one = torch.ones_like(q[..., :1])
-    qp = F.pad(torch.cat((q, one), -1), (0, padded - d - 1))
-    component = bias.to(k.dtype)[None, ..., None].expand(k.shape[0], -1, -1, -1)
-    kp = F.pad(torch.cat((k, component * math.sqrt(d)), -1), (0, padded - d - 1))
+    return width, padded
+
+
+def address_query(q, kv_heads, gain_heads):
+    """Append one shared or group-one-hot address to each query head."""
+    dim, query_heads = q.shape[-1], q.shape[1]
+    width, padded = address_dimensions(dim, query_heads, kv_heads, gain_heads)
+    if width == 1:
+        address = torch.ones_like(q[..., :1])
+    else:
+        address = F.one_hot(torch.arange(query_heads, device=q.device) % width, width).to(q.dtype)
+        address = address[None, :, None, :].expand(q.shape[0], -1, q.shape[-2], -1)
+    return F.pad(torch.cat((q, address), -1), (0, padded - dim - width))
+
+
+def address_key(k, bias, query_heads):
+    """Bake query-specific biases into spare dimensions of shared GQA keys."""
+    dim, kv_heads, positions = k.shape[-1], k.shape[1], k.shape[-2]
+    if bias.ndim != 2 or bias.shape[-1] != positions:
+        raise ValueError("Chunk bias must have one value per head and key position")
+    width, padded = address_dimensions(dim, query_heads, kv_heads, bias.shape[0])
+    if width == 1:
+        component = bias[..., None]
+    else:
+        component = bias.reshape(kv_heads, width, positions).permute(0, 2, 1)
+    component = component.to(device=k.device, dtype=k.dtype)[None].expand(k.shape[0], -1, -1, -1)
+    return F.pad(torch.cat((k, component * math.sqrt(dim)), -1), (0, padded - dim - width))
+
+
+def padded_qkv(q, k, v, bias):
+    """Add per-KV-head or per-query-head chunk bias after native RoPE."""
+    d = q.shape[-1]
+    if k.shape[-1] != d or v.shape != k.shape or q.shape[0] != k.shape[0]:
+        raise ValueError("Native Q/K/V dimensions and address biases required")
+    _, padded = address_dimensions(d, q.shape[1], k.shape[1], bias.shape[0])
+    qp = address_query(q, k.shape[1], bias.shape[0])
+    kp = address_key(k, bias, q.shape[1])
     return qp, kp, F.pad(v, (0, padded - d)), d
 
 

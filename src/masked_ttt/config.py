@@ -17,6 +17,7 @@ class TTTConfig:
     value_basis_source: str = "document"
     value_radius: float = 0.15
     gain_bound: float = 6.0
+    gain_head_mode: str = "kv"
     sink_tokens: int = 4
     teacher_max_new_tokens: int = 32
     student_rollout_tokens: int = 8
@@ -89,6 +90,8 @@ class TTTConfig:
             raise ValueError("Invalid KV trust bounds")
         if self.value_basis_source not in ("document","selected"):
             raise ValueError("value_basis_source must be document or selected")
+        if self.gain_head_mode not in ("kv", "query"):
+            raise ValueError("gain_head_mode must be kv or query")
         for name in ("gain_learning_rate", "value_learning_rate", "gradient_clip"):
             if not math.isfinite(getattr(self,name)) or getattr(self,name)<=0:
                 raise ValueError(f"{name} must be positive and finite")

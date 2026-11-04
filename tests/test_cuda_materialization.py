@@ -10,14 +10,16 @@ from masked_ttt.attention import address_attention
 
 @pytest.mark.skipif(not torch.cuda.is_available(),reason="Requires the real CUDA attention backend")
 @pytest.mark.parametrize("query_heads,kv_heads,dim,has_sinks",[(32,8,128,False),(64,8,64,True)])
+@pytest.mark.parametrize("bias_mode",["kv","query"])
 def test_flash_materialization_matches_independent_formula_and_gradients(
-    query_heads,kv_heads,dim,has_sinks
+    query_heads,kv_heads,dim,has_sinks,bias_mode
 ):
     torch.manual_seed(771)
     q=torch.randn(1,query_heads,3,dim,device="cuda",dtype=torch.bfloat16)
     k=torch.randn(1,kv_heads,17,dim,device="cuda",dtype=torch.bfloat16)
     value=torch.randn(1,kv_heads,17,dim,device="cuda",dtype=torch.bfloat16,requires_grad=True)
-    bias=torch.randn(kv_heads,17,device="cuda",dtype=torch.float32,requires_grad=True)*.3
+    bias_heads=kv_heads if bias_mode=="kv" else query_heads
+    bias=torch.randn(bias_heads,17,device="cuda",dtype=torch.float32,requires_grad=True)*.3
     sinks=(torch.randn(query_heads,device="cuda",dtype=torch.float32)*.2 if has_sinks else None)
     probe=torch.randn(1,query_heads,3,dim,device="cuda",dtype=torch.float32)
     observed=address_attention(q,k,value,bias,backend="flash",sinks=sinks)
@@ -27,7 +29,8 @@ def test_flash_materialization_matches_independent_formula_and_gradients(
     ref_value=value.detach().clone().requires_grad_()
     groups=query_heads//kv_heads
     scores=q.float()@repeat_kv(k.float(),groups).transpose(-1,-2)/math.sqrt(dim)
-    scores=scores+ref_bias.repeat_interleave(groups,0)[None,:,None,:]
+    head_bias=ref_bias.repeat_interleave(groups,0) if bias_mode=="kv" else ref_bias
+    scores=scores+head_bias[None,:,None,:]
     visible=torch.arange(17,device="cuda")[None]<=torch.arange(14,17,device="cuda")[:,None]
     scores=scores.masked_fill(~visible[None,None],float("-inf"))
     if sinks is not None:
