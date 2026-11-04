@@ -1,0 +1,47 @@
+{
+  "created_utc": "2026-11-04T10:48:08.337808+00:00",
+  "scope": "synthetic real-model deployment checks; not BABILONG accuracy",
+  "online_api_calls": 0,
+  "reference_answers_used": false,
+  "new_model_calls": 0,
+  "kv_only_release": {
+    "qwen": {
+      "model": "Qwen/Qwen3-4B-Instruct-2507",
+      "gpu": "NVIDIA H200",
+      "passed": true,
+      "generated_positions": 3,
+      "attention_positions": 32,
+      "flash_attention_gradients_match": true,
+      "standalone_tokens_and_logits_match": true,
+      "source_and_training_released": true,
+      "adapter_bytes_after": 0
+    },
+    "gpt": {
+      "model": "openai/gpt-oss-20b",
+      "gpu": "NVIDIA B200",
+      "passed": true,
+      "generated_positions": 3,
+      "attention_positions": 32,
+      "flash_attention_gradients_match": true,
+      "standalone_tokens_and_logits_match": true,
+      "source_and_training_released": true,
+      "adapter_bytes_after": 0
+    }
+  },
+  "request_local": {
+    "qwen": {
+      "model": "Qwen/Qwen3-4B-Instruct-2507",
+      "gpu": "NVIDIA B200",
+      "passed": true,
+      "teacher_tokens_and_student_rollouts_match": true,
+      "training_gradients_match": true,
+      "standalone_tokens_and_logits_match": true,
+      "generic_format_tokens_match_after_release": true,
+      "teacher_answer_in_prompt": false,
+      "source_and_training_released": true
+    },
+    "gpt": {
+      "state": "pending_real_gpu_check"
+    }
+  }
+}
