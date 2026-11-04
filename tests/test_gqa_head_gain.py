@@ -72,3 +72,14 @@ def test_real_backbone_padding_does_not_replicate_kv(query_heads, kv_heads, dim,
     assert padded == ((dim + 1 + 31) // 32) * 32
     assert kp.numel() * kp.element_size() == old_k.numel() * old_k.element_size()
     assert vp.numel() * vp.element_size() == old_v.numel() * old_v.element_size()
+
+
+def test_invalid_grouping_bias_and_kernel_width_are_rejected():
+    k = torch.zeros(1, 2, 3, 8)
+    with pytest.raises(ValueError):
+        augmented_head_bias(torch.zeros(1, 3, 1, 8), k, k, torch.zeros(3, 3))
+    with pytest.raises(ValueError):
+        augmented_head_bias(torch.zeros(1, 4, 1, 8), k, k, torch.zeros(2, 3))
+    wide = torch.zeros(1, 2, 3, 256)
+    with pytest.raises(ValueError):
+        augmented_head_bias(torch.zeros(1, 4, 1, 256), wide, wide, torch.zeros(4, 3))
