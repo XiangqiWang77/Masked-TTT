@@ -1,0 +1,16 @@
+{
+  "created_utc": "2026-11-04T03:43:18.407137+00:00",
+  "model": "OLMo-3-7B-Instruct",
+  "n": 1000,
+  "source": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cross_backbone_selective_sd_20261102/query_cartridges_20261103/latest.json",
+  "source_report_utc": "2026-11-03T23:38:36.089996+00:00",
+  "support_source": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cross_backbone_selective_sd_20261102/query_cartridges_20261103/posthoc_diagnostics/selected_support.json",
+  "metric": "answer-focused task-aware lexical v2 / format-tolerant choice accuracy",
+  "working_document_compacted": 162,
+  "support_and_reference_labels_used_only_posthoc": true,
+  "raw_text_or_answers_in_snapshot": false,
+  "selection": "cached Decision API scores, approximately 10%",
+  "online_API_calls": 0,
+  "teacher_format": "generic output instruction; maximum 32 teacher-generated tokens",
+  "cartridge_format": "original question suffix and request-specific generation limit"
+}
