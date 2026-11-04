@@ -3,6 +3,7 @@
 import argparse
 import json
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -39,7 +40,8 @@ def main():
         check = subprocess.run([str(args.python), "-m", "pytest", "--rootdir", str(frozen),
             "--confcutdir", str(frozen), "-q", "tests/test_prompt_alignment_holdout.py"], cwd=frozen,
             env=env, capture_output=True, text=True, timeout=120)
-        if check.returncode or "3 passed" not in check.stdout:
+        matched = re.search(r"\b(\d+) passed\b", check.stdout)
+        if check.returncode or not matched or int(matched.group(1)) < 3:
             raise RuntimeError("Frozen promotion controller validation failed:\n" + check.stdout + check.stderr)
         atomic(root / "ready.json", json.dumps(dict(cpu_tests_passed=True,
             gpu_preflight_required=True, online_api_calls=0, created=time.time()), indent=2) + "\n")

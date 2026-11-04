@@ -1,4 +1,7 @@
 import pytest
+import json
+import sys
+from types import SimpleNamespace
 from experiments.prompt_alignment import holdout_report, promote
 
 
@@ -67,3 +70,17 @@ def test_single_gpu_holdout_script_and_summary():
     result = holdout_report.summarize(rows)
     assert result["aligned_vs_teacher"]["new_correct"] == 1
     assert result["aligned_vs_teacher"]["new_wrong"] == 1
+
+
+def test_promotion_distinguishes_waiting_and_terminal_prerequisite(tmp_path, monkeypatch):
+    development = tmp_path / "query_cartridges_prompt_aligned_dev_20261104"
+    baseline = tmp_path / "query_cartridges_longsteps_200dev_20261104"
+    development.mkdir(); baseline.mkdir()
+    (development / "submission.json").write_text(json.dumps(dict(job_id="123")))
+    (baseline / "submission.json").write_text(json.dumps(dict(job_id="456")))
+    states = {"123": None, "456": None}
+    monkeypatch.setitem(sys.modules, "cartridge_job_watch", SimpleNamespace(observed_terminal=states.get))
+    assert promote.freeze(tmp_path) == dict(state="waiting")
+    states["456"] = "FAILED"
+    assert promote.freeze(tmp_path) == dict(state="prerequisite_terminal", prerequisite="baseline",
+                                               job_id="456", scheduler_state="FAILED")

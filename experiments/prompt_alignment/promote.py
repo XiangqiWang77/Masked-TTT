@@ -87,6 +87,16 @@ def freeze(workspace):
     development = workspace / "query_cartridges_prompt_aligned_dev_20261104"
     baseline = workspace / "query_cartridges_longsteps_200dev_20261104"
     if not (development / "finished.json").is_file() or not (baseline / "finished.json").is_file():
+        sys.path.insert(0, str(workspace))
+        from cartridge_job_watch import observed_terminal
+        for label, root in (("candidate", development), ("baseline", baseline)):
+            if (root / "finished.json").is_file() or not (root / "submission.json").is_file():
+                continue
+            job = str(json.loads((root / "submission.json").read_text())["job_id"])
+            state = observed_terminal(job)
+            if state is not None:
+                return dict(state="prerequisite_terminal", prerequisite=label,
+                            job_id=job, scheduler_state=state)
         return dict(state="waiting")
     # Re-score completed answers under the same frozen scorer immediately before promotion.
     subprocess.run([sys.executable, str(development / "report.py")], check=True,
@@ -211,7 +221,7 @@ def main():
         raise
     atomic(args.control_root / "monitor_status.json", json.dumps(dict(result, updated=time.time()), indent=2) + "\n")
     print(json.dumps(result, default=str))
-    if result["state"] in ("not_eligible", "submitted"):
+    if result["state"] in ("not_eligible", "submitted", "prerequisite_terminal"):
         subprocess.run(["systemctl", "--user", "stop", args.timer], check=True, capture_output=True, text=True)
 
 
