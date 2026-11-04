@@ -35,6 +35,7 @@ def test_float32_value_add_preserves_a_small_trained_residual():
 
 @pytest.mark.parametrize('has_sinks',[False,True])
 def test_mixed_value_attention_matches_causal_gqa_float32(has_sinks):
+    import masked_ttt.architectures as architecture
     import masked_ttt.reader as reader
     torch.manual_seed(9)
     q=torch.randn(1,4,3,8,dtype=torch.bfloat16)
@@ -42,10 +43,20 @@ def test_mixed_value_attention_matches_causal_gqa_float32(has_sinks):
     v=torch.randn(1,2,7,8,dtype=torch.float32)
     options=dict(scale=.5,sinks=torch.randn(4) if has_sinks else None)
     original=reader.native_attention
-    expected=original(q.float(),k.float(),v,backend='eager',**options).to(q.dtype)
+    expanded_k=k.float().repeat_interleave(2,dim=1)
+    expanded_v=v.repeat_interleave(2,dim=1)
+    logits=(q.float()@expanded_k.transpose(-1,-2))*.5
+    allowed=torch.arange(7)[None,:] <= (torch.arange(3)[:,None]+4)
+    logits=logits.masked_fill(~allowed[None,None],float('-inf'))
+    if has_sinks:
+        logits=torch.cat((logits,options['sinks'][None,:,None,None].expand(1,4,3,1)),dim=-1)
+    weights=logits.softmax(-1)[...,:7]
+    expected=(weights@expanded_v).to(q.dtype)
     with _mixed_precision_attention():
         actual=reader.native_attention(q,k,v,**options)
+        hybrid=architecture.native_attention(q,k,v,**options)
     assert actual.dtype==q.dtype and torch.equal(actual,expected)
+    assert torch.equal(hybrid,expected)
     assert reader.native_attention is original
 
 
