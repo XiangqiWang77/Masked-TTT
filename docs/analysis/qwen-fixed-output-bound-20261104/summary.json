@@ -1,0 +1,45 @@
+{
+  "n": 1000,
+  "metric": "answer_focused_lexical_v2",
+  "teacher_correct": 613,
+  "teacher_accuracy": 61.3,
+  "target_accuracy": 64.3,
+  "summaries": {
+    "original_question": {
+      "zero_correct": 594,
+      "trained_correct": 602,
+      "new_correct": 14,
+      "new_wrong": 6,
+      "oracle_correct": 608,
+      "oracle_accuracy": 60.8,
+      "oracle_minus_teacher_pp": -0.5,
+      "gap_to_teacher_plus_three_pp": 3.5
+    },
+    "teacher_requirements": {
+      "zero_correct": 613,
+      "trained_correct": 609,
+      "new_correct": 8,
+      "new_wrong": 12,
+      "oracle_correct": 621,
+      "oracle_accuracy": 62.1,
+      "oracle_minus_teacher_pp": 0.8,
+      "gap_to_teacher_plus_three_pp": 2.2
+    },
+    "teacher_vs_original_cartridge": {
+      "zero_correct": 613,
+      "trained_correct": 602,
+      "new_correct": 12,
+      "new_wrong": 23,
+      "oracle_correct": 625,
+      "oracle_accuracy": 62.5,
+      "oracle_minus_teacher_pp": 1.2,
+      "gap_to_teacher_plus_three_pp": 1.8
+    }
+  },
+  "bound_is_posthoc_answer_aware": true,
+  "applies_only_to_each_pair_of_already_generated_outputs": true,
+  "evaluation_answers_never_available_to_inference": true,
+  "teacher_format_outputs_are_pre_release_diagnostics": true,
+  "new_model_calls": 0,
+  "online_api_calls": 0
+}

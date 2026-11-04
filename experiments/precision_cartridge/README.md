@@ -8,4 +8,6 @@ FP32 Value 当前使用 eager attention，BF16 使用普通后端，所以两种
 
 开发样本与长轨迹步数试验相同：每模型 56 题，来自 14 个来源问题，包含 20 道 QA3；样本按题型和来源编号选定，不使用答案标签。结果采用统一宽松词面评分，仅在生成后读取参考答案。FP32 会占用更多选中缓存和计算，实际质量与空间变化由实验测量。
 
+实验已完成：同一训练状态下，Qwen 的 BF16 和 FP32 均为 53.57%，GPT-OSS 分别为 39.29% 和 37.50%；卡带字节数中位比例也已记录。完整配对数据与独立重新评分见[结果报告](../../docs/analysis/precision-pilot-20261104/README.md)。
+
 [配对运行器](benchmark_runner.py) · [物化实现](materialization.py) · [评分脚本](benchmark_report.py) · [测试](../../tests/test_precision_benchmark.py)
