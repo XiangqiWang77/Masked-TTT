@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-11-04T13:29:04.049460+00:00",
+  "created_utc": "2026-11-04T13:48:25.056449+00:00",
   "model": "Qwen3-4B-Instruct-2507",
   "completed_cases": 200,
   "metric": "answer_focused_lexical_v2",
@@ -73,6 +73,23 @@
     "paired_baseline_accuracy": 59.0,
     "paired_candidate_accuracy": 59.5,
     "median_cartridge_percent": 14.120679916050387
+  },
+  "source_questions": 50,
+  "group_source_questions": {
+    "task:qa1": 5,
+    "length:16384": 50,
+    "task:qa10": 5,
+    "task:qa2": 5,
+    "task:qa3": 5,
+    "task:qa4": 5,
+    "task:qa5": 5,
+    "task:qa6": 5,
+    "task:qa7": 5,
+    "task:qa8": 5,
+    "task:qa9": 5,
+    "length:32768": 50,
+    "length:65536": 50,
+    "length:8192": 50
   },
   "groups": {
     "length:16384": {

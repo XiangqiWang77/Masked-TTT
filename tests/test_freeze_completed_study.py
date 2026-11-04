@@ -42,8 +42,10 @@ def test_freeze_aggregates_without_case_ids():
     assert data["completed_cases"] == 200 and data["probe_decision"]["eligible"]
     assert not data["development_decision"]["eligible"]
     assert data["overall"]["strictly_paired"]["new_correct"] == 1
+    assert data["source_questions"] == 50 and data["group_source_questions"]["task:qa1"] == 50
     assert inputs[0]["case_ids"][0] not in json.dumps(data)
     assert "新答对 1 题" in render(data)
+    assert "| QA1 | 200 | 50 |" in render(data)
 
 
 def test_rejects_inconsistent_scores_and_failed_preflight():

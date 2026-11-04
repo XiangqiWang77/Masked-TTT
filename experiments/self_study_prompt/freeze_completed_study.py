@@ -50,12 +50,14 @@ def freeze(manifest, report, probe, preflight, finished, submission):
         teacher_and_cartridge_answer_formats_differ=True, development_used_for_selection=True,
         job_id=submission["job_id"], gpu=preflight["gpu"], probe_decision=probe_result,
         development_decision=decision, practice=report["practice"], overall=report["overall"],
-        groups=report["groups"])
+        source_questions=len({row["case"].split("-", 2)[2] for row in rows}),
+        group_source_questions={key: len({row["case"].split("-", 2)[2] for row in group})
+                                for key, group in groups.items()}, groups=report["groups"])
 
 
 def render(data):
     s, a, p = data["overall"], data["overall"]["accuracy"], data["practice"]
-    return "\n".join([
+    lines = [
         "# Qwen：自练习提示的同 GPU 配对", "",
         "| 题数 | 全文 | 选中缓存零更新 | ICL Teacher | 原提示卡带 | 改进提示卡带 | 相对原提示 |",
         "|---:|---:|---:|---:|---:|---:|---:|",
@@ -64,14 +66,31 @@ def render(data):
         f"改进提示相对原提示新答对 {s['strictly_paired']['new_correct']} 题、"
         f"新答错 {s['strictly_paired']['new_wrong']} 题；与 Teacher 的差为 "
         f"{s['versus_teacher']['delta_pp']:+.2f} 点。两组卡带使用相同原问题格式，Teacher 附带通用回答格式要求。", "",
+        f"相对同格式零更新，卡带新对 {s['versus_zero']['new_correct']} 题、新错 "
+        f"{s['versus_zero']['new_wrong']} 题；相对 Teacher，新对 {s['versus_teacher']['new_correct']} 题、"
+        f"新错 {s['versus_teacher']['new_wrong']} 题。", "",
+        "| 题型 | 题数 | 来源问题 | 零更新 | Teacher | 卡带 | 相对零更新：新对 / 新错 | 相对 Teacher：新对 / 新错 |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|"]
+    for number in range(1, 11):
+        key = "task:qa" + str(number)
+        if key not in data["groups"]:
+            continue
+        part = data["groups"][key]
+        acc, zero, teacher = part["accuracy"], part["versus_zero"], part["versus_teacher"]
+        lines.append(f"| QA{number} | {part['n']} | {data['group_source_questions'][key]} | "
+                     f"{acc['zero']:.2f}% | {acc['teacher']:.2f}% | {acc['cartridge']:.2f}% | "
+                     f"{zero['new_correct']} / {zero['new_wrong']} | "
+                     f"{teacher['new_correct']} / {teacher['new_wrong']} |")
+    lines += ["",
         f"10 题无标签预探针中，改进提示的已核验练习数由 {data['probe_decision']['base']} 增至 "
         f"{data['probe_decision']['candidate']}；但在完整 200 题中，两种提示分别产生 "
         f"{p['original']} 和 {p['study_only']} 个已核验练习，有 {p['more']} 题变多、{p['fewer']} 题变少。", "",
         "两组顺序运行在同一已加载模型和 GPU，使用相同选块、Teacher 生成 token 和零更新答案；"
         "每组均独立 prefill、训练、物化并在回答前释放全文及选中源缓存。完整 Teacher 概率张量未逐元素比较。", "",
-        "这是用于选参数的 200 题开发集，包含 50 个来源问题的四种长度。结果没有超过同轮 Teacher，"
+        f"这是用于选参数的 200 题开发集，包含 {data['source_questions']} 个来源问题的四种长度。结果没有超过同轮 Teacher，"
         "因此按预定规则不扩展这一候选到 800 题。统一使用宽松词面评分，参考答案仅在生成后用于评分。", "",
-        "[聚合数据](summary.json) · [复核脚本](../../../experiments/self_study_prompt/freeze_completed_study.py)", ""])
+        "[聚合数据](summary.json) · [复核脚本](../../../experiments/self_study_prompt/freeze_completed_study.py)", ""]
+    return "\n".join(lines)
 
 
 def main():
