@@ -1,0 +1,47 @@
+{
+  "synthetic": true,
+  "online_api_calls": 0,
+  "reference_answers_used": false,
+  "results": [
+    {
+      "architecture": "qwen",
+      "value_learning_rate": 0.0001,
+      "base_steps": 8,
+      "same_teacher_tokens": true,
+      "same_student_prefixes": true,
+      "same_final_tokens": true,
+      "max_training_signal_absolute_difference": 0.0,
+      "independent_cartridge": true
+    },
+    {
+      "architecture": "qwen",
+      "value_learning_rate": 0.001,
+      "base_steps": 8,
+      "same_teacher_tokens": true,
+      "same_student_prefixes": true,
+      "same_final_tokens": true,
+      "max_training_signal_absolute_difference": 0.0,
+      "independent_cartridge": true
+    },
+    {
+      "architecture": "gpt",
+      "value_learning_rate": 0.0001,
+      "base_steps": 8,
+      "same_teacher_tokens": true,
+      "same_student_prefixes": true,
+      "same_final_tokens": true,
+      "max_training_signal_absolute_difference": 0.0,
+      "independent_cartridge": true
+    },
+    {
+      "architecture": "gpt",
+      "value_learning_rate": 0.001,
+      "base_steps": 8,
+      "same_teacher_tokens": true,
+      "same_student_prefixes": true,
+      "same_final_tokens": true,
+      "max_training_signal_absolute_difference": 0.0,
+      "independent_cartridge": true
+    }
+  ]
+}

@@ -5,21 +5,24 @@ from masked_ttt.config import TTTConfig
 
 
 @contextmanager
-def physical_value_runner(implementation, paired_controls, *, root, fixed_lr, physical_controls):
+def physical_value_runner(implementation, paired_controls, *, root, fixed_lr, physical_controls, base_steps=2):
     if fixed_lr not in (.0001, .0003, .001):
         raise ValueError("Value LR must come from the predeclared development sweep")
+    if type(base_steps) is not int or base_steps not in (2, 4, 8):
+        raise ValueError("The base-step budget must be fixed before the holdout")
     original = (implementation.ROOT, implementation.replace, implementation.validate,
                 implementation.validate_manifest, paired_controls.original_question_controls)
     old_root, old_replace, old_validate, old_manifest, old_controls = original
 
     def configured(value, **kwargs):
         if isinstance(value, TTTConfig) and "max_context" in kwargs:
-            kwargs.update(value_learning_rate=fixed_lr, gain_head_mode="kv")
+            kwargs.update(value_learning_rate=fixed_lr, gain_head_mode="kv", steps=base_steps)
         return old_replace(value, **kwargs)
 
     def validate_manifest(manifest):
         if (manifest.get("mode") != "holdout" or manifest.get("case_count") != 800 or
             manifest.get("fixed_value_learning_rate") != fixed_lr or manifest.get("gain_head_mode") != "kv" or
+            manifest.get("steps") != base_steps or
             manifest.get("holdout_evaluated_at_selection") is not False):
             raise ValueError("The development-fixed physical holdout changed")
         return old_manifest(manifest)
@@ -30,7 +33,7 @@ def physical_value_runner(implementation, paired_controls, *, root, fixed_lr, ph
         final = result["standalone_cartridge"]
         memory = final["memory"]
         practices = result["self_study"]["verified"]
-        if (training["gain_head_mode"] != "kv" or len(training["steps"]) != 2 + practices or
+        if (training["gain_head_mode"] != "kv" or len(training["steps"]) != base_steps + practices or
             result["output_source"] != "standalone_cartridge" or
             result["generated_token_ids"] != final["generated_token_ids"] or
             not isinstance(result["self_judge"]["native_prediction"], str) or

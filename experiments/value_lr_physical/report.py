@@ -18,7 +18,7 @@ MODELS = {"qwen": "Qwen/Qwen3-4B-Instruct-2507", "gpt": "openai/gpt-oss-20b"}
 INSPECTED = {"qa1-300023", "qa2-300037"}
 
 
-def validate_result(result, case, model, task, fixed_lr):
+def validate_result(result, case, model, task, fixed_lr, base_steps=2):
     training, selection = result["training"], result["selection"]
     final = result["standalone_cartridge"]
     controls, memory = final["original_question_controls"], final["memory"]
@@ -32,7 +32,7 @@ def validate_result(result, case, model, task, fixed_lr):
         training["objective"] != "on-policy KL(teacher || student)" or
         training["value_basis_source"] != "document" or training["selected_transfer_weight"] != 0 or
         training["gain_head_mode"] != "kv" or training["fixed_value_learning_rate"] != fixed_lr or
-        training["student_rollout_limit"] != 8 or len(training["steps"]) != 2 + result["self_study"]["verified"] or
+        training["student_rollout_limit"] != 8 or len(training["steps"]) != base_steps + result["self_study"]["verified"] or
         not training["teacher_conditioned_on_student_prefix"] or not training["student_rollouts_refreshed_each_step"] or
         any("selected_transfer_KL_before" in step for step in training["steps"]) or
         not result["backbone_unchanged"] or not result["original_document_KV_unchanged"] or

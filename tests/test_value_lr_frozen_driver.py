@@ -34,6 +34,12 @@ def test_frozen_driver_runs_a_real_request_and_releases_all_training_state(tmp_p
     driver = Path(driver_env).resolve()
     original_root = driver.parent.parent
     manifest = json.loads((original_root / "manifest.json").read_text())
+    base_steps = int(os.environ.get("CARTRIDGE_TEST_BASE_STEPS", "2"))
+    if base_steps not in (2, 8):
+        raise ValueError("The frozen driver test supports the two submitted budgets")
+    if base_steps == 8:
+        manifest["steps"] = 8
+        manifest["fixed_value_learning_rate"] = .0001
     fixed_lr = manifest["fixed_value_learning_rate"]
     profile = json.loads((driver.parent / "olmo_profile.json").read_text())
     profile["self_question_count"] = 0
@@ -129,15 +135,26 @@ def test_frozen_driver_runs_a_real_request_and_releases_all_training_state(tmp_p
         return result
 
     monkeypatch.setattr(implementation, "prepare_case", first_request_only)
-    with physical_value_runner(implementation, paired_controls, root=job, fixed_lr=fixed_lr,
-                               physical_controls=kv_only_original_question_controls):
+    if base_steps == 8:
+        from experiments.step_physical.runner import physical_step_runner
+        context = physical_step_runner(implementation, paired_controls, root=job, fixed_steps=8,
+                                       physical_controls=kv_only_original_question_controls)
+    else:
+        context = physical_value_runner(implementation, paired_controls, root=job, fixed_lr=fixed_lr,
+                                        physical_controls=kv_only_original_question_controls)
+    with context:
         implementation.main()
 
     result = json.loads((job / "cases" / model / first / "result.json").read_text())
-    validate_result(result, first, model, first.split("-", 3)[2], fixed_lr)
+    validate_result(result, first, model, first.split("-", 3)[2], fixed_lr, base_steps=base_steps)
     assert result["prediction"] == result["standalone_cartridge"]["prediction"]
     assert engine.config.value_learning_rate == fixed_lr and engine.config.gain_learning_rate == .01
-    assert engine.config.gain_head_mode == "kv" and engine.config.steps == 2
+    assert engine.config.gain_head_mode == "kv" and engine.config.steps == base_steps
+    if base_steps == 8:
+        probe = result["standalone_cartridge"]["step_probe"]
+        assert result["training"]["fixed_base_steps"] == 8
+        assert probe["checkpoints"]["8"]["tokens"] == result["generated_token_ids"]
+        assert probe["diagnostic_snapshots_released_before_final_decode"]
     assert result["training"]["student_rollout_limit"] == 8
     assert result["training"]["fixed_value_learning_rate"] == fixed_lr
     assert result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] == 0

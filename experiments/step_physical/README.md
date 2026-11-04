@@ -1,0 +1,11 @@
+# Physical 8-step Query Cartridge holdout
+
+The original-selector step development compared 2, 4 and 8 base SD updates on the same 200 cases. For GPT-OSS, 8 steps reached **54.0%** versus **53.5%** ICL Teacher and **52.5%** selected zero-update; it changed three zero-update errors into correct answers with no new zero-update errors in that development set. The predeclared development rule selected 8 steps. Qwen had no step budget above all three controls in that split.
+
+This holdout preserves the original cached Decision-score top-10% selection, independent selected-context Teacher, 8-token Student rollout, full-document Student, Value rate `0.0001`, and on-policy Teacher-to-Student KL. Both selected-position read parameters are jointly updated; base weights and source KV remain frozen. A verified practice question adds one update. The 2-, 4- and 8-step outputs are paired on the same trajectory and selected source KV. Before the formal 8-step output, checkpoint diagnostics are released, the trained state is materialized into an independent selected KV, and the full KV, duplicate selected source and training state are released. No extra transfer loss, online API call or evaluation answer is used at inference.
+
+The 8-step budget was fixed using 200 development cases before generating the 800 source-disjoint holdout cases. The report includes the 200 + 800 combined table, all question types, length groups, paired gains and regressions, and Whole-only recovery/selected-only retention. The requested +3-point target is checked on 792 holdout cases after excluding two previously inspected sources. Prior aggregate results were seen, so this is not a fully blind evaluation. Teacher and Student retain their original, different generic output-format instructions; all answers use the same loose task-aware lexical scorer.
+
+An archived-versus-physical [synthetic trajectory comparison](../../docs/analysis/value-runtime-compatibility-20261104/steps8.json) checks both model architectures at two Value rates across eight updates. The holdout additionally runs loaded-model checkpoint and release preflight on its assigned GPU; that preflight and the actual holdout results determine the real-model outcome.
+
+[Protocol](protocol.py) · [Runner](runner.py) · [Report](report.py) · [Tests](../../tests/test_step_physical.py)

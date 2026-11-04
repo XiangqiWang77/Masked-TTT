@@ -9,7 +9,7 @@ def sample():
     step = dict(teacher_KL_before=.2, gain_gradient_norm=.3, value_gradient_norm=.4,
                 gradient_norm=.5, student_rollout_tokens=[1, 2], target_positions=[0, 1],
                 question_path='main')
-    return dict(architecture='gpt', value_learning_rate=.001, teacher_tokens=[4], final_tokens=[5],
+    return dict(architecture='gpt', value_learning_rate=.001, base_steps=2, teacher_tokens=[4], final_tokens=[5],
                 full_prediction='blue', full_cache_released=True, weights_unchanged=True,
                 cache_unchanged=True, objective='on-policy KL(teacher || student)', steps=[step])
 

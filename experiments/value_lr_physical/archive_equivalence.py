@@ -16,7 +16,7 @@ import sys
 REPO = Path(__file__).resolve().parents[2]
 
 
-def worker(runtime, architecture, value_lr, old_root):
+def worker(runtime, architecture, value_lr, old_root, base_steps):
     from dataclasses import fields, replace
     from masked_ttt import MaskedTTT, Request
     from masked_ttt.request import prepare_layout
@@ -26,7 +26,7 @@ def worker(runtime, architecture, value_lr, old_root):
 
     engine = make_engine() if architecture == "qwen" else gpt_gqa_engine()
     engine.eos_ids = {-1}
-    overrides = dict(self_question_count=0, guard_enabled=False, steps=2,
+    overrides = dict(self_question_count=0, guard_enabled=False, steps=base_steps,
         student_rollout_tokens=3, value_learning_rate=value_lr,
         selected_transfer_weight=0., value_basis_source="document", release_full_before_cartridge=True)
     if any(item.name == "release_selected_source_before_decode" for item in fields(engine.config)):
@@ -62,7 +62,7 @@ def worker(runtime, architecture, value_lr, old_root):
             raise AssertionError("The new standalone cache was not physically released")
     fields_to_compare = ("teacher_KL_before", "gain_gradient_norm", "value_gradient_norm", "gradient_norm",
                          "student_rollout_tokens", "target_positions", "question_path")
-    return dict(runtime=runtime, architecture=architecture, value_learning_rate=value_lr,
+    return dict(runtime=runtime, architecture=architecture, value_learning_rate=value_lr, base_steps=base_steps,
         teacher_tokens=result["teacher"]["tokens"], final_tokens=tokens,
         full_prediction=result["self_judge"]["adapted_prediction"],
         full_cache_released=result["memory"]["full_cache_release_before_standalone"]
@@ -73,7 +73,7 @@ def worker(runtime, architecture, value_lr, old_root):
 
 
 def compare(old, new, *, atol=2e-6, rtol=2e-5):
-    for key in ("architecture", "value_learning_rate", "teacher_tokens", "final_tokens", "full_prediction",
+    for key in ("architecture", "value_learning_rate", "base_steps", "teacher_tokens", "final_tokens", "full_prediction",
                 "full_cache_released", "weights_unchanged", "cache_unchanged", "objective"):
         if old[key] != new[key]:
             raise ValueError("Archived and physical runtimes differ on " + key)
@@ -91,7 +91,7 @@ def compare(old, new, *, atol=2e-6, rtol=2e-5):
             if not math.isfinite(a) or not math.isfinite(b) or not math.isclose(a, b, abs_tol=atol, rel_tol=rtol):
                 raise ValueError("The training signal differs on " + key)
             max_abs = max(max_abs, abs(a-b))
-    return dict(architecture=new["architecture"], value_learning_rate=new["value_learning_rate"],
+    return dict(architecture=new["architecture"], value_learning_rate=new["value_learning_rate"], base_steps=new["base_steps"],
         same_teacher_tokens=True, same_student_prefixes=True, same_final_tokens=True,
         max_training_signal_absolute_difference=max_abs, independent_cartridge=True)
 
@@ -103,11 +103,12 @@ def main():
     parser.add_argument("--worker", choices=("old", "new"))
     parser.add_argument("--architecture", choices=("qwen", "gpt"))
     parser.add_argument("--value-lr", type=float)
+    parser.add_argument("--base-steps", type=int, choices=(2, 8), default=2)
     args = parser.parse_args()
     if args.worker:
         if args.architecture is None or args.value_lr not in (.0001, .001):
             raise ValueError("Worker architecture and predeclared LR are required")
-        print(json.dumps(worker(args.worker, args.architecture, args.value_lr, args.old_root)))
+        print(json.dumps(worker(args.worker, args.architecture, args.value_lr, args.old_root, args.base_steps)))
         return
     results = []
     for architecture in ("qwen", "gpt"):
@@ -119,7 +120,7 @@ def main():
                            OMP_NUM_THREADS="1", OPENBLAS_NUM_THREADS="1", MASKED_TTT_FIXED_CHAT_DATE="2026-11-03")
                 command = [str(args.python), str(Path(__file__).resolve()), "--old-root", str(args.old_root),
                     "--python", str(args.python), "--worker", runtime, "--architecture", architecture,
-                    "--value-lr", str(rate)]
+                    "--value-lr", str(rate), "--base-steps", str(args.base_steps)]
                 result = subprocess.run(command, env=env, check=False, capture_output=True, text=True, timeout=120)
                 if result.returncode:
                     raise RuntimeError(f"{runtime} {architecture} worker failed:\n" + result.stderr[-4000:])
