@@ -180,7 +180,19 @@ validated beyond the development set.
 
 ## Verify
 
-Run `pytest -q`. Evaluation compares paired answers with the same task-aware
+Run `pytest -q`. To build the wheel in isolation and exercise its packaged CLI
+and both model paths without a GPU or network, use a new scratch directory:
+
+```bash
+python tests/run_wheel_smoke.py --work-dir /path/to/new/scratch-directory
+```
+
+This smoke test uses tiny randomly initialized Qwen and grouped-query GPT-OSS
+models with synthetic cached scores. It verifies selection, joint SD gradients,
+materialized KV-only decoding, and source/training-state release. The actual
+checkpoints and GPU backend still need their own preflight and evaluation.
+
+Evaluation compares paired answers with the same task-aware
 metric, reports gains and losses relative to each baseline, and reports
 document KV and cartridge storage separately. Earlier OPD-only and
 teacher-prefix runs are different configurations, not results of this method.

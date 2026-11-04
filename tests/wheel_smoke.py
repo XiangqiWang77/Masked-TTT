@@ -8,10 +8,10 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import masked_ttt
-from masked_ttt import MaskedTTT, Request
+from masked_ttt import FrozenJSONSelector, MaskedTTT, Request
 from masked_ttt.kv_only import kv_only_cartridge
 from masked_ttt.linked_selection import LinkedFrozenSelector
-from test_selected_transfer import gpt_engine
+from test_materialization_equivalence import gpt_gqa_engine
 from test_standalone import make_engine
 
 
@@ -32,7 +32,7 @@ def main():
         cursor = end
     records = [
         dict(chunk=i, utility_output_valid=True,
-             decision_probabilities={"yes": {1:.9,2:.05,3:.8,6:.85}.get(i,.01)})
+             decision_probabilities={"yes": {1:.9,2:.005,3:.8,6:.85}.get(i,.01)})
         for i in range(len(chunks))
     ]
     with TemporaryDirectory(prefix="masked-ttt-smoke-") as directory:
@@ -44,26 +44,39 @@ def main():
             question=question, reference_answers_used=False, source_spans=spans,
             canonical_tokenizer="test", scoring_seconds=0., estimated_cost_usd=0., records=records,
         )))
-        for name, factory in (("qwen", make_engine), ("gpt", gpt_engine)):
-            engine = factory()
-            engine.config = replace(
-                engine.config, keep_fraction=.1, self_question_count=0, guard_enabled=False,
-                selected_transfer_weight=0., release_full_before_cartridge=True,
-                release_selected_source_before_decode=True,
-            )
-            selector = LinkedFrozenSelector(root)
-            selector.bind_case("case")
-            request = Request(document=document, question=question, max_new_tokens=3)
-            with kv_only_cartridge():
-                result = MaskedTTT(engine, selector).answer(request)
-            memory = result["standalone_cartridge"]["memory"]
-            if (result["selection"]["selected_chunks"] != [1,2,3,6] or
-                not memory["kv_only_materialized"] or memory["cartridge_adapter_bytes"] != 0 or
-                memory["additional_source_kv_bytes_before_decode"] != 0 or
-                memory["additional_training_adapter_bytes_before_decode"] != 0 or
-                result["memory"]["full_cache_release_before_standalone"]["full_cache_tensors_live_before_standalone"] != 0):
-                raise AssertionError("The packaged standalone cartridge failed on " + name)
-            print(name + ": selected chunks, SD and independent KV-only decode passed")
+        for name, factory in (("qwen", make_engine), ("gpt-gqa", gpt_gqa_engine)):
+            for policy, selector_type, selected in (
+                ("score-ranked", FrozenJSONSelector, [0,1,3,6]),
+                ("entity-linked", LinkedFrozenSelector, [1,2,3,6]),
+            ):
+                engine = factory()
+                engine.config = replace(
+                    engine.config, keep_fraction=.1, self_question_count=0, guard_enabled=False,
+                    selected_transfer_weight=0., release_full_before_cartridge=True,
+                    release_selected_source_before_decode=True,
+                )
+                selector = selector_type(root)
+                selector.bind_case("case")
+                request = Request(document=document, question=question, max_new_tokens=3)
+                with kv_only_cartridge():
+                    result = MaskedTTT(engine, selector).answer(request)
+                memory, training = result["standalone_cartridge"]["memory"], result["training"]
+                checks = dict(selection=result["selection"]["selected_chunks"] == selected,
+                    teacher_kl=training["objective"] == "on-policy KL(teacher || student)",
+                    no_extra_loss=training["selected_transfer_weight"] == 0,
+                    gain_gradient=any(step["gain_gradient_norm"] > 0 for step in training["steps"]),
+                    value_gradient=any(step["value_gradient_norm"] > 0 for step in training["steps"]),
+                    frozen_model=result["backbone_unchanged"], frozen_cache=result["original_document_KV_unchanged"],
+                    materialized=memory["kv_only_materialized"], no_adapter=memory["cartridge_adapter_bytes"] == 0,
+                    no_source=memory["additional_source_kv_bytes_before_decode"] == 0,
+                    no_training=memory["additional_training_adapter_bytes_before_decode"] == 0,
+                    no_full_cache=(result["memory"]["full_cache_release_before_standalone"]
+                                   ["full_cache_tensors_live_before_standalone"] == 0))
+                failed = [key for key, passed in checks.items() if not passed]
+                if failed:
+                    raise AssertionError("The packaged " + policy + " cartridge failed on " + name + ": " +
+                                         ", ".join(failed) + "; selected=" + str(result["selection"]["selected_chunks"]))
+                print(name + " / " + policy + ": selected chunks, SD and independent KV-only decode passed")
 
 
 if __name__ == "__main__":
