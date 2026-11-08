@@ -1,5 +1,7 @@
 # Query Cartridges：三个动机、完整方法与实验结果
 
+> 当前方法描述：[Contextual Cartridges — Query-Specific Synthetic Data 与 Selective SD](CONTEXTUAL_CARTRIDGES_METHOD.zh-CN.md)。该文件记录当前确定的方法设计；下方既有图表属于此前报告的配置，不作为该方法版本已验证的结果。
+
 > 本报告只保留 Motivation 1、2、3 三张图。结果来自已完成的 BABILONG 日志，统一使用 `answer_focused_lexical_v2` 宽松词面评分。
 
 ## Motivation 1：全文视野与证据聚焦
