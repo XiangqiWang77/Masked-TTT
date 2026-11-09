@@ -33,9 +33,14 @@
       "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/babilong-syn-qwen3-4b-1000-matched-32605413/vanilla_cartridges_syns.json"
     }
   },
-  "vanilla_synthetic_used_for_SD": false,
+  "vanilla_synthetic_used_for_SD": true,
   "SD_comparison": [
-    "query_specific_vanilla_SD",
-    "query_specific_selective_SD"
-  ]
+    "vanilla_syns_vanilla_sd",
+    "vanilla_syns_selective_sd",
+    "specific_syns_vanilla_sd",
+    "specific_syns_selective_sd"
+  ],
+  "current_SD_protocol": "native-Cartridges-source-teacher-question-guided-grounded-veto-earlybest-v4",
+  "both_learning_gains_established": false,
+  "SD_protocol_path": "sd_protocol/README.md"
 }

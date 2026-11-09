@@ -1,0 +1,20 @@
+{
+  "previous_run": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/faithful_contextual_sd_20261109",
+  "previous_protocol": "native-Cartridges-source-teacher-question-guided-grounded-veto-v3",
+  "change": "retain best positive-update validation checkpoint before min_steps while preserving minimum executed updates",
+  "motivation": "development KD histories showed earlier improved checkpoints discarded by the min-step eligibility rule",
+  "all_four_arms_use_same_checkpoint_policy": true,
+  "same_actual_update_budget": true,
+  "teacher_prompts_sampling_soft_targets_and_admission_unchanged": true,
+  "synthetic_datasets_regenerated": false,
+  "earlier_trained_memories_or_answers_reused": false,
+  "previous_results_preserved": true,
+  "benchmark_answers_not_used_to_select_checkpoint": true,
+  "original_deadline_unchanged": "2026-11-09T10:51:00+00:00",
+  "reused": {
+    "initial.safetensors": 142,
+    "baselines.json": 142,
+    "targets": 396,
+    "assessments": 292
+  }
+}

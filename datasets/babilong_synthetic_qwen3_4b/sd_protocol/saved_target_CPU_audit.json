@@ -1,0 +1,11 @@
+{
+  "scope": "four saved source-conditioned conversations across query-agnostic and query-specific data in two development cases",
+  "conversations": 4,
+  "token_positions": 1934,
+  "student_training_and_inference_prompt_tokenization_identical": true,
+  "greedy_generated_tokens_match_teacher_soft_target_positions": true,
+  "template_identical_to_official_SelfStudySynthesizer": true,
+  "first_three_vanilla_prompts_match_saved_original_source_and_question": true,
+  "literal_answer_identity_not_required_across_batched_BF16_executions": true,
+  "GPU_or_model_forward_used": false
+}
