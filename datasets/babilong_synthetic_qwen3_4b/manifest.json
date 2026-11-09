@@ -1,0 +1,41 @@
+{
+  "schema": "matched-babilong-synthetic-release-v1",
+  "complete": true,
+  "benchmark_case_count_per_dataset": 1000,
+  "counts_per_dataset": {
+    "benchmark_cases": 1000,
+    "train_qa_pairs": 20558,
+    "validation_qa_pairs": 7391,
+    "total_qa_pairs": 27949
+  },
+  "release": "https://github.com/XiangqiWang77/Masked-TTT/releases/tag/babilong-syn-qwen3-4b-1000-matched-32605413",
+  "files": {
+    "query_specific_syns.json": {
+      "counts": {
+        "benchmark_cases": 1000,
+        "train_qa_pairs": 20558,
+        "validation_qa_pairs": 7391,
+        "total_qa_pairs": 27949
+      },
+      "bytes": 48005851,
+      "complete": true,
+      "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/babilong-syn-qwen3-4b-1000-matched-32605413/query_specific_syns.json"
+    },
+    "vanilla_cartridges_syns.json": {
+      "counts": {
+        "benchmark_cases": 1000,
+        "train_qa_pairs": 20558,
+        "validation_qa_pairs": 7391,
+        "total_qa_pairs": 27949
+      },
+      "bytes": 166801303,
+      "complete": true,
+      "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/babilong-syn-qwen3-4b-1000-matched-32605413/vanilla_cartridges_syns.json"
+    }
+  },
+  "vanilla_synthetic_used_for_SD": false,
+  "SD_comparison": [
+    "query_specific_vanilla_SD",
+    "query_specific_selective_SD"
+  ]
+}
