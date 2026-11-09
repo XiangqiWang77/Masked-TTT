@@ -1,0 +1,61 @@
+{
+  "checks": [
+    {
+      "actual": "PNG",
+      "detail": "File format is compared with the explicit allow-list.",
+      "expected": [
+        "PNG"
+      ],
+      "name": "format",
+      "status": "pass"
+    },
+    {
+      "actual": 300.0,
+      "detail": "DPI basis: effective at target width. Metadata DPI is not a quality measure; effective DPI depends on final physical size.",
+      "expected": {
+        "max": null,
+        "min": 299.0
+      },
+      "name": "dpi",
+      "status": "pass"
+    }
+  ],
+  "input": {
+    "name": "overview.png",
+    "path": "figures/overview.png",
+    "size_bytes": 156036,
+    "suffix": ".png"
+  },
+  "metadata": {
+    "bands": [
+      "R",
+      "G",
+      "B",
+      "A"
+    ],
+    "compression": null,
+    "dpi_x": 299.9994,
+    "dpi_y": 299.9994,
+    "exif_present": false,
+    "format": "PNG",
+    "frames": 1,
+    "has_alpha": true,
+    "height_mm_from_metadata": 137.16027432054864,
+    "height_px": 1620,
+    "icc_profile_bytes": 0,
+    "icc_profile_present": false,
+    "kind": "raster",
+    "mode": "RGBA",
+    "pixel_count": 3499200,
+    "width_mm_from_metadata": 182.88036576073154,
+    "width_px": 2160
+  },
+  "notice": "This deterministic metadata screen checks only the supplied constraints. It does not verify visual quality, scientific integrity, accessibility, embedded-raster resolution in vector files, or journal compliance.",
+  "schema_version": "1.0",
+  "screening_summary": {
+    "fail": 0,
+    "pass": 2,
+    "unknown": 0,
+    "warning": 0
+  }
+}

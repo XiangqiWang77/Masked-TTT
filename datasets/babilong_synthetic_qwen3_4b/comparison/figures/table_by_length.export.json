@@ -1,0 +1,53 @@
+{
+  "notice": "Export completed with explicit settings. This report does not establish visual, accessibility, scientific-integrity, or journal-submission compliance.",
+  "outputs": [
+    {
+      "format": "png",
+      "kind": "raster",
+      "path": "figures/table_by_length.png",
+      "size_bytes": 301621
+    },
+    {
+      "format": "svg",
+      "kind": "vector-container",
+      "path": "figures/table_by_length.svg",
+      "size_bytes": 34532
+    },
+    {
+      "format": "pdf",
+      "kind": "vector-container",
+      "path": "figures/table_by_length.pdf",
+      "size_bytes": 37209
+    }
+  ],
+  "provenance": {
+    "LaTeX_engine_used": false,
+    "data": "comparison.json",
+    "style": "User-provided gray/cyan rows, darkred best, underlined second, grouped headers and vertical rules",
+    "values_unchanged": true
+  },
+  "schema_version": "1.0",
+  "settings": {
+    "bbox_inches": null,
+    "dpi": 300.0,
+    "facecolor": "white",
+    "figure_size_inches": [
+      11.0,
+      3.54
+    ],
+    "font_mode": "truetype",
+    "formats": [
+      "png",
+      "svg",
+      "pdf"
+    ],
+    "pad_inches": 0.1,
+    "tiff_rgb": false,
+    "transparent": false
+  },
+  "versions": {
+    "matplotlib": "3.11.1",
+    "pillow": "12.3.0"
+  },
+  "warnings": []
+}

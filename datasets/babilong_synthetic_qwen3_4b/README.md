@@ -24,3 +24,9 @@
 生成基础：[Stanford Cartridges](https://github.com/HazyResearch/cartridges)。基准：[BABILong](https://github.com/booydar/babilong)。
 
 完整JSON作为GitHub Release附件保存，避免大文件占用Git历史；[下载两套完整数据](https://github.com/XiangqiWang77/Masked-TTT/releases/tag/babilong-syn-qwen3-4b-1000-matched-32605413)。
+
+## Dilution 与 Fragmentation：完整配对比较
+
+[完整报告、各任务与长度表及图](comparison/README.md) · [全部排版表格PDF](comparison/tables/all_styled_tables.pdf) · [LaTeX总体表](comparison/tables/overall.tex)
+
+![Matched synthetic data comparison](comparison/figures/table_overall.png)

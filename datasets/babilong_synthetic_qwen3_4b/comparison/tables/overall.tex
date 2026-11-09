@@ -1,0 +1,21 @@
+\begin{table*}[t!]
+\renewcommand{\arraystretch}{1.10}
+\caption{\textbf{Synthetic data quality: dilution and fragmentation} Both methods use Qwen3-4B and the same per-case synthetic-question counts (20,558 train and 7,391 validation examples over 1,000 BABILong document--query pairs). All values are percentages. $\downarrow$/$\uparrow$ indicate the preferred direction. Source diagnostics use exact source-mapped cases ($n_D$); fragmentation uses only cross-chunk support cases ($n_F$). Query focus uses every planned case. Joint evidence exposure does not establish necessary multi-hop reasoning or answer accuracy. The better result is \textcolor{darkred}{red}; the second is \uline{underlined}. Here $n_D=993$, focus $n=1000$, and $n_F=296$.}
+\label{tab:synthetic-overall}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{?l?ccc?cc?}
+\specialrule{1.2pt}{0pt}{0pt}
+Method & \multicolumn{3}{c?}{Dilution and relevance} & \multicolumn{2}{c?}{Fragmentation} \\
+\cline{2-4}\cline{5-6}
+ & No-support $\downarrow$ & Query focus $\uparrow$ & Support recall $\uparrow$ & Joint exercise $\uparrow$ & Joint case $\uparrow$ \\
+\specialrule{1.2pt}{0pt}{0pt}
+\rowcolor{gray!10}
+Vanilla Cartridges & \uline{83.78} & \uline{1.77} & \uline{52.31} & \uline{0.00} & \uline{0.00} \\
+\rowcolor{cyan!10}
+Question-guided (ours) & \textcolor{darkred}{\textbf{46.69}} & \textcolor{darkred}{\textbf{98.17}} & \textcolor{darkred}{\textbf{91.06}} & \textcolor{darkred}{\textbf{23.66}} & \textcolor{darkred}{\textbf{78.72}} \\
+\rowcolor{lightyellow}
+$\Delta$ (guided$-$agnostic, pp) & -37.09 & +96.41 & +38.75 & +23.66 & +78.72 \\
+\specialrule{1.2pt}{0pt}{0pt}
+\end{tabular}}
+\end{table*}

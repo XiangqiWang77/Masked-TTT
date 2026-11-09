@@ -1,0 +1,64 @@
+\begin{table*}[t!]
+\renewcommand{\arraystretch}{1.10}
+\caption{\textbf{Synthetic data quality: all tasks at 64K} Both methods use Qwen3-4B and the same per-case synthetic-question counts (20,558 train and 7,391 validation examples over 1,000 BABILong document--query pairs). All values are percentages. $\downarrow$/$\uparrow$ indicate the preferred direction. Source diagnostics use exact source-mapped cases ($n_D$); fragmentation uses only cross-chunk support cases ($n_F$). Query focus uses every planned case. Joint evidence exposure does not establish necessary multi-hop reasoning or answer accuracy. The better result is \textcolor{darkred}{red}; the second is \uline{underlined}.}
+\label{tab:synthetic-by_task_64k}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{?l|r|r?l?ccc?cc?}
+\specialrule{1.2pt}{0pt}{0pt}
+Group & $n_D$ & $n_F$ & Method & \multicolumn{3}{c?}{Dilution and relevance} & \multicolumn{2}{c?}{Fragmentation} \\
+\cline{5-7}\cline{8-9}
+ & & & & No-support $\downarrow$ & Query focus $\uparrow$ & Support recall $\uparrow$ & Joint exercise $\uparrow$ & Joint case $\uparrow$ \\
+\specialrule{1.2pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa1 & 25 & 0 & Vanilla Cartridges & \uline{95.92} & \uline{0.50} & \uline{24.00} & -- & -- \\
+\rowcolor{cyan!10}
+ & 25 & 0 & Question-guided (ours) & \textcolor{darkred}{\textbf{43.33}} & \textcolor{darkred}{\textbf{96.00}} & \textcolor{darkred}{\textbf{96.00}} & -- & -- \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa2 & 25 & 24 & Vanilla Cartridges & \uline{91.66} & \uline{0.12} & \uline{32.00} & \uline{0.00} & \uline{0.00} \\
+\rowcolor{cyan!10}
+ & 25 & 24 & Question-guided (ours) & \textcolor{darkred}{\textbf{45.02}} & \textcolor{darkred}{\textbf{99.62}} & \textcolor{darkred}{\textbf{86.00}} & \textcolor{darkred}{\textbf{20.79}} & \textcolor{darkred}{\textbf{75.00}} \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa3 & 25 & 24 & Vanilla Cartridges & \uline{91.50} & \uline{1.75} & \uline{25.33} & \uline{0.00} & \uline{0.00} \\
+\rowcolor{cyan!10}
+ & 25 & 24 & Question-guided (ours) & \textcolor{darkred}{\textbf{69.75}} & \textcolor{darkred}{\textbf{99.62}} & \textcolor{darkred}{\textbf{72.00}} & \textcolor{darkred}{\textbf{12.50}} & \textcolor{darkred}{\textbf{50.00}} \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa4 & 25 & 0 & Vanilla Cartridges & \uline{95.98} & \uline{2.64} & \uline{28.00} & -- & -- \\
+\rowcolor{cyan!10}
+ & 25 & 0 & Question-guided (ours) & \textcolor{darkred}{\textbf{91.97}} & \textcolor{darkred}{\textbf{90.75}} & \textcolor{darkred}{\textbf{32.00}} & -- & -- \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa5 & 25 & 0 & Vanilla Cartridges & \uline{96.50} & \uline{1.25} & \uline{28.00} & -- & -- \\
+\rowcolor{cyan!10}
+ & 25 & 0 & Question-guided (ours) & \textcolor{darkred}{\textbf{60.00}} & \textcolor{darkred}{\textbf{93.50}} & \textcolor{darkred}{\textbf{92.00}} & -- & -- \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa6 & 25 & 0 & Vanilla Cartridges & \uline{98.00} & \uline{0.38} & \uline{12.00} & -- & -- \\
+\rowcolor{cyan!10}
+ & 25 & 0 & Question-guided (ours) & \textcolor{darkred}{\textbf{60.89}} & \textcolor{darkred}{\textbf{99.88}} & \textcolor{darkred}{\textbf{92.00}} & -- & -- \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa7 & 23 & 19 & Vanilla Cartridges & \uline{92.75} & \uline{3.67} & \uline{22.25} & \uline{0.00} & \uline{0.00} \\
+\rowcolor{cyan!10}
+ & 23 & 19 & Question-guided (ours) & \textcolor{darkred}{\textbf{37.18}} & \textcolor{darkred}{\textbf{99.12}} & \textcolor{darkred}{\textbf{92.39}} & \textcolor{darkred}{\textbf{28.95}} & \textcolor{darkred}{\textbf{78.95}} \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa8 & 24 & 17 & Vanilla Cartridges & \uline{95.31} & \uline{1.00} & \uline{14.58} & \uline{0.00} & \uline{0.00} \\
+\rowcolor{cyan!10}
+ & 24 & 17 & Question-guided (ours) & \textcolor{darkred}{\textbf{33.46}} & \textcolor{darkred}{\textbf{94.75}} & \textcolor{darkred}{\textbf{89.58}} & \textcolor{darkred}{\textbf{27.94}} & \textcolor{darkred}{\textbf{82.35}} \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa9 & 25 & 0 & Vanilla Cartridges & \uline{98.00} & \uline{1.75} & \uline{16.00} & -- & -- \\
+\rowcolor{cyan!10}
+ & 25 & 0 & Question-guided (ours) & \textcolor{darkred}{\textbf{48.65}} & \textcolor{darkred}{\textbf{99.88}} & \textcolor{darkred}{\textbf{96.00}} & -- & -- \\
+\specialrule{.5pt}{0pt}{0pt}
+\rowcolor{gray!10}
+qa10 & 25 & 0 & Vanilla Cartridges & \uline{96.50} & \uline{0.38} & \uline{24.00} & -- & -- \\
+\rowcolor{cyan!10}
+ & 25 & 0 & Question-guided (ours) & \textcolor{darkred}{\textbf{60.33}} & \textcolor{darkred}{\textbf{99.62}} & \textcolor{darkred}{\textbf{100.00}} & -- & -- \\
+\specialrule{1.2pt}{0pt}{0pt}
+\end{tabular}}
+\end{table*}

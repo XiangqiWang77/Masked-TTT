@@ -1,0 +1,70 @@
+{
+  "notice": "Export completed with explicit settings. This report does not establish visual, accessibility, scientific-integrity, or journal-submission compliance.",
+  "outputs": [
+    {
+      "format": "png",
+      "kind": "raster",
+      "path": "figures/by_length.png",
+      "size_bytes": 143347
+    },
+    {
+      "format": "svg",
+      "kind": "vector-container",
+      "path": "figures/by_length.svg",
+      "size_bytes": 39464
+    },
+    {
+      "format": "pdf",
+      "kind": "vector-container",
+      "path": "figures/by_length.pdf",
+      "size_bytes": 16556
+    }
+  ],
+  "provenance": {
+    "estimator": "case macro mean",
+    "geometry_exclusions": [
+      "babilong-32-qa4-300099",
+      "babilong-32-qa8-300181",
+      "babilong-32-qa8-300186",
+      "babilong-64-qa7-300154",
+      "babilong-64-qa7-300168",
+      "babilong-64-qa8-300195",
+      "babilong-8-qa3-300058"
+    ],
+    "missing": "N/A where no eligible multi-chunk cases",
+    "publisher_status": "general report; requirements not asserted",
+    "source_data": "comparison.json; tables/per_case_metrics.csv",
+    "uncertainty": {
+      "estimator": "equal-case macro mean; paired differences use the same cases",
+      "interval": "95% percentile",
+      "replicates": 4000,
+      "seed": 20261109,
+      "stratification": "task type; resample episode clusters within each task",
+      "unit": "original source episode cluster; preserve all repeated document lengths"
+    }
+  },
+  "schema_version": "1.0",
+  "settings": {
+    "bbox_inches": null,
+    "dpi": 300.0,
+    "facecolor": "white",
+    "figure_size_inches": [
+      9.0,
+      3.1
+    ],
+    "font_mode": "truetype",
+    "formats": [
+      "png",
+      "svg",
+      "pdf"
+    ],
+    "pad_inches": 0.1,
+    "tiff_rgb": false,
+    "transparent": false
+  },
+  "versions": {
+    "matplotlib": "3.11.1",
+    "pillow": "12.3.0"
+  },
+  "warnings": []
+}

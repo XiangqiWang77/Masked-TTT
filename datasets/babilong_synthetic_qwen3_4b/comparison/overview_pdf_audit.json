@@ -1,0 +1,62 @@
+{
+  "checks": [
+    {
+      "actual": "PDF",
+      "detail": "File format is compared with the explicit allow-list.",
+      "expected": [
+        "PDF"
+      ],
+      "name": "format",
+      "status": "pass"
+    }
+  ],
+  "input": {
+    "name": "overview.pdf",
+    "path": "figures/overview.pdf",
+    "size_bytes": 16080,
+    "suffix": ".pdf"
+  },
+  "metadata": {
+    "crop_height_mm": 137.16,
+    "crop_width_mm": 182.87999999999997,
+    "cropbox_differs_from_mediabox": false,
+    "dpi_x": null,
+    "dpi_y": null,
+    "encrypted": false,
+    "first_page_height_pt": 388.8,
+    "first_page_width_pt": 518.4,
+    "font_resources": {
+      "all_embedded": true,
+      "embedded_count": 1,
+      "fonts": [
+        {
+          "base_font": "/BKHSBH+DejaVuSans",
+          "embedded": true,
+          "resource": "/F1",
+          "subtype": "/Type0"
+        }
+      ],
+      "resource_count": 1,
+      "scope": "first page resource dictionary only",
+      "unembedded_count": 0,
+      "unknown_count": 0
+    },
+    "format": "PDF",
+    "height_mm": 137.16,
+    "kind": "vector-container",
+    "mode": null,
+    "note": "Dimensions use first-page MediaBox with UserUnit and rotation; CropBox dimensions are reported separately. Raw first_page_*_pt values are unscaled user coordinates. Page size and fonts do not establish the resolution of embedded raster images.",
+    "page_count": 1,
+    "rotation_degrees": 0,
+    "user_unit": 1.0,
+    "width_mm": 182.87999999999997
+  },
+  "notice": "This deterministic metadata screen checks only the supplied constraints. It does not verify visual quality, scientific integrity, accessibility, embedded-raster resolution in vector files, or journal compliance.",
+  "schema_version": "1.0",
+  "screening_summary": {
+    "fail": 0,
+    "pass": 1,
+    "unknown": 0,
+    "warning": 0
+  }
+}

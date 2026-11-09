@@ -1,0 +1,5 @@
+Overview. Separate data diagnostics for dilution and fragmentation on the matched 1,000-case Qwen3-4B BABILong synthetic datasets (27,949 examples per method). No-support contexts use 993 cases with exact source geometry; lexical focus uses all 1,000. Joint-support metrics use only 296 cases whose official supporting facts span multiple actual original 2,048-token generation chunks. Values are case-level macro means. Error bars are 95% task-stratified episode-cluster bootstrap intervals; all repeated document lengths stay together. Joint source exposure does not establish semantic correctness or necessary multi-hop reasoning.
+
+Length. No-support context rate, support recall, and cross-chunk joint-exercise case coverage across 8K–64K; each metric displays its eligible case count. Same estimator and intervals as Overview.
+
+Task × length. Positive values always favor question-guided: agnostic minus guided for no-support context rate; guided minus agnostic for cross-chunk joint-exercise case coverage. Missing cross-chunk subsets are N/A, not zero. All 40 cells and any negative values are retained.
