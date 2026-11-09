@@ -14,13 +14,24 @@ def main():
     a = p.parse_args(); config = json.loads(Path(a.config).read_text())
     end = float(config['deadline_epoch'])
     slurm_end = os.environ.get('SLURM_JOB_END_TIME', '')
-    if slurm_end.isdigit(): end = min(end, float(slurm_end))
+    if slurm_end.isdigit():
+        end = (float(slurm_end) if config.get('deadline_from_slurm_allocation')
+               else min(end, float(slurm_end)))
     if time.time() >= end-60: return 75
     names = subprocess.check_output(['nvidia-smi','--query-gpu=name','--format=csv,noheader'], text=True).strip()
     blackwell = any(name in names.lower() for name in ('blackwell', 'b200', 'b300'))
     python = config['python_blackwell'] if blackwell else config['python_default']
     repo = Path('/home/da839/Query_Cart'); env = os.environ.copy()
-    env['PATH'] = f'{Path(python).parent}:{repo}/.deps/toolchain/bin:'+env.get('PATH','')
+    cuda_home = Path('/apps/software/system/software/CUDA/12.8.0')
+    if not (cuda_home/'bin/nvcc').is_file():
+        raise FileNotFoundError(f'CUDA compiler is unavailable: {cuda_home}/bin/nvcc')
+    env['PATH'] = (f'{Path(python).parent}:{repo}/.deps/toolchain/bin:'
+                   f'{cuda_home}/bin:'+env.get('PATH',''))
+    env['CUDA_HOME'] = str(cuda_home)
+    env['CUDA_ROOT'] = str(cuda_home)
+    env['CUDA_PATH'] = str(cuda_home)
+    env['LD_LIBRARY_PATH'] = (f'{cuda_home}/targets/x86_64-linux/lib:'
+                              + env.get('LD_LIBRARY_PATH',''))
     cache_root=Path(config.get('runtime_cache_root',str(Path(config['output'])/'runtime_caches')))
     for name,directory in {'VLLM_CACHE_ROOT':'vllm','TORCHINDUCTOR_CACHE_DIR':'inductor',
         'TRITON_CACHE_DIR':'triton','TORCH_EXTENSIONS_DIR':'extensions',

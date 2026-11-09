@@ -74,7 +74,8 @@ def load_engine(config):
     return engine
 
 
-def train_arm(engine, initial, conversations, validation, config, seed):
+def train_arm(engine, initial, conversations, validation, config, seed,
+              consolidation_conversations=None):
     from contextualized.early_study import fit_early,StopRule,fixed_update_rule
     cache=engine.clone_cache(initial)
     if not conversations:
@@ -88,7 +89,10 @@ def train_arm(engine, initial, conversations, validation, config, seed):
             track_best_before_min=config.get('track_best_before_min',False)))
     history=fit_early(engine,cache,conversations,validation,lr=config['learning_rate'],
         batch_size=config['train_batch_size'],packed_tokens=config['packed_tokens'],seed=seed,
-        rule=rule)
+        rule=rule, consolidation_conversations=consolidation_conversations,
+        consolidation_start_step=config.get('selective_consolidation_start_step',2),
+        official_epochs=config.get('official_epochs'),
+        consolidation_start_epoch=config.get('selective_consolidation_start_epoch',2))
     return cache,history
 
 

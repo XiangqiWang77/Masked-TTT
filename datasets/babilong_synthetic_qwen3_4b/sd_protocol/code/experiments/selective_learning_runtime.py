@@ -18,11 +18,223 @@ import importlib
 import json
 import os
 from pathlib import Path
+import re
 import sys
 import time
 
 
 SYSTEM_TEMPLATE = "\nYou are in a conversation about the following user information.\n\n<info>\n{subcorpus}\n</info>"
+
+
+_WH_QUESTION = re.compile(r"^\s*(?:who|what|where|when|which|how)\b", re.IGNORECASE)
+
+
+def _source_contains_quote(source, quote):
+    """Return whether at least one literal rendering of ``quote`` is in source.
+
+    Critics occasionally wrap an otherwise verbatim sentence in quotation
+    marks.  Removing only outer quote delimiters preserves the source check;
+    it does not perform fuzzy matching or turn a paraphrase into evidence.
+    """
+    if not isinstance(quote, str) or not quote.strip():
+        return False
+    stripped = quote.strip()
+    variants = {stripped, stripped.strip("\"'`“”‘’")}
+    return any(value and value in source for value in variants)
+
+
+def _verified_explicit_contradiction(assessment, source):
+    """Require an explicit contradiction decision plus a literal source quote.
+
+    This uses an *any verified quote* rule.  Requiring every critic quote to be
+    verbatim previously discarded a correct contradiction whenever the critic
+    emitted one exact sentence and one combined/non-literal sentence.
+    """
+    return bool(
+        assessment.get('parse_valid')
+        and assessment.get('declared_candidate_contradicted') is True
+        and any(_source_contains_quote(source, quote)
+                for quote in assessment.get('evidence', ()))
+    )
+
+
+def _clear_answer_type_mismatch(question, candidate):
+    """Detect the narrow, unambiguous WH-question/yes-no non-answer case."""
+    if not _WH_QUESTION.match(question or ''):
+        return False
+    normalized = re.sub(r"[\s$`*_.,!?;:'\"()\[\]{}]", "", candidate or '').lower()
+    return normalized in {'yes', 'no', 'true', 'false'}
+
+
+_GROUNDED_VETO_POLICIES = {
+    'verified_quote_grounded_veto',
+    'answer_preserving_verified_quote_grounded_veto_v3',
+    'complete_answer_verified_quote_grounded_veto',
+    'complete_answer_verified_quote_grounded_veto_v2',
+}
+
+_SUPPORT_REQUIRED_POLICIES = {
+    'verified_quote_support_required_v4',
+}
+
+
+def _grounded_veto_decision(*, old_judgment, focused, document, evidence,
+                            question, candidate, candidate_complete,
+                            admission_policy):
+    """Compute the conservative, label-free admission decision.
+
+    A malformed or uncertain critic never removes ordinary SD.  V2 fixes two
+    deterministic false admissions while preserving this high-recall rule.
+    """
+    full_contradiction = _verified_explicit_contradiction(old_judgment, document)
+    focused_contradiction = _verified_explicit_contradiction(focused, evidence)
+    contradicted = bool(old_judgment.get('grounded_contradiction')
+                        or full_contradiction or focused_contradiction)
+    judged_no_answer = bool(old_judgment.get('parse_valid') and
+                            old_judgment.get('declared_candidate_has_answer') is False)
+    type_mismatch = _clear_answer_type_mismatch(question, candidate)
+    no_answer = judged_no_answer or type_mismatch
+    incomplete = not candidate_complete
+    reject_no_answer = admission_policy != 'verified_quote_grounded_veto'
+    reject_incomplete = admission_policy in {
+        'complete_answer_verified_quote_grounded_veto',
+        'complete_answer_verified_quote_grounded_veto_v2',
+    }
+    approved = not contradicted and not (reject_no_answer and no_answer) \
+        and not (reject_incomplete and incomplete)
+    reason = ('teacher_answer_incomplete' if reject_incomplete and incomplete else
+              'teacher_answer_type_mismatch' if reject_no_answer and type_mismatch else
+              'teacher_declares_no_answer' if reject_no_answer and judged_no_answer else
+              old_judgment['reason'])
+    return {
+        'apply_update': approved,
+        'verdict': 'APPLY' if approved else 'SKIP',
+        'reason': reason,
+        'decision_source': admission_policy,
+        'decision_rule': (
+            'retain original SD unless an explicit contradiction with at least one literal source quote vetoes it; uncertainty does not veto'
+            if admission_policy == 'verified_quote_grounded_veto' else
+            ('prune clear answer-type non-answers and explicit contradictions supported by at least one literal source quote; token-limited official prefixes and uncertain judgments retain original SD'
+             if not reject_incomplete else
+             'prune incomplete answers, clear answer-type non-answers, and explicit contradictions supported by at least one literal source quote; uncertainty retains original SD')),
+        'original_pre_update_judge': old_judgment,
+        'task_assessment': old_judgment,
+        'uncertainty_rejects_signal': False,
+        'partial_official_teacher_prefix_remains_eligible': not reject_incomplete,
+        'candidate_complete': candidate_complete,
+        'grounded_contradiction': contradicted,
+        'full_verified_explicit_contradiction': full_contradiction,
+        'focused_verified_explicit_contradiction': focused_contradiction,
+        'no_answer_detected_but_not_a_veto': no_answer and not reject_no_answer,
+        'no_answer_detected': no_answer,
+        'judged_no_answer': judged_no_answer,
+        'clear_answer_type_mismatch': type_mismatch,
+        'incomplete_answer': incomplete,
+        'teacher_rewritten': False,
+        'reference_answers_used': False,
+        'executed_before_optimizer': True,
+        'optimizer_steps_before_judge': 0,
+    }
+
+
+def _verified_quote_support_decision(*, old_judgment, focused, document,
+                                     evidence, question, candidate,
+                                     candidate_complete, admission_policy):
+    """Admit a consolidation target only after literal source support.
+
+    The first Cartridges epoch still studies every original trajectory.  This
+    decision therefore controls only the second, selective consolidation epoch:
+    uncertainty cannot erase the ordinary SD update, but it also cannot consume
+    the extra consolidation budget.  A target is retained when a task-aware
+    critic says that it contains an answer, does not contradict the source, and
+    cites at least one quote that is literally present in the context it read.
+    No benchmark answer or generated replacement target is consulted.
+    """
+    if admission_policy not in _SUPPORT_REQUIRED_POLICIES:
+        raise ValueError('Unknown verified-support admission policy')
+
+    def supported(assessment, source):
+        return bool(
+            assessment.get('parse_valid')
+            and assessment.get('declared_candidate_has_answer') is True
+            and assessment.get('declared_candidate_contradicted') is False
+            and any(_source_contains_quote(source, quote)
+                    for quote in assessment.get('evidence', ()))
+        )
+
+    full_support = supported(old_judgment, document)
+    focused_support = supported(focused, evidence)
+    full_contradiction = _verified_explicit_contradiction(old_judgment, document)
+    focused_contradiction = _verified_explicit_contradiction(focused, evidence)
+    contradicted = bool(old_judgment.get('grounded_contradiction')
+                        or full_contradiction or focused_contradiction)
+    judged_no_answer = bool(
+        old_judgment.get('parse_valid')
+        and old_judgment.get('declared_candidate_has_answer') is False)
+    type_mismatch = _clear_answer_type_mismatch(question, candidate)
+    approved = bool((full_support or focused_support)
+                    and not contradicted and not judged_no_answer
+                    and not type_mismatch)
+    if contradicted:
+        reason = 'verified_source_contradiction'
+    elif judged_no_answer or type_mismatch:
+        reason = 'teacher_candidate_has_no_task_answer'
+    elif not (full_support or focused_support):
+        reason = 'literal_task_conditioned_source_support_not_established'
+    else:
+        reason = 'literal_task_conditioned_source_support_established'
+    return {
+        'apply_update': approved,
+        'verdict': 'APPLY' if approved else 'SKIP',
+        'reason': reason,
+        'decision_source': admission_policy,
+        'decision_rule': (
+            'use every target in the first ordinary-SD epoch; in the second '
+            'epoch consolidate only unchanged targets with task-aware literal '
+            'source support and no verified contradiction or clear non-answer'),
+        'original_pre_update_judge': old_judgment,
+        'task_assessment': old_judgment,
+        'focused_assessment': focused,
+        'full_verified_source_support': full_support,
+        'focused_verified_source_support': focused_support,
+        'source_support_established': full_support or focused_support,
+        'full_verified_explicit_contradiction': full_contradiction,
+        'focused_verified_explicit_contradiction': focused_contradiction,
+        'grounded_contradiction': contradicted,
+        'no_answer_detected': judged_no_answer or type_mismatch,
+        'judged_no_answer': judged_no_answer,
+        'clear_answer_type_mismatch': type_mismatch,
+        'candidate_complete': candidate_complete,
+        'partial_official_teacher_prefix_remains_eligible': bool(
+            approved and not candidate_complete),
+        'uncertainty_rejects_consolidation_only': True,
+        'ordinary_SD_first_epoch_preserved': True,
+        'teacher_rewritten': False,
+        'reference_answers_used': False,
+        'executed_before_optimizer': True,
+        'optimizer_steps_before_judge': 0,
+    }
+
+
+def reinterpret_saved_grounded_veto(audit, *, document, evidence,
+                                     admission_policy):
+    """Reapply V2 to saved raw critic outputs without another model call."""
+    result = deepcopy(audit)
+    assessment = result['assessment']
+    old_judgment = assessment['original_pre_update_judge']
+    focused = old_judgment['focused_assessment']
+    decision_function = (_verified_quote_support_decision
+        if admission_policy in _SUPPORT_REQUIRED_POLICIES
+        else _grounded_veto_decision)
+    decision = decision_function(
+        old_judgment=old_judgment, focused=focused, document=document,
+        evidence=evidence, question=result['question'], candidate=result['candidate'],
+        candidate_complete=assessment['candidate_complete'],
+        admission_policy=admission_policy)
+    result['assessment'] = decision
+    result['admission_reinterpreted_from_saved_raw_critics'] = True
+    result['admission_reinterpretation_used_benchmark_answers'] = False
+    return result
 
 
 def _legacy_helpers(stack_ttt_root):
@@ -127,24 +339,20 @@ def assess_teacher_signal(*, document, question, task_prompt, evidence, candidat
         candidate_complete=candidate_complete))
     old_judgment.update(focused_assessment=focused, context_view='full_source_and_original_task')
 
-    if admission_policy=='verified_quote_grounded_veto':
+    if admission_policy in _GROUNDED_VETO_POLICIES:
         # An unresolved assessment cannot remove ordinary self-study. Token-
         # limited continuations remain eligible, as in the original SD data.
-        contradicted=bool(old_judgment.get('grounded_contradiction'))
-        no_answer=bool(old_judgment.get('parse_valid') and
-                       old_judgment.get('declared_candidate_has_answer') is False)
-        approved=not contradicted
-        return {'apply_update':approved,'verdict':'APPLY' if approved else 'SKIP',
-            'reason':old_judgment['reason'],
-            'decision_source':'verified_quote_grounded_veto',
-            'decision_rule':'retain original SD unless source-grounded contradiction vetoes it; uncertainty and missing direct answers do not veto',
-            'original_pre_update_judge':old_judgment,
-            'task_assessment':old_judgment,'uncertainty_rejects_signal':False,
-            'partial_official_teacher_prefix_remains_eligible':True,
-            'candidate_complete':candidate_complete,'grounded_contradiction':contradicted,
-            'no_answer_detected_but_not_a_veto':no_answer,'teacher_rewritten':False,
-            'reference_answers_used':False,'executed_before_optimizer':True,
-            'optimizer_steps_before_judge':0}
+        return _grounded_veto_decision(
+            old_judgment=old_judgment, focused=focused, document=document,
+            evidence=evidence, question=question, candidate=candidate,
+            candidate_complete=candidate_complete,
+            admission_policy=admission_policy)
+    if admission_policy in _SUPPORT_REQUIRED_POLICIES:
+        return _verified_quote_support_decision(
+            old_judgment=old_judgment, focused=focused, document=document,
+            evidence=evidence, question=question, candidate=candidate,
+            candidate_complete=candidate_complete,
+            admission_policy=admission_policy)
     if admission_policy not in {'task_conditioned_support_required','original_task_conditioned_support_required'}:
         raise ValueError('Unknown evidence-supported learning admission policy')
 
@@ -199,7 +407,7 @@ def assess_teacher_signal(*, document, question, task_prompt, evidence, candidat
     return {
         'apply_update': approved, 'verdict': 'APPLY' if approved else 'SKIP',
         'reason': task_assessment['reason'],
-        'decision_source': 'task_conditioned_support_required',
+        'decision_source': admission_policy,
         'decision_rule': 'apply only when task-aware source verification establishes support',
         'original_pre_update_judge': old_judgment,
         'extraction': extracted, 'extraction_parse_valid': valid,

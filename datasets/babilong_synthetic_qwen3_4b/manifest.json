@@ -1,5 +1,5 @@
 {
-  "schema": "matched-babilong-synthetic-release-v1",
+  "schema": "matched-babilong-synthetic-release-v2",
   "complete": true,
   "benchmark_case_count_per_dataset": 1000,
   "counts_per_dataset": {
@@ -33,6 +33,15 @@
       "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/babilong-syn-qwen3-4b-1000-matched-32605413/vanilla_cartridges_syns.json"
     }
   },
+  "answer_guided_v3": {
+    "manifest": "answer_guided_v3_release.json",
+    "release": "https://github.com/XiangqiWang77/Masked-TTT/releases/tag/contextual-cartridges-answer-guided-v3-20261109",
+    "benchmark_cases": 1000,
+    "total_qa_triples": 28671,
+    "train_qa_triples": 21207,
+    "validation_qa_triples": 7464,
+    "complete": true
+  },
   "vanilla_synthetic_used_for_SD": true,
   "SD_comparison": [
     "vanilla_syns_vanilla_sd",
@@ -40,7 +49,7 @@
     "specific_syns_vanilla_sd",
     "specific_syns_selective_sd"
   ],
-  "current_SD_protocol": "native-Cartridges-source-teacher-question-guided-grounded-veto-earlybest-v4",
+  "current_SD_protocol": "official-contextual-cartridges-tracin-selective-v26",
   "both_learning_gains_established": false,
   "SD_protocol_path": "sd_protocol/README.md"
 }

@@ -1,0 +1,52 @@
+{
+  "schema": "query-specific-synthetic-dataset-export-v1",
+  "created_utc": "2026-11-09T12:08:05.525459+00:00",
+  "status": "complete",
+  "complete": true,
+  "counts": {
+    "planned_cases": 1000,
+    "completed_artifact_cases": 1000,
+    "completed_data_cases": 1000,
+    "remaining_data_cases": 0,
+    "inherited_cases": 0,
+    "fresh_cases": 1000,
+    "triples": 28671,
+    "train_triples": 21207,
+    "validation_triples": 7464,
+    "inherited_triples": 0,
+    "fresh_triples": 28671,
+    "completed_without_data_cases": 0,
+    "artifact_issues": 0
+  },
+  "config_path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/answer_guided_query_anchored_v3_20261109/config.json",
+  "plan_path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/synthetic_dataset_answer_guided_ordered_canonical_20261107/full_plan.json",
+  "dataset": "BABILong",
+  "backbone": "/home/da839/Stack_TTT/models/Qwen3-4B-Instruct-2507",
+  "format": "Each train/validation record preserves question, answer, evidence and source quotes.",
+  "completion_definition": "All 1000 planned cases have saved nonempty Answer-Guided data; per-case question budgets may have shortfalls.",
+  "quality_claim": null,
+  "benchmark_answers_used": false,
+  "cartridge_training": false,
+  "original_dataset_included": false,
+  "inherited_data_note": "Legacy examples retain their original generator/evidence provenance; they are not relabeled as newly generated data.",
+  "dataset_json": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/answer_guided_query_anchored_v3_20261109/query_specific_synthetic_dataset.json",
+  "dataset_bytes": 237038099,
+  "completed_data_cases_by_length": {
+    "8192": 250,
+    "16384": 250,
+    "32768": 250,
+    "65536": 250
+  },
+  "completed_data_cases_by_task": {
+    "qa1": 100,
+    "qa2": 100,
+    "qa3": 100,
+    "qa4": 100,
+    "qa5": 100,
+    "qa6": 100,
+    "qa7": 100,
+    "qa8": 100,
+    "qa9": 100,
+    "qa10": 100
+  }
+}

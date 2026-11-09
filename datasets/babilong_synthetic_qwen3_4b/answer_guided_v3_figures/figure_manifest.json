@@ -1,0 +1,32 @@
+{
+  "figures": {
+    "figure1": {
+      "base": "figure1_fragmentation_dilution_mechanism",
+      "kind": "mechanism schematic",
+      "measured_values": false
+    },
+    "figure2": {
+      "base": "figure2_generation_speed",
+      "campaigns_controlled": false,
+      "kind": "observed timing",
+      "source": "source_data_speed_per_case.csv"
+    },
+    "figure3": {
+      "base": "figure3_quality_coverage_length",
+      "downstream_accuracy": false,
+      "kind": "quality audit proxies",
+      "source": "source_data_quality_per_case.csv"
+    }
+  },
+  "provenance": {
+    "benchmark_answers_read": false,
+    "created_utc": "2026-11-09T18:12:23.027229+00:00",
+    "missing_values_as_zero": false,
+    "quality_cases": 1000,
+    "quality_report_sha256": "c272cf28ba7d26ce9d83bbee72d38cc2d830455e79db357d1bdfbe7daae9bab0",
+    "quality_rows_sha256": "d749b3ac1f379d865d53f6a2b1df4d4848dc888ffc729b37a3fb60185110980d",
+    "timing_cases_per_method": 1000,
+    "timing_rows_sha256": "101e4442bd5d20dca0426cb8691361e319da34a0e8054ca774c721063cd644a7"
+  },
+  "schema": "contextual-cartridges-answer-guided-v3-figures-v1"
+}

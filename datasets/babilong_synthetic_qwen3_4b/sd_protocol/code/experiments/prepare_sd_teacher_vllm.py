@@ -11,12 +11,19 @@ import time
 import zlib
 
 from experiments.run_syn_sd_factorial import (read, write, input_rows,
-                                             save_conversation, load_conversation)
+    materialize_training_prompts, critic_task_prompt,
+    save_conversation, load_conversation)
 
 
 def reuse_complete_preparation(case, inputs, config, output):
     """Reuse identical frozen supervision without starting a GPU Teacher."""
-    if config.get('selective_gate') != 'verified_quote_grounded_veto':
+    if config.get('selective_gate') not in {
+            'verified_quote_grounded_veto','complete_answer_verified_quote_grounded_veto',
+            'complete_answer_verified_quote_grounded_veto_v2',
+            'answer_preserving_verified_quote_grounded_veto_v3',
+            'verified_quote_support_required_v4',
+            'task_conditioned_support_required',
+            'original_task_conditioned_support_required'}:
         return False
     if not (output/'baselines.json').is_file():
         return False
@@ -25,43 +32,49 @@ def reuse_complete_preparation(case, inputs, config, output):
             for index in range(len(rows)):
                 if not (output/'targets'/dataset/split/f'{index:03d}.pkl').is_file():
                     return False
-        if any(not (output/'assessments'/dataset/f'{i:03d}.json').is_file()
-               for i in range(len(splits['train']))):
-            return False
+                if not (output/'assessments'/dataset/split/f'{index:03d}.json').is_file():
+                    return False
     from experiments.selective_learning_runtime import SYSTEM_TEMPLATE
     audits = {}
     reused = 0
     for dataset, splits in inputs.items():
-        audits[dataset] = []
+        audits[dataset] = {'train': [], 'validation': []}
         for split, rows in splits.items():
             for index, row in enumerate(rows):
                 conv = load_conversation(output/'targets'/dataset/split/f'{index:03d}.pkl',
                                          row, dataset, split)
                 context = (row['evidence'] if config.get('teacher_context_policy')=='question_source_evidence'
                            else case['document'])
+                temperature_mismatch = (
+                    not config.get('fixed_synthetic_answer_trajectories', False)
+                    and conv.metadata.get('teacher_sampling_temperature') !=
+                        config['teacher_sampling_temperature'])
                 if (conv.system_prompt != SYSTEM_TEMPLATE.format(subcorpus=context)
-                        or conv.metadata.get('teacher_sampling_temperature') != config['teacher_sampling_temperature']
+                        or temperature_mismatch
                         or conv.messages[-1].top_logprobs is None):
                     raise ValueError('Cached Teacher source/temperature/soft targets differ')
                 reused += 1
-                if split != 'train':
-                    continue
-                path = output/'assessments'/dataset/f'{index:03d}.json'
+                path = output/'assessments'/dataset/split/f'{index:03d}.json'
                 audit = read(path)
                 if (audit['question'] != row['question']
                         or audit['candidate'] != conv.messages[-1].content
                         or audit.get('critic_context_policy') != config.get('selective_critic_context')
                         or audit['assessment'].get('decision_source') != config['selective_gate']):
                     raise ValueError('Cached admission is from a different source/gate protocol')
-                audits[dataset].append({'question_index':index,
+                audits[dataset][split].append({'question_index':index,
                     'apply_update':audit['assessment']['apply_update'],
                     'reason':audit['assessment']['reason'],'path':str(path)})
     write(output/'supervision_summary.json', {
         'target_cache':{'new':0,'reused':reused},
         'train_counts':{dataset:{'vanilla_sd':len(splits['train']),
-            'selective_sd':sum(a['apply_update'] for a in audits[dataset])}
+            'selective_sd':sum(a['apply_update'] for a in audits[dataset]['train'])}
             for dataset,splits in inputs.items()},
-        'gate':config['selective_gate'],'gate_audits':audits,
+        'validation_counts':{dataset:{'vanilla_sd':len(splits['validation']),
+            'selective_sd':sum(a['apply_update'] for a in audits[dataset]['validation'])}
+            for dataset,splits in inputs.items()},
+        'gate':config['selective_gate'],
+        'gate_audits':{dataset:value['train'] for dataset,value in audits.items()},
+        'validation_gate_audits':{dataset:value['validation'] for dataset,value in audits.items()},
         'transport':{'backend':'cached_vllm_raw_top20',
             'prepared_cache_reused_without_loading_teacher':True,
             'teacher_context_policy':config.get('teacher_context_policy'),
@@ -137,15 +150,36 @@ async def prepare(runtime, components, case, inputs, config, output, seed, deadl
             return load_conversation(path, row, dataset, split)
         began = time.monotonic()
         context=source_context(row)
-        response = await infer([[{'role':'system','content':SYSTEM_TEMPLATE.format(subcorpus=context)},
-            {'role':'user','content':row['question']}]], tokens=config['learning_answer_tokens'],
-            temperature=config['teacher_sampling_temperature'], logprobs=config['teacher_topk'],
-            local_seed=1000+100*(split == 'validation')+index)
+        prompt=row.get('training_prompt',row['question'])
+        chat = [{'role':'system','content':SYSTEM_TEMPLATE.format(subcorpus=context)},
+                {'role':'user','content':prompt}]
+        fixed = config.get('fixed_synthetic_answer_trajectories', False)
+        if fixed:
+            answer_ids = row.get('answer_token_ids')
+            if answer_ids is None:
+                answer_ids = runtime.tokenizer.encode(row['answer'], add_special_tokens=False)
+                if not answer_ids:
+                    raise ValueError('Tokenizer produced an empty fixed answer trajectory')
+                if row.get('answer_finished', True) and answer_ids[-1] not in runtime.eos_ids:
+                    eos = runtime.tokenizer.eos_token_id
+                    if eos is None or eos not in runtime.eos_ids:
+                        raise ValueError('Cannot terminate a fixed synthetic answer trajectory')
+                    answer_ids.append(int(eos))
+            answer_ids = list(map(int, answer_ids))
+            if len(answer_ids) > config['learning_answer_tokens']:
+                raise ValueError('Saved assistant trajectory exceeds the frozen answer budget')
+            with sampling_seed((seed+1000+100*(split == 'validation')+index) % (2**31)):
+                response = await client.teacher_force([chat], [answer_ids],
+                    top_logprobs=config['teacher_topk'], enable_thinking=False)
+        else:
+            response = await infer([chat], tokens=config['learning_answer_tokens'],
+                temperature=config['teacher_sampling_temperature'], logprobs=config['teacher_topk'],
+                local_seed=1000+100*(split == 'validation')+index)
         sample = response.samples[0]
         if sample.top_logprobs is None: raise ValueError('Missing real Teacher soft targets')
         conversation = Conversation(messages=[
-            Conversation.Message(role='user', content=row['question'],
-                token_ids=runtime.tokenizer.encode(row['question'], add_special_tokens=False)),
+            Conversation.Message(role='user', content=prompt,
+                token_ids=runtime.tokenizer.encode(prompt, add_special_tokens=False)),
             Conversation.Message(role='assistant', content=sample.text,
                 token_ids=list(sample.token_ids), top_logprobs=sample.top_logprobs.flatten(.99))],
             system_prompt=SYSTEM_TEMPLATE.format(subcorpus=context),
@@ -155,6 +189,11 @@ async def prepare(runtime, components, case, inputs, config, output, seed, deadl
                 'teacher_sampling_temperature':config['teacher_sampling_temperature'],
                 'teacher_finished':sample.token_ids[-1] in runtime.eos_ids,
                 'source_row_index':row['source_row_index'],'synthetic_answer_labels_used':False,
+                'synthetic_answer_trajectory_used':fixed,
+                'synthetic_answer_hard_label_loss':False,
+                'answer_trajectory_source':row.get('answer_trajectory_source'),
+                'training_prompt_policy':row.get('training_prompt_policy'),
+                'training_prompt_sha256':row.get('training_prompt_sha256'),
                 'generation_seconds':time.monotonic()-began,'teacher_backend':'vllm_raw_top20',
                 'benchmark_answers_used':False}, type='query_guided_standard_SD')
         save_conversation(conversation,path); stats['new'] += 1
@@ -179,8 +218,8 @@ async def prepare(runtime, components, case, inputs, config, output, seed, deadl
     # A separate pool prevents blocking critics from starving vLLM's engine thread.
     pool = ThreadPoolExecutor(max_workers=config.get('critic_concurrency',16),thread_name_prefix='source_gate')
     audits = {}
-    async def gate(dataset,index,row,conversation):
-        path = output/'assessments'/dataset/f'{index:03d}.json'
+    async def gate(dataset,split,index,row,conversation):
+        path = output/'assessments'/dataset/split/f'{index:03d}.json'
         candidate = conversation.messages[-1].content
         if path.is_file():
             value = read(path)
@@ -195,7 +234,7 @@ async def prepare(runtime, components, case, inputs, config, output, seed, deadl
                 return future.result(timeout=max(1,deadline-time.time()))
             document=(case['document'] if config.get('selective_critic_context')=='full_document_with_focused_source_quotes'
                       else source_context(row))
-            task_prompt = SYSTEM_TEMPLATE.format(subcorpus=document)+'\n\n'+row['question']
+            task_prompt = critic_task_prompt(case,row,dataset,config,document)
             result = await loop.run_in_executor(pool,partial(assess_teacher_signal,
                 document=document,question=row['question'],task_prompt=task_prompt,
                 evidence=row['evidence'],candidate=candidate,
@@ -203,26 +242,34 @@ async def prepare(runtime, components, case, inputs, config, output, seed, deadl
                 generate_assessment=bridge,legacy_helpers=legacy,
                 admission_policy=config.get('selective_gate','task_conditioned_support_required')))
             value = {'question_index':index,'question':row['question'],'candidate':candidate,
-                'dataset':dataset,'assessment':result,'teacher_targets_unchanged':True,
+                'dataset':dataset,'split':split,'assessment':result,'teacher_targets_unchanged':True,
                 'critic_context_policy':config.get('selective_critic_context','teacher_source'),
                 'critic_source_characters':len(document),
                 'seconds':time.monotonic()-began,'benchmark_answers_used':False,
                 'synthetic_answer_labels_used':False}
             write(path,value)
         print(json.dumps({'event':'batched_selective_signal','case':case['key'],
-            'dataset':dataset,'index':index,'accepted':value['assessment']['apply_update']}),flush=True)
+            'dataset':dataset,'split':split,'index':index,
+            'accepted':value['assessment']['apply_update']}),flush=True)
         return {'question_index':index,'apply_update':value['assessment']['apply_update'],
                 'reason':value['assessment']['reason'],'path':str(path)}
     try:
         for dataset,splits in inputs.items():
-            audits[dataset] = await asyncio.gather(*(gate(dataset,index,row,conversation)
-                for index,(row,conversation) in enumerate(zip(splits['train'],targets[dataset]['train']))))
+            audits[dataset] = {}
+            for split in ('train','validation'):
+                audits[dataset][split] = await asyncio.gather(*(gate(dataset,split,index,row,conversation)
+                    for index,(row,conversation) in enumerate(zip(
+                        splits[split],targets[dataset][split]))))
     finally: pool.shutdown(wait=True)
     await runtime.batcher.wait_idle()
     write(output/'supervision_summary.json',{'target_cache':stats,
         'train_counts':{dataset:{'vanilla_sd':len(targets[dataset]['train']),
-            'selective_sd':sum(row['apply_update'] for row in audits[dataset])} for dataset in inputs},
-        'gate':config['selective_gate'],'gate_audits':audits,
+            'selective_sd':sum(row['apply_update'] for row in audits[dataset]['train'])} for dataset in inputs},
+        'validation_counts':{dataset:{'vanilla_sd':len(targets[dataset]['validation']),
+            'selective_sd':sum(row['apply_update'] for row in audits[dataset]['validation'])} for dataset in inputs},
+        'gate':config['selective_gate'],
+        'gate_audits':{dataset:value['train'] for dataset,value in audits.items()},
+        'validation_gate_audits':{dataset:value['validation'] for dataset,value in audits.items()},
         'transport':{'backend':runtime.backend_metadata,'concurrent_source_critics':True,
             'legacy_grounded_veto_prompts_reused':True,
             'teacher_context_policy':config.get('teacher_context_policy','full_document'),
@@ -240,7 +287,11 @@ def main():
     case = read_indexed_case(plan,index,a.case);output=Path(config['output'])/'cases'/a.case
     seed=(config['seed']+zlib.crc32(a.case.encode())) % (2**31)
     inputs,_=input_rows(item,config,seed)
-    deadline=min(config['deadline_epoch'],float(os.environ.get('PAIR_DEADLINE_EPOCH',config['deadline_epoch'])))
+    materialize_training_prompts(case,inputs,config)
+    allocation_deadline=float(os.environ.get(
+        'PAIR_DEADLINE_EPOCH',config['deadline_epoch']))
+    deadline=(allocation_deadline if config.get('deadline_from_slurm_allocation')
+              else min(config['deadline_epoch'],allocation_deadline))
     if reuse_complete_preparation(case,inputs,config,output):
         return
     from transformers import AutoTokenizer
@@ -252,10 +303,21 @@ def main():
         len(tokenizer.encode(case['document'],add_special_tokens=False))+8192)
     from experiments.vllm_study_client import load_vllm_runtime
     from experiments.build_synthetic_pair_fast import make_runtime_components
+    # Prompt-logprob materialization temporarily allocates a full-vocabulary
+    # tensor.  Leave extra headroom on 24 GiB workers; this changes only the
+    # transport batch size/KV-cache reservation, never prompts or targets.
+    import torch
+    device_gib = torch.cuda.get_device_properties(0).total_memory / 2**30
+    batch_sequences = config.get('teacher_max_batch_sequences',32)
+    memory_utilization = config.get('teacher_gpu_memory_utilization',.85)
+    if device_gib < 32:
+        batch_sequences = min(batch_sequences, 4)
+        memory_utilization = min(memory_utilization, .60)
     runtime=load_vllm_runtime(config['model'],tokenizer=tokenizer,seed=seed,
-        max_model_len=context_tokens,max_batch_sequences=config.get('teacher_max_batch_sequences',32),
+        max_model_len=context_tokens,max_batch_sequences=batch_sequences,
         max_num_batched_tokens=config.get('teacher_max_num_batched_tokens',4096),
-        gpu_memory_utilization=config.get('teacher_gpu_memory_utilization',.85))
+        gpu_memory_utilization=memory_utilization,
+        enforce_eager=config.get('teacher_enforce_eager',False))
     components=make_runtime_components(runtime)
     asyncio.run(prepare(runtime,components,case,inputs,config,output,seed,deadline))
     from contextualized.upstream_study import _RUNTIMES

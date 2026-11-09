@@ -101,27 +101,179 @@ def evaluate_distillation(engine, cache, dataset):
 
 
 def fit_early(engine, cache, conversations, validation, *, lr=.02, batch_size=4,
-              packed_tokens=2048, seed=42, rule=None, log=None):
+              packed_tokens=2048, seed=42, rule=None, log=None,
+              consolidation_conversations=None, consolidation_start_step=2,
+              official_epochs=None, consolidation_start_epoch=2):
+    """Fit native KV with an optional answer-preserving selective second pass.
+
+    When ``consolidation_conversations`` is supplied, step one remains the
+    complete original Cartridges SD pass.  Subsequent steps draw only from the
+    source-supported subset while keeping the same optimizer, update count,
+    and packed-sequence forwards per update.  Cycling the subset concentrates
+    the freed budget without ever replacing the first full-data update.
+    """
     rule = rule or StopRule()
+    if consolidation_start_step < 2:
+        raise ValueError('Selective consolidation must follow a positive full-SD warmup')
+    if official_epochs is not None:
+        if type(official_epochs) is not int or official_epochs < 1:
+            raise ValueError('Official epoch training requires a positive epoch count')
+        if not 2 <= consolidation_start_epoch <= official_epochs:
+            raise ValueError('Selective consolidation must follow a positive full-SD epoch')
     train = make_dataset(engine, conversations, packed_tokens, seed)
+    consolidation = (make_dataset(engine, consolidation_conversations,
+                                  packed_tokens, seed + 2)
+                     if consolidation_conversations else None)
     heldout = make_dataset(engine, validation, packed_tokens, seed+1) if validation else None
+    if batch_size == 'full_dataset':
+        if official_epochs is None:
+            # Legacy complete-pass mode averages a whole packed dataset into
+            # one optimizer update.
+            batch_size = len(train)
+        else:
+            # Released-trainer mode steps each packed DatasetBatch separately.
+            batch_size = 1
+    if type(batch_size) is not int or batch_size < 1:
+        raise ValueError('Training batch size must be positive or full_dataset')
     parameters = [p for p in cache.parameters() if p.requires_grad]
     optimizer = torch.optim.Adam(parameters, lr=lr)
-    rng = random.Random(seed)
-    order, cursor = [], 0
+    rngs = {
+        'full': random.Random(seed),
+        'selective': random.Random(seed + 2),
+    }
+    orders = {'full': [], 'selective': []}
+    cursors = {'full': 0, 'selective': 0}
     history, best_parameters = [], None
     initial = evaluate_distillation(engine, cache, heldout) if heldout else None
     reason = 'maximum_steps' if heldout else 'maximum_steps_no_distinct_heldout'
+
+    # Match the released trainer's loop nesting when requested: every packed
+    # DatasetBatch performs one optimizer update and an epoch visits every
+    # packed batch once.  A selective epoch cycles its admitted subset to the
+    # same number of packed-batch updates as the corresponding full epoch, so
+    # selection changes supervision rather than compute within a dataset arm.
+    if official_epochs is not None:
+        epoch_rule = StopRule(
+            min_steps=1,
+            max_steps=official_epochs,
+            eval_every=1,
+            patience=official_epochs + 1,
+            relative_min_delta=rule.relative_min_delta,
+            absolute_min_delta=rule.absolute_min_delta,
+            track_best_before_min=True,
+        )
+        update = 0
+        best_update = 0
+        for epoch in range(1, official_epochs + 1):
+            phase = ('selective'
+                     if consolidation is not None and epoch >= consolidation_start_epoch
+                     else 'full')
+            active = consolidation if phase == 'selective' else train
+            # The ordinary arm visits each packed full-data batch once.  The
+            # selective arm repeats admitted batches only to match that count.
+            updates_this_epoch = len(train)
+            for batch_in_epoch in range(1, updates_this_epoch + 1):
+                if cursors[phase] >= len(orders[phase]):
+                    orders[phase] = list(range(len(active)))
+                    rngs[phase].shuffle(orders[phase])
+                    cursors[phase] = 0
+                batch = active[orders[phase][cursors[phase]]]
+                cursors[phase] += 1
+                optimizer.zero_grad(set_to_none=True)
+                terms = distillation_terms(engine, cache, batch)
+                loss = terms.mean()
+                if not bool(loss.isfinite()):
+                    raise FloatingPointError('Nonfinite upstream distillation loss')
+                loss.backward()
+                if not any(p.grad is not None and bool(p.grad.abs().sum() > 0)
+                           for p in parameters):
+                    raise RuntimeError('Native KV received no distillation gradient')
+                if any(p.grad is not None and not bool(p.grad.isfinite().all())
+                       for p in parameters):
+                    raise FloatingPointError('Nonfinite KV gradient')
+                optimizer.step()
+                cache.clear()
+                update += 1
+                row = {
+                    'step': update,
+                    'epoch': epoch,
+                    'batch_in_epoch': batch_in_epoch,
+                    'train_kd_loss': float(loss.detach()),
+                    'training_phase': phase,
+                    'phase_packed_sequences': len(active),
+                }
+                if batch_in_epoch == updates_this_epoch and heldout:
+                    metric = evaluate_distillation(engine, cache, heldout)
+                    row['heldout_kd_loss'] = metric
+                    improved, _ = epoch_rule.observe(epoch, metric)
+                    if improved:
+                        best_parameters = [p.detach().cpu().clone() for p in parameters]
+                        best_update = update
+                    row.update(best_epoch=epoch_rule.best_step,
+                               best_step=best_update,
+                               stale_checks=epoch_rule.stale)
+                if log:
+                    log(row)
+                history.append(row)
+        if best_parameters is not None:
+            with torch.no_grad():
+                for parameter, saved in zip(parameters, best_parameters):
+                    parameter.copy_(saved.to(parameter.device))
+        cache.clear()
+        if any(p.grad is not None for p in engine.student.parameters()):
+            raise RuntimeError('The backbone must remain frozen')
+        returned_epoch = epoch_rule.best_step or official_epochs
+        returned_update = best_update or update
+        return {
+            'objective': 'upstream_sparse_teacher_distillation',
+            'direct_answer_nll': False,
+            'train_conversations': len(conversations),
+            'heldout_conversations': len(validation),
+            'packed_train_sequences': len(train),
+            'initial_heldout_kd_loss': initial,
+            'selective_consolidation_conversations': (
+                len(consolidation_conversations) if consolidation_conversations else 0),
+            'packed_selective_sequences': len(consolidation) if consolidation else 0,
+            'training_schedule': (
+                'official_packed_batch_epochs_with_source_supported_second_epoch'
+                if consolidation is not None else 'official_packed_batch_epochs'),
+            'selective_consolidation_start_epoch': (
+                consolidation_start_epoch if consolidation is not None else None),
+            'packed_sequences_per_update': 1,
+            'packed_sequences_per_epoch': len(train),
+            'effective_full_dataset_epochs': official_epochs,
+            'executed_epochs': official_epochs,
+            'updates': update,
+            'returned_checkpoint_step': returned_update,
+            'returned_checkpoint_epoch': returned_epoch,
+            'checkpoint_policy': {
+                'track_best_before_min': True,
+                'eligible_checkpoints': 'end_of_each_positive_training_epoch',
+                'minimum_executed_epochs': 1,
+                'zero_update_checkpoint_eligible': False,
+            },
+            'final_heldout_kd_loss': (
+                evaluate_distillation(engine, cache, heldout) if heldout else None),
+            'stop_reason': ('official_epoch_budget_with_heldout_checkpoint_selection'
+                            if heldout else 'official_epoch_budget'),
+            'history': history,
+            'benchmark_answers_used': False,
+        }
+
     for step in range(1, rule.max_steps+1):
+        phase = ('selective'
+                 if consolidation is not None and step >= consolidation_start_step
+                 else 'full')
+        active = consolidation if phase == 'selective' else train
         optimizer.zero_grad(set_to_none=True)
         running = 0.
         for _ in range(batch_size):
-            if cursor >= len(order):
-                order = list(range(len(train)))
-                rng.shuffle(order)
-                cursor = 0
-            batch = train[order[cursor]]
-            cursor += 1
+            if cursors[phase] >= len(orders[phase]):
+                orders[phase] = list(range(len(active)))
+                rngs[phase].shuffle(orders[phase])
+                cursors[phase] = 0
+            batch = active[orders[phase][cursors[phase]]]
+            cursors[phase] += 1
             terms = distillation_terms(engine, cache, batch)
             loss = terms.mean()/batch_size
             if not bool(loss.isfinite()):
@@ -134,7 +286,9 @@ def fit_early(engine, cache, conversations, validation, *, lr=.02, batch_size=4,
         if any(p.grad is not None and not bool(p.grad.isfinite().all()) for p in parameters):
             raise FloatingPointError('Nonfinite KV gradient')
         optimizer.step()
-        row = {'step': step, 'train_kd_loss': running}
+        row = {'step': step, 'train_kd_loss': running,
+               'training_phase': phase,
+               'phase_packed_sequences': len(active)}
         if heldout and (step % rule.eval_every == 0 or step == rule.max_steps):
             metric = evaluate_distillation(engine, cache, heldout)
             row['heldout_kd_loss'] = metric
@@ -160,6 +314,16 @@ def fit_early(engine, cache, conversations, validation, *, lr=.02, batch_size=4,
     return {'objective': 'upstream_sparse_teacher_distillation', 'direct_answer_nll': False,
             'train_conversations': len(conversations), 'heldout_conversations': len(validation),
             'packed_train_sequences': len(train), 'initial_heldout_kd_loss': initial,
+            'selective_consolidation_conversations': (
+                len(consolidation_conversations) if consolidation_conversations else 0),
+            'packed_selective_sequences': len(consolidation) if consolidation else 0,
+            'training_schedule': (
+                'original_SD_warmup_then_source_supported_consolidation'
+                if consolidation is not None else 'ordinary_complete_SD_passes'),
+            'selective_consolidation_start_step': (
+                consolidation_start_step if consolidation is not None else None),
+            'packed_sequences_per_update': batch_size,
+            'effective_full_dataset_epochs': history[-1]['step'] if batch_size == len(train) else None,
             'updates': history[-1]['step'], 'returned_checkpoint_step': rule.best_step or history[-1]['step'],
             'checkpoint_policy': {'track_best_before_min': rule.track_best_before_min,
                 'eligible_checkpoints': 'every_heldout_evaluation' if rule.track_best_before_min else 'evaluations_at_or_after_min_steps',

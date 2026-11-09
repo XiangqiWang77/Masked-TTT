@@ -1,109 +1,101 @@
-# Contextual Cartridges: evaluation protocol
+# Contextual Cartridges：冻结评估协议
 
-Status: 2026-11-09. The synthetic datasets are complete. The corrected native-KV
-learning comparison is in development; an accuracy improvement has not yet
-been established for both components.
+状态：2026-11-09。Query-Specific v3 合成数据已经完成；四臂原生 KV 开发实验正在运行。本文档只定义如何验证两项技术，不把未完成准确率写成结果。
 
-Both Qwen3-4B datasets cover the same 1,000 BABILong cases: ten task types,
-four lengths (8K, 16K, 32K, 64K), and 25 cases per task-length cell. Each has
-20,558 training and 7,391 validation conversations, with identical split sizes
-within every case. Existing questions are reused rather than regenerated.
+## 1. 数据与任务
 
-The four comparisons are:
+完整数据覆盖 BABILong 的 1,000 个请求、10 个任务类型与四种长度：8K、16K、32K、64K 各 250 题。Query-Specific v3 包含 28,671 个 `(question, answer anchor, evidence)` 三元组，其中 21,207 个 train、7,464 个 validation。Vanilla synthetic 来自官方 Cartridges 风格的 query-agnostic 生成。四臂实验对每个 case 取相同的 deterministic common-prefix 数量，避免用更多问题数量解释方法差异。
 
-| Synthetic questions | Learning rule | Purpose |
-|---|---|---|
-| Original query-agnostic | Vanilla SD | Cartridges control |
-| Original query-agnostic | Selective SD | Isolate selective learning |
-| Query-specific, answer-guided | Vanilla SD | Isolate question construction |
-| Query-specific, answer-guided | Selective SD | Complete Contextual Cartridges |
+Answer-first 的 $a_i$ 只用于反推练习题，并不是 Student 的 hard label。Student 始终学习来源条件下 Teacher 的 sparse soft distribution。benchmark 隐藏答案不进入数据生成、Teacher 选择、TracIn 或 KV 更新。
 
-The original control uses the released SelfStudySynthesizer question/source
-bindings. Its Teacher reads the actual sampled source and uses Bot B's
-temperature 0, with real top-20 soft targets. This is an implementation-based
-BABILong control, not a claimed reproduction of a numerical result from a
-different dataset in the Cartridges paper.
+## 2. 四臂因子设计
 
-All four arms start from the same per-case 512-token native KV memory, freeze
-the backbone, use the original sparse distillation objective and packing, and
-match actual executed optimizer steps. Early stopping executes at least 64
-steps and retains the best *already updated* validation checkpoint, including
-checkpoints before step 64. The other arms execute the number of steps used by
-the query-agnostic Vanilla-SD control and select checkpoints by the same rule.
-Neither benchmark gold answers nor answer-first construction anchors are
-Student training labels.
+| Synthetic questions | Learning rule | 实验臂 | 隔离的变量 |
+| --- | --- | --- | --- |
+| Query-agnostic | Vanilla SD | `vanilla_syns_vanilla_sd` | 原版控制 |
+| Query-agnostic | TracIn-Selective SD | `vanilla_syns_selective_sd` | 固定数据验证 Selective SD |
+| Query-specific Answer-Guided | Vanilla SD | `specific_syns_vanilla_sd` | 固定 SD 验证问题构造 |
+| Query-specific Answer-Guided | TracIn-Selective SD | `specific_syns_selective_sd` | 完整 Contextual Cartridges |
 
-Selective SD leaves Teacher trajectories and token distributions unchanged.
-It removes a trajectory only when the source-grounded contradiction rule
-vetoes it. An unresolved or truncated judgment retains ordinary SD. If all
-trajectories are rejected, the request falls back to its original SD data;
-unreliable verification cannot make the Cartridge skip training.
+四臂从同一 per-case 512-token native KV 初始化出发，Backbone 冻结，使用原版 sparse Teacher KL、2,048-token packing 与相同的优化器设置。Vanilla 控制决定实际 packed optimizer-update 数；其余臂匹配这个预算。最终推理不读取原文，只读取训练后的 Cartridge 与真实问题。
 
-The earlier full-document/temperature-0.6 Teacher study, the strict
-support-required study, and the minimum-step-only checkpoint study are kept
-as separate historical runs. Their results are not pooled with this protocol.
-The older reported Selective-SD gain came from a different cache
-parameterization and does not establish a gain for this native-KV experiment.
+## 3. Selective SD 的冻结规则
 
-## What each result can establish
+Selective SD 不使用 held-out label。它先用保守来源规则形成高召回候选池：明确被来源反驳、明确没有答案或截断的 Teacher 轨迹不作为选择性巩固候选，不确定轨迹保留。然后在初始 KV 与训练后 Vanilla-SD KV 两个检查点上计算 leave-one-out signed TracIn：
 
-The published synthetic-data audit measures source exposure. No-support
-material fell from 83.78% to 46.69%, and support-union recall rose from 52.31%
-to 91.06% on 993 consistently mapped cases. In the 296 cases whose support
-crosses original chunk boundaries, the fraction of exercises exposed to all
-support rose from 0% to 23.66%. These are useful dilution and fragmentation
-diagnostics, not answer accuracy, proof of necessary multi-hop reasoning, or
-proof that all originally useful material was retained. The full report keeps
-regressions, exclusions, and paired source-cluster uncertainty.
+$$
+I_i=\sum_c\eta_c\,\nabla_Z\mathcal L_{\mathrm{ref}\setminus i}(Z_c)^\top
+\nabla_Z\mathcal L_i(Z_c).
+$$
 
-The question-construction contribution is measured by query-specific versus
-query-agnostic questions with Vanilla SD fixed. The selective-learning
-contribution is measured with the synthetic data fixed, separately on both
-datasets. We report paired fixes and regressions, not only favorable cases.
+固定阈值为零，只保留 $I_i>0$。每个 Selective 臂先在全部普通 SD 轨迹上完成前半预算，再用保留轨迹完成后半 consolidation。若一个 case 没有正影响候选，直接复用已经训练好的同数据 Vanilla-SD checkpoint；不会返回未训练初始化，也不会通过另一随机顺序重跑 Vanilla 制造虚假差异。
 
-Beyond-Teacher analysis includes full-context-Teacher-wrong/Student-correct
-cases and the reverse. Stronger evidence for selective learning additionally
-requires that the initial memory and the Vanilla-SD arm were wrong, while the
-updated Selective-SD arm became correct. A correct untrained prior is not
-counted as a newly learned correction. Full-context accuracy is a comparator,
-not a theoretical upper bound and not the source-conditioned training target.
+TracIn 是一阶局部 influence proxy，不是证据真实性或最终 QA 非退化保证。最终报告必须保留所有 regressions。
 
-## Development and independent confirmation
+## 4. 两项贡献的判定
 
-The existing source-disjoint split contains 160 development cases (40 source
-questions) and 840 remaining cases (210 source questions). Earlier SD runs
-had already evaluated 127 of those remaining cases. Marking every document
-length of their source questions as previously evaluated leaves:
+### 4.1 Dilution 与 Fragmentation
 
-| Evaluation partition | Cases | Source questions |
-|---|---:|---:|
-| Development | 160 | 40 |
-| Remaining, source observed in prior SD runs | 388 | 97 |
-| Remaining, source not observed in the listed prior SD runs | 452 | 113 |
+数据层报告以下代理，不把它们等同于答题正确率：
 
-This provenance is frozen without using the prior accuracy values. Training
-inputs and the original 160/840 assignment do not change. The 452-case subset
-is reported separately for independent confirmation; all 840 are still
-reported, with their prior evaluation disclosed. No outcome from the 452-case
-confirmation subset is used to select hyperparameters or admission rules.
+- 真实查询词命中率；
+- 支持事实召回下界；
+- 完整支持链同上下文曝光下界；
+- 多块证据比例；
+- 问题重复、答案多样性、数据短缺与生成时间。
 
-Accuracy uses the unchanged official BABILong evaluator. Comparisons share
-the same completed cases. Confidence intervals resample source questions
-within each task, retaining their document lengths together. Missing runs are
-pending, never silently counted as incorrect. Partial results are exploratory;
-individual 95% intervals are not simultaneous intervals for all claims.
+功能层用 `specific_syns_vanilla_sd − vanilla_syns_vanilla_sd` 判定 Query-Specific 数据在相同 SD 下是否改善最终回答。跨事实题与高干扰长文应单独报告。
 
-## Resources and reproducibility
+### 4.2 Oracle Trap
 
-The corrected run reuses the existing GPU job arrays. It adds no GPU jobs,
-allows at most 12 jobs/GPUs, excludes A40, and keeps the original campaign
-deadline of 2026-11-09 10:51 UTC. Pre-handoff checks use static code and saved
-CPU artifacts; no GPU smoke test is run. Source targets, admission records,
-and initial memories are reused, while fitted memories are recomputed after
-the checkpoint correction. Monitoring refreshes artifacts every five minutes
-and queries the scheduler hourly.
+固定同一数据，分别计算 Selective 相对 Vanilla 的：
 
-The frozen protocol, provenance manifest, per-case update counts, fallback
-counts, fitted memories, predictions, and correction/regression lists provide
-the audit trail. Improvement in validation distillation loss alone does not
-prove that either component improves final answers.
+- overall accuracy delta；
+- paired fixes：Vanilla 错、Selective 对；
+- paired regressions：Vanilla 对、Selective 错；
+- net fixes minus regressions；
+- `full-context Teacher wrong ∧ initial KV wrong` 严格 cohort 中的新增修复与新增退化。
+
+只有严格 cohort 的净修复为正，才支持“方法有机会越过无条件 Teacher 模仿”的主张。Teacher-wrong/Student-correct 但 initial KV 已经正确的 case 不算新学到的修复。
+
+## 5. Development gate 与 holdout
+
+冻结的 source-aware 划分包含：
+
+| Partition | Cases | Source questions | 用途 |
+| --- | ---: | ---: | --- |
+| Development | 160 | 40 | 验证实现、决定是否打开 holdout |
+| Holdout | 840 | 210 | 开发规则冻结后的确认 |
+
+只有 160-case development 同时满足以下条件，才允许打开 840-case holdout：
+
+1. Query-Specific + Vanilla SD 优于 Query-Agnostic + Vanilla SD；
+2. Selective SD 在两种固定数据上均优于对应 Vanilla SD；
+3. 完整方法优于 Vanilla Cartridges；
+4. 严格 Oracle-escape cohort 中 fixes 减 regressions 为正；
+5. 四臂更新预算与数据计数通过审计。
+
+开发门未通过时不得通过反复查看 holdout 来调阈值；阈值 $\tau=0$、两检查点与两阶段 schedule 已冻结。
+
+## 6. 评分、缺失值与图表
+
+准确率使用未修改的 BABILong evaluator。所有 delta 都使用同一批四臂完整 case；缺失预测记为 pending/NA，而不是错误或零分。最终图只在 160/160 完整且没有 report issue 时生成，并同时输出 PDF、SVG、PNG、LaTeX 表与源数据 CSV。图表不显示未经定义的误差条；当前 development cohort 是一个固定样本集，不伪装成多随机种子实验。
+
+最终报告至少包含：
+
+1. 四臂总体准确率；
+2. 8K/16K/32K/64K 分长度准确率；
+3. 四个关键对比的 fixes 与 regressions；
+4. 两种数据下严格 Oracle-escape fixes/regressions；
+5. 两检查点正 influence 比例与 TracIn keep/delete 比例；
+6. 每臂实际更新次数、训练会话数、fallback 数和端到端时间。
+
+## 7. 可复现文件
+
+- [完整方法](CONTEXTUAL_CARTRIDGES_METHOD.zh-CN.md)
+- [可读协议配置](datasets/babilong_synthetic_qwen3_4b/sd_protocol/configuration.json)
+- [精确集群配置](datasets/babilong_synthetic_qwen3_4b/sd_protocol/configuration.cluster.json)
+- [TracIn 实现](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/contextualized/tracin_sd.py)
+- [四臂 runner](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/experiments/run_syn_sd_factorial.py)
+- [严格配对 report](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/experiments/report_syn_sd_factorial.py)
+- [完整结果绘图器](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/experiments/plot_tracin_sd_factorial.py)

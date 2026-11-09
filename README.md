@@ -1,6 +1,8 @@
-# Query Cartridges：三个动机、完整方法与实验结果
+# Contextual Cartridges: Query-Guided Test-Time Learning with Selective Self-Distillation
 
-> 当前方法描述：[Contextual Cartridges — Query-Specific Synthetic Data 与 Selective SD](CONTEXTUAL_CARTRIDGES_METHOD.zh-CN.md)。该文件记录当前确定的方法设计；下方既有图表属于此前报告的配置，不作为该方法版本已验证的结果。
+> **当前完整方法：**[是什么、为什么、两项技术的公式、完整 pipeline 与证据边界](CONTEXTUAL_CARTRIDGES_METHOD.zh-CN.md)。当前版本包含 **Answer-Guided Query-Specific Dataset Crafting** 与 **TracIn-Selective SD**；最终仍只更新原版 Cartridges 的原生 $K,V$。下方既有三张 motivation 图属于历史 Query-Cartridges 配置，不作为当前版本的下游结果。
+
+> **数据与复现：**[1000-case Answer-Guided v3 发布清单](datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_release.json) · [三张当前方法图、源 CSV 与绘图代码](datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_figures/README.md) · [完整 JSON release](https://github.com/XiangqiWang77/Masked-TTT/releases/tag/contextual-cartridges-answer-guided-v3-20261109) · [四臂 Native-KV SD 协议、代码与测试](datasets/babilong_synthetic_qwen3_4b/sd_protocol/README.md)。数据质量代理已完成；四臂 BABILong 准确率仍在运行，仓库不会把未完成结果写成已验证结论。
 
 > 本报告只保留 Motivation 1、2、3 三张图。结果来自已完成的 BABILONG 日志，统一使用 `answer_focused_lexical_v2` 宽松词面评分。
 

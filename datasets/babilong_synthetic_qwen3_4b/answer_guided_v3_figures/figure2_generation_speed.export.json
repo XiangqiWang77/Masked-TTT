@@ -1,0 +1,58 @@
+{
+  "notice": "Export completed with explicit settings. This report does not establish visual, accessibility, scientific-integrity, or journal-submission compliance.",
+  "outputs": [
+    {
+      "format": "png",
+      "kind": "raster",
+      "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/query_cartridges_clean_report_20261104/datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_figures/figure2_generation_speed.png",
+      "size_bytes": 245060
+    },
+    {
+      "format": "svg",
+      "kind": "vector-container",
+      "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/query_cartridges_clean_report_20261104/datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_figures/figure2_generation_speed.svg",
+      "size_bytes": 57564
+    },
+    {
+      "format": "pdf",
+      "kind": "vector-container",
+      "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/query_cartridges_clean_report_20261104/datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_figures/figure2_generation_speed.pdf",
+      "size_bytes": 33551
+    }
+  ],
+  "provenance": {
+    "benchmark_answers_read": false,
+    "created_utc": "2026-11-09T18:12:23.027229+00:00",
+    "missing_values_as_zero": false,
+    "quality_cases": 1000,
+    "quality_report_sha256": "c272cf28ba7d26ce9d83bbee72d38cc2d830455e79db357d1bdfbe7daae9bab0",
+    "quality_rows_sha256": "d749b3ac1f379d865d53f6a2b1df4d4848dc888ffc729b37a3fb60185110980d",
+    "timing_cases_per_method": 1000,
+    "timing_caveat": "separate campaigns with different concurrency/backend scheduling; query-specific case time includes shared concurrent-batch waiting",
+    "timing_rows_sha256": "101e4442bd5d20dca0426cb8691361e319da34a0e8054ca774c721063cd644a7"
+  },
+  "schema_version": "1.0",
+  "settings": {
+    "bbox_inches": null,
+    "dpi": 400.0,
+    "facecolor": "white",
+    "figure_size_inches": [
+      7.2,
+      2.65
+    ],
+    "font_mode": "truetype",
+    "formats": [
+      "png",
+      "svg",
+      "pdf"
+    ],
+    "pad_inches": 0.1,
+    "tiff_rgb": false,
+    "transparent": false
+  },
+  "versions": {
+    "matplotlib": "3.9.2",
+    "pillow": "10.4.0"
+  },
+  "warnings": []
+}

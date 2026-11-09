@@ -1,0 +1,68 @@
+{
+  "schema": "contextual-cartridges-answer-guided-v3-release-v1",
+  "complete": true,
+  "dataset": "BABILong",
+  "backbone": "Qwen3-4B-Instruct-2507",
+  "benchmark_cases": 1000,
+  "task_types": 10,
+  "cases_per_length": {
+    "8192": 250,
+    "16384": 250,
+    "32768": 250,
+    "65536": 250
+  },
+  "triples": {
+    "total": 28671,
+    "train": 21207,
+    "validation": 7464
+  },
+  "benchmark_answers_used_for_generation": false,
+  "cartridge_training_performed_during_generation": false,
+  "release": {
+    "tag": "contextual-cartridges-answer-guided-v3-20261109",
+    "url": "https://github.com/XiangqiWang77/Masked-TTT/releases/tag/contextual-cartridges-answer-guided-v3-20261109",
+    "assets": {
+      "query_specific_synthetic_dataset_v3.json.gz": {
+        "uncompressed_format": "JSON",
+        "compressed_bytes": 11990360,
+        "uncompressed_bytes": 237038099,
+        "sha256": "86b09b9ae770cb25b4cbc8a4b4ea27cd11e2fbb0bef58bae198d694b30c237e7",
+        "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/contextual-cartridges-answer-guided-v3-20261109/query_specific_synthetic_dataset_v3.json.gz"
+      },
+      "query_specific_synthetic_dataset_v3.config.json": {
+        "bytes": 3101,
+        "sha256": "d73355dbf37690034de58ede3677632422bbd41bd49b0f2f934a71d81cd58312",
+        "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/contextual-cartridges-answer-guided-v3-20261109/query_specific_synthetic_dataset_v3.config.json"
+      },
+      "query_specific_synthetic_dataset_v3.progress.json": {
+        "bytes": 1915,
+        "sha256": "53d8f8c6839af126d90fa4ee5eb8bde4cbc927f11c5db592d7fcde9f4cc170f8",
+        "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/contextual-cartridges-answer-guided-v3-20261109/query_specific_synthetic_dataset_v3.progress.json"
+      },
+      "query_specific_synthetic_dataset_v3.quality_report.json": {
+        "bytes": 6905958,
+        "sha256": "c272cf28ba7d26ce9d83bbee72d38cc2d830455e79db357d1bdfbe7daae9bab0",
+        "download_url": "https://github.com/XiangqiWang77/Masked-TTT/releases/download/contextual-cartridges-answer-guided-v3-20261109/query_specific_synthetic_dataset_v3.quality_report.json"
+      }
+    }
+  },
+  "quality_audit": {
+    "dataset_gate_passed": true,
+    "paired_prefix_questions": 26451,
+    "query_term_hit_fraction_mean": {
+      "vanilla": 0.01804681874712915,
+      "query_specific_v3": 0.973337408384923
+    },
+    "support_recall_lower_bound_mean": {
+      "vanilla": 0.5024983232729712,
+      "query_specific_v3": 0.95475
+    },
+    "all_support_context_fraction_lower_bound_mean": {
+      "vanilla": 0.09236666307537976,
+      "query_specific_v3": 0.3528937901189682
+    },
+    "query_specific_multi_chunk_evidence_fraction_mean": 0.45133265791537563,
+    "performance_claim_established": false,
+    "performance_claim_requires": "paired 2x2 native-KV SD development experiment"
+  }
+}
