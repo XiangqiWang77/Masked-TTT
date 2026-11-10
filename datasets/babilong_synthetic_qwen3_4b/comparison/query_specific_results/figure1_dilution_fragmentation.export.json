@@ -1,0 +1,38 @@
+{
+  "name": "figure1_dilution_fragmentation",
+  "description": "Matched data: less zero-support context, higher support recall, and more all-fact co-exposure.",
+  "physical_inches": [
+    13.2,
+    6.1
+  ],
+  "text_outside_page": [],
+  "raster": {
+    "pixels": [
+      3960,
+      1830
+    ],
+    "dpi": [
+      299.9994,
+      299.9994
+    ],
+    "mode": "RGBA",
+    "opaque": true
+  },
+  "outputs": [
+    {
+      "file": "figure1_dilution_fragmentation.png",
+      "sha256": "e5e1c96899469e6f0e898a771c7a5185d7639896560c59532758c3fde53ba6e1",
+      "bytes": 531217
+    },
+    {
+      "file": "figure1_dilution_fragmentation.pdf",
+      "sha256": "9d38c8d3617126d69a26da57c8774f068b6e466f976cbafd7add271d225f8ade",
+      "bytes": 37341
+    },
+    {
+      "file": "figure1_dilution_fragmentation.svg",
+      "sha256": "788f46ee1023779340ce4999f9d6af137aae3911e2ff750f66af3240748c3363",
+      "bytes": 36687
+    }
+  ]
+}

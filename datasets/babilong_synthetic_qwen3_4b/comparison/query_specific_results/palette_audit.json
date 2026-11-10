@@ -1,0 +1,40 @@
+{
+  "palette": [
+    "#0B2A3A",
+    "#1E4B6B",
+    "#3180A8",
+    "#6EC1D8",
+    "#B7E3F1",
+    "#F7C948",
+    "#F59E2C",
+    "#E36A1C",
+    "#D35B1D",
+    "#8C3A1A"
+  ],
+  "contrast_against_white": {
+    "#0B2A3A": 14.930542085703777,
+    "#1E4B6B": 9.23506390007272,
+    "#3180A8": 4.389913988087349,
+    "#6EC1D8": 2.042293248343423,
+    "#B7E3F1": 1.3751316901205612,
+    "#F7C948": 1.5668058042639033,
+    "#F59E2C": 2.1407580582324166,
+    "#E36A1C": 3.3099219885859967,
+    "#D35B1D": 3.9742975380758585,
+    "#8C3A1A": 7.6776035971075345
+  },
+  "text_colors": [
+    "#0B2A3A",
+    "#1E4B6B",
+    "#556B77",
+    "#8C3A1A"
+  ],
+  "text_color_contrast": {
+    "#0B2A3A": 14.930542085703777,
+    "#1E4B6B": 9.23506390007272,
+    "#556B77": 5.591472828004084,
+    "#8C3A1A": 7.6776035971075345
+  },
+  "redundant_encoding": "Orange dashed/open circles; blue solid/diamonds; signed numeric values in heatmap.",
+  "caveat": "Pale colors are fills, not body text. Heatmap labels use neutral black only where neither navy nor white reaches 4.5:1. Contrast screening is not accessibility certification."
+}

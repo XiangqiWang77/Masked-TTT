@@ -1,0 +1,38 @@
+{
+  "name": "figure2_task_length",
+  "description": "All task-by-length gains over vanilla; missing subgroups distinguished from zero.",
+  "physical_inches": [
+    13.2,
+    7.4
+  ],
+  "text_outside_page": [],
+  "raster": {
+    "pixels": [
+      3960,
+      2220
+    ],
+    "dpi": [
+      299.9994,
+      299.9994
+    ],
+    "mode": "RGBA",
+    "opaque": true
+  },
+  "outputs": [
+    {
+      "file": "figure2_task_length.png",
+      "sha256": "d6c7fb67ddce961f2be572e72ff487fcfd95d0836c8903bda7acbecc7bbd43f1",
+      "bytes": 674789
+    },
+    {
+      "file": "figure2_task_length.pdf",
+      "sha256": "53ab5188677c73d17816acb2c69f2b37df6cd72c988f6b7852ddbe2d1a5e1756",
+      "bytes": 45838
+    },
+    {
+      "file": "figure2_task_length.svg",
+      "sha256": "6b1997b01067856817ab25f23ab16466c9bb3b0a3a38c695f078049164b9f1d6",
+      "bytes": 94239
+    }
+  ]
+}

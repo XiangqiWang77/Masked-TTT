@@ -27,6 +27,6 @@
 
 ## Dilution 与 Fragmentation：完整配对比较
 
-[完整报告、各任务与长度表及图](comparison/README.md) · [全部排版表格PDF](comparison/tables/all_styled_tables.pdf) · [LaTeX总体表](comparison/tables/overall.tex)
+[最新 v3 实验图、逐题数据、PDF／SVG 与复现代码](comparison/README.md)。新图使用三方审计中的配对练习预算，各 26,451 道；上方 27,949 道是较早发布版本，勿混用统计口径。
 
-![Matched synthetic data comparison](comparison/figures/table_overall.png)
+![Query-specific synthetic data: dilution and fragmentation](comparison/query_specific_results/figure1_dilution_fragmentation.png)

@@ -1,0 +1,38 @@
+{
+  "name": "figure3_evidence_efficiency",
+  "description": "Support coverage and evidence-context size, with all-case empirical context-size distributions.",
+  "physical_inches": [
+    13.2,
+    6.5
+  ],
+  "text_outside_page": [],
+  "raster": {
+    "pixels": [
+      3960,
+      1950
+    ],
+    "dpi": [
+      299.9994,
+      299.9994
+    ],
+    "mode": "RGBA",
+    "opaque": true
+  },
+  "outputs": [
+    {
+      "file": "figure3_evidence_efficiency.png",
+      "sha256": "328dacb59f2678257479f2f78f6863a7d62a40ab420e3fa103c30909a0c4084e",
+      "bytes": 506601
+    },
+    {
+      "file": "figure3_evidence_efficiency.pdf",
+      "sha256": "50833417a9ef0374baff5bd27711ff77129975c99eaea27ee7880cb10e5800b7",
+      "bytes": 57123
+    },
+    {
+      "file": "figure3_evidence_efficiency.svg",
+      "sha256": "2811a610d59f2e6dc1d9a7aceb4e4e024b471e9ea0a2f55311996ad45f503202",
+      "bytes": 84746
+    }
+  ]
+}

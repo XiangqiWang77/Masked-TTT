@@ -2,7 +2,15 @@
 
 > **当前完整方法：**[是什么、为什么、两项技术的公式、完整 pipeline 与证据边界](CONTEXTUAL_CARTRIDGES_METHOD.zh-CN.md)。当前版本包含 **Answer-Guided Query-Specific Dataset Crafting** 与 **TracIn-Selective SD**；最终仍只更新原版 Cartridges 的原生 $K,V$。下方既有三张 motivation 图属于历史 Query-Cartridges 配置，不作为当前版本的下游结果。
 
-> **数据与复现：**[1000-case Answer-Guided v3 发布清单](datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_release.json) · [三张当前方法图、源 CSV 与绘图代码](datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_figures/README.md) · [完整 JSON release](https://github.com/XiangqiWang77/Masked-TTT/releases/tag/contextual-cartridges-answer-guided-v3-20261109) · [四臂 Native-KV SD 协议、代码与测试](datasets/babilong_synthetic_qwen3_4b/sd_protocol/README.md)。数据质量代理已完成；四臂 BABILong 准确率仍在运行，仓库不会把未完成结果写成已验证结论。
+> **数据与复现：**[1000-case Answer-Guided v3 发布清单](datasets/babilong_synthetic_qwen3_4b/answer_guided_v3_release.json) · [三张实验结果图：Dilution、Fragmentation、材料效率](datasets/babilong_synthetic_qwen3_4b/comparison/README.md) · [完整 JSON release](https://github.com/XiangqiWang77/Masked-TTT/releases/tag/contextual-cartridges-answer-guided-v3-20261109) · [四臂 Native-KV SD 协议、代码与测试](datasets/babilong_synthetic_qwen3_4b/sd_protocol/README.md)。数据质量代理已完成；四臂 BABILong 准确率仍在运行，仓库不会把未完成结果写成已验证结论。
+
+## 当前合成数据实验图
+
+相同 26,451 道练习题预算、1,000 个 BABILong 请求。蓝青／黄橙配色，曲线、热力图和配对散点；无柱状图、无置信区间。
+
+![Query-specific data: dilution, support coverage and joint evidence exposure](datasets/babilong_synthetic_qwen3_4b/comparison/query_specific_results/figure1_dilution_fragmentation.png)
+
+[查看三张完整结果图、PDF、SVG、逐题数据与复现代码](datasets/babilong_synthetic_qwen3_4b/comparison/README.md)。以下内容为历史 Query-Cartridges 实验。
 
 > 本报告只保留 Motivation 1、2、3 三张图。结果来自已完成的 BABILONG 日志，统一使用 `answer_focused_lexical_v2` 宽松词面评分。
 

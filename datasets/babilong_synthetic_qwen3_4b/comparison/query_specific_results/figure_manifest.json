@@ -1,0 +1,458 @@
+{
+  "source_sha256": "53a5a99bf40b5e7128d3b5b2dc43f654124961c6dc7e7e64ec0a1305d6cea6d8",
+  "script_sha256": "46cbc69e6dea614a97eed18aa54c15b0283cf4ac3b636f7db555d607c2c3a269",
+  "sources": [
+    {
+      "file": "query_specific_synthetic_dataset_v3.quality_report.json",
+      "sha256": "c272cf28ba7d26ce9d83bbee72d38cc2d830455e79db357d1bdfbe7daae9bab0",
+      "role": "per-case matched synthetic-data audit"
+    },
+    {
+      "file": "source_annotations.jsonl",
+      "sha256": "ac1ac1d72f9d00b5ca2594a8a6f01b3c006dca9e52262a95010f9caf95d44321",
+      "role": "post-generation support-count annotation"
+    }
+  ],
+  "figures": [
+    {
+      "name": "figure1_dilution_fragmentation",
+      "description": "Matched data: less zero-support context, higher support recall, and more all-fact co-exposure.",
+      "physical_inches": [
+        13.2,
+        6.1
+      ],
+      "text_outside_page": [],
+      "raster": {
+        "pixels": [
+          3960,
+          1830
+        ],
+        "dpi": [
+          299.9994,
+          299.9994
+        ],
+        "mode": "RGBA",
+        "opaque": true
+      },
+      "outputs": [
+        {
+          "file": "figure1_dilution_fragmentation.png",
+          "sha256": "e5e1c96899469e6f0e898a771c7a5185d7639896560c59532758c3fde53ba6e1",
+          "bytes": 531217
+        },
+        {
+          "file": "figure1_dilution_fragmentation.pdf",
+          "sha256": "9d38c8d3617126d69a26da57c8774f068b6e466f976cbafd7add271d225f8ade",
+          "bytes": 37341
+        },
+        {
+          "file": "figure1_dilution_fragmentation.svg",
+          "sha256": "788f46ee1023779340ce4999f9d6af137aae3911e2ff750f66af3240748c3363",
+          "bytes": 36687
+        }
+      ]
+    },
+    {
+      "name": "figure2_task_length",
+      "description": "All task-by-length gains over vanilla; missing subgroups distinguished from zero.",
+      "physical_inches": [
+        13.2,
+        7.4
+      ],
+      "text_outside_page": [],
+      "raster": {
+        "pixels": [
+          3960,
+          2220
+        ],
+        "dpi": [
+          299.9994,
+          299.9994
+        ],
+        "mode": "RGBA",
+        "opaque": true
+      },
+      "outputs": [
+        {
+          "file": "figure2_task_length.png",
+          "sha256": "d6c7fb67ddce961f2be572e72ff487fcfd95d0836c8903bda7acbecc7bbd43f1",
+          "bytes": 674789
+        },
+        {
+          "file": "figure2_task_length.pdf",
+          "sha256": "53ab5188677c73d17816acb2c69f2b37df6cd72c988f6b7852ddbe2d1a5e1756",
+          "bytes": 45838
+        },
+        {
+          "file": "figure2_task_length.svg",
+          "sha256": "6b1997b01067856817ab25f23ab16466c9bb3b0a3a38c695f078049164b9f1d6",
+          "bytes": 94239
+        }
+      ]
+    },
+    {
+      "name": "figure3_evidence_efficiency",
+      "description": "Support coverage and evidence-context size, with all-case empirical context-size distributions.",
+      "physical_inches": [
+        13.2,
+        6.5
+      ],
+      "text_outside_page": [],
+      "raster": {
+        "pixels": [
+          3960,
+          1950
+        ],
+        "dpi": [
+          299.9994,
+          299.9994
+        ],
+        "mode": "RGBA",
+        "opaque": true
+      },
+      "outputs": [
+        {
+          "file": "figure3_evidence_efficiency.png",
+          "sha256": "328dacb59f2678257479f2f78f6863a7d62a40ab420e3fa103c30909a0c4084e",
+          "bytes": 506601
+        },
+        {
+          "file": "figure3_evidence_efficiency.pdf",
+          "sha256": "50833417a9ef0374baff5bd27711ff77129975c99eaea27ee7880cb10e5800b7",
+          "bytes": 57123
+        },
+        {
+          "file": "figure3_evidence_efficiency.svg",
+          "sha256": "2811a610d59f2e6dc1d9a7aceb4e4e024b471e9ea0a2f55311996ad45f503202",
+          "bytes": 84746
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "metric": "no_support",
+      "scope": "all",
+      "multi_fact_only": false,
+      "n_paired": 1000,
+      "vanilla": 83.68514867093378,
+      "query_specific": 50.210583039316184,
+      "delta": -33.4745656316176,
+      "unit": "percent"
+    },
+    {
+      "metric": "no_support",
+      "scope": 8192,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 65.1407693909874,
+      "query_specific": 40.88428679289434,
+      "delta": -24.256482598093065,
+      "unit": "percent"
+    },
+    {
+      "metric": "no_support",
+      "scope": 16384,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 83.11518255804745,
+      "query_specific": 48.52473444135511,
+      "delta": -34.59044811669234,
+      "unit": "percent"
+    },
+    {
+      "metric": "no_support",
+      "scope": 32768,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 91.1958922171019,
+      "query_specific": 54.09488345946325,
+      "delta": -37.10100875763865,
+      "unit": "percent"
+    },
+    {
+      "metric": "no_support",
+      "scope": 65536,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 95.28875051759836,
+      "query_specific": 57.33842746355203,
+      "delta": -37.95032305404632,
+      "unit": "percent"
+    },
+    {
+      "metric": "recall",
+      "scope": "all",
+      "multi_fact_only": false,
+      "n_paired": 994,
+      "vanilla": 50.24983232729711,
+      "query_specific": 95.4476861167002,
+      "delta": 45.197853789403084,
+      "unit": "percent"
+    },
+    {
+      "metric": "recall",
+      "scope": 8192,
+      "multi_fact_only": false,
+      "n_paired": 249,
+      "vanilla": 78.76840696117804,
+      "query_specific": 94.37751004016064,
+      "delta": 15.6091030789826,
+      "unit": "percent"
+    },
+    {
+      "metric": "recall",
+      "scope": 16384,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 61.086666666666666,
+      "query_specific": 96.73333333333332,
+      "delta": 35.64666666666666,
+      "unit": "percent"
+    },
+    {
+      "metric": "recall",
+      "scope": 32768,
+      "multi_fact_only": false,
+      "n_paired": 247,
+      "vanilla": 38.333333333333336,
+      "query_specific": 95.34412955465586,
+      "delta": 57.01079622132252,
+      "unit": "percent"
+    },
+    {
+      "metric": "recall",
+      "scope": 65536,
+      "multi_fact_only": false,
+      "n_paired": 248,
+      "vanilla": 22.56048387096774,
+      "query_specific": 95.32930107526882,
+      "delta": 72.76881720430107,
+      "unit": "percent"
+    },
+    {
+      "metric": "joint",
+      "scope": "all",
+      "multi_fact_only": true,
+      "n_paired": 352,
+      "vanilla": 2.475352770403393,
+      "query_specific": 15.14577122104592,
+      "delta": 12.670418450642526,
+      "unit": "percent"
+    },
+    {
+      "metric": "joint",
+      "scope": 8192,
+      "multi_fact_only": true,
+      "n_paired": 88,
+      "vanilla": 8.161354263431752,
+      "query_specific": 18.052502175028458,
+      "delta": 9.891147911596706,
+      "unit": "percent"
+    },
+    {
+      "metric": "joint",
+      "scope": 16384,
+      "multi_fact_only": true,
+      "n_paired": 88,
+      "vanilla": 1.399147727272727,
+      "query_specific": 15.052571784440227,
+      "delta": 13.653424057167502,
+      "unit": "percent"
+    },
+    {
+      "metric": "joint",
+      "scope": 32768,
+      "multi_fact_only": true,
+      "n_paired": 88,
+      "vanilla": 0.3409090909090909,
+      "query_specific": 15.610319060419867,
+      "delta": 15.269409969510775,
+      "unit": "percent"
+    },
+    {
+      "metric": "joint",
+      "scope": 65536,
+      "multi_fact_only": true,
+      "n_paired": 88,
+      "vanilla": 0.0,
+      "query_specific": 11.867691864295125,
+      "delta": 11.867691864295125,
+      "unit": "percent"
+    },
+    {
+      "metric": "context_chars",
+      "scope": "all",
+      "multi_fact_only": false,
+      "n_paired": 1000,
+      "vanilla": 7894.128935081022,
+      "query_specific": 2221.4827831253306,
+      "delta": -5672.6461519556915,
+      "unit": "characters"
+    },
+    {
+      "metric": "context_chars",
+      "scope": 8192,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 7566.714260710359,
+      "query_specific": 1965.8514052913133,
+      "delta": -5600.862855419045,
+      "unit": "characters"
+    },
+    {
+      "metric": "context_chars",
+      "scope": 16384,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 7798.99303964144,
+      "query_specific": 2116.875213197601,
+      "delta": -5682.117826443839,
+      "unit": "characters"
+    },
+    {
+      "metric": "context_chars",
+      "scope": 32768,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 8027.437583281245,
+      "query_specific": 2213.575195042851,
+      "delta": -5813.862388238394,
+      "unit": "characters"
+    },
+    {
+      "metric": "context_chars",
+      "scope": 65536,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 8183.370856691044,
+      "query_specific": 2589.629318969557,
+      "delta": -5593.741537721487,
+      "unit": "characters"
+    },
+    {
+      "metric": "query_focus",
+      "scope": "all",
+      "multi_fact_only": false,
+      "n_paired": 1000,
+      "vanilla": 1.804681874712915,
+      "query_specific": 97.33374083849229,
+      "delta": 95.52905896377938,
+      "unit": "percent"
+    },
+    {
+      "metric": "query_focus",
+      "scope": 8192,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 2.598201304603497,
+      "query_specific": 99.05647828747716,
+      "delta": 96.45827698287367,
+      "unit": "percent"
+    },
+    {
+      "metric": "query_focus",
+      "scope": 16384,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 2.0453419292378103,
+      "query_specific": 97.96787107241379,
+      "delta": 95.92252914317598,
+      "unit": "percent"
+    },
+    {
+      "metric": "query_focus",
+      "scope": 32768,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 1.198234989648033,
+      "query_specific": 96.57224910394264,
+      "delta": 95.37401411429461,
+      "unit": "percent"
+    },
+    {
+      "metric": "query_focus",
+      "scope": 65536,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 1.3769492753623187,
+      "query_specific": 95.73836489013559,
+      "delta": 94.36141561477326,
+      "unit": "percent"
+    },
+    {
+      "metric": "question_words",
+      "scope": "all",
+      "multi_fact_only": false,
+      "n_paired": 1000,
+      "vanilla": 58.006829821944834,
+      "query_specific": 15.034274687398666,
+      "delta": -42.97255513454617,
+      "unit": "words"
+    },
+    {
+      "metric": "question_words",
+      "scope": 8192,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 58.92748621385698,
+      "query_specific": 14.410389649991206,
+      "delta": -44.51709656386578,
+      "unit": "words"
+    },
+    {
+      "metric": "question_words",
+      "scope": 16384,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 57.380926883342696,
+      "query_specific": 14.935832702007156,
+      "delta": -42.44509418133554,
+      "unit": "words"
+    },
+    {
+      "metric": "question_words",
+      "scope": 32768,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 57.37891277619846,
+      "query_specific": 15.212319477414475,
+      "delta": -42.16659329878399,
+      "unit": "words"
+    },
+    {
+      "metric": "question_words",
+      "scope": 65536,
+      "multi_fact_only": false,
+      "n_paired": 250,
+      "vanilla": 58.33999341438118,
+      "query_specific": 15.578556920181816,
+      "delta": -42.761436494199366,
+      "unit": "words"
+    }
+  ],
+  "method": {
+    "arms": {
+      "vanilla": "Saved query-agnostic Cartridges synthetic conversations",
+      "query_specific": "Answer-guided, query-anchored v3 synthetic questions"
+    },
+    "n_cases": 1000,
+    "questions_per_arm": 26451,
+    "budget_matching": "Per case and per split, identical prefix counts from the source audit; no outcome-based filtering.",
+    "estimator": "Equal-weight case mean; require both arms to be non-missing for each contrast.",
+    "multi_fact_subset": "352 cases with more than one annotated supporting fact; not a strict cross-chunk-necessity test.",
+    "missing": "Six vanilla support-recall values are missing; recall contrasts use 994 paired cases. Missing is never zero.",
+    "semantic_correctness": "Not assessed by these dataset metrics.",
+    "timing": "Context characters are an evidence-footprint measurement, not wall-clock time or GPU memory.",
+    "uncertainty": "None displayed, as requested."
+  },
+  "style": "User-requested blue/cyan and yellow/orange; no bars or confidence intervals.",
+  "aggregation": "Paired equal-case means; no weighting by number of generated exercises.",
+  "heatmap": "Signed percentage-point gains; fixed symmetric range [-100,100]; every task-length group retained.",
+  "ecdf": "Exact empirical steps; no smoothing, density estimation, interpolation, or resampling.",
+  "destination": "General research report and editable figure assets; no publisher compliance claim.",
+  "versions": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.2.6"
+  }
+}
