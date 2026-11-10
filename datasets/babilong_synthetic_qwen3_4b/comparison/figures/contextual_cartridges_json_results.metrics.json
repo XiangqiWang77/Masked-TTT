@@ -1,0 +1,172 @@
+{
+  "claims": {
+    "current_tracin_accuracy_improvement_established": false,
+    "dataset_quality_established": true,
+    "direct_evidence_improves_accuracy": false
+  },
+  "cross_fact_audit": {
+    "cases": 352,
+    "metrics": {
+      "all_support_exposed_lower_bound_percent": {
+        "original": 2.475352770403393,
+        "query_specific_v3": 15.14577122104592,
+        "raw_delta_pp": 12.670418450642526
+      },
+      "no_support_context_percent": {
+        "original": 77.41616705480045,
+        "query_specific_v3": 43.66093915171832,
+        "raw_delta_pp": -33.75522790308214
+      },
+      "query_focus_percent": {
+        "original": 1.9773744516944696,
+        "query_specific_v3": 97.47279465504486,
+        "raw_delta_pp": 95.49542020335039
+      },
+      "support_recall_lower_bound_percent": {
+        "original": 52.860553963705826,
+        "query_specific_v3": 89.41761363636364,
+        "raw_delta_pp": 36.557059672657815
+      }
+    },
+    "paired_questions": 10090
+  },
+  "current_tracin": {
+    "accuracy_available": false,
+    "accuracy_report": null,
+    "completed_raw_cases": 1,
+    "config_sha256": "d353374aa00b753c6d3d30c41a5740c0ae213815e80ee0de2fcc7b86303f9dd6",
+    "planned": 160,
+    "protocol": "official-contextual-cartridges-tracin-selective-v26"
+  },
+  "dataset_audit": {
+    "cases": 1000,
+    "metrics": {
+      "all_support_exposed_lower_bound_percent": {
+        "original": 9.236666307537975,
+        "query_specific_v3": 35.28937901189682,
+        "raw_delta_pp": 26.052712704358846
+      },
+      "no_support_context_percent": {
+        "original": 83.68514867093377,
+        "query_specific_v3": 50.210583039316184,
+        "raw_delta_pp": -33.47456563161759
+      },
+      "query_focus_percent": {
+        "original": 1.804681874712915,
+        "query_specific_v3": 97.3337408384923,
+        "raw_delta_pp": 95.52905896377939
+      },
+      "support_recall_lower_bound_percent": {
+        "original": 50.24983232729711,
+        "query_specific_v3": 95.475,
+        "raw_delta_pp": 45.22516767270288
+      }
+    },
+    "paired_questions": 26451
+  },
+  "figure": {
+    "alt_text": "Three-panel BABILong result figure. Query-specific v3 synthetic data greatly increase query focus and evidence exposure relative to Original Cartridges. An older partial development gate shows direct evidence plus Vanilla SD below Original Cartridges, while the current TracIn-selective result is explicitly marked pending.",
+    "base": "contextual_cartridges_json_results",
+    "exports": {
+      "manifest": "/tmp/query-cart-sync.A0dOzh/datasets/babilong_synthetic_qwen3_4b/comparison/figures/contextual_cartridges_json_results.export.json",
+      "notice": "Export completed with explicit settings. This report does not establish visual, accessibility, scientific-integrity, or journal-submission compliance.",
+      "outputs": [
+        {
+          "format": "pdf",
+          "kind": "vector-container",
+          "path": "contextual_cartridges_json_results.pdf",
+          "size_bytes": 60923
+        },
+        {
+          "format": "svg",
+          "kind": "vector-container",
+          "path": "contextual_cartridges_json_results.svg",
+          "size_bytes": 168780
+        },
+        {
+          "format": "png",
+          "kind": "raster",
+          "path": "contextual_cartridges_json_results.png",
+          "size_bytes": 598135
+        }
+      ],
+      "provenance": {
+        "current_tracin": {
+          "accuracy_available": false,
+          "accuracy_report": null,
+          "completed_raw_cases": 1,
+          "config_sha256": "d353374aa00b753c6d3d30c41a5740c0ae213815e80ee0de2fcc7b86303f9dd6",
+          "planned": 160,
+          "protocol": "official-contextual-cartridges-tracin-selective-v26"
+        },
+        "legacy_report": "accuracy.json",
+        "legacy_sha256": "b71c475a219d0b4100be96e7fd98a21141f42331499eadb1d15421619417911f",
+        "missing_data": "Current TracIn accuracy is shown as pending; no imputation.",
+        "palette": {
+          "blue": {
+            "cyan": "#6EC1D8",
+            "deep": "#1E4B6B",
+            "ink": "#0B2A3A",
+            "main": "#3180A8",
+            "pale": "#B7E3F1"
+          },
+          "orange": {
+            "brown": "#8C3A1A",
+            "gold": "#F59E2C",
+            "orange": "#E36A1C",
+            "rust": "#D35B1D",
+            "yellow": "#F7C948"
+          }
+        },
+        "quality_report": "query_specific_synthetic_dataset_v3.quality_report.json",
+        "quality_sha256": "c272cf28ba7d26ce9d83bbee72d38cc2d830455e79db357d1bdfbe7daae9bab0",
+        "script": "contextual_cartridges_json_results.py",
+        "script_sha256": "57ad61ec509439eb3fbd1c3ee2243479911f94637eae3d85b55e9f9f674ec383",
+        "statistics": "Only observed percentages, percentage-point differences, and paired fix/regression counts are displayed."
+      },
+      "schema_version": "1.0",
+      "settings": {
+        "bbox_inches": null,
+        "dpi": 400.0,
+        "facecolor": "white",
+        "figure_size_inches": [
+          13.3,
+          4.35
+        ],
+        "font_mode": "truetype",
+        "formats": [
+          "pdf",
+          "svg",
+          "png"
+        ],
+        "pad_inches": 0.1,
+        "tiff_rgb": false,
+        "transparent": false
+      },
+      "versions": {
+        "matplotlib": "3.11.1",
+        "pillow": "12.3.0"
+      },
+      "warnings": []
+    }
+  },
+  "legacy_downstream": {
+    "direct_evidence_vanilla_sd_accuracy_percent": 27.884615384615383,
+    "fixes": 4,
+    "n": 104,
+    "original_accuracy_percent": 30.76923076923077,
+    "paired_delta_pp": -2.8846153846153846,
+    "regressions": 7,
+    "scope_warning": "old v18 partial development gate; not the new v3 data or current TracIn SD"
+  },
+  "sources": {
+    "legacy": {
+      "path": "accuracy.json",
+      "sha256": "b71c475a219d0b4100be96e7fd98a21141f42331499eadb1d15421619417911f"
+    },
+    "quality": {
+      "path": "query_specific_synthetic_dataset_v3.quality_report.json",
+      "sha256": "c272cf28ba7d26ce9d83bbee72d38cc2d830455e79db357d1bdfbe7daae9bab0"
+    }
+  }
+}

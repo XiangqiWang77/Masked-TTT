@@ -1,5 +1,13 @@
 # Question-guided synthetic data：Dilution 与 Fragmentation 分别测量
 
+## Direct JSON summary（不绘制置信区间）
+
+下图只显示保存 JSON 中可直接复算的比例、百分点差和 fix/regression 计数，不绘制 95% CI，也不把缺失的下游结果补成 0。完整 1,000 题审计中，Query-specific v3 的问题关键词命中率为 97.33%（原版 1.80%），无支持材料占比为 50.21%（原版 83.69%）；在 352 个 cross-fact cases 中，支持事实召回率为 89.42%（原版 52.86%），同一道题暴露全部支持事实的比例为 15.15%（原版 2.48%）。旧 v18 的“直接 evidence + Vanilla SD”下游结果低于原版，故不能用它证明完整方法；当前 TracIn-selective SD 在任务完成前明确标为 pending。
+
+![Direct JSON measurements without confidence intervals](figures/contextual_cartridges_json_results.png)
+
+可编辑版本：[PDF](figures/contextual_cartridges_json_results.pdf) · [SVG](figures/contextual_cartridges_json_results.svg) · [指标 JSON](figures/contextual_cartridges_json_results.metrics.json) · [绘图代码](code/contextual_cartridges_json_results.py)。
+
 [全部7张排版表 PDF](tables/all_styled_tables.pdf) · [总体表 LaTeX](tables/overall.tex) · [全部表 LaTeX入口](tables/paper_tables.tex)
 
 表格按提供的样式组织：分组表头、粗细竖线、灰色基线行、浅青色guided行、深红色最佳值与次优下划线。
