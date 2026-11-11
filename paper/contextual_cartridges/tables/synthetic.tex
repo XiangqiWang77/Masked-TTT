@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering
+\small
+\caption{Matched synthetic-data audit: 26,451 exercises per method across 1,000 requests. Means weight requests equally. All-fact co-exposure uses 352 multi-fact requests; recall uses 994 paired requests. These source-coverage proxies do not measure answer correctness or establish necessary multi-hop reasoning.}
+\label{tab:synthetic}
+\begin{tabular}{lrrrr}
+\toprule
+Metric & Paired $n$ & Query-agnostic & Query-specific & Difference \\
+\midrule
+Zero-support contexts (\%) & 1000 & 83.69 & 50.21 & -33.47 \\
+Support-fact recall (\%) & 994 & 50.25 & 95.45 & +45.20 \\
+All-fact co-exposure (\%) & 352 & 2.48 & 15.15 & +12.67 \\
+Evidence characters & 1000 & 7894.13 & 2221.48 & -5672.65 \\
+Question words & 1000 & 58.01 & 15.03 & -42.97 \\
+\bottomrule
+\end{tabular}
+\end{table*}

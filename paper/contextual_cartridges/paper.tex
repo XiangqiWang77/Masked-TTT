@@ -1,0 +1,104 @@
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\setcounter{dbltopnumber}{4}
+\renewcommand{\dbltopfraction}{0.93}
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{12pt}
+\setlength{\@dblfptop}{0pt}
+\setlength{\@dblfpsep}{12pt}
+\makeatother
+\title{Contextual Cartridges: Query-Guided Test-Time Learning\\with Selective Self-Distillation}
+\author{Anonymous working draft}
+\begin{document}
+\maketitle
+\begin{abstract}
+Compact KV memories offer an alternative to repeatedly reading long documents, but a generic study distribution may spread capacity across irrelevant topics or inadequately supervise the relations needed by an arriving query. We study Contextual Cartridges, which combines answer-guided query-specific synthetic data with conservative selective self-distillation. The latter uses checkpoint-wise leave-one-out gradient alignment to nominate conflicting teacher trajectories and matched deletion refits to test their removal. All updates remain confined to native KV memory. A completed, count-matched synthetic-data audit covers 1,000 BABILong requests and 26,451 exercises per method. It shows reduced zero-support source contexts and increased support-fact coverage and joint exposure. These are data-construction measurements, not answer-accuracy results. The downstream factorial evaluation and cross-model cache curves are explicitly pending in this working draft.
+\end{abstract}
+
+\section{Introduction}
+Learning a compact document memory can reduce the context retained at inference time. Cartridges train native KV tensors using synthetic conversations and context distillation \citep{eyuboglu2025cartridges}. Their document-level study distribution is designed for future queries. When a query is already available, the study budget can instead concentrate on its relevant facts and relations.
+
+We study two risks of a generic distribution: \emph{dilution}, in which unrelated material consumes study capacity, and \emph{fragmentation}, in which locally covered facts do not provide sufficient joint supervision for the current query. A separate risk concerns supervision: unconditional imitation can absorb conflicting teacher trajectories. We refer to this supervision-design limitation as the \emph{oracle trap}, without assuming any mathematical teacher-performance ceiling.
+
+Contextual Cartridges addresses these risks through two mechanisms. Answer-guided question construction makes query-related conclusions the targets of synthetic practice. Conservative selective SD uses gradient evidence and actual refits to remove trajectories that harm the retained learning objective. The method preserves the frozen backbone and native KV inference interface. Its accuracy benefits remain a hypothesis until the pending paired evaluations are complete.
+
+\input{method}
+
+\section{Experiments and Completed Data Audit}
+\paragraph{Matched synthetic datasets.}
+The saved Qwen3-4B-Instruct-2507 datasets contain the same 1,000 BABILong document--query pairs: ten task types and 250 requests at each of 8K, 16K, 32K, and 64K. Each arm contains 26,451 exercises, with counts matched within request and saved split. These figures use the saved query-agnostic Cartridges generation configuration and the query-specific answer-guided configuration; they are not downstream benchmark reproductions of the original paper.
+
+\paragraph{Objective source metrics.}
+Let $F_q$ be the post-generation annotated supporting facts for request $q$, and let $F(E_i)$ be those covered by source context $E_i$. We measure the fraction of exercise contexts with no supporting fact, the recall of the union of study contexts, and the fraction co-exposing all facts. Ambiguous source alignment is treated conservatively in the saved lower-bound recall and co-exposure metrics. We first average within a request, then weight requests equally. The multiple-fact analysis uses 352 requests, 88 per document length; it does not require their facts to fall in different original chunks. Six missing query-agnostic recall values are excluded from paired recall only.
+
+\input{tables/synthetic}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/figure1_dilution_fragmentation.pdf}
+\caption{Dilution and joint evidence exposure at four measured document lengths. Left: exercise contexts without any annotated query support (lower is better; 1,000 paired requests). Right: all-fact co-exposure lower bound on 352 multi-fact requests (higher is better). Points are request-macro means. Joint exposure is not a proof of necessary cross-chunk reasoning or correct answers.}
+\label{fig:curves}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/figure2_task_length.pdf}
+\caption{Task--length contrasts. Left: reduction in zero-support context fraction. Right: increase in all-fact co-exposure on eligible multi-fact requests. Positive gains favor query-specific data. Both maps use the same $[-100,100]$ percentage-point scale. Grey cells with dashes have no eligible multi-fact requests; they are not zeros. All task--length groups are retained.}
+\label{fig:heatmap}
+\vspace{8pt}
+\includegraphics[width=\textwidth]{figures/figure3_paired_coverage_footprint.pdf}
+\caption{Paired source coverage and footprint. Left: support-fact recall lower bound on 994 paired requests; identical coordinate pairs are combined with marker area $9+0.65n$ squared points, where $n$ is their multiplicity. Right: source characters per exercise on all 1,000 requests, in thousands. The diagonal is equality. Blue circles indicate higher recall or shorter context; orange crosses indicate the reverse. No jitter or fitted trend is used. Characters are not latency or GPU memory.}
+\label{fig:paired}
+\end{figure*}
+
+\paragraph{Observed differences.}
+Zero-support contexts decrease from 83.69\% to 50.21\%, and paired support recall increases from 50.25\% to 95.45\%. On multi-fact requests, all-fact co-exposure rises from 2.48\% to 15.15\%. Mean source footprint decreases from 7,894 to 2,221 characters per exercise. Figures~\ref{fig:curves}--\ref{fig:paired} retain the length breakdown and paired reverse cases. These measurements establish changes in source coverage and organization, not semantic correctness, necessary multi-hop reasoning, or end-to-end speed.
+
+\paragraph{Pending BABILong factorial evaluation.}
+We reserve the full query-agnostic/query-specific $\times$ ordinary/selective SD design. Each completed comparison must use identical requests, model initialization, KV size, and final update count; all additional selection computation is reported separately. Benchmark answers enter only post-generation scoring. In addition to aggregate accuracy, the final evaluation must report corrected and regressed answers. Tables~\ref{tab:babilong-overall} and~\ref{tab:babilong-length} remain empty until their full paired denominators are available.
+
+\input{tables/babilong_overall}
+\input{tables/babilong_by_length}
+
+\paragraph{Pending cache--performance evaluation.}
+We reserve Qwen3-4B, OLMo-3-7B, and GPT-OSS-20B across LongHealth, MTOB (KE), and QASPER, with 512/1,024/2,048/4,096 KV positions. The respective metrics are accuracy, corpus chrF, and mean gold-answer log-perplexity, as in the Cartridges benchmark comparison. Figure~\ref{fig:cache} is an explicit placeholder. Each curve requires the same paired cases at all capacities. Published baselines must retain their original backbone and protocol and cannot be transferred to another model's panel.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/figure4_cache_grid_pending.pdf}
+\caption{Pending cache--performance matrix: three backbones, three datasets, and four capacities. No measured points are populated in this draft. Accuracy and chrF are higher-is-better; log-perplexity is lower-is-better. KV positions are a logical capacity, not an equal byte budget across architectures. The panels reserve experiments and do not imply that all backbones have completed or are currently scheduled.}
+\label{fig:cache}
+\end{figure*}
+
+\clearpage
+\section{Limitations}
+Source recall and co-exposure do not certify a generated answer or establish that a question requires every source. Correlated teacher errors can remain mutually consistent. The selective guard controls synthetic SD losses rather than benchmark correctness, and raw gradient alignment is only a local proxy for actual Adam dynamics. Confirmatory refits add substantial online cost. Per-query preparation is not amortized across arbitrary future queries as in the original document-level setting. The current paper contains completed data audits and pending downstream evaluations; it does not claim that the method already surpasses ordinary SD, the teacher, or full-context inference.
+
+\section*{Reproducibility}
+The accompanying package includes the immutable per-request figure snapshot, CSVs, explicit-null result templates, plotting/table scripts, the current selector snapshot, and export hashes. Figures are vector PDFs with embedded fonts, plus editable SVGs and 400-DPI PNGs. The preparation workflow follows scientific-visualization \citep{kassis2026skills}; this is a software acknowledgment, not an empirical validation.
+
+\begin{thebibliography}{3}
+\bibitem[Eyuboglu et~al.(2025)]{eyuboglu2025cartridges}
+Sabri Eyuboglu, Ryan Ehrlich, Simran Arora, Neel Guha, Dylan Zinsley, Emily Liu, Will Tennien, Atri Rudra, James Zou, Azalia Mirhoseini, and Christopher R\'{e}. 2025.
+\newblock \href{https://arxiv.org/abs/2506.06266}{Cartridges: Lightweight and general-purpose long context representations via self-study}.
+\newblock arXiv:2506.06266.
+\bibitem[Pruthi et~al.(2020)]{pruthi2020tracin}
+Garima Pruthi, Frederick Liu, Satyen Kale, and Mukund Sundararajan. 2020.
+\newblock \href{https://proceedings.neurips.cc/paper/2020/hash/e6385d39ec9394f2f3a354d9d2b88eec-Abstract.html}{Estimating training data influence by tracing gradient descent}.
+\newblock In \emph{Advances in Neural Information Processing Systems 33}.
+\bibitem[Kassis et~al.(2026)]{kassis2026skills}
+Timothy Kassis, Vinayak Agarwal, Yuhuan He, Darshil Patel, and Aubrey~M. Brueckner. 2026.
+\newblock \href{https://doi.org/10.48550/arXiv.2609.00065}{Scientific Agent Skills: A library of procedural knowledge for research agents}.
+\newblock arXiv:2609.00065.
+\end{thebibliography}
+\end{document}

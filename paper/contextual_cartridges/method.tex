@@ -1,0 +1,73 @@
+\section{Method}
+\label{sec:method}
+
+Contextual Cartridges adapts a compact native KV memory to a known document--query pair. Given document $D=(C_1,\ldots,C_N)$ and query $q$, we freeze the language model $p_\theta$ and optimize only the request-specific memory $Z=(K_{\mathrm{cart}},V_{\mathrm{cart}})$. We retain the KV parameterization and context-distillation foundation of Cartridges \citep{eyuboglu2025cartridges}. Our two techniques change the study-task distribution and which distillation trajectories are retained. The final answer is generated from $(Z^*,q)$ without appending the source document.
+
+\subsection{Answer-Guided Query-Specific Data}
+
+\paragraph{Why condition self-study on the query?}
+Generic study tasks distribute a fixed memory and optimization budget across topics that may not serve the current request (\emph{dilution}). Training on local facts separately may also undersupervise the particular cross-source relation needed by that request (\emph{fragmentation}). These are limitations of a task distribution for a known query, not claims that the original method lacks structural prompts or cannot perform global reasoning.
+
+\paragraph{Source selection and answer-first construction.}
+A lightweight decision model or cached relevance scores, supplemented with lexical, entity, and neighboring-source recall, selects a small collection of source groups $E_i\subseteq D$. A group may contain a single chunk or complementary chunks in original order. The frozen generator first extracts a query-relevant conclusion $a_i$, then constructs a closed-book question $s_i$ targeting that conclusion:
+\begin{align}
+P(E,a,s\mid D,q)={}&P(E\mid D,q)\nonumber\\
+&\cdot P_\theta(a\mid E,q)P_\theta(s\mid E,q,a).
+\end{align}
+The two semantic steps can be emitted sequentially in one generation call. The generator may skip a group that yields no useful conclusion. We save $\mathcal S_q=\{(s_i,a_i,E_i)\}_{i=1}^M$ with source identifiers. Routine empty-item and duplicate checks do not serve as a semantic verifier.
+
+This construction allocates study examples to the current query, while a conclusion drawn from complementary sources provides an opportunity to train their relationship. Neither a source citation nor multiple source chunks proves that a generated answer is correct or requires all of those chunks. We therefore evaluate coverage and joint exposure separately from downstream accuracy.
+
+\paragraph{Frozen dataset convention.}
+The BABILong comparison reuses two completed synthetic JSON releases. Its query-specific source groups use cached Decision API single-source scores and deterministic entity/bridge expansion. The cache-curve runner instead uses Qwen3-Reranker-0.6B for candidate ranking. These adapters share the answer-first principle but are not identical retrieval implementations. No synthetic data is regenerated for the figures in this paper.
+
+\subsection{Native KV Self-Distillation}
+
+Each trajectory provides a question $s_i$, a source context $E_i$, and a fixed response sequence $y_i$. At the same answer prefix, the teacher and student distributions are
+\begin{align}
+p_T^{i,t}&=p_\theta(\cdot\mid E_i,s_i,y_{i,<t}),\\
+p_S^{i,t}(Z)&=p_{\theta,Z}(\cdot\mid s_i,y_{i,<t}).
+\end{align}
+The conceptual objective matches teacher-to-student KL. The implementation retains the upstream sparse soft-target cross-entropy over stored teacher entries $\Omega_i$:
+\begin{equation}
+\mathcal L_i(Z)=-\frac{1}{|\Omega_i|}\sum_{(t,v)\in\Omega_i}
+\operatorname{sg}[p_T^{i,t}(v)]\log p_S^{i,t}(v;Z).
+\end{equation}
+Student log probabilities use the full vocabulary; retained teacher probabilities are not renormalized. Full-distribution cross-entropy and KL have the same student gradient, but the stored top-$k$ target is still an approximation. All gradients update native KV only; the backbone and teacher targets remain fixed.
+
+For BABILong, the saved synthetic assistant answer is the trajectory $y_i$ on which teacher soft targets are computed. The answer-first output is therefore not discarded after question construction, nor treated as a verified hard-label target. The three-dataset runner generates source-conditioned teacher responses and reuses them across cache capacities. Initialization follows the upstream KV initializer, including its frozen prefix position.
+
+\subsection{Conservative TracIn-Guided Selective SD}
+
+\paragraph{Motivation and fixed training budget.}
+Unconditionally learning every teacher trajectory can introduce conflicting supervision into shared memory. We call this the \emph{oracle trap}; it is not a theorem bounding the student by teacher accuracy. Our selector defaults to retaining a trajectory and requires both consistent gradient opposition and an actual deletion benefit before removing it.
+
+Let $R_0$ be the complete usable trajectory set. For any retained subset $R$, define
+\begin{equation}
+Z_R^{(b)}=\operatorname{SD}_T(Z_0;R,\pi_b),\quad b\in\{1,2\},
+\end{equation}
+where $\pi_b$ are two predetermined training orders. Every fit starts from the same $Z_0$ with a fresh Adam state, the same learning rate, and $T$ optimizer updates. The primary full-data ordinary-SD pilot determines $T$; in BABILong the query-agnostic pilot sets $T$ for both dataset arms. Matching final update counts does not match total selection compute.
+
+\paragraph{Checkpoint-wise leave-one-out nomination.}
+Inspired by TracIn \citep{pruthi2020tracin}, we compute KV gradients at the shared initialization and both current fitted endpoints, $\mathcal C_R=\{Z_0,Z_R^{(1)},Z_R^{(2)}\}$:
+\begin{align}
+g_{i,c}&=\nabla_Z\mathcal L_i(Z_c),\\
+\bar g_{-i,c}&=\frac{1}{|R|-1}\sum_{j\in R\setminus\{i\}}g_{j,c},\\
+u_{i,c}&=\bar g_{-i,c}^{\top}g_{i,c}.
+\end{align}
+Excluding the candidate prevents self-influence from producing a positive score by construction. A negative dot product predicts an increase in peers' average loss under a small SGD step. Because actual training uses Adam and multiple updates, this is a nomination proxy, not an exact effect or a truth score.
+
+We nominate $i$ only if $u_{i,c}<0$ at every checkpoint. Nonnegative scores, disagreement, or insufficient peers retain the trajectory. Candidates are tried in ascending order of their largest checkpoint cosine, prioritizing consistent opposition. Unlike the original TracIn sum, a large gradient at one checkpoint cannot overrule another checkpoint's veto.
+
+\paragraph{Confirm deletion by matched refits.}
+For a nominee $i$, let $A=R\setminus\{i\}$ and retrain $Z_A^{(1)}$ and $Z_A^{(2)}$. For every survivor $j\in A$ and both orders, require
+\begin{align}
+\mathcal L_j(Z_A^{(b)})&\leq\mathcal L_j(Z_R^{(b)})+\epsilon_{j,R}^{(b)},\\
+\mathcal L_j(Z_A^{(b)})&\leq\mathcal L_j(Z_{R_0}^{(b)})+\epsilon_{j,0}^{(b)},
+\end{align}
+where each tolerance is $10^{-6}+10^{-5}|\mathcal L_{\mathrm{reference}}|$. Survivor mean loss must also improve over the current fit by more than the mean tolerance under each order. The original-pilot guard limits cumulative tolerance drift. Any failed condition rejects deletion.
+
+After an accepted deletion, we replace $R$ with $A$, update both fits, and recompute nomination scores. Selection stops when no deletion passes or one trajectory remains. We return the fixed primary-order fit, never a seed selected by benchmark answers. With no confirmed deletion, the exact already-trained ordinary-SD checkpoint is returned. Selection uncertainty does not cause abstention or an untrained memory.
+
+\paragraph{Scope of protection.}
+The guards protect surviving synthetic SD losses, not factual correctness or accuracy on $q$. Correlated teacher errors can survive consensus; deleting a trajectory can still harm a final answer. Extra refits trade computation for stronger evidence about the defined training objective, not a guaranteed accuracy gain. Benchmark labels and held-out probes are not inputs to selection.

@@ -1,0 +1,16 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{BABILong accuracy over 1,000 requests per backbone. V-SD and S-SD denote ordinary and selective self-distillation. Contextual uses query-specific data and S-SD. $\Delta$ is S-SD minus V-SD on the same query-specific data. All entries are pending (\textemdash); historical configurations are not substituted.}
+\label{tab:babilong-overall}
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & ICL & Agn./V-SD & Agn./S-SD & Spec./V-SD & Contextual & $\Delta$ \\
+\midrule
+Qwen3-4B & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+OLMo-3-7B & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+GPT-OSS-20B & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+\bottomrule
+\end{tabular}
+\end{table*}

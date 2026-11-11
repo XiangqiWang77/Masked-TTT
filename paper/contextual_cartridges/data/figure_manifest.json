@@ -1,0 +1,248 @@
+{
+  "source_sha256": "53a5a99bf40b5e7128d3b5b2dc43f654124961c6dc7e7e64ec0a1305d6cea6d8",
+  "palette": [
+    "#0B2A3A",
+    "#1E4B6B",
+    "#3180A8",
+    "#6EC1D8",
+    "#B7E3F1",
+    "#F7C948",
+    "#F59E2C",
+    "#E36A1C",
+    "#D35B1D",
+    "#8C3A1A"
+  ],
+  "uncertainty": "none",
+  "aggregation": "case macro means",
+  "scatter": "exact coordinates; recall point area = 9 + 0.65 * multiplicity in points squared; no jitter; axis padding preserves endpoint markers",
+  "heatmap": "symmetric -100 to +100 pp; grey and dash = no eligible multi-fact requests",
+  "missing": "six recall pairs omitted only for recall; all others preserved",
+  "cache": "nulls are pending, no fabricated points; completed capacities require same paired-case hash",
+  "matplotlib_version": "3.9.2",
+  "figures": [
+    {
+      "name": "figure1_dilution_fragmentation",
+      "size_inches": [
+        6.3,
+        2.5
+      ],
+      "png_pixels": [
+        2520,
+        1000
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/figure1_dilution_fragmentation.pdf",
+          "bytes": 14863,
+          "sha256": "49b12f47f2dcd8a93e281fd18946826fe64f73af7cc282ba7a1908480093040c"
+        },
+        {
+          "path": "figures/figure1_dilution_fragmentation.svg",
+          "bytes": 17494,
+          "sha256": "03585b13b4f7abd3d68f21181dbd24dcad47126bc5594fe571de7b162f02372b"
+        },
+        {
+          "path": "figures/figure1_dilution_fragmentation.png",
+          "bytes": 140259,
+          "sha256": "0cb92859545e4204efa758c1f946845945711864eeda66b10fd33752eb2e9e8c"
+        }
+      ]
+    },
+    {
+      "name": "figure2_task_length",
+      "size_inches": [
+        6.3,
+        3.55
+      ],
+      "png_pixels": [
+        2520,
+        1420
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/figure2_task_length.pdf",
+          "bytes": 27473,
+          "sha256": "b86380d4ebaa0464c38993573a2a4421ae10aacd21d528dc54223eb2c1213ef0"
+        },
+        {
+          "path": "figures/figure2_task_length.svg",
+          "bytes": 35458,
+          "sha256": "27a23fc9ab4fca3ee6407f440b3bc31aa4e6a8db0b5b56dd9b0820c709a90527"
+        },
+        {
+          "path": "figures/figure2_task_length.png",
+          "bytes": 105480,
+          "sha256": "972aa14200cce153a46fdb18d0cea41e7586039274b33315fc045c1e5f1c3367"
+        }
+      ]
+    },
+    {
+      "name": "figure3_paired_coverage_footprint",
+      "size_inches": [
+        6.3,
+        2.95
+      ],
+      "png_pixels": [
+        2520,
+        1180
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/figure3_paired_coverage_footprint.pdf",
+          "bytes": 175242,
+          "sha256": "e05a748ec549b2cc66900d77c0308e98a0c877d8b5090e3d0a5485aa38064216"
+        },
+        {
+          "path": "figures/figure3_paired_coverage_footprint.svg",
+          "bytes": 713651,
+          "sha256": "75076726fdfeed30bad23acf036369f7a3a24762e9d16459a1f9b2df662e2cfe"
+        },
+        {
+          "path": "figures/figure3_paired_coverage_footprint.png",
+          "bytes": 197647,
+          "sha256": "a3084c316271c8251493228d38d1fa2ac3b108f43a572e81a3cc9a383d704fae"
+        }
+      ]
+    },
+    {
+      "name": "figure4_cache_grid_pending",
+      "size_inches": [
+        6.3,
+        6.17
+      ],
+      "png_pixels": [
+        2520,
+        2468
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/figure4_cache_grid_pending.pdf",
+          "bytes": 15135,
+          "sha256": "5098e5d4275bbcb5c557422edb697ceffc966d9853df6834f51036e1ca6e6842"
+        },
+        {
+          "path": "figures/figure4_cache_grid_pending.svg",
+          "bytes": 30254,
+          "sha256": "76903189a9e1df0bc8439077d9dd8fce8871ed1c762ba7e644afe13c10803b3e"
+        },
+        {
+          "path": "figures/figure4_cache_grid_pending.png",
+          "bytes": 231484,
+          "sha256": "240ad1aa33138c176bbb102f1357d54474ae6b6e16b566cab008775240c37b8a"
+        }
+      ]
+    },
+    {
+      "name": "cache_qwen3_4b_pending",
+      "size_inches": [
+        6.3,
+        2.31
+      ],
+      "png_pixels": [
+        2520,
+        924
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/cache_qwen3_4b_pending.pdf",
+          "bytes": 13850,
+          "sha256": "fee359b722dbfe30d4770e3351eb08060a71b121bd92d0221fce884f91433c70"
+        },
+        {
+          "path": "figures/cache_qwen3_4b_pending.svg",
+          "bytes": 11227,
+          "sha256": "e0636ccd35a70483c232cd66396f0a671b431b18edc1ce0e78ef3d6e3fda4aaf"
+        },
+        {
+          "path": "figures/cache_qwen3_4b_pending.png",
+          "bytes": 85567,
+          "sha256": "4c312913a082afc39b6cf8d3b9c30fe07828add92f47dbe329a82a8c987a4d8e"
+        }
+      ]
+    },
+    {
+      "name": "cache_olmo3_7b_pending",
+      "size_inches": [
+        6.3,
+        2.31
+      ],
+      "png_pixels": [
+        2520,
+        924
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/cache_olmo3_7b_pending.pdf",
+          "bytes": 13546,
+          "sha256": "7ddd100030ad9cbe90ead87633a6a149feebd796bb69e272f35c0f918449450b"
+        },
+        {
+          "path": "figures/cache_olmo3_7b_pending.svg",
+          "bytes": 11233,
+          "sha256": "e253c843accde527c8474280498ae37c74f43ba3e2f07e6d9dcfc6c61e039ae2"
+        },
+        {
+          "path": "figures/cache_olmo3_7b_pending.png",
+          "bytes": 84961,
+          "sha256": "7800abe79c30a9c0893f7847a2cacf0df8a63346d05dbce0966aa680b1d8c478"
+        }
+      ]
+    },
+    {
+      "name": "cache_gpt_oss_20b_pending",
+      "size_inches": [
+        6.3,
+        2.31
+      ],
+      "png_pixels": [
+        2520,
+        924
+      ],
+      "png_dpi": [
+        399.9992,
+        399.9992
+      ],
+      "outputs": [
+        {
+          "path": "figures/cache_gpt_oss_20b_pending.pdf",
+          "bytes": 13512,
+          "sha256": "03cbf8a157d6425adace9b6b48b32932b528ff54b7ba5b255652915ec9311523"
+        },
+        {
+          "path": "figures/cache_gpt_oss_20b_pending.svg",
+          "bytes": 11235,
+          "sha256": "9a5da65bddcf39c62f784e03b5cd75ee6b5c897badb10e461344fbf7a54dd402"
+        },
+        {
+          "path": "figures/cache_gpt_oss_20b_pending.png",
+          "bytes": 87297,
+          "sha256": "b220bc9309c3a053d416cb1982be7c11bb3c22681844be6185f78e3b8b6532ff"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "n_requests": 1000,
+  "questions_per_arm": 26451,
+  "estimator": "paired equal-weight request means; joint restricted to multi-fact cases",
+  "uncertainty": "none displayed",
+  "metrics": {
+    "no_support": {
+      "n": 1000,
+      "vanilla": 0.8368514867093378,
+      "query_specific": 0.5021058303931618,
+      "delta": -0.33474565631617603
+    },
+    "recall": {
+      "n": 994,
+      "vanilla": 0.5024983232729712,
+      "query_specific": 0.954476861167002,
+      "delta": 0.45197853789403086
+    },
+    "joint": {
+      "n": 352,
+      "vanilla": 0.02475352770403393,
+      "query_specific": 0.1514577122104592,
+      "delta": 0.12670418450642526
+    },
+    "context_chars": {
+      "n": 1000,
+      "vanilla": 7894.128935081022,
+      "query_specific": 2221.4827831253306,
+      "delta": -5672.6461519556915
+    },
+    "question_words": {
+      "n": 1000,
+      "vanilla": 58.006829821944834,
+      "query_specific": 15.034274687398666,
+      "delta": -42.97255513454617
+    }
+  }
+}

@@ -1,0 +1,25 @@
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\caption{BABILong accuracy by document length (250 requests per cell). V-SD and S-SD denote ordinary and selective self-distillation. Contextual uses query-specific data and S-SD. $\Delta$ is S-SD minus V-SD on the same query-specific data. All entries are pending (\textemdash); historical configurations are not substituted.}
+\label{tab:babilong-length}
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & Length & ICL & Agn./V-SD & Agn./S-SD & Spec./V-SD & Contextual & $\Delta$ \\
+\midrule
+Qwen3-4B & 8K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+Qwen3-4B & 16K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+Qwen3-4B & 32K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+Qwen3-4B & 64K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+OLMo-3-7B & 8K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+OLMo-3-7B & 16K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+OLMo-3-7B & 32K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+OLMo-3-7B & 64K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+GPT-OSS-20B & 8K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+GPT-OSS-20B & 16K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+GPT-OSS-20B & 32K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+GPT-OSS-20B & 64K & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash \\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,77 @@
+{
+  "paper_status": "working_draft_with_pending_downstream_results",
+  "method": "answer-guided query-specific synthetic data + unanimous-checkpoint nomination and confirmed-deletion selective SD",
+  "current_cache_adapter": {
+    "backbone": "Qwen3-4B-Instruct-2507",
+    "planned_counts": {
+      "longhealth": 200,
+      "mtob_ke": 50,
+      "qasper": 78
+    },
+    "training": {
+      "synthetic_examples_per_query_max": 12,
+      "answer_first_then_question": true,
+      "small_model_reranking": true,
+      "learning_rate": 0.02,
+      "official_epochs": 2,
+      "vanilla_pilot_budget": "two complete upstream packed-data epochs",
+      "selective_final_fit_budget": "same positive optimizer-step count as primary full-data pilot",
+      "selection_refits": "full matched-budget SD from identical initial KV and fresh Adam state",
+      "training_order_replicates": 2,
+      "seed_offsets": [
+        0,
+        100003
+      ],
+      "primary_seed_fixed_before_evaluation": true,
+      "tracin_checkpoints": [
+        "shared_initial",
+        "current_final_order0",
+        "current_final_order1"
+      ],
+      "tracin_rule": "nominate deletion only if signed LOO dot < 0 at every checkpoint; do not sum scales",
+      "deletion_confirmation": "both refits improve mean survivor SD loss and every survivor stays within numerical tolerance of current and original pilots",
+      "deletion_loss_atol": 1e-06,
+      "deletion_loss_rtol": 1e-05,
+      "positive_zero_disagreeing_signals": "keep",
+      "source_gate_auto_deletions": false,
+      "singleton_policy": "keep and train ordinary SD",
+      "heldout_labels_used": false,
+      "benchmark_answers_used_for_training": false,
+      "native_kv_only": true,
+      "accuracy_nonregression_guaranteed": false,
+      "fallback": "exact_trained_primary_vanilla_checkpoint_if_no_confirmed_deletion",
+      "synthetic_and_teacher_targets_reused_across_cache_sizes": true,
+      "packing": "upstream_pad_complete_conversations",
+      "training_sequence_tokens": "min512/max4096 complete-conversation window independent of cache capacity",
+      "target_only_lm_head": true,
+      "saved_backward_tensors": "CPU pinned memory, original dtype restored on backward",
+      "tracin_gradient_storage": "two backward passes per checkpoint; CPU FP32 running sum plus one trajectory",
+      "reranker_gpu_residency": "only_during_retrieval",
+      "trainable_checkpoint_gpu_residency": "one trial at a time, other trials stored on disk",
+      "post_training_regression_audit": "evaluate already-required Vanilla pilot after selection; never use gold to select",
+      "extra_selection_compute_reported": true
+    },
+    "evaluation": {
+      "longhealth": "accuracy_percent",
+      "mtob_ke": "corpus_chrF",
+      "qasper": "mean_gold_answer_log_perplexity"
+    },
+    "cache_sizes": [
+      512,
+      1024,
+      2048,
+      4096
+    ]
+  },
+  "publication_backbone_slots": [
+    "Qwen3-4B",
+    "OLMo-3-7B",
+    "GPT-OSS-20B"
+  ],
+  "slot_note": "Publication slots do not assert jobs were submitted for all three backbones.",
+  "babilong_protocol": "4 arm paired accuracy; a primary agnostic ordinary-SD pilot sets the shared final optimizer update budget",
+  "babilong_answer_policy": "saved synthetic answers are fixed teacher response prefixes; sparse soft targets, not hard-label answer NLL",
+  "statistical_scope": "synthetic snapshot has 1000 request records and 26451 exercises per arm; 352 multi-fact records; 994 paired recalls",
+  "training_gold_access": false,
+  "runtime_modified_by_publication": false
+}

@@ -1,0 +1,752 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="453.6pt" height="444.24pt" viewBox="0 0 453.6 444.24" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-11-11T12:33:34.406118</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.9.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 444.24 
+L 453.6 444.24 
+L 453.6 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 49.896 119.751652 
+L 145.217739 119.751652 
+L 145.217739 44.424 
+L 49.896 44.424 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_1">
+    <g id="xtick_1">
+     <g id="line2d_1">
+      <defs>
+       <path id="mb24bea69b9" d="M 0 0 
+L 0 3 
+" style="stroke: #0b2a3a; stroke-width: 0.6"/>
+      </defs>
+      <g>
+       <use xlink:href="#mb24bea69b9" x="55.941372" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_1">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="55.941372" y="131.45048" transform="rotate(-0 55.941372 131.45048)">512</text>
+     </g>
+    </g>
+    <g id="xtick_2">
+     <g id="line2d_2">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="83.591227" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_2">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="83.591227" y="131.45048" transform="rotate(-0 83.591227 131.45048)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="111.241081" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="111.241081" y="131.45048" transform="rotate(-0 111.241081 131.45048)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_4">
+     <g id="line2d_4">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="138.890936" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_4">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="138.890936" y="131.45048" transform="rotate(-0 138.890936 131.45048)">4K</text>
+     </g>
+    </g>
+    <g id="text_5">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="97.55687" y="143.088996" transform="rotate(-0 97.55687 143.088996)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_2">
+    <g id="text_6">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="44.23225" y="82.087826" transform="rotate(-90 44.23225 82.087826)">Accuracy (%)</text>
+    </g>
+   </g>
+   <g id="patch_3">
+    <path d="M 49.896 119.751652 
+L 49.896 44.424 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 49.896 119.751652 
+L 145.217739 119.751652 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_7">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="97.55687" y="82.788773" transform="rotate(-0 97.55687 82.788773)">Pending</text>
+   </g>
+   <g id="text_8">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(76.86312 30.46575)">Qwen3-4B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(74.741245 39.424)">LongHealth</text>
+   </g>
+  </g>
+  <g id="axes_2">
+   <g id="patch_5">
+    <path d="M 199.55113 119.751652 
+L 294.87287 119.751652 
+L 294.87287 44.424 
+L 199.55113 44.424 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_3">
+    <g id="xtick_5">
+     <g id="line2d_5">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="205.596503" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_9">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="205.596503" y="131.45048" transform="rotate(-0 205.596503 131.45048)">512</text>
+     </g>
+    </g>
+    <g id="xtick_6">
+     <g id="line2d_6">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="233.246357" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_10">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="233.246357" y="131.45048" transform="rotate(-0 233.246357 131.45048)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_7">
+     <g id="line2d_7">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="260.896212" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="260.896212" y="131.45048" transform="rotate(-0 260.896212 131.45048)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_8">
+     <g id="line2d_8">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="288.546066" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_12">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="288.546066" y="131.45048" transform="rotate(-0 288.546066 131.45048)">4K</text>
+     </g>
+    </g>
+    <g id="text_13">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="247.212" y="143.088996" transform="rotate(-0 247.212 143.088996)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_4">
+    <g id="text_14">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="193.88738" y="82.087826" transform="rotate(-90 193.88738 82.087826)">chrF</text>
+    </g>
+   </g>
+   <g id="patch_6">
+    <path d="M 199.55113 119.751652 
+L 199.55113 44.424 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 199.55113 119.751652 
+L 294.87287 119.751652 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_15">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="247.212" y="82.788773" transform="rotate(-0 247.212 82.788773)">Pending</text>
+   </g>
+   <g id="text_16">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(226.51825 30.46575)">Qwen3-4B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(225.881375 39.424)">MTOB (KE)</text>
+   </g>
+  </g>
+  <g id="axes_3">
+   <g id="patch_8">
+    <path d="M 349.206261 119.751652 
+L 444.528 119.751652 
+L 444.528 44.424 
+L 349.206261 44.424 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_5">
+    <g id="xtick_9">
+     <g id="line2d_9">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="355.251633" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_17">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="355.251633" y="131.45048" transform="rotate(-0 355.251633 131.45048)">512</text>
+     </g>
+    </g>
+    <g id="xtick_10">
+     <g id="line2d_10">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="382.901487" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_18">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="382.901487" y="131.45048" transform="rotate(-0 382.901487 131.45048)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_11">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="410.551342" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_19">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="410.551342" y="131.45048" transform="rotate(-0 410.551342 131.45048)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_12">
+     <g id="line2d_12">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="438.201196" y="119.751652" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_20">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="438.201196" y="131.45048" transform="rotate(-0 438.201196 131.45048)">4K</text>
+     </g>
+    </g>
+    <g id="text_21">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="396.86713" y="143.088996" transform="rotate(-0 396.86713 143.088996)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_6">
+    <g id="text_22">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="343.542511" y="82.087826" transform="rotate(-90 343.542511 82.087826)">Log-perplexity</text>
+    </g>
+   </g>
+   <g id="patch_9">
+    <path d="M 349.206261 119.751652 
+L 349.206261 44.424 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 349.206261 119.751652 
+L 444.528 119.751652 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_23">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="396.86713" y="82.788773" transform="rotate(-0 396.86713 82.788773)">Pending</text>
+   </g>
+   <g id="text_24">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(376.17338 30.46575)">Qwen3-4B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(380.724005 39.424)">QASPER</text>
+   </g>
+  </g>
+  <g id="axes_4">
+   <g id="patch_11">
+    <path d="M 49.896 255.341426 
+L 145.217739 255.341426 
+L 145.217739 180.013774 
+L 49.896 180.013774 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_7">
+    <g id="xtick_13">
+     <g id="line2d_13">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="55.941372" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_25">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="55.941372" y="267.040254" transform="rotate(-0 55.941372 267.040254)">512</text>
+     </g>
+    </g>
+    <g id="xtick_14">
+     <g id="line2d_14">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="83.591227" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_26">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="83.591227" y="267.040254" transform="rotate(-0 83.591227 267.040254)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_15">
+     <g id="line2d_15">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="111.241081" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_27">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="111.241081" y="267.040254" transform="rotate(-0 111.241081 267.040254)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_16">
+     <g id="line2d_16">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="138.890936" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_28">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="138.890936" y="267.040254" transform="rotate(-0 138.890936 267.040254)">4K</text>
+     </g>
+    </g>
+    <g id="text_29">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="97.55687" y="278.67877" transform="rotate(-0 97.55687 278.67877)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_8">
+    <g id="text_30">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="44.23225" y="217.6776" transform="rotate(-90 44.23225 217.6776)">Accuracy (%)</text>
+    </g>
+   </g>
+   <g id="patch_12">
+    <path d="M 49.896 255.341426 
+L 49.896 180.013774 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 49.896 255.341426 
+L 145.217739 255.341426 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_31">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="97.55687" y="218.378547" transform="rotate(-0 97.55687 218.378547)">Pending</text>
+   </g>
+   <g id="text_32">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(75.484995 166.055524)">OLMo-3-7B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(74.741245 175.013774)">LongHealth</text>
+   </g>
+  </g>
+  <g id="axes_5">
+   <g id="patch_14">
+    <path d="M 199.55113 255.341426 
+L 294.87287 255.341426 
+L 294.87287 180.013774 
+L 199.55113 180.013774 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_9">
+    <g id="xtick_17">
+     <g id="line2d_17">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="205.596503" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_33">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="205.596503" y="267.040254" transform="rotate(-0 205.596503 267.040254)">512</text>
+     </g>
+    </g>
+    <g id="xtick_18">
+     <g id="line2d_18">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="233.246357" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_34">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="233.246357" y="267.040254" transform="rotate(-0 233.246357 267.040254)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_19">
+     <g id="line2d_19">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="260.896212" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_35">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="260.896212" y="267.040254" transform="rotate(-0 260.896212 267.040254)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_20">
+     <g id="line2d_20">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="288.546066" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_36">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="288.546066" y="267.040254" transform="rotate(-0 288.546066 267.040254)">4K</text>
+     </g>
+    </g>
+    <g id="text_37">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="247.212" y="278.67877" transform="rotate(-0 247.212 278.67877)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_10">
+    <g id="text_38">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="193.88738" y="217.6776" transform="rotate(-90 193.88738 217.6776)">chrF</text>
+    </g>
+   </g>
+   <g id="patch_15">
+    <path d="M 199.55113 255.341426 
+L 199.55113 180.013774 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 199.55113 255.341426 
+L 294.87287 255.341426 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_39">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="247.212" y="218.378547" transform="rotate(-0 247.212 218.378547)">Pending</text>
+   </g>
+   <g id="text_40">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(225.140125 166.055524)">OLMo-3-7B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(225.881375 175.013774)">MTOB (KE)</text>
+   </g>
+  </g>
+  <g id="axes_6">
+   <g id="patch_17">
+    <path d="M 349.206261 255.341426 
+L 444.528 255.341426 
+L 444.528 180.013774 
+L 349.206261 180.013774 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_11">
+    <g id="xtick_21">
+     <g id="line2d_21">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="355.251633" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_41">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="355.251633" y="267.040254" transform="rotate(-0 355.251633 267.040254)">512</text>
+     </g>
+    </g>
+    <g id="xtick_22">
+     <g id="line2d_22">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="382.901487" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_42">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="382.901487" y="267.040254" transform="rotate(-0 382.901487 267.040254)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_23">
+     <g id="line2d_23">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="410.551342" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_43">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="410.551342" y="267.040254" transform="rotate(-0 410.551342 267.040254)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_24">
+     <g id="line2d_24">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="438.201196" y="255.341426" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_44">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="438.201196" y="267.040254" transform="rotate(-0 438.201196 267.040254)">4K</text>
+     </g>
+    </g>
+    <g id="text_45">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="396.86713" y="278.67877" transform="rotate(-0 396.86713 278.67877)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_12">
+    <g id="text_46">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="343.542511" y="217.6776" transform="rotate(-90 343.542511 217.6776)">Log-perplexity</text>
+    </g>
+   </g>
+   <g id="patch_18">
+    <path d="M 349.206261 255.341426 
+L 349.206261 180.013774 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 349.206261 255.341426 
+L 444.528 255.341426 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_47">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="396.86713" y="218.378547" transform="rotate(-0 396.86713 218.378547)">Pending</text>
+   </g>
+   <g id="text_48">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(374.795255 166.055524)">OLMo-3-7B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(380.724005 175.013774)">QASPER</text>
+   </g>
+  </g>
+  <g id="axes_7">
+   <g id="patch_20">
+    <path d="M 49.896 390.9312 
+L 145.217739 390.9312 
+L 145.217739 315.603548 
+L 49.896 315.603548 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_13">
+    <g id="xtick_25">
+     <g id="line2d_25">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="55.941372" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_49">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="55.941372" y="402.630028" transform="rotate(-0 55.941372 402.630028)">512</text>
+     </g>
+    </g>
+    <g id="xtick_26">
+     <g id="line2d_26">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="83.591227" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_50">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="83.591227" y="402.630028" transform="rotate(-0 83.591227 402.630028)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_27">
+     <g id="line2d_27">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="111.241081" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_51">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="111.241081" y="402.630028" transform="rotate(-0 111.241081 402.630028)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_28">
+     <g id="line2d_28">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="138.890936" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_52">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="138.890936" y="402.630028" transform="rotate(-0 138.890936 402.630028)">4K</text>
+     </g>
+    </g>
+    <g id="text_53">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="97.55687" y="414.268544" transform="rotate(-0 97.55687 414.268544)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_14">
+    <g id="text_54">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="44.23225" y="353.267374" transform="rotate(-90 44.23225 353.267374)">Accuracy (%)</text>
+    </g>
+   </g>
+   <g id="patch_21">
+    <path d="M 49.896 390.9312 
+L 49.896 315.603548 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_22">
+    <path d="M 49.896 390.9312 
+L 145.217739 390.9312 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_55">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="97.55687" y="353.968321" transform="rotate(-0 97.55687 353.968321)">Pending</text>
+   </g>
+   <g id="text_56">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(70.90937 301.645298)">GPT-OSS-20B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(74.741245 310.603548)">LongHealth</text>
+   </g>
+  </g>
+  <g id="axes_8">
+   <g id="patch_23">
+    <path d="M 199.55113 390.9312 
+L 294.87287 390.9312 
+L 294.87287 315.603548 
+L 199.55113 315.603548 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_15">
+    <g id="xtick_29">
+     <g id="line2d_29">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="205.596503" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_57">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="205.596503" y="402.630028" transform="rotate(-0 205.596503 402.630028)">512</text>
+     </g>
+    </g>
+    <g id="xtick_30">
+     <g id="line2d_30">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="233.246357" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_58">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="233.246357" y="402.630028" transform="rotate(-0 233.246357 402.630028)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_31">
+     <g id="line2d_31">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="260.896212" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_59">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="260.896212" y="402.630028" transform="rotate(-0 260.896212 402.630028)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_32">
+     <g id="line2d_32">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="288.546066" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_60">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="288.546066" y="402.630028" transform="rotate(-0 288.546066 402.630028)">4K</text>
+     </g>
+    </g>
+    <g id="text_61">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="247.212" y="414.268544" transform="rotate(-0 247.212 414.268544)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_16">
+    <g id="text_62">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="193.88738" y="353.267374" transform="rotate(-90 193.88738 353.267374)">chrF</text>
+    </g>
+   </g>
+   <g id="patch_24">
+    <path d="M 199.55113 390.9312 
+L 199.55113 315.603548 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_25">
+    <path d="M 199.55113 390.9312 
+L 294.87287 390.9312 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_63">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="247.212" y="353.968321" transform="rotate(-0 247.212 353.968321)">Pending</text>
+   </g>
+   <g id="text_64">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(220.5645 301.645298)">GPT-OSS-20B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(225.881375 310.603548)">MTOB (KE)</text>
+   </g>
+  </g>
+  <g id="axes_9">
+   <g id="patch_26">
+    <path d="M 349.206261 390.9312 
+L 444.528 390.9312 
+L 444.528 315.603548 
+L 349.206261 315.603548 
+z
+" style="fill: #ffffff"/>
+   </g>
+   <g id="matplotlib.axis_17">
+    <g id="xtick_33">
+     <g id="line2d_33">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="355.251633" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_65">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="355.251633" y="402.630028" transform="rotate(-0 355.251633 402.630028)">512</text>
+     </g>
+    </g>
+    <g id="xtick_34">
+     <g id="line2d_34">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="382.901487" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_66">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="382.901487" y="402.630028" transform="rotate(-0 382.901487 402.630028)">1K</text>
+     </g>
+    </g>
+    <g id="xtick_35">
+     <g id="line2d_35">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="410.551342" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_67">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="410.551342" y="402.630028" transform="rotate(-0 410.551342 402.630028)">2K</text>
+     </g>
+    </g>
+    <g id="xtick_36">
+     <g id="line2d_36">
+      <g>
+       <use xlink:href="#mb24bea69b9" x="438.201196" y="390.9312" style="fill: #0b2a3a; stroke: #0b2a3a; stroke-width: 0.6"/>
+      </g>
+     </g>
+     <g id="text_68">
+      <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: middle" x="438.201196" y="402.630028" transform="rotate(-0 438.201196 402.630028)">4K</text>
+     </g>
+    </g>
+    <g id="text_69">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="396.86713" y="414.268544" transform="rotate(-0 396.86713 414.268544)">KV positions</text>
+    </g>
+   </g>
+   <g id="matplotlib.axis_18">
+    <g id="text_70">
+     <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'; text-anchor: middle" x="343.542511" y="353.267374" transform="rotate(-90 343.542511 353.267374)">Log-perplexity</text>
+    </g>
+   </g>
+   <g id="patch_27">
+    <path d="M 349.206261 390.9312 
+L 349.206261 315.603548 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="patch_28">
+    <path d="M 349.206261 390.9312 
+L 444.528 390.9312 
+" style="fill: none; stroke: #0b2a3a; stroke-width: 0.65; stroke-linejoin: miter; stroke-linecap: square"/>
+   </g>
+   <g id="text_71">
+    <text style="fill: #86949d; font: 8px 'DejaVu Sans'; text-anchor: middle" x="396.86713" y="353.968321" transform="rotate(-0 396.86713 353.968321)">Pending</text>
+   </g>
+   <g id="text_72">
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(370.21963 301.645298)">GPT-OSS-20B</text>
+    <text style="fill: #0b2a3a; font: 8px 'DejaVu Sans'" transform="translate(380.724005 310.603548)">QASPER</text>
+   </g>
+  </g>
+  <g id="legend_1">
+   <g id="line2d_37">
+    <path d="M 175.166602 9.823828 
+L 182.666602 9.823828 
+L 190.166602 9.823828 
+" style="fill: none; stroke: #3180a8; stroke-width: 1.5; stroke-linecap: square"/>
+    <defs>
+     <path id="m938a1465fd" d="M -0 2.828427 
+L 2.828427 0 
+L 0 -2.828427 
+L -2.828427 -0 
+z
+" style="stroke: #3180a8; stroke-linejoin: miter"/>
+    </defs>
+    <g>
+     <use xlink:href="#m938a1465fd" x="182.666602" y="9.823828" style="fill: #3180a8; stroke: #3180a8; stroke-linejoin: miter"/>
+    </g>
+   </g>
+   <g id="text_73">
+    <text style="fill: #0b2a3a; font: 7.5px 'DejaVu Sans'; text-anchor: start" x="196.166602" y="12.448828" transform="rotate(-0 196.166602 12.448828)">Contextual Cartridges</text>
+   </g>
+  </g>
+ </g>
+</svg>

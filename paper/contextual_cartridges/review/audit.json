@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "requests": 1000,
+  "exercises_per_arm": 26451,
+  "babilong_pending_rows": 60,
+  "cache_pending_points": 36,
+  "pdfs": [
+    {
+      "path": "paper.pdf",
+      "pages": 7,
+      "fonts_embedded": true,
+      "sha256": "8351b556a26b831dadfcfa2f93fb0d4fe0bfe420561e98162fa392857ef67358"
+    },
+    {
+      "path": "figures/cache_gpt_oss_20b_pending.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "03cbf8a157d6425adace9b6b48b32932b528ff54b7ba5b255652915ec9311523"
+    },
+    {
+      "path": "figures/cache_olmo3_7b_pending.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "7ddd100030ad9cbe90ead87633a6a149feebd796bb69e272f35c0f918449450b"
+    },
+    {
+      "path": "figures/cache_qwen3_4b_pending.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "fee359b722dbfe30d4770e3351eb08060a71b121bd92d0221fce884f91433c70"
+    },
+    {
+      "path": "figures/figure1_dilution_fragmentation.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "49b12f47f2dcd8a93e281fd18946826fe64f73af7cc282ba7a1908480093040c"
+    },
+    {
+      "path": "figures/figure2_task_length.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "b86380d4ebaa0464c38993573a2a4421ae10aacd21d528dc54223eb2c1213ef0"
+    },
+    {
+      "path": "figures/figure3_paired_coverage_footprint.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "e05a748ec549b2cc66900d77c0308e98a0c877d8b5090e3d0a5485aa38064216"
+    },
+    {
+      "path": "figures/figure4_cache_grid_pending.pdf",
+      "pages": 1,
+      "fonts_embedded": true,
+      "sha256": "5098e5d4275bbcb5c557422edb697ceffc966d9853df6834f51036e1ca6e6842"
+    }
+  ],
+  "paper_pages": 7,
+  "paper_size_points": [
+    595.276,
+    841.89
+  ],
+  "unresolved_cross_references": false,
+  "overfull_boxes": false,
+  "manual_figure_review": "all three actual-result figures and cache layout inspected; clipped colorbar corrected",
+  "scientific_review": "source proxies separated from semantic correctness, speed and downstream accuracy; no CI or invented results",
+  "software_reference": "Scientific Agent Skills, arXiv:2609.00065, latest record checked 2026-11-11"
+}
