@@ -1,0 +1,153 @@
+{
+  "vanilla_syns": {
+    "requests": 32,
+    "trajectories": 573,
+    "by_recorded_split": {
+      "development": {
+        "n": 7,
+        "SD_correct": 3,
+        "JSD_correct": 3,
+        "fixes": 0,
+        "regressions": 0
+      },
+      "holdout": {
+        "n": 25,
+        "SD_correct": 4,
+        "JSD_correct": 4,
+        "fixes": 0,
+        "regressions": 0
+      }
+    },
+    "kept": 572,
+    "blocked": 1,
+    "gate_active_requests": 1,
+    "SD_correct": 7,
+    "JSD_correct": 7,
+    "SD_accuracy": 21.875,
+    "JSD_accuracy": 21.875,
+    "net_gain_pp": 0.0,
+    "transitions": {
+      "0_to_0": 25,
+      "0_to_1": 0,
+      "1_to_0": 0,
+      "1_to_1": 7
+    },
+    "fallback_requests": 0,
+    "mean_teacher_entropy_all": 0.6130169321528697,
+    "mean_teacher_entropy_kept": 0.6128795679608994,
+    "mean_entropy_sign_gate_disagreements": 2,
+    "corrected_cases": [],
+    "regressed_cases": [],
+    "complete_case_ids": [
+      "babilong-16-qa3-300061",
+      "babilong-16-qa4-300075",
+      "babilong-16-qa4-300079",
+      "babilong-16-qa4-300090",
+      "babilong-16-qa6-300143",
+      "babilong-16-qa8-300175",
+      "babilong-16-qa8-300192",
+      "babilong-16-qa9-300201",
+      "babilong-16-qa9-300208",
+      "babilong-32-qa1-300001",
+      "babilong-32-qa1-300007",
+      "babilong-32-qa1-300023",
+      "babilong-32-qa2-300029",
+      "babilong-32-qa4-300089",
+      "babilong-32-qa4-300090",
+      "babilong-32-qa4-300097",
+      "babilong-32-qa5-300105",
+      "babilong-32-qa7-300157",
+      "babilong-32-qa9-300207",
+      "babilong-64-qa1-300000",
+      "babilong-64-qa1-300010",
+      "babilong-64-qa1-300020",
+      "babilong-64-qa10-300226",
+      "babilong-64-qa10-300240",
+      "babilong-64-qa2-300034",
+      "babilong-64-qa5-300120",
+      "babilong-64-qa6-300147",
+      "babilong-64-qa7-300165",
+      "babilong-8-qa10-300233",
+      "babilong-8-qa10-300249",
+      "babilong-8-qa3-300060",
+      "babilong-8-qa7-300159"
+    ]
+  },
+  "specific_syns": {
+    "requests": 32,
+    "trajectories": 573,
+    "by_recorded_split": {
+      "development": {
+        "n": 7,
+        "SD_correct": 1,
+        "JSD_correct": 2,
+        "fixes": 1,
+        "regressions": 0
+      },
+      "holdout": {
+        "n": 25,
+        "SD_correct": 5,
+        "JSD_correct": 6,
+        "fixes": 1,
+        "regressions": 0
+      }
+    },
+    "kept": 390,
+    "blocked": 183,
+    "gate_active_requests": 27,
+    "SD_correct": 6,
+    "JSD_correct": 8,
+    "SD_accuracy": 18.75,
+    "JSD_accuracy": 25.0,
+    "net_gain_pp": 6.25,
+    "transitions": {
+      "0_to_0": 24,
+      "0_to_1": 2,
+      "1_to_0": 0,
+      "1_to_1": 6
+    },
+    "fallback_requests": 0,
+    "mean_teacher_entropy_all": 0.46472063797724034,
+    "mean_teacher_entropy_kept": 0.38806377419106375,
+    "mean_entropy_sign_gate_disagreements": 63,
+    "corrected_cases": [
+      "babilong-32-qa5-300105",
+      "babilong-64-qa6-300147"
+    ],
+    "regressed_cases": [],
+    "complete_case_ids": [
+      "babilong-16-qa3-300061",
+      "babilong-16-qa4-300075",
+      "babilong-16-qa4-300079",
+      "babilong-16-qa4-300090",
+      "babilong-16-qa6-300143",
+      "babilong-16-qa8-300175",
+      "babilong-16-qa8-300192",
+      "babilong-16-qa9-300201",
+      "babilong-16-qa9-300208",
+      "babilong-32-qa1-300001",
+      "babilong-32-qa1-300007",
+      "babilong-32-qa1-300023",
+      "babilong-32-qa2-300029",
+      "babilong-32-qa4-300089",
+      "babilong-32-qa4-300090",
+      "babilong-32-qa4-300097",
+      "babilong-32-qa5-300105",
+      "babilong-32-qa7-300157",
+      "babilong-32-qa9-300207",
+      "babilong-64-qa1-300000",
+      "babilong-64-qa1-300010",
+      "babilong-64-qa1-300020",
+      "babilong-64-qa10-300226",
+      "babilong-64-qa10-300240",
+      "babilong-64-qa2-300034",
+      "babilong-64-qa5-300120",
+      "babilong-64-qa6-300147",
+      "babilong-64-qa7-300165",
+      "babilong-8-qa10-300233",
+      "babilong-8-qa10-300249",
+      "babilong-8-qa3-300060",
+      "babilong-8-qa7-300159"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "created": "2026-11-12T11:02:04.912116-05:00",
+  "exports": [
+    {
+      "file": "jsd_training_distribution.png",
+      "size_pixels": [
+        1440,
+        1440
+      ],
+      "dpi": [
+        399.9992,
+        399.9992
+      ],
+      "opaque": true
+    },
+    {
+      "file": "jsd_paired_outcomes.png",
+      "size_pixels": [
+        1440,
+        1440
+      ],
+      "dpi": [
+        399.9992,
+        399.9992
+      ],
+      "opaque": true
+    }
+  ],
+  "packages": {
+    "numpy": "2.2.6",
+    "matplotlib": "3.11.1",
+    "pillow": "12.3.0"
+  },
+  "physical_square": true,
+  "PDF_fonttype": 42,
+  "SVG_text_editable": true,
+  "confidence_intervals": false,
+  "raw_source_files_modified": false,
+  "no_model_or_gpu_execution": true,
+  "pdf_metadata": [
+    {
+      "file": "jsd_paired_outcomes.pdf",
+      "MediaBox": [
+        0.0,
+        0.0,
+        259.2,
+        259.2
+      ],
+      "embedded_TrueType_font_detected": true
+    },
+    {
+      "file": "jsd_training_distribution.pdf",
+      "MediaBox": [
+        0.0,
+        0.0,
+        259.2,
+        259.2
+      ],
+      "embedded_TrueType_font_detected": true
+    }
+  ],
+  "manual_render_inspection": "Two distinct square figures inspected; no clipped text; all raw observations and all four outcome states retained",
+  "text_bbox_clipping_check_passed": true
+}

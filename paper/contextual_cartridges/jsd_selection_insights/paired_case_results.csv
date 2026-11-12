@@ -1,0 +1,96 @@
+case,dataset,query,recorded_analysis_split,task,document_tokens,reference,SD_prediction,JSD_prediction,SD_correct,JSD_correct,teacher_full_prediction,teacher_full_correct,initial_prediction,initial_correct,trajectories,kept,blocked,fallback,updates,warmup_steps,same_teacher_targets,warmup_max_loss_error
+babilong-16-qa3-300061,vanilla_syns,Where was the apple before the bedroom? ,holdout,qa3,16384,bathroom,Before the bedroom the apple was in the kitchen.,Before the bedroom the apple was in the kitchen.,0,0,Before the bedroom the apple was in the garden.,0,Before the bedroom the apple was in the kitchen.,0,24,24,0,False,28,14,True,0.0
+babilong-16-qa3-300061,specific_syns,Where was the apple before the bedroom? ,holdout,qa3,16384,bathroom,Before the bedroom the apple was in the bathroom.,Before the bedroom the apple was in the bathroom.,1,1,Before the bedroom the apple was in the garden.,0,Before the bedroom the apple was in the kitchen.,0,24,19,5,False,28,14,True,0.0
+babilong-16-qa4-300075,vanilla_syns,What is the bathroom west of?,holdout,qa4,16384,hallway,kitchen,kitchen,0,0,hallway,1,location,0,12,12,0,False,12,6,True,0.0
+babilong-16-qa4-300075,specific_syns,What is the bathroom west of?,holdout,qa4,16384,hallway,ward,ward,0,0,hallway,1,location,0,12,10,2,False,12,6,True,0.0
+babilong-16-qa4-300079,vanilla_syns,What is north of the hallway?,holdout,qa4,16384,office,kitchen,kitchen,0,0,office,1,kitchen,0,8,8,0,False,12,6,True,0.0
+babilong-16-qa4-300079,specific_syns,What is north of the hallway?,holdout,qa4,16384,office,kitchen,kitchen,0,0,office,1,kitchen,0,8,8,0,False,12,6,True,0.0
+babilong-16-qa4-300090,vanilla_syns,What is the bathroom west of?,development,qa4,16384,office,kitchen,kitchen,0,0,office,1,location,0,8,8,0,False,10,5,True,0.0
+babilong-16-qa4-300090,specific_syns,What is the bathroom west of?,development,qa4,16384,office,kitchen,kitchen,0,0,office,1,location,0,8,5,3,False,10,5,True,0.0
+babilong-16-qa6-300143,vanilla_syns,Is Mary in the office? ,holdout,qa6,16384,yes,$no$,$no$,0,0,$yes$,1,no,0,12,12,0,False,16,8,True,0.0
+babilong-16-qa6-300143,specific_syns,Is Mary in the office? ,holdout,qa6,16384,yes,$no$,in the office? $no$,0,0,$yes$,1,no,0,12,4,8,False,16,8,True,0.0
+babilong-16-qa8-300175,vanilla_syns,What is Daniel carrying? ,development,qa8,16384,nothing,$nothing$,$nothing$,1,1,milk,0,nothing,1,24,24,0,False,26,13,True,0.0
+babilong-16-qa8-300175,specific_syns,What is Daniel carrying? ,development,qa8,16384,nothing,"apple,milk","apple,milk",0,0,milk,0,nothing,1,24,19,5,False,26,13,True,0.0
+babilong-16-qa8-300192,vanilla_syns,What is John carrying? ,development,qa8,16384,nothing,nothing,nothing,1,1,nothing,1,nothing,1,24,24,0,False,36,18,True,0.0
+babilong-16-qa8-300192,specific_syns,What is John carrying? ,development,qa8,16384,nothing,$nothing$,$nothing$,1,1,nothing,1,nothing,1,24,8,16,False,36,18,True,0.0
+babilong-16-qa9-300201,vanilla_syns,Is Sandra in the bedroom? ,holdout,qa9,16384,yes,no,no,0,0,no,0,no,0,12,12,0,False,12,6,True,0.0
+babilong-16-qa9-300201,specific_syns,Is Sandra in the bedroom? ,holdout,qa9,16384,yes,no,no,0,0,no,0,no,0,12,11,1,False,12,6,True,0.0
+babilong-16-qa9-300208,vanilla_syns,Is Sandra in the bedroom? ,holdout,qa9,16384,no,no,no,1,1,no,1,no,1,24,24,0,False,38,19,True,0.0
+babilong-16-qa9-300208,specific_syns,Is Sandra in the bedroom? ,holdout,qa9,16384,no,no,$no$,1,1,no,1,no,1,24,10,14,False,38,19,True,0.0
+babilong-32-qa1-300001,vanilla_syns,Where is Mary? ,holdout,qa1,32768,office,"The most recent location of Mary is not specified in the text. Therefore, based on the provided information, Mary's location cannot be determined.","The most recent location of Mary is not specified in the text. Therefore, based on the provided information, Mary's location cannot be determined.",0,0,"The most recent location of Mary is not specified in the context. Therefore, based on the information provided, Mary's location cannot be determined.",0,The most recent location of Mary is not provided in the context.,0,6,6,0,False,6,3,True,0.0
+babilong-32-qa1-300001,specific_syns,Where is Mary? ,holdout,qa1,32768,office,The most recent location of Mary is not mentioned in the text.,The most recent location of Mary is not mentioned in the text.,0,0,"The most recent location of Mary is not specified in the context. Therefore, based on the information provided, Mary's location cannot be determined.",0,The most recent location of Mary is not provided in the context.,0,6,6,0,False,6,3,True,0.0
+babilong-32-qa1-300007,vanilla_syns,Where is Mary? ,holdout,qa1,32768,hallway,The most recent location of Mary is not specified in the text.,The most recent location of Mary is not specified in the text.,0,0,Mary is in the hallway.,1,The most recent location of Mary is not provided in the context.,0,6,6,0,False,6,3,True,0.0
+babilong-32-qa1-300007,specific_syns,Where is Mary? ,holdout,qa1,32768,hallway,The most recent location of Mary is unknown.,"The most recent location of Mary is not specified in the text. Therefore, based on the given information, we cannot determine where Mary is. 
+
+Answer: The most recent location of Mary is unknown.",0,0,Mary is in the hallway.,1,The most recent location of Mary is not provided in the context.,0,6,5,1,False,6,3,True,0.0
+babilong-32-qa1-300023,vanilla_syns,Where is John? ,holdout,qa1,32768,garden,The most recent location of John is not specified in the text.,The most recent location of John is not specified in the text.,0,0,"John is not mentioned in the context provided. Therefore, based on the information given, John's location cannot be determined. 
+
+However, since the instruction is to answer based only on the facts and if a person was in different locations use the latest location, and no information about John is given, we must conclude that there",0,The most recent location of John is not specified in the context.,0,6,6,0,False,8,4,True,0.0
+babilong-32-qa1-300023,specific_syns,Where is John? ,holdout,qa1,32768,garden,The most recent location of John is the bottom of the stairs.,The most recent location of John is the bottom of the steps.,0,0,"John is not mentioned in the context provided. Therefore, based on the information given, John's location cannot be determined. 
+
+However, since the instruction is to answer based only on the facts and if a person was in different locations use the latest location, and no information about John is given, we must conclude that there",0,The most recent location of John is not specified in the context.,0,6,2,4,False,8,4,True,0.0
+babilong-32-qa2-300029,vanilla_syns,Where is the apple? ,holdout,qa2,32768,kitchen,The apple is in the kitchen.,The apple is in the kitchen.,1,1,The apple is in the hallway.,0,"The apple is not mentioned in the context. Therefore, based on the information provided, the location of the apple cannot be determined. 
+
+However, since the question asks for a specific answer and no information about an apple exists in the context, it follows that the apple was not referenced in any action involving movement or possession.",0,24,24,0,False,34,17,True,0.0
+babilong-32-qa2-300029,specific_syns,Where is the apple? ,holdout,qa2,32768,kitchen,The ’apple’ is in ’Mittau’.,"The ’apple’ is in ’the first location’ and the second location. However, based on the information provided, there is no mention of an apple being obtained, dropped, or moved by any person. Therefore, the apple is not explicitly located in any of the specified places. Since no facts about an apple are",0,0,The apple is in the hallway.,0,"The apple is not mentioned in the context. Therefore, based on the information provided, the location of the apple cannot be determined. 
+
+However, since the question asks for a specific answer and no information about an apple exists in the context, it follows that the apple was not referenced in any action involving movement or possession.",0,24,9,15,False,34,17,True,0.0
+babilong-32-qa4-300089,vanilla_syns,What is the kitchen south of?,holdout,qa4,32768,hallway,bedroom,bedroom,0,0,bedroom,0,passage,0,24,24,0,False,28,14,True,0.0
+babilong-32-qa4-300089,specific_syns,What is the kitchen south of?,holdout,qa4,32768,hallway,hallway,hallway,1,1,bedroom,0,passage,0,24,24,0,False,28,14,True,0.0
+babilong-32-qa4-300090,vanilla_syns,What is the bathroom west of?,development,qa4,32768,office,kitchen,kitchen,0,0,office,1,location,0,24,24,0,False,24,12,True,0.0
+babilong-32-qa4-300090,specific_syns,What is the bathroom west of?,development,qa4,32768,office,kitchen,kitchen,0,0,office,1,location,0,24,15,9,False,24,12,True,0.0
+babilong-32-qa4-300097,vanilla_syns,What is the office north of?,holdout,qa4,32768,bathroom,kitchen,kitchen,0,0,kitchen,0,"I cannot answer the question as no information about the office or its location relative to other places is provided in the context. The text discusses locations like the parlor, library, stairs, and a depot, but does not mention an office or its position. Therefore, based on the given facts, the location cannot be determined",0,24,24,0,False,32,16,True,0.0
+babilong-32-qa4-300097,specific_syns,What is the office north of?,holdout,qa4,32768,bathroom,kitchen,living room,0,0,kitchen,0,"I cannot answer the question as no information about the office or its location relative to other places is provided in the context. The text discusses locations like the parlor, library, stairs, and a depot, but does not mention an office or its position. Therefore, based on the given facts, the location cannot be determined",0,24,21,3,False,32,16,True,0.0
+babilong-32-qa5-300105,vanilla_syns,Who did Mary give the apple to? ,development,qa5,32768,Fred,Fred,Fred,1,1,Fred,1,Fred,1,6,6,0,False,8,4,True,0.0
+babilong-32-qa5-300105,specific_syns,Who did Mary give the apple to? ,development,qa5,32768,Fred,", or
+,, T
+,,
+,, Tel
+ Tel Tel
+,,
+,  1 1 Fo Fo T T Tint
+Fo, 1 0",Fred,0,1,Fred,1,Fred,1,6,5,1,False,8,4,True,0.0
+babilong-32-qa7-300157,vanilla_syns,How many objects is Sandra carrying? ,holdout,qa7,32768,none,two,two,0,0,one,0,$none$,0,24,24,0,False,26,13,True,0.0
+babilong-32-qa7-300157,specific_syns,How many objects is Sandra carrying? ,holdout,qa7,32768,none,two,two,0,0,one,0,$none$,0,24,16,8,False,26,13,True,0.0
+babilong-32-qa9-300207,vanilla_syns,Is Sandra in the office? ,holdout,qa9,32768,no,no,no,1,1,no,1,no,1,24,24,0,False,32,16,True,0.0
+babilong-32-qa9-300207,specific_syns,Is Sandra in the office? ,holdout,qa9,32768,no,$no$,$no$,1,1,no,1,no,1,24,17,7,False,32,16,True,0.0
+babilong-64-qa1-300000,vanilla_syns,Where is John? ,holdout,qa1,65536,bathroom,The most recent location of John is not specified in the provided text.,The most recent location of John is not specified in the provided text.,0,0,John travelled to the garden. The most recent location of John is garden.,0,The most recent location of John is not provided in the context.,0,24,24,0,False,38,19,True,0.0
+babilong-64-qa1-300000,specific_syns,Where is John? ,holdout,qa1,65536,bathroom,The most recent location of John is not specified in the context.,The most recent location of John is not specified in the context.,0,0,John travelled to the garden. The most recent location of John is garden.,0,The most recent location of John is not provided in the context.,0,24,16,8,False,38,19,True,0.0
+babilong-64-qa1-300010,vanilla_syns,Where is John? ,holdout,qa1,65536,bedroom,"The most recent location of John is not specified in the context provided. Therefore, based on the information given, John's location cannot be determined. 
+
+(Note: Since the context does not mention John at all, there is no valid location to assign.)","The most recent location of John is not specified in the context provided. Therefore, based on the information given, John's location cannot be determined. 
+
+(Note: Since the context does not mention John at all, there is no valid location to assign.)",0,0,The most recent location of John is the bedroom.,1,The most recent location of John is not mentioned in the context.,0,24,24,0,False,34,17,True,0.0
+babilong-64-qa1-300010,specific_syns,Where is John? ,holdout,qa1,65536,bedroom,The most recent location of John is not provided in the text.,The most recent location of John is not provided in the text.,0,0,The most recent location of John is the bedroom.,1,The most recent location of John is not mentioned in the context.,0,24,13,11,False,34,17,True,0.0
+babilong-64-qa1-300020,vanilla_syns,Where is Daniel? ,development,qa1,65536,bedroom,The most recent location of Daniel is not specified in the text.,The most recent location of Daniel is not specified in the text.,0,0,The most recent location of Daniel is bedroom.,1,The most recent location of Daniel is not provided in the context.,0,16,16,0,False,20,10,True,0.0
+babilong-64-qa1-300020,specific_syns,Where is Daniel? ,development,qa1,65536,bedroom,"The most recent location of Daniel is not provided in the text. Therefore, based on the given information, Daniel's location cannot be determined. However, following the instruction to use the latest location if available, and since no mention of Daniel's movements is made, we cannot assign a location.
+
+Answer: The most recent location","The most recent location of Daniel is not provided in the text. Therefore, based on the given information, Daniel's location cannot be determined. However, since the instruction is to use the latest location if a person was in different locations, and no such information exists for Daniel, we must conclude there is no record of Daniel",0,0,The most recent location of Daniel is bedroom.,1,The most recent location of Daniel is not provided in the context.,0,16,5,11,False,20,10,True,0.0
+babilong-64-qa10-300226,vanilla_syns,Is Fred in the kitchen? ,holdout,qa10,65536,maybe,maybe,maybe,1,1,maybe,1,maybe,1,24,24,0,False,26,13,True,0.0
+babilong-64-qa10-300226,specific_syns,Is Fred in the kitchen? ,holdout,qa10,65536,maybe,$maybe$,$maybe$,1,1,maybe,1,maybe,1,24,14,10,False,26,13,True,0.0
+babilong-64-qa10-300240,vanilla_syns,Is Fred in the school? ,holdout,qa10,65536,no,maybe,maybe,0,0,no,1,maybe,0,24,24,0,False,30,15,True,0.0
+babilong-64-qa10-300240,specific_syns,Is Fred in the school? ,holdout,qa10,65536,no,maybe,maybe,0,0,no,1,maybe,0,24,13,11,False,30,15,True,0.0
+babilong-64-qa2-300034,vanilla_syns,Where is the apple? ,holdout,qa2,65536,kitchen,The ’apple’ is in ’the cave’.,The ’apple’ is in ’the cave’.,0,0,"The context provided does not contain any information about the location of an apple. Therefore, based on the given facts, the location of the apple cannot be determined. 
+
+Answer: The apple's location is unknown.",0,"The apple is not mentioned in the context. Therefore, based on the information provided, the location of the apple cannot be determined. 
+
+However, since the question asks for a specific answer and no information about an apple is given, it follows that there is no record of an apple being obtained, dropped, or moved.",0,24,24,0,False,26,13,True,0.0
+babilong-64-qa2-300034,specific_syns,Where is the apple? ,holdout,qa2,65536,kitchen,The ’apple’ is in the first chamber.,The ’apple’ is in ’the first chamber’.,0,0,"The context provided does not contain any information about the location of an apple. Therefore, based on the given facts, the location of the apple cannot be determined. 
+
+Answer: The apple's location is unknown.",0,"The apple is not mentioned in the context. Therefore, based on the information provided, the location of the apple cannot be determined. 
+
+However, since the question asks for a specific answer and no information about an apple is given, it follows that there is no record of an apple being obtained, dropped, or moved.",0,24,23,1,False,26,13,True,0.0
+babilong-64-qa5-300120,vanilla_syns,Who gave the football? ,holdout,qa5,65536,Bill,Jeff,Jeff,0,0,Mary,0,Jeff,0,24,24,0,False,26,13,True,0.0
+babilong-64-qa5-300120,specific_syns,Who gave the football? ,holdout,qa5,65536,Bill,Jeff,Jeff,0,0,Mary,0,Jeff,0,24,20,4,False,26,13,True,0.0
+babilong-64-qa6-300147,vanilla_syns,Is John in the garden? ,holdout,qa6,65536,yes,$no$,$no$,0,0,no,0,$no$,0,24,24,0,False,26,13,True,0.0
+babilong-64-qa6-300147,specific_syns,Is John in the garden? ,holdout,qa6,65536,yes,$no$,$yes$,0,1,no,0,$no$,0,24,14,10,False,26,13,True,0.0
+babilong-64-qa7-300165,vanilla_syns,How many objects is Mary carrying? ,holdout,qa7,65536,none,$none$,$none$,0,0,none,0,none,0,24,24,0,False,24,12,True,0.0
+babilong-64-qa7-300165,specific_syns,How many objects is Mary carrying? ,holdout,qa7,65536,none,none,none,0,0,none,0,none,0,24,17,7,False,24,12,True,0.0
+babilong-8-qa10-300233,vanilla_syns,Is Julie in the kitchen? ,holdout,qa10,8192,maybe,$no$,$no$,0,0,maybe,1,no,0,8,8,0,False,12,6,True,0.0
+babilong-8-qa10-300233,specific_syns,Is Julie in the kitchen? ,holdout,qa10,8192,maybe,$no$,$no$,0,0,maybe,1,no,0,8,8,0,False,12,6,True,0.0
+babilong-8-qa10-300249,vanilla_syns,Is Mary in the school? ,holdout,qa10,8192,no,$maybe$,$maybe$,0,0,$maybe$,0,maybe,0,5,5,0,False,6,3,True,0.0
+babilong-8-qa10-300249,specific_syns,Is Mary in the school? ,holdout,qa10,8192,no,maybe,maybe,0,0,$maybe$,0,maybe,0,5,5,0,False,6,3,True,0.0
+babilong-8-qa3-300060,vanilla_syns,Where was the milk before the kitchen? ,development,qa3,8192,hallway,Before the kitchen the milk was in the bathroom.,Before the kitchen the milk was in the bathroom.,0,0,Before the kitchen the milk was in the hallway.,1,Before the kitchen the milk was in the bedroom.,0,24,23,1,False,32,16,True,0.0
+babilong-8-qa3-300060,specific_syns,Where was the milk before the kitchen? ,development,qa3,8192,hallway,Before the kitchen the milk was in the bedroom.,Before the kitchen the milk was in the bedroom.,0,0,Before the kitchen the milk was in the hallway.,1,Before the kitchen the milk was in the bedroom.,0,24,22,2,False,32,16,True,0.0
+babilong-8-qa7-300159,vanilla_syns,How many objects is Sandra carrying? ,holdout,qa7,8192,one,two,two,0,0,two,0,two,0,12,12,0,False,14,7,True,0.0
+babilong-8-qa7-300159,specific_syns,How many objects is Sandra carrying? ,holdout,qa7,8192,one,two,two,0,0,two,0,two,0,12,6,6,False,14,7,True,0.0

@@ -1,0 +1,30 @@
+{
+  "created_for": "Two square JSD selection insight figures",
+  "source_protocol": "babilong-entropy-directed-coarsened-jsd-v1",
+  "historical_partial_cohort": true,
+  "request_count": 32,
+  "main_figure_synthetic_dataset": "specific_syns",
+  "same_supervision_within_SD_JSD_pairs": true,
+  "files": {
+    "README.md": "b7e5cd81f6ed531f63e36ebfe5c287f1873f161f2c8bfd014b8af6a8114e4244",
+    "babilong_metric.py": "f77c139809690588f85ed29c1c93f22394c6b48b1fdc8afeaaa5d0969d973daf",
+    "blocked_trajectories.csv": "472c5ac2488c2776a11a1bb4adef1a46a95b41e67cb2e44e7a4a5ce6bde1749d",
+    "captions.txt": "c88e5d082c1ba6f37b5841b87e7755f7c38e51f3a0dcbab58d18752da86d8dc4",
+    "export_audit.json": "9fefc7b5950cfae338df00ea80ec810ab0853dd4a67f32b948dd3db9aba7ed17",
+    "jsd_paired_outcomes.pdf": "ddab589655178c46af108c0750acf5096184638a7ac77421fa2cac38946522ce",
+    "jsd_paired_outcomes.png": "0d165501361bb9ecf786705d9f6313bc911b0da085ca35dcd6c1387ed4ff13fd",
+    "jsd_paired_outcomes.svg": "d89fc3c2059cea084db3c28655e48ae616e97fdb156c74c7c0c4e926166acd8f",
+    "jsd_training_distribution.pdf": "24b76c94cb7f80808954a1532dd30c6ef9f2cf33635f8fe47818f5c41fcb6e2a",
+    "jsd_training_distribution.png": "bb404730ba8a2e863ee2b64e155322abafcac63d0bc95b2848706a226747c13f",
+    "jsd_training_distribution.svg": "a7fd38bfcad3690c9e2055d0f243625478bcc62367e4ea6d566c67e810d217de",
+    "paired_audit.json": "b0c2b9502b9245753ca89c8513c4da1103b66202db0eaeec121803a6646001cd",
+    "paired_case_results.csv": "c0eca7674c0c57354628a7a08a14355d5cf8d3ccfada941dc92abb6b732a3207",
+    "plot_specification.json": "c396c7e799d74a83a620d919672714be28d59dcaaac3b14a7a25e3ba14820849",
+    "raw_gate_records.jsonl": "63a0a166a799c10203516e9f73ea59fdf37866e6f05aafc544040111da861991",
+    "reproduce.py": "58b41ce48d24e8b51ac1c5bb9b21730306941ec350f63fe20fcd350a0f533475",
+    "run_configuration.json": "894f91912572e59da2a9ef0de90698a239de55e25b4738926223fb3d067548f7",
+    "source_sha256.json": "6017ceea442d093154a5f1402a542cd4f2591b6687783f155d503a23ec61125a",
+    "summary.json": "ab6627646533a3cf3571efbc9f225d1febfc2edecebe3b524d1cdb3ba765c28e",
+    "trajectory_metrics.csv": "99d31a82ab95485deaca1cd6d77b267dfc5d62e0c8f456ec97f63ab2a51824ad"
+  }
+}

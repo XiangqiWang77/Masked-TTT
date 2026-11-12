@@ -1,0 +1,13 @@
+{
+  "protocol": "babilong-entropy-directed-coarsened-jsd-v1",
+  "model": "/home/da839/Stack_TTT/models/Qwen3-4B-Instruct-2507",
+  "prefix_tokens": 512,
+  "packed_tokens": 2048,
+  "learning_rate": 0.02,
+  "official_epochs": 2,
+  "teacher_topk": 20,
+  "fixed_synthetic_answer_trajectories": true,
+  "teacher_context_policy": "question_source_evidence",
+  "question_budget_policy": "fresh_full1000_vanilla_and_specific_deterministic_common_prefix_per_case_split_counts",
+  "seed": 42
+}

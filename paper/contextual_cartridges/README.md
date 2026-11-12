@@ -4,6 +4,17 @@
 
 [ACL paper PDF](paper.pdf) · [LaTeX source](paper.tex) · [完整中文方法：是什么、为什么、怎么做](METHOD.zh-CN.md) · [English method source](method.tex) · [BABILong tables](RESULTS.md) · [data and reproduction](REPRODUCE.md)
 
+<!-- jsd-selection-insights -->
+## ED-JSD selection diagnostics (12 November 2026)
+
+[**Two square figures: training-pool contours and paired answer transitions**](jsd_selection_insights/README.md)
+use the complete saved 32-request BABILong factorial snapshot (7 recorded development, 25 recorded holdout requests), not the current three-dataset experiment.
+With query-specific data fixed, JSD-SD retained 390/573 trajectories and produced 2 wrong-to-right changes and 0 right-to-wrong changes (6/32 to 8/32 correct).
+All target hashes, training budgets and common warmup losses were checked. Removed trajectories are not necessarily factually wrong; the full rejected-question list and caveats are included.
+
+[Distribution PDF](jsd_selection_insights/jsd_training_distribution.pdf) · [Paired outcomes PDF](jsd_selection_insights/jsd_paired_outcomes.pdf) · [Blocked trajectories CSV](jsd_selection_insights/blocked_trajectories.csv)
+<!-- /jsd-selection-insights -->
+
 <!-- synthetic-three-datasets-records -->
 ## Synthetic question coverage (12 November 2026)
 

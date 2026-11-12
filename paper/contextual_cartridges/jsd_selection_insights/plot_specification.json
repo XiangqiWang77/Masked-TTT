@@ -1,0 +1,49 @@
+{
+  "source": "Query-specific data, every complete saved BABILong factorial request",
+  "comparison": "same synthetic questions / Teacher targets / initial KV / optimizer-step budget",
+  "figure_count": 2,
+  "dimensions_inches": [
+    3.6,
+    3.6
+  ],
+  "dpi": 400,
+  "axes_entropy": "trajectory means of top-k-plus-rest bucket entropies at warmup",
+  "diagonal": "equal mean entropy, NOT the exact ED-JSD decision boundary",
+  "density_kernel": "diagonal Gaussian, shared Scott bandwidth, reflected at zero",
+  "bandwidth_bits": [
+    0.10958190433673504,
+    0.10429479826971137
+  ],
+  "grid_shape": [
+    220,
+    220
+  ],
+  "contour_enclosed_probability": [
+    0.8,
+    0.5
+  ],
+  "contours_are_confidence_intervals": false,
+  "density_normalization": "one per pool",
+  "density_weighting": "one equally weighted observation per synthetic trajectory",
+  "density_records": {
+    "SD": {
+      "count": 573,
+      "levels": [
+        0.6048333584271622,
+        1.4703476087853544
+      ]
+    },
+    "JSD-SD": {
+      "count": 390,
+      "levels": [
+        0.6442643487619673,
+        1.6840322761217084
+      ]
+    }
+  },
+  "points": "all retained observations as orange dots; all blocked as navy crosses",
+  "outcome_circle": "area proportional to number of requests; zero has no circle",
+  "no_generated_or_interpolated_results": true,
+  "gold_used_only_for_final_scoring": true,
+  "known_confounds": "Contour pool shift is the selection operation, not proof of causal correctness."
+}
