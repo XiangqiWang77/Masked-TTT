@@ -3,8 +3,8 @@
 The twelve cells are the Cartesian product of LongHealth, MTOB (KE),
 QASPER and four native-KV prefix sizes. Paper baselines are deliberately not
 executed here.  Every request uses query-guided answer-first question crafting,
-ordinary sparse-logit self-distillation, and conservative TracIn nominations
-confirmed by actual matched refits. Benchmark answers are excluded from learning.
+ordinary sparse-logit self-distillation, and a forward-only entropy-directed
+JSD gate after warmup. Benchmark answers are excluded from learning.
 """
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ import traceback
 
 DATASETS = ("longhealth", "mtob_ke", "qasper")
 PREFIXES = (512, 1024, 2048, 4096)
-PROTOCOL = 'contextual-figure4-confirmed-harm-tracin-v1'
+PROTOCOL = 'contextual-figure4-entropy-directed-coarsened-jsd-v1'
 
 
 def training_config(model, prefix_tokens):
@@ -34,13 +34,10 @@ def training_config(model, prefix_tokens):
         'packed_tokens': 512, 'learning_rate': .02, 'train_batch_size': 'full_dataset',
         'official_epochs': 2, 'min_steps': 1, 'max_steps': 2,
         'eval_every': 1, 'patience': 3, 'track_best_before_min': True,
-        'tracin_threshold': 0., 'no_heldout_all_arms': True,
-        'matched_update_reference_arm': 'specific_syns_vanilla_sd',
+        'no_heldout_all_arms': True,
+        'matched_update_reference_arm': 'two_original_packed_data_epochs',
         'matched_update_unit': 'packed_optimizer_steps',
-        'selective_rule': 'unanimous_negative_TracIn_and_confirmed_deletion_benefit',
-        'matched_training_orders': 2,
-        'deletion_loss_atol': 1e-6, 'deletion_loss_rtol': 1e-5,
-        'keep_uncertain_trajectories': True,
+        'selective_rule': 'forward_only_entropy_directed_coarsened_JSD_gt_zero',
         'sd_target_only_logits': True,
         'sd_offload_saved_tensors': True,
     }
@@ -265,7 +262,7 @@ async def craft_questions(engine, query, evidence):
 
 def materialize_conversations(engine, dataset_record):
     from experiments.contextual_learning_runtime import _query_conversation
-    from contextualized.tracin_sd import structural_source_gate
+    from contextualized.source_gate import structural_source_gate
     conversations = []
     for index, row in enumerate(dataset_record["examples"]):
         generated = engine.generate_teacher(row["question"], row["evidence"]["text"],
@@ -287,9 +284,27 @@ def materialize_conversations(engine, dataset_record):
 
 
 def train_selective(engine, initial, conversations, config, seed, directory):
-    from experiments.conservative_tracin_runtime import train_conservatively
-    return train_conservatively(engine, initial, conversations, config, seed, directory,
-        deadline=float(os.environ.get('FIGURE4_DEADLINE_EPOCH', 'inf')))
+    from contextualized.ed_jsd import fit_ed_jsd
+    directory = Path(directory)
+    directory.mkdir(parents=True, exist_ok=True)
+    contract = {'config': config, 'seed': seed,
+                'actual_prefix_tokens': initial.num_cartridge_tokens()}
+    path = directory / 'training_contract.json'
+    if path.exists() and read(path) != contract:
+        raise ValueError('Saved training uses different cache/data/training settings')
+    write(path, contract)
+    cache = engine.clone_cache(initial)
+    def progress(row):
+        with (directory / 'progress.jsonl').open('a') as handle:
+            handle.write(json.dumps(row, allow_nan=False) + '\n')
+    training = fit_ed_jsd(engine, cache, conversations, config, seed,
+        deadline=float(os.environ.get('FIGURE4_DEADLINE_EPOCH', 'inf')), progress=progress)
+    audit = training['ed_jsd']
+    return cache, {'fallback': training['all_rejected_original_SD_fallback'],
+        'kept': audit['kept'], 'removed': audit['removed'], 'ed_jsd': audit,
+        'selective_training': training, 'vanilla_training': None,
+        'vanilla_checkpoint': None, 'extra_baseline_fit': False,
+        'accuracy_nonregression_guaranteed': False}
 
 
 def normalize_answer(text):
@@ -298,16 +313,11 @@ def normalize_answer(text):
 
 
 def longhealth_score(prediction, case):
-    from difflib import SequenceMatcher
-    # Match the released Cartridges scorer, including its first-option
-    # fallback when the required answer tags are absent.
-    match = re.search(r'<answer>(.*?)</answer>', prediction, flags=re.S)
-    if not match:
-        return float(case['options'][0].strip().lower() == case['reference'].strip().lower())
-    value = match.group(1).strip().lower()
-    closest = max(case["options"], key=lambda item: SequenceMatcher(
-        None, value, item.strip().lower()).ratio())
-    return float(closest.strip().lower() == case["reference"].strip().lower())
+    from baselines.answer_metrics import longhealth_option_match
+    value = longhealth_option_match(prediction, case['options'], case['reference'])
+    if value['score'] is None:
+        raise ValueError('LongHealth generation is missing; it is not a scored answer')
+    return value['score']
 
 
 def chr_f(prediction, reference, beta=2.0, max_order=6):
@@ -326,6 +336,14 @@ def chr_f(prediction, reference, beta=2.0, max_order=6):
 
 
 def qasper_nll(engine, cache, prompt, reference):
+    """Score the reference after fitting, with the bounded inference kernel.
+
+    A single teacher-forced forward uses the same causal mask, positions and
+    native KV in both upstream modes. ``generate`` also stages transient KV;
+    clearing before/after the call keeps those tokens out of the cartridge.
+    It selects the existing small-tile inference kernel, avoiding FlexDecoding
+    shared-memory exhaustion for short answers on RTX 5000 Ada.
+    """
     import torch
     prompt_ids = engine._chat_ids(prompt)
     answer_ids = engine.tokenizer.encode(f"<answer>\n{reference}\n</answer>",
@@ -335,14 +353,18 @@ def qasper_nll(engine, cache, prompt, reference):
     positions = torch.arange(len(prompt_ids) - 1,
                              len(prompt_ids) - 1 + len(answer_ids), device=engine.device)
     cache.clear()
-    with torch.no_grad(), torch.amp.autocast("cuda", dtype=torch.bfloat16):
-        output = engine.student(input_ids=ids, seq_ids=torch.zeros_like(ids),
-            position_ids=torch.arange(len(ids), device=engine.device),
-            past_key_values=cache, use_cache=True, mode="train", logits_to_keep=positions)
-        target = torch.tensor(answer_ids, device=engine.device)
-        loss = torch.nn.functional.cross_entropy(output.logits[0].float(), target)
-    cache.clear()
-    return float(loss)
+    try:
+        with torch.no_grad(), torch.amp.autocast(
+                engine.device.type, dtype=torch.bfloat16,
+                enabled=engine.device.type == "cuda"):
+            output = engine.student(input_ids=ids, seq_ids=torch.zeros_like(ids),
+                position_ids=torch.arange(len(ids), device=engine.device),
+                past_key_values=cache, use_cache=True, mode="generate", logits_to_keep=positions)
+            target = torch.tensor(answer_ids, device=engine.device)
+            loss = torch.nn.functional.cross_entropy(output.logits[0].float(), target)
+        return float(loss)
+    finally:
+        cache.clear()
 
 
 def cache_gb(engine, prefix_tokens):
@@ -433,6 +455,18 @@ def run(args):
                 if shared.exists():
                     synthetic = read(shared)
                 else:
+                    old_shared = (Path(args.synthetic_source) / dataset / f"{case['id']}.json"
+                                  if getattr(args, 'synthetic_source', None) else None)
+                    if old_shared is not None and old_shared.exists():
+                        # Reuse questions/targets only, never old trained results.
+                        os.link(old_shared, shared)
+                        old_targets = old_shared.with_suffix('.targets.pkl')
+                        if old_targets.exists():
+                            os.link(old_targets, shared.with_suffix('.targets.pkl'))
+                        synthetic = read(shared)
+                    else:
+                        synthetic = None
+                if not shared.exists():
                     if case['document_id'] not in document_chunks:
                         document_chunks[case['document_id']] = chunk_document(
                             engine.tokenizer, case['document'])
@@ -495,8 +529,7 @@ def run(args):
                                                   seed, case_dir)
             if cartridge.num_cartridge_tokens() != initial.num_cartridge_tokens():
                 raise ValueError('Returned Cartridge has a different KV capacity from initialization')
-            returned_training = (training['vanilla_training'] if training['fallback']
-                                 else training['selective_training'])
+            returned_training = training['selective_training']
             if returned_training.get('updates', 0) < 1:
                 raise RuntimeError('A completed experiment must return a trained Cartridge')
             with torch.no_grad():
@@ -506,8 +539,8 @@ def run(args):
                                if parameter.requires_grad)
             prediction, metric_value = evaluate_frozen_cartridge(engine, cartridge, dataset, case)
             save_cartridge(cartridge, case_dir / "contextual.safetensors", model)
-            pilot_prediction, pilot_metric = prediction, metric_value
-            if training['removed']:
+            pilot_prediction, pilot_metric = None, None
+            if training.get('vanilla_checkpoint'):
                 # Evaluate the pilot already required by selection. This is
                 # solely a post-hoc regression audit, never a gold-based veto
                 # or a separately rerun paper baseline.
@@ -529,7 +562,7 @@ def run(args):
                           "chrF" if dataset == "mtob_ke" else "log_perplexity",
                 "metric_value": metric_value, "prediction": prediction,
                 'pilot_prediction': pilot_prediction, 'pilot_metric_value': pilot_metric,
-                'pilot_evaluation_post_training_only': True,
+                'pilot_evaluation_post_training_only': bool(training.get('vanilla_checkpoint')),
                 'pilot_accuracy_never_used_to_choose_checkpoint': True,
                 "reference": case["reference"],
                 "reference_used_only_for_post_training_metric": True,
@@ -556,10 +589,6 @@ def run(args):
             # Audit JSON retains every trial and loss vector. After a result
             # is durable, keep the original pilot plus final native KV rather
             # than accumulating all rejected large-cache trial checkpoints.
-            pilot = Path(training['vanilla_checkpoint'])
-            for trial_path in (case_dir / 'fits').glob('*/checkpoint.safetensors'):
-                if trial_path != pilot:
-                    trial_path.unlink()
             completed.append(case["id"])
             cartridge.clear(); initial.clear()
             del cartridge, initial, conversations
@@ -599,6 +628,8 @@ def main():
     parser.add_argument('--shards', type=int, default=1)
     parser.add_argument('--case-index', type=int, default=None,
                         help='Run one case, enabling a balanced single-job cache sweep')
+    parser.add_argument('--synthetic-source', default=None,
+                        help='Reuse frozen shared question/Teacher targets from an earlier run')
     args = parser.parse_args()
     if not 0 <= args.task < len(DATASETS) * len(PREFIXES):
         raise ValueError("task must index the 3x4 matrix")

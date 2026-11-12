@@ -1,6 +1,6 @@
 # BABILong result tables — to be filled
 
-The paper reserves 1,000 paired requests per backbone (ten tasks, four lengths). All accuracy cells below are pending. A dash is unavailable, not zero. V-SD denotes ordinary self-distillation and S-SD the current conservative TracIn-guided selector. The selective delta compares S-SD against V-SD on the same query-specific dataset. No old QC or earlier TracIn accuracy is reused.
+The paper reserves 1,000 paired requests per backbone (ten tasks, four lengths). All accuracy cells below are pending. A dash is unavailable, not zero. V-SD denotes ordinary self-distillation and S-SD the current ED-JSD selective gate. The selective delta compares S-SD against V-SD on the same query-specific dataset. No old QC or earlier selector accuracy is reused.
 
 **Overall accuracy (%)**
 

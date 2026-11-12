@@ -19,6 +19,6 @@
 | Selective SD corrects more answers than it breaks | Paired predictions under one frozen protocol | Pending |
 | Better cache/performance tradeoff across backbones | Three models, three datasets, four capacities | Pending |
 
-Review: the contribution is the query-conditioned construction and conservative selection protocol, not a new proof of TracIn. Every term is defined before use. Independent benchmark labels are excluded from selection. Selected refits use equal final update counts but higher total computation. Missing results remain null. No correct-to-wrong guarantee is claimed.
+Review: the contribution is the query-conditioned construction and the forward-only selective-distillation protocol, not a new divergence theory. Every term is defined before use. Independent benchmark labels are excluded from selection. Selected refits use equal final update counts but higher total computation. Missing results remain null. No correct-to-wrong guarantee is claimed.
 
 Questions before submission: Are the ablations complete? Are all capacity points evaluated on the same cases? Are fixes and regressions both reported? Is the full online cost measured? Are paper baselines matched by backbone and evaluation protocol? Has answer correctness and actual cross-source dependence been independently audited?

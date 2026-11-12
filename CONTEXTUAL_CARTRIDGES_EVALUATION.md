@@ -6,31 +6,28 @@
 
 完整数据覆盖 BABILong 的 1,000 个请求、10 个任务类型与四种长度：8K、16K、32K、64K 各 250 题。Query-Specific v3 包含 28,671 个 `(question, answer anchor, evidence)` 三元组，其中 21,207 个 train、7,464 个 validation。Vanilla synthetic 来自官方 Cartridges 风格的 query-agnostic 生成。四臂实验对每个 case 取相同的 deterministic common-prefix 数量，避免用更多问题数量解释方法差异。
 
-Answer-first 的 $a_i$ 只用于反推练习题，并不是 Student 的 hard label。Student 始终学习来源条件下 Teacher 的 sparse soft distribution。benchmark 隐藏答案不进入数据生成、Teacher 选择、TracIn 或 KV 更新。
+Answer-first 的 $a_i$ 只用于反推练习题，并不是 Student 的 hard label。Student 始终学习来源条件下 Teacher 的 sparse soft distribution。benchmark 隐藏答案不进入数据生成、Teacher 选择、门控统计或 KV 更新。
 
 ## 2. 四臂因子设计
 
 | Synthetic questions | Learning rule | 实验臂 | 隔离的变量 |
 | --- | --- | --- | --- |
 | Query-agnostic | Vanilla SD | `vanilla_syns_vanilla_sd` | 原版控制 |
-| Query-agnostic | TracIn-Selective SD | `vanilla_syns_selective_sd` | 固定数据验证 Selective SD |
+| Query-agnostic | ED-JSD-Selective SD | `vanilla_syns_selective_sd` | 固定数据验证 Selective SD |
 | Query-specific Answer-Guided | Vanilla SD | `specific_syns_vanilla_sd` | 固定 SD 验证问题构造 |
-| Query-specific Answer-Guided | TracIn-Selective SD | `specific_syns_selective_sd` | 完整 Contextual Cartridges |
+| Query-specific Answer-Guided | ED-JSD-Selective SD | `specific_syns_selective_sd` | 完整 Contextual Cartridges |
 
 四臂从同一 per-case 512-token native KV 初始化出发，Backbone 冻结，使用原版 sparse Teacher KL、2,048-token packing 与相同的优化器设置。Vanilla 控制决定实际 packed optimizer-update 数；其余臂匹配这个预算。最终推理不读取原文，只读取训练后的 Cartridge 与真实问题。
 
 ## 3. Selective SD 的冻结规则
 
-Selective SD 不使用 held-out label。它先用保守来源规则形成高召回候选池：明确被来源反驳、明确没有答案或截断的 Teacher 轨迹不作为选择性巩固候选，不确定轨迹保留。然后在初始 KV 与训练后 Vanilla-SD KV 两个检查点上计算 leave-one-out signed TracIn：
+Selective SD 不使用 held-out label，选择过程零反向传播。预算 $T$ 由 query-agnostic 普通 SD 的数据布局决定，两套数据共享。前 $h=\lfloor T/2\rfloor$ 步在全部轨迹上普通 SD 预热。候选池先经过记录在 Teacher 生成时的确定性 Source-Support Gate：空回答、截断、显式拒答的轨迹不参与打分，但仍参与预热和全量回退。随后在固定 KV 处对每条剩余候选做一次前向，使用与 Teacher 相同的回答前缀，把保留 top-k 概率与全词表归一化的 Student 概率各自补一个 rest bucket，得到 $(k{+}1)$ 桶粗化分布。以 2 为底、$M=\tfrac12(T+S)$，逐 token 计算
 
-$$
-I_i=\sum_c\eta_c\,\nabla_Z\mathcal L_{\mathrm{ref}\setminus i}(Z_c)^\top
-\nabla_Z\mathcal L_i(Z_c).
-$$
+$$J=\Big[H(M)-\tfrac12\big(H(T)+H(S)\big)\Big]\times\frac{H(S)-H(T)}{H(S)+H(T)+10^{-12}},$$
 
-固定阈值为零，只保留 $I_i>0$。每个 Selective 臂先在全部普通 SD 轨迹上完成前半预算，再用保留轨迹完成后半 consolidation。若一个 case 没有正影响候选，直接复用已经训练好的同数据 Vanilla-SD checkpoint；不会返回未训练初始化，也不会通过另一随机顺序重跑 Vanilla 制造虚假差异。
+轨迹取均值，严格 $J>0$ 进入后半程巩固，沿用同一 sampler 与 Adam 状态。若没有轨迹通过，继续原数据与原优化器，确定性前向下逐位等于跑满 $T$ 步的普通 SD；若全部通过同样保持原 sampler 不变。不会返回未训练初始化，也不会通过另一随机顺序重跑 Vanilla 制造虚假差异。
 
-TracIn 是一阶局部 influence proxy，不是证据真实性或最终 QA 非退化保证。最终报告必须保留所有 regressions。
+粗化分布的熵与 JSD 不是全词表统计量；该分数是分布层面的选择统计量，不是证据真实性或最终 QA 非退化保证。最终报告必须保留所有 regressions。
 
 ## 4. 两项贡献的判定
 
@@ -87,15 +84,16 @@ TracIn 是一阶局部 influence proxy，不是证据真实性或最终 QA 非�
 2. 8K/16K/32K/64K 分长度准确率；
 3. 四个关键对比的 fixes 与 regressions；
 4. 两种数据下严格 Oracle-escape fixes/regressions；
-5. 两检查点正 influence 比例与 TracIn keep/delete 比例；
+5. 门控候选数、keep/removed 数、source-gate 拒绝数与 exact-fallback 次数；
 6. 每臂实际更新次数、训练会话数、fallback 数和端到端时间。
 
 ## 7. 可复现文件
 
 - [完整方法](CONTEXTUAL_CARTRIDGES_METHOD.zh-CN.md)
-- [可读协议配置](datasets/babilong_synthetic_qwen3_4b/sd_protocol/configuration.json)
-- [精确集群配置](datasets/babilong_synthetic_qwen3_4b/sd_protocol/configuration.cluster.json)
-- [TracIn 实现](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/contextualized/tracin_sd.py)
-- [四臂 runner](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/experiments/run_syn_sd_factorial.py)
-- [严格配对 report](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/experiments/report_syn_sd_factorial.py)
-- [完整结果绘图器](datasets/babilong_synthetic_qwen3_4b/sd_protocol/code/experiments/plot_tracin_sd_factorial.py)
+- [英文门控技术说明](paper/contextual_cartridges/ED_JSD_SD.md)
+- [ED-JSD 选择器实现](paper/contextual_cartridges/code/implementation/ed_jsd.py)
+- [结构 Source-Support Gate](paper/contextual_cartridges/code/implementation/source_gate.py)
+- [三数据集 cache runner](paper/contextual_cartridges/code/implementation/run_figure4_contextual.py)
+- [配对重训 runner](paper/contextual_cartridges/code/implementation/run_ratio_retrain.py)
+- [30 题配对合成管线](paper/contextual_cartridges/code/implementation/thirty_study_data.py)
+- [实现清单与哈希](paper/contextual_cartridges/data/implementation_manifest.json)

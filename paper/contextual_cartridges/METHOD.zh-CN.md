@@ -1,6 +1,6 @@
 # Contextual Cartridges: Query-Guided Test-Time Learning with Selective Self-Distillation
 
-Contextual Cartridges 针对已经到来的真实问题，把长文档中与该问题有关的知识写入请求内的原生 KV 记忆。它只有两项技术：**Answer-Guided Query-Specific Dataset Crafting** 决定学什么，**Conservative TracIn-Guided Selective Self-Distillation** 决定哪些蒸馏轨迹值得保留。基础模型始终冻结，训练沿用 Cartridges 的 KV 参数化和软目标蒸馏，最终只挂载训练后的 KV 回答问题。本文描述的是当前代码中的“多检查点一致负向提名＋实际删样本重训确认”版本，不是旧版“两检查点分数相加后直接过滤”。
+Contextual Cartridges 针对已经到来的真实问题，把长文档中与该问题有关的知识写入请求内的原生 KV 记忆。它只有两项技术：**Answer-Guided Query-Specific Dataset Crafting** 决定学什么，**ED-JSD Selective Self-Distillation**（熵方向 Jensen–Shannon 门控）决定哪些蒸馏轨迹进入后半程巩固。基础模型始终冻结，训练沿用 Cartridges 的 KV 参数化和软目标蒸馏，最终只挂载训练后的 KV 回答问题。本文描述的是当前代码中的“预热后一次前向、粗化分布 ED-JSD 严格正阈值”版本，不是早期基于梯度影响分数的版本；旧版本不再出现在本方法包中。
 
 **是什么、为什么。** 设输入文档为 $D=(C_1,\ldots,C_N)$，真实问题为 $q$，冻结模型参数为 $\theta$，可训练记忆为 $Z=(K_{\mathrm{cart}},V_{\mathrm{cart}})$。Dilution 指有限练习预算和 KV 容量被与当前问题关系弱的知识占用；fragmentation 指分别学习局部事实，并不保证练习覆盖当前问题需要的跨块关系。原版 Cartridges 本身已有结构性、全局推理提示，我们针对的是通用任务分布对一个已知问题的监督不足，而不是声称原版完全不能跨块推理。Oracle trap 则指无条件吸收所有 Teacher 轨迹可能把冲突或误导性的监督共同写入 KV；它不是“Student 准确率不能超过 Teacher”的理论上界。
 
@@ -26,29 +26,20 @@ $$\mathcal L_i(Z)=-\frac1{|\Omega_i|}\sum_{(t,v)\in\Omega_i}\operatorname{sg}[p_
 
 这是稀疏概率加权交叉熵近似，不能写成代码精确计算完整词表 KL。完整 Teacher 交叉熵与完整 KL 对 Student 的梯度相同，但 top-k 截断仍有近似。当前 BABILong 保存的 synthetic assistant answer 本身就是固定轨迹 $y_i$，Teacher 在这些前缀上提供软目标；所以不能说 $a_i$ 在出题后被完全丢弃，也不能把这种训练称为以 $a_i$ 为真值的硬标签 NLL。三数据集运行器则在绑定材料上生成 Teacher 轨迹，并跨 cache 容量复用。初始化 $Z_0$ 来自官方 KV 初始化，不是抽象的空白张量；其冻结前缀位置继续冻结。
 
-**第二项技术：默认保留，只删除得到一致、实测负向证据的轨迹。** 设所有可用轨迹为 $R_0$。从相同初始化出发，用预先固定的两种训练顺序 $b\in\{1,2\}$ 分别训练普通 SD，得到 $Z_{R_0}^{(b)}$。主顺序的普通训练确定更新次数 $T$；后续所有候选重训保持同一初始化、同一学习率、相同 $T$ 和新建的 Adam 状态。BABILong 四臂实验由 query-agnostic 普通 SD 决定两套数据共享的 $T$。匹配的是最终返回模型的更新次数，不是选择过程的总计算量。
+**第二项技术：ED-JSD Selective Self-Distillation（前向只读门控，精确预算）。** 设预算为 $T$ 次普通 SD 更新，由对照臂的数据布局决定并在两臂严格相等；四个 cache 容量复用同一批轨迹。前 $h=\lfloor T/2\rfloor$ 步在全部轨迹 $R$ 上做普通 SD 预热。候选池先经过确定性的 Source-Support Gate：在 Teacher 生成时记录的结构检查（问题或绑定材料缺失、空回答、截断、显式拒答）未通过的轨迹不参与打分，但仍参与预热和全量回退；该门不判定语义真伪。在预热得到的固定 KV 处，对每条剩余候选只做一次前向（整个选择过程零反向传播），使用与 Teacher 完全相同的回答前缀。
 
-对当前保留集 $R$，在初始化及两种顺序训练后的三个检查点 $\mathcal C_R=\{Z_0,Z_R^{(1)},Z_R^{(2)}\}$ 计算每条轨迹的 KV 梯度，并用其余轨迹的等权平均作为参考：
+每个回答位置保留 Teacher 的 top-$k$ 概率与对应的全词表归一化 Student 概率，再把两侧各自的剩余质量并成一个 rest bucket，得到 $(k{+}1)$ 桶粗化分布；缺失的 Teacher 概率不当作零，保留质量也不重新归一化。以 2 为底、取 $M=\tfrac12(T+S)$，逐 token 计算
 
-$$g_{i,c}=\nabla_Z\mathcal L_i(Z_c),\qquad \bar g_{-i,c}=\frac1{|R|-1}\sum_{j\in R\setminus\{i\}}g_{j,c},\qquad u_{i,c}=\bar g_{-i,c}^{\top}g_{i,c}.$$
+$$J=\Big[H(M)-\tfrac12\big(H(T)+H(S)\big)\Big]\times\frac{H(S)-H(T)}{H(S)+H(T)+10^{-12}},$$
 
-排除候选自身，避免它的梯度范数给自己制造正分。在小步 SGD 的一阶近似下，正内积表示学习 $i$ 有望降低其余轨迹的平均损失，负内积表示有望增加该损失。实际优化器是 Adam，因此该分数只是影响代理，并不精确等于实际多步收益，也不判定事实真假。本方法借鉴 TracIn 的检查点梯度思想，但不直接使用原论文的检查点加权和。
+对轨迹取 token 均值，严格 $J>0$ 才进入巩固集 $A^+$。前一因子是有界的 JSD（分歧大小），后一因子给分歧一个方向：只有 Student 比 Teacher 更不确定时才为正。可选的披露性置信条件另外要求 Teacher 保留 top-1 概率的几何均值（不含 rest bucket）不低于给定阈值；这是置信度启发式，不是正确性判定。
 
-只有三个检查点都满足 $u_{i,c}<0$，轨迹 $i$ 才进入待删除名单；任何正分、零分、检查点分歧或参考不足，都默认保留。候选按跨检查点最不负的 cosine 从小到大排序，仅用于确定尝试顺序。仅剩一条轨迹时照常训练和保留。
+其余 $T-h$ 步只在 $A^+$ 上继续，沿用同一个 sampler 与同一 Adam 状态。若 $A^+$ 为空，默认策略继续原数据、原优化器不变，在确定性前向下逐位等于跑满 $T$ 步的普通 SD；可选的 retain_warmup 策略改为保留预热 KV，并如实报告更少的实际更新数。若全部通过，同样保持原 sampler 不变。整个选择过程没有第二次拟合、没有梯度或跨轨迹影响比较、没有 held-out 参考损失、没有 benchmark 标签、没有硬标签答案损失、没有 RL；训练目标始终是上游稀疏软目标 SD，JSD 只是选择统计量。粗化分布的熵与 JSD 不是全词表统计量：合并尾部可能隐藏尾部内的分歧，也可能改变表观熵序。
 
-随后真正尝试删除候选：令 $A=R\setminus\{i\}$，从同一个 $Z_0$、用两种固定顺序分别重新训练 $T$ 步。对每个保留轨迹 $j\in A$，两个重训结果都必须满足：
-
-$$\mathcal L_j(Z_A^{(b)})\le\mathcal L_j(Z_R^{(b)})+\epsilon(\mathcal L_j(Z_R^{(b)})),$$
-$$\mathcal L_j(Z_A^{(b)})\le\mathcal L_j(Z_{R_0}^{(b)})+\epsilon(\mathcal L_j(Z_{R_0}^{(b)})),$$
-
-其中 $\epsilon(x)=10^{-6}+10^{-5}|x|$ 是数值容差。除此之外，每种顺序下，保留轨迹的平均损失相对当前拟合都必须改善超过平均容差。第一组条件防止当前保留轨迹受损，第二组条件防止连续删除积累容差漂移；任何一个保留轨迹或训练顺序不通过，就撤销这次删除。
-
-确认删除后更新 $R$，重新计算参考梯度，再检查后续候选，直到没有删除通过。最终固定返回主训练顺序得到的 KV，不按 benchmark 答案挑选种子。如果一次删除都未通过，直接复用已经训练完的主顺序 Vanilla SD 检查点，照常回答；不弃答，也不停止更新。这就是当前“trade compute for accuracy”的具体实现：多花计算验证删除对已定义学习目标的影响，而不是把梯度符号当成保证。
-
-**这怎样针对 Oracle trap，以及能保证什么。** 算法允许拒绝与其余监督持续冲突、且被实测删除确认的 Teacher 轨迹，因而不再无条件复制全部轨迹。如果 Teacher 在原问题上推理失败，但在多道相关练习上提供了可整合的知识，Student 有机会通过学习这些知识获得更好的回答。多条轨迹也可能共享同一错误，删除后最终问题的准确率仍可能下降。当前守护的是“保留轨迹的 SD 损失”，不是“真实答案正确性”；无法在没有真值的情况下保证所有原来答对的请求绝不改错。没有确认删除时的精确回退，只保证该分支与普通 SD 完全一致。
+**这怎样针对 Oracle trap，以及能保证什么。** 门控不再无条件复制全部 Teacher 轨迹：结构上退化的轨迹（截断、拒答、空回答）在打分前被排除，预热后只巩固“分歧明显且 Teacher 比 Student 更确定”的轨迹。但置信不是正确——自信而错误的 Teacher 可以通过此门，自信而错误的 Student 也可能让正确的 Teacher 信息被拒绝；多条轨迹也可能共享同一错误。守护对象是分布层面的选择统计量，不是真实答案正确性，无法在没有真值的情况下保证原来答对的请求绝不改错。$A^+$ 为空时的精确回退只保证该分支与普通 SD 完全一致。
 
 **如何验证。** 固定同一批请求，运行 query-agnostic/query-specific × Vanilla/Selective SD 四臂；同时报告改善和退化次数、准确率净差及全部选择开销。基准答案只由生成答案之后的独立评价程序读取。最终推理释放原文和训练数据，只使用 $p_{\theta,Z^*}(\cdot\mid q)$。三数据集 cache 曲线每个容量必须使用相同的评估请求集合；LongHealth 用 accuracy，MTOB (KE) 用 corpus chrF，QASPER 用平均答案 log-perplexity，不能混为同一种 accuracy。
 
 当前完成的 26,451 道/方法、1,000 个请求的数据审计显示支持材料覆盖和共同曝光改善；它没有证明所有练习答案正确、必须跨块推理、端到端更快或最终准确率提高。BABILong 与三模型 cache 图在本论文包中均保留待填状态，不混入旧配置的结果。
 
-参考：[Cartridges 原论文](https://arxiv.org/abs/2506.06266)、[官方代码](https://github.com/HazyResearch/cartridges)、[TracIn 原论文](https://proceedings.neurips.cc/paper/2020/hash/e6385d39ec9394f2f3a354d9d2b88eec-Abstract.html)。当前选择器见 [conservative_tracin.py](code/implementation/conservative_tracin.py)，运行逻辑见 [conservative_tracin_runtime.py](code/implementation/conservative_tracin_runtime.py)。
+参考：[Cartridges 原论文](https://arxiv.org/abs/2506.06266)、[官方代码](https://github.com/HazyResearch/cartridges)。当前选择器见 [ed_jsd.py](code/implementation/ed_jsd.py)，结构源门见 [source_gate.py](code/implementation/source_gate.py)，英文技术说明见 [ED_JSD_SD.md](ED_JSD_SD.md)。

@@ -24,7 +24,7 @@ contains one compact square figure for the dilution-related lexical metric, usin
 [Figure PDF](synthetic_three_datasets/synthetic_dilution_coverage.pdf) · [Formula and reproduction](synthetic_three_datasets/README.md#definition-and-formula) · [Earlier synthesis-time violin](synthesis_time/README.md).
 <!-- /synthetic-three-datasets-records -->
 
-Contextual Cartridges learns a query-specific native KV memory with two techniques: answer-guided synthetic question construction and conservative TracIn-guided selective self-distillation. The model and attention mechanism remain unchanged. The completed evidence below concerns synthetic source coverage and organization; the downstream accuracy and cache curves remain to be filled.
+Contextual Cartridges learns a query-specific native KV memory with two techniques: answer-guided synthetic question construction and entropy-directed JSD (ED-JSD) selective self-distillation: a forward-only gate at half budget over coarsened teacher/student distributions, with a deterministic source-support pre-filter and an exact ordinary-SD fallback when nothing is admitted. The model and attention mechanism remain unchanged. The completed evidence below concerns synthetic source coverage and organization; the downstream accuracy and cache curves remain to be filled.
 
 **Matched synthetic-data comparison.** Qwen3-4B-Instruct-2507; the same 1,000 BABILong document–query pairs; qa1–qa10; 250 requests at each of 8K, 16K, 32K, and 64K. Each method has **26,451 exercises**, matched within request and saved split. Figures are separate PDF/SVG/PNG files, using blue–cyan and yellow–orange, with no bars or confidence intervals.
 
@@ -58,7 +58,7 @@ These are request-macro means. They support more concentrated and better-covered
 
 **Method.** The lightweight selector recalls single or complementary source groups; the generator extracts a useful answer or intermediate conclusion and reverses it into a question. Native KV is then trained with the upstream sparse soft-target SD objective. Selective SD nominates only trajectories with negative leave-one-out gradient alignment at all three checkpoints, and accepts a deletion only after two matched refits improve survivor mean loss while protecting every survivor against both the current fit and the original full-data pilot. Otherwise it retains the trajectory; no accepted deletion returns the exact trained ordinary-SD checkpoint. These guards constrain synthetic SD losses, not factual truth or a guarantee against correct-to-wrong answers. [Full formulation](METHOD.zh-CN.md).
 
-**BABILong results to fill.** The [overall and length tables](RESULTS.md) reserve the complete 2×2 comparison: query-agnostic/query-specific × ordinary/selective SD, alongside full-context ICL, for Qwen3-4B, OLMo-3-7B, and GPT-OSS-20B. All cells in this paper snapshot are pending. Historical QC or earlier TracIn configurations are not inserted into these cells.
+**BABILong results to fill.** The [overall and length tables](RESULTS.md) reserve the complete 2×2 comparison: query-agnostic/query-specific × ordinary/selective SD, alongside full-context ICL, for Qwen3-4B, OLMo-3-7B, and GPT-OSS-20B. All cells in this paper snapshot are pending. Historical QC or earlier selector configurations are not inserted into these cells.
 
 **Three backbones × three datasets × four cache sizes.** The nine-panel template below reserves 512, 1,024, 2,048, and 4,096 native KV positions for each backbone–dataset combination. No lines or points are invented.
 
