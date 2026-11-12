@@ -1,7 +1,4 @@
-dataset,metric,requests,exercise_exposures_per_arm,vanilla_percent,specific_percent,difference_percentage_points
-longhealth,query_term_focus,36,169,61.24338624338625,100,38.75661375661375
-longhealth,disjoint_source_context,36,169,0,44.78835978835979,44.78835978835979
-mtob_ke,query_term_focus,36,164,3.3895502645502646,84.48743386243386,81.0978835978836
-mtob_ke,disjoint_source_context,36,164,0,62.66203703703703,62.66203703703703
-qasper,query_term_focus,35,309,90.57142857142857,99.24242424242425,8.67099567099568
-qasper,disjoint_source_context,35,309,0,16.330241187384047,16.330241187384047
+dataset,requests,exposures_per_arm,vanilla_coverage_pct,contextual_coverage_pct
+longhealth,36,169,61.24338624338625,100
+mtob_ke,36,164,3.3895502645502646,84.48743386243386
+qasper,35,309,90.57142857142857,99.24242424242425

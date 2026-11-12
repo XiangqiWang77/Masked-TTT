@@ -59,56 +59,49 @@ def plot(summary, output):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    from matplotlib.patches import Patch
     from PIL import Image
-
-    style = {'font.family': 'DejaVu Sans', 'font.size': 9,
-             'axes.labelcolor': INK, 'text.color': INK, 'xtick.color': INK,
-             'ytick.color': INK, 'axes.edgecolor': INK, 'axes.linewidth': .8,
-             'hatch.linewidth': .8, 'pdf.fonttype': 42, 'ps.fonttype': 42,
-             'svg.fonttype': 'none', 'figure.facecolor': 'white',
-             'axes.facecolor': 'white', 'savefig.facecolor': 'white'}
-    with plt.rc_context(style):
-        fig, axes = plt.subplots(2, 1, figsize=(5.6, 5.6))
-        fig.subplots_adjust(left=.14, right=.97, bottom=.10, top=.85, hspace=.56)
-        titles = ('(a) Dilution: query-term focus ↑',
-                  '(b) Fragmentation: non-adjacent sources ↑')
-        for ax, metric, title in zip(axes, METRICS, titles):
-            for arm, offset, color in zip(ARMS, (-.16, .16), (BLUE, ORANGE)):
-                values = [summary[d]['arms'][arm][metric] for d in DATASETS]
-                xs = [i + offset for i in range(3)]
-                ax.bar(xs, values, width=.28, color=color,
-                       edgecolor=INK, linewidth=.4, zorder=3)
-                for x, value in zip(xs, values):
-                    ax.text(x, value + 2., f'{value:.1f}' if value else '0',
-                            ha='center', va='bottom', fontsize=8.7, color=INK)
-            ax.set_xlim(-.55, 2.55)
-            ax.set_ylim(0, 112)
-            ax.set_yticks([0, 25, 50, 75, 100])
-            ax.set_xticks(range(3), [NAMES[d] for d in DATASETS])
-            ax.set_ylabel('Exercises (%)', labelpad=8)
-            ax.set_title(title, loc='left', fontsize=10, pad=10)
-            ax.spines[['top', 'right']].set_visible(False)
-            ax.tick_params(axis='x', length=0, pad=7)
-            ax.tick_params(axis='y', length=3)
-            ax.set_axisbelow(True)
-            ax.grid(axis='y', color='#D8E2E8', linewidth=.55)
-        methods = [Patch(facecolor=BLUE, edgecolor=INK, linewidth=.4, label='Vanilla Cartridges'),
-                   Patch(facecolor=ORANGE, edgecolor=INK, linewidth=.4, label='Contextual Cartridges')]
-        fig.legend(handles=methods, loc='upper center', bbox_to_anchor=(.55, .975),
-                   ncol=2, frameon=False, fontsize=9, handlelength=1.4, columnspacing=1.7)
-        stem = output / 'synthetic_dilution_fragmentation'
-        for ext in ('png', 'pdf', 'svg'):
-            fig.savefig(stem.with_suffix('.' + ext), dpi=400, facecolor='white')
+    datasets = ('longhealth', 'mtob_ke', 'qasper')
+    names = ('LongHealth', 'MTOB (KE)', 'QASPER')
+    ink = '#0B2A3A'
+    with plt.rc_context({'font.family':'DejaVu Sans', 'font.size':8.5,
+        'text.color':ink, 'axes.labelcolor':ink, 'axes.edgecolor':ink,
+        'xtick.color':ink, 'ytick.color':ink, 'axes.linewidth':.7,
+        'hatch.linewidth':.4, 'pdf.fonttype':42, 'ps.fonttype':42,
+        'svg.fonttype':'none', 'figure.facecolor':'white', 'savefig.facecolor':'white'}):
+        fig, ax = plt.subplots(figsize=(3.35,3.35))
+        fig.subplots_adjust(left=.18, right=.985, bottom=.16, top=.79)
+        for arm, offset, color, hatch, label in (
+            ('vanilla', -.17, '#3180A8', '', 'Vanilla Cartridges'),
+            ('specific', .17, '#E36A1C', '//', 'Contextual Cartridges')):
+            values = [summary[d]['arms'][arm]['query_term_focus'] for d in datasets]
+            xs = [i+offset for i in range(3)]
+            ax.bar(xs, values, width=.29, color=color, edgecolor=ink,
+                   linewidth=.4, hatch=hatch, label=label, zorder=3)
+            for x, y in zip(xs,values):
+                ax.text(x, y+2, f'{y:.1f}', ha='center', va='bottom', fontsize=8)
+        ax.set(xlim=(-.55,2.55), ylim=(0,110), ylabel='Query-term coverage (%)')
+        ax.set_xticks(range(3), names)
+        ax.set_yticks([0,25,50,75,100])
+        ax.tick_params(axis='x', length=0, pad=7, labelsize=8)
+        ax.tick_params(axis='y', length=3)
+        ax.spines[['top','right']].set_visible(False)
+        ax.set_axisbelow(True); ax.grid(axis='y', color='#DFE7EB', linewidth=.5)
+        fig.legend(*ax.get_legend_handles_labels(), frameon=False, ncol=1,
+            loc='upper center', bbox_to_anchor=(.56,.985), fontsize=8.5,
+            handlelength=1.6, handleheight=1.05, labelspacing=.5)
+        stem = output/'synthetic_dilution_coverage'
+        for extension in ('png','pdf','svg'):
+            fig.savefig(stem.with_suffix('.'+extension), dpi=400, facecolor='white')
         plt.close(fig)
     with Image.open(stem.with_suffix('.png')) as im:
-        export = dict(pixels=list(im.size), dpi=list(im.info.get('dpi', ())),
-                      mode=im.mode, square=im.width == im.height)
-    return dict(matplotlib_version=matplotlib.__version__,
-                width_inches=5.6, height_inches=5.6, png=export,
-                colors={'vanilla': BLUE, 'specific': ORANGE, 'text': INK},
-                intervals='none', y_axis_zero_baseline=True,
-                publication_format='provisional general manuscript figure; no venue compliance claim')
+        raster = dict(pixels=list(im.size), dpi=list(im.info['dpi']), mode=im.mode,
+                      square=im.width==im.height, opaque=im.convert('RGBA').getchannel('A').getextrema()==(255,255))
+    return dict(width_inches=3.35, height_inches=3.35, png=raster,
+        matplotlib_version=matplotlib.__version__, metric='query_term_focus',
+        uncertainty='none', normalization='equal_request_macro_mean_percent',
+        colors={'vanilla':'#3180A8','specific':'#E36A1C','ink':ink},
+        zero_baseline=True, same_underlying_values=True,
+        venue_compliance='general manuscript figure; no venue compliance claim')
 
 def verify_and_collect(root):
     specification=json.loads((root/'metric_specification.json').read_text())

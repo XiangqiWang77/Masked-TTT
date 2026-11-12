@@ -33,22 +33,16 @@ selection differ, so this is not a controlled end-to-end speedup claim.
 <!-- /synthesis-time-violin -->
 
 <!-- synthetic-three-datasets-records -->
-## Synthetic-record diagnostics: LongHealth, MTOB (KE), QASPER
+## Synthetic question coverage: three datasets
 
-![Matched query-term focus and non-adjacent source exposure for the synthetic datasets used by Vanilla and Contextual Cartridges](paper/contextual_cartridges/synthetic_three_datasets/synthetic_dilution_fragmentation.png)
+<img src="paper/contextual_cartridges/synthetic_three_datasets/synthetic_dilution_coverage.png" width="340" alt="Query-term coverage: Vanilla versus Contextual on LongHealth, MTOB KE, and QASPER.">
 
-**107 fixed requests; 642 matched exercise exposures per method.** These two panels describe
-lexical query focus and source organization in the saved records, not model accuracy or verified
-multi-hop reasoning. Vanilla's zero in the second panel follows from this run's contiguous-window
-construction. Existing query fallbacks are included; a paired analysis excluding their 22 requests
-is also reported. This cohort is separate from the historical BABILong timing comparison above.
+**107 matched requests; 642 exercise exposures per method.** One compact square figure reports the fraction of synthetic questions sharing at least one non-stopword with the real query, averaged equally over requests. This is a lexical dilution proxy, not semantic usefulness or accuracy. The unchanged source records include 22 original-query fallback requests; their sensitivity analysis is retained.
 
-[Definitions, tables, fallback sensitivity and limitations](paper/contextual_cartridges/synthetic_three_datasets/README.md) ·
-[PDF](paper/contextual_cartridges/synthetic_three_datasets/synthetic_dilution_fragmentation.pdf) ·
-[Record JSONL (gzip)](paper/contextual_cartridges/synthetic_three_datasets/records.jsonl.gz) ·
-[Reproduction script](paper/contextual_cartridges/synthetic_three_datasets/reproduce.py).
+[Formula, keyword rule, values and reproduction](paper/contextual_cartridges/synthetic_three_datasets/README.md) · [PDF](paper/contextual_cartridges/synthetic_three_datasets/synthetic_dilution_coverage.pdf).
 <!-- /synthetic-three-datasets-records -->
 
 <!-- previous-report -->
 [Historical report (previous protocols)](archive/README_before_acl_20261111.md)
+
 

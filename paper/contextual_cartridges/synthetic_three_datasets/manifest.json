@@ -1,5 +1,5 @@
 {
-  "schema": "three-dataset-synthetic-record-publication-v1",
+  "schema": "three-dataset-coverage-only-v2",
   "created_utc": "2026-11-12T06:09:50.722039+00:00",
   "requests": 107,
   "exercise_exposures_per_method": 642,
@@ -175,19 +175,49 @@
     "publication_format": "provisional general manuscript figure; no venue compliance claim"
   },
   "artifact_sha256": {
-    "AUDIT.md": "2dd4c68c8a4e975e0abb66c6231e887e61a6dffe4a513987e56e378b25e973d0",
-    "README.md": "2f9a68ea4677d3a2b828e382aa4fa378d3ccf6ffdb347e8b938c31c80410f59f",
-    "caption.txt": "3ea919260755d0c894df3238dbd2a62a776bcd0abff1fc51f727663adffc89a2",
-    "metric_specification.json": "0dd171499a2bf868c99f656c2418fb249684639797c427ec9e086b068bdd05aa",
+    "AUDIT.md": "25b3b44086165fe2682e90564251174adc787f82fd19cd4e5e6d9537fc40d3e5",
+    "README.md": "b5f5248a1cd2c6a2a577f07fed755bee6c352e6bf38de8f5d08e7d5b0412ab3e",
+    "caption.txt": "6e95f527318c05416ddac5daa044cb1403b3e79821c6ec4e6b808fe099d266ff",
+    "metric_specification.json": "979da0429e3bc64e7c363864969c1c4c3ede12fdaf9056abfb504c34a0bb3f83",
     "per_request.csv": "67fb7e1f1ec11c628bcbf6e1c8e7ffd7c64c5c6f4168471f13f73928587149c8",
     "records.jsonl.gz": "0d0f882f7009ca7c79c602bb471c02582502b5fe9e4a6168cd021dd29da0eaa4",
-    "reproduce.py": "273b6f0904456196dee0ce232626e79cde29a5733ed0f9cfd637f0954ae558a2",
+    "reproduce.py": "87b24e8b4b866f22c34f5be7e1538f8b8318b1154b46bbc8f16507af8967e8c8",
     "source_analysis.py": "22e262da5e95ee230d9bf89ce67c82dccef3e55a8e2cc35250b6cfcc2b088fd9",
     "summary.json": "000e550cb64564ba71ae50030ccb7379f383468fadbffe656310d77097805ac2",
-    "synthetic_dilution_fragmentation.pdf": "fe2e7ab624652a40fec73882788b75d97325230cbc9645c716b4dc6f49dbd015",
-    "synthetic_dilution_fragmentation.png": "e7919a847bd958e24a5b6be4aa945c46662489601828a2310aca5d10da1200e5",
-    "synthetic_dilution_fragmentation.svg": "152aeb1acec23d362fec4bf9f2ac3c5da860406e54e86d6b9796c29f9cb36e03",
-    "table.csv": "4ae3d36975476603842af4c00a7b7ec5d889186f87d83816cf6a32acc42ba0cc",
-    "validation.json": "8e9c86a3efd881b6038f2d74f1c6664852b93eaad090589b9911cea539761db9"
-  }
+    "synthetic_dilution_coverage.pdf": "b86b0f891a0e4f4d10c6308ed0dfd84acb4c1a8971512263f2a85c901d3520a5",
+    "synthetic_dilution_coverage.png": "cd79256dc7dd6a232fa07cb88f005e12226d3316d1708fdbc089ee9714861737",
+    "synthetic_dilution_coverage.svg": "20fd956d7e122fcfe371896a9ac0ed7d08f8a129d16d026f48a87b61bdf71849",
+    "table.csv": "be26872badfcb0e273bbbd06f8410a4cb1330df65084d07afe49554e891e4c77",
+    "validation.json": "668437d9e31e2125b50f8b2b008ec83d23801699c5cd205542f2e39e586d85ce"
+  },
+  "figure_export": {
+    "width_inches": 3.35,
+    "height_inches": 3.35,
+    "png": {
+      "pixels": [
+        1340,
+        1340
+      ],
+      "dpi": [
+        399.9992,
+        399.9992
+      ],
+      "mode": "RGBA",
+      "square": true,
+      "opaque": true
+    },
+    "matplotlib_version": "3.11.1",
+    "metric": "query_term_focus",
+    "uncertainty": "none",
+    "normalization": "equal_request_macro_mean_percent",
+    "colors": {
+      "vanilla": "#3180A8",
+      "specific": "#E36A1C",
+      "ink": "#0B2A3A"
+    },
+    "zero_baseline": true,
+    "same_underlying_values": true,
+    "venue_compliance": "general manuscript figure; no venue compliance claim"
+  },
+  "predecessor_commit": "7e1f5a8c32dba85eb19ae6247a3ea7428b1493ce"
 }

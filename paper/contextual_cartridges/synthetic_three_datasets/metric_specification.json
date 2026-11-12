@@ -82,5 +82,10 @@
   "vanilla_selection": "First N saved questions, exactly as used by the current training protocol",
   "confidence_intervals": null,
   "smoothing": null,
-  "missing_records": 0
+  "missing_records": 0,
+  "plotted_metric": "query_term_focus",
+  "plotted_label": "Query-term coverage (%)",
+  "dilution_proxy": "100 minus query-term coverage in percent; zero-overlap exercise fraction",
+  "semantic_relevance_measured": false,
+  "fragmentation_plotted": false
 }
