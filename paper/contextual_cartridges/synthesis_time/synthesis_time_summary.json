@@ -1,0 +1,176 @@
+{
+  "created_utc": "2026-11-12T02:25:30.664363+00:00",
+  "metric": "recorded per-request synthetic dataset construction wall time in seconds; not TTFT",
+  "dataset": "BABILong",
+  "backbone": "Qwen3-4B-Instruct-2507",
+  "primary_eligibility": "Same request and same generated train/validation counts; positive finite times; complete; no recorded checkpoint replay or inherited generation.",
+  "primary": {
+    "n": 635,
+    "vanilla": {
+      "n": 635,
+      "mean_seconds": 129.47285556631184,
+      "p10_seconds": 92.53722080304287,
+      "p25_seconds": 103.92656473093666,
+      "p50_seconds": 137.0883931638673,
+      "p75_seconds": 144.82247845840175,
+      "p90_seconds": 155.36597614511848,
+      "p95_seconds": 160.2028344233986,
+      "min_seconds": 69.11367646697909,
+      "max_seconds": 178.39817557297647
+    },
+    "query_specific": {
+      "n": 635,
+      "mean_seconds": 136.08357757671158,
+      "p10_seconds": 28.64267068039626,
+      "p25_seconds": 52.74115869356319,
+      "p50_seconds": 126.02208215929568,
+      "p75_seconds": 188.3092292069923,
+      "p90_seconds": 275.6921601677314,
+      "p95_seconds": 316.28067811019696,
+      "min_seconds": 18.532541317865252,
+      "max_seconds": 558.3443212825805
+    },
+    "specific_faster_requests": 348,
+    "vanilla_qa_pairs": 20272,
+    "specific_qa_pairs": 20272,
+    "counts_by_document_tokens": {
+      "8192": 83,
+      "16384": 169,
+      "32768": 187,
+      "65536": 196
+    }
+  },
+  "all_without_recorded_replay": {
+    "n": 984,
+    "vanilla": {
+      "n": 984,
+      "mean_seconds": 116.42617200796465,
+      "p10_seconds": 66.20703587546014,
+      "p25_seconds": 92.92230456642574,
+      "p50_seconds": 131.68215028604027,
+      "p75_seconds": 142.42643691797275,
+      "p90_seconds": 154.21584586151874,
+      "p95_seconds": 159.62798845950746,
+      "min_seconds": 12.435872233938426,
+      "max_seconds": 326.9126475790981
+    },
+    "query_specific": {
+      "n": 984,
+      "mean_seconds": 112.88598428467597,
+      "p10_seconds": 21.852461391128603,
+      "p25_seconds": 31.98008937598206,
+      "p50_seconds": 71.14200765825808,
+      "p75_seconds": 161.0786058907397,
+      "p90_seconds": 262.688004944101,
+      "p95_seconds": 305.7826770005281,
+      "min_seconds": 2.2700324561446905,
+      "max_seconds": 641.2134268525988
+    },
+    "specific_faster_requests": 611,
+    "vanilla_qa_pairs": 27469,
+    "specific_qa_pairs": 28176,
+    "counts_by_document_tokens": {
+      "8192": 250,
+      "16384": 250,
+      "32768": 250,
+      "65536": 234
+    }
+  },
+  "all_recorded_attempts_including_replay": {
+    "n": 1000,
+    "vanilla": {
+      "n": 1000,
+      "mean_seconds": 116.24476929044538,
+      "p10_seconds": 66.30072631742806,
+      "p25_seconds": 92.87956205377122,
+      "p50_seconds": 131.51194566395134,
+      "p75_seconds": 142.3549666213803,
+      "p90_seconds": 154.1883830494713,
+      "p95_seconds": 159.59813809558983,
+      "min_seconds": 12.435872233938426,
+      "max_seconds": 326.9126475790981
+    },
+    "query_specific": {
+      "n": 1000,
+      "mean_seconds": 112.18524163470558,
+      "p10_seconds": 21.980409539304674,
+      "p25_seconds": 32.45688164490275,
+      "p50_seconds": 71.14200765825808,
+      "p75_seconds": 160.42494182568043,
+      "p90_seconds": 260.41173415854576,
+      "p95_seconds": 305.063874936616,
+      "min_seconds": 2.2700324561446905,
+      "max_seconds": 641.2134268525988
+    },
+    "specific_faster_requests": 624,
+    "vanilla_qa_pairs": 27949,
+    "specific_qa_pairs": 28671,
+    "counts_by_document_tokens": {
+      "8192": 250,
+      "16384": 250,
+      "32768": 250,
+      "65536": 250
+    }
+  },
+  "exclusion_reason_counts": {
+    "different_generated_qa_count": 353,
+    "recorded_checkpoint_replay": 16
+  },
+  "missing_pairs": {
+    "vanilla_only": [],
+    "specific_only": []
+  },
+  "scope": {
+    "included": [
+      "Per-request construction, answer/question generation, and shared backend queue waits"
+    ],
+    "excluded": [
+      "Model startup",
+      "Slurm queue",
+      "SD training",
+      "Final-answer decoding",
+      "Historical Decision API calls"
+    ],
+    "specific_retrieval": "Uses cached Decision API decisions, with in-attempt local preparation included when performed.",
+    "vanilla_concurrent_cases_per_worker": 32,
+    "specific_concurrent_cases_per_worker": 16,
+    "hardware_controlled": false,
+    "claim": "Observed historical run times only; not an isolated algorithmic or cold-start speedup.",
+    "current_three_dataset_timing_comparison": "Unavailable: current Vanilla synthetic JSON has no independent synthesis timer."
+  },
+  "sources": {
+    "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/vanilla_syns_matched_1000_20261108/config.json": "aadd53c0d3808339edf38dcc699f43681f40ab601ba6f95af218d4ee002caf4c",
+    "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/answer_guided_query_anchored_v3_20261109/config.json": "d73355dbf37690034de58ede3677632422bbd41bd49b0f2f934a71d81cd58312"
+  },
+  "figure_semantics": {
+    "violin": "Two violins: Scott KDE, 256 evaluation points, truncated to observed range; equal maximum widths; all eligible observations used.",
+    "center_line": "One horizontal sample median per violin.",
+    "individual_points_displayed": false,
+    "intervals_displayed": false,
+    "smoothing_applied_to_data_values": false,
+    "outliers_removed": false,
+    "bar_charts": false
+  },
+  "script_sha256": "0476f19707b07108dd36b6a3837f8e7345e5f066ec196db43171d33a23c68bf5",
+  "versions": {
+    "numpy": "2.2.6",
+    "matplotlib": "3.11.1"
+  },
+  "outputs": [
+    {
+      "path": "/home/da839/Query_Cart/figures/synthesis_time_20261111/violin_only/synthesis_time_violin.png",
+      "sha256": "44000a60a3b62155abfe5c6e2b69545cc94cdb77af6c9d5b174620f4c177d490",
+      "bytes": 142210
+    },
+    {
+      "path": "/home/da839/Query_Cart/figures/synthesis_time_20261111/violin_only/synthesis_time_violin.pdf",
+      "sha256": "4187df72aef6541ba150a715202d8e73d684db8ee4926c8afa2f6c6944051ce7",
+      "bytes": 24159
+    },
+    {
+      "path": "/home/da839/Query_Cart/figures/synthesis_time_20261111/violin_only/synthesis_time_violin.svg",
+      "sha256": "377c09535f1b5edf7542987897a912214ce9090637e784e4b65ebe423c5a8ed8",
+      "bytes": 33048
+    }
+  ]
+}

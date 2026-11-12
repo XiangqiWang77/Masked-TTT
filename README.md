@@ -19,5 +19,18 @@
 
 [Reproduction code and software references](paper/contextual_cartridges/REPRODUCE.md).
 
+<!-- synthesis-time-violin -->
+## Synthetic data generation time
+
+![Vanilla and query-specific synthesis-time distributions with median lines](paper/contextual_cartridges/synthesis_time/synthesis_time_violin.png)
+
+Two violins, each using the same 635 BABILong requests with matched generated train/validation counts
+(20,272 QA pairs per method). Horizontal lines mark medians: Vanilla **137.09 s**, query-specific
+**126.02 s**. The query-specific tail is longer; historical hardware/concurrency and cached evidence
+selection differ, so this is not a controlled end-to-end speedup claim.
+
+[Figure PDF/SVG, raw timing CSV, definitions and reproduction code](paper/contextual_cartridges/synthesis_time/README.md).
+<!-- /synthesis-time-violin -->
+
 <!-- previous-report -->
 [Historical report (previous protocols)](archive/README_before_acl_20261111.md)
