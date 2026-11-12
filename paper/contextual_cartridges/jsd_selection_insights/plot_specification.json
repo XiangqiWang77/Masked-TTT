@@ -45,5 +45,11 @@
   "outcome_circle": "area proportional to number of requests; zero has no circle",
   "no_generated_or_interpolated_results": true,
   "gold_used_only_for_final_scoring": true,
-  "known_confounds": "Contour pool shift is the selection operation, not proof of causal correctness."
+  "known_confounds": "Contour pool shift is the selection operation, not proof of causal correctness.",
+  "distribution_legend": [
+    "Vanilla SD",
+    "JSD-SD",
+    "Blocked"
+  ],
+  "sample_counts_in_distribution_legend": false
 }

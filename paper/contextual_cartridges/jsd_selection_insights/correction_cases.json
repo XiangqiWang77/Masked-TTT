@@ -1,0 +1,1153 @@
+{
+  "cases": [
+    {
+      "case": "babilong-32-qa5-300105",
+      "query": "Who did Mary give the apple to? ",
+      "recorded_analysis_split": "development",
+      "reference": [
+        "Fred"
+      ],
+      "SD_prediction": ", or\n,, T\n,,\n,, Tel\n Tel Tel\n,,\n,  1 1 Fo Fo T T Tint\nFo, 1 0",
+      "JSD_SD_prediction": "Fred",
+      "initial_prediction": "Fred",
+      "saved_full_context_teacher": "Fred",
+      "saved_full_context_teacher_source": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_cartridges_tracin_v28_guard64_20261111/cases/babilong-32-qa5-300105/baselines.json",
+      "updates": 8,
+      "warmup_steps": 4,
+      "kept": 5,
+      "blocked": 1,
+      "same_teacher_targets_sha256": "fd51a177ca203c000867a097f0131a0f8ffe9fb5ded3000f8d17c56ede17369d",
+      "warmup_losses_identical": true,
+      "warmup_history": [
+        {
+          "step": 1,
+          "train_kd_loss": 6.299719333648682,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 2,
+          "train_kd_loss": 0.7267528176307678,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 3,
+          "train_kd_loss": 0.5392926335334778,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 4,
+          "train_kd_loss": 0.7930520176887512,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        }
+      ],
+      "SD_postwarmup_history": [
+        {
+          "step": 5,
+          "train_kd_loss": 0.50462806224823,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 6,
+          "train_kd_loss": 4.738435745239258,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 7,
+          "train_kd_loss": 4.835711479187012,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 8,
+          "train_kd_loss": 7.23961067199707,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        }
+      ],
+      "JSD_postwarmup_history": [
+        {
+          "step": 5,
+          "train_kd_loss": 0.16192418336868286,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 6,
+          "train_kd_loss": 7.000908851623535,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 7,
+          "train_kd_loss": 1.7271451950073242,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 8,
+          "train_kd_loss": 0.06493538618087769,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        }
+      ],
+      "trajectories": [
+        {
+          "index": 0,
+          "score": -0.06945074711951289,
+          "keep": false,
+          "tokens": 2,
+          "mean_jsd_bits": 0.32935113653934406,
+          "mean_teacher_bucket_entropy_bits": 0.7011124379532362,
+          "mean_student_bucket_entropy_bits": 0.46885671582668564,
+          "mean_teacher_rest_mass": 0.0010769856519300955,
+          "mean_student_rest_mass": 0.022504950615809094,
+          "positive_tokens": 1,
+          "negative_tokens": 1,
+          "question": "Who received the apple from Mary?",
+          "synthetic_answer": "Fred",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Mary picked up the apple there",
+              "char_start_in_bound_evidence": 894,
+              "char_end_in_bound_evidence": 924
+            },
+            {
+              "exact_quote": "Mary gave the apple to Fred",
+              "char_start_in_bound_evidence": 1740,
+              "char_end_in_bound_evidence": 1767
+            }
+          ],
+          "evidence_sha256": "7e84f46ab56e5a56eee7460fe000194f60716cd77b254be197e42e3aa937a5f4"
+        },
+        {
+          "index": 1,
+          "score": 0.0015488176116382753,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.0016630233605011437,
+          "mean_teacher_bucket_entropy_bits": 0.0013242144293035842,
+          "mean_student_bucket_entropy_bits": 0.03483375184494218,
+          "mean_teacher_rest_mass": 8.933861107435215e-05,
+          "mean_student_rest_mass": 0.0038306440980587775,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "To whom did Mary pass the apple she picked up?",
+          "synthetic_answer": "Fred",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Mary picked up the apple there",
+              "char_start_in_bound_evidence": 894,
+              "char_end_in_bound_evidence": 924
+            },
+            {
+              "exact_quote": "Mary gave the apple to Fred",
+              "char_start_in_bound_evidence": 1740,
+              "char_end_in_bound_evidence": 1767
+            }
+          ],
+          "evidence_sha256": "7e84f46ab56e5a56eee7460fe000194f60716cd77b254be197e42e3aa937a5f4"
+        },
+        {
+          "index": 2,
+          "score": 0.010585431998514236,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.017319003931300158,
+          "mean_teacher_bucket_entropy_bits": 0.08310733336040872,
+          "mean_student_bucket_entropy_bits": 0.3342891935916761,
+          "mean_teacher_rest_mass": 0.00032317527456049433,
+          "mean_student_rest_mass": 0.008828175998542964,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "What person did Mary give the apple to after picking it up?",
+          "synthetic_answer": "Fred",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Mary picked up the apple there",
+              "char_start_in_bound_evidence": 894,
+              "char_end_in_bound_evidence": 924
+            },
+            {
+              "exact_quote": "Mary gave the apple to Fred",
+              "char_start_in_bound_evidence": 1740,
+              "char_end_in_bound_evidence": 1767
+            }
+          ],
+          "evidence_sha256": "7e84f46ab56e5a56eee7460fe000194f60716cd77b254be197e42e3aa937a5f4"
+        },
+        {
+          "index": 3,
+          "score": 0.07412167405109359,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.15638964737088085,
+          "mean_teacher_bucket_entropy_bits": 0.2085558015802135,
+          "mean_student_bucket_entropy_bits": 0.6496985286822803,
+          "mean_teacher_rest_mass": 0.0014042606118939704,
+          "mean_student_rest_mass": 0.25609822979714103,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "Who was the recipient of the apple that Mary gave?",
+          "synthetic_answer": "Fred",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Mary picked up the apple there",
+              "char_start_in_bound_evidence": 894,
+              "char_end_in_bound_evidence": 924
+            },
+            {
+              "exact_quote": "Mary gave the apple to Fred",
+              "char_start_in_bound_evidence": 1740,
+              "char_end_in_bound_evidence": 1767
+            }
+          ],
+          "evidence_sha256": "7e84f46ab56e5a56eee7460fe000194f60716cd77b254be197e42e3aa937a5f4"
+        },
+        {
+          "index": 4,
+          "score": 0.12674328798144374,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.1673139116587276,
+          "mean_teacher_bucket_entropy_bits": 0.0694382966995559,
+          "mean_student_bucket_entropy_bits": 0.5045622095390785,
+          "mean_teacher_rest_mass": 0.0003803822115731048,
+          "mean_student_rest_mass": 0.2648962170813604,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "Who received the apple after Mary picked it up?",
+          "synthetic_answer": "Fred",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Mary picked up the apple there",
+              "char_start_in_bound_evidence": 1776,
+              "char_end_in_bound_evidence": 1806
+            },
+            {
+              "exact_quote": "Mary gave the apple to Fred",
+              "char_start_in_bound_evidence": 2622,
+              "char_end_in_bound_evidence": 2649
+            }
+          ],
+          "evidence_sha256": "d6dee0a77512392d5531b454f7b0b19bab2b6475f558243dfa05c217128f5240"
+        },
+        {
+          "index": 5,
+          "score": 0.002693498980665109,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.0028186743429563094,
+          "mean_teacher_bucket_entropy_bits": 0.0012337513030196946,
+          "mean_student_bucket_entropy_bits": 0.053971142604299374,
+          "mean_teacher_rest_mass": 8.218803110104922e-05,
+          "mean_student_rest_mass": 0.006171051805637262,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "To whom did Mary pass the apple she found?",
+          "synthetic_answer": "Fred",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Mary picked up the apple there",
+              "char_start_in_bound_evidence": 1776,
+              "char_end_in_bound_evidence": 1806
+            },
+            {
+              "exact_quote": "Mary gave the apple to Fred",
+              "char_start_in_bound_evidence": 2622,
+              "char_end_in_bound_evidence": 2649
+            }
+          ],
+          "evidence_sha256": "d6dee0a77512392d5531b454f7b0b19bab2b6475f558243dfa05c217128f5240"
+        }
+      ],
+      "source_files_sha256": {
+        "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_ed_jsd_devel6_20261111_v1/babilong/results/cases/babilong-32-qa5-300105.json": "f14705469c8288ea25c48e46e4474a4e1d9163d5acf8d057c7a86be0db25bae2",
+        "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_ed_jsd_devel6_20261111_v1/babilong/cases/babilong-32-qa5-300105/input.json": "f61d1f4d50acbb79102b5cc1a67d221d90d23353fb40a475b54eaaf7603e6471",
+        "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_ed_jsd_devel6_20261111_v1/babilong/cases/babilong-32-qa5-300105/baselines.json": "831d6bd5f7a797e35bb0e546e4e2e5bbec1c3040dc60ac328955c1c64afa41be"
+      }
+    },
+    {
+      "case": "babilong-64-qa6-300147",
+      "query": "Is John in the garden? ",
+      "recorded_analysis_split": "holdout",
+      "reference": [
+        "yes"
+      ],
+      "SD_prediction": "$no$",
+      "JSD_SD_prediction": "$yes$",
+      "initial_prediction": "$no$",
+      "saved_full_context_teacher": "no",
+      "saved_full_context_teacher_source": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_cartridges_tracin_v28_guard64_20261111/cases/babilong-64-qa6-300147/baselines.json",
+      "updates": 26,
+      "warmup_steps": 13,
+      "kept": 14,
+      "blocked": 10,
+      "same_teacher_targets_sha256": "83fe41ad38b1b9912107871c95b348ef0ae30693e3eea6add45bd6008241f5df",
+      "warmup_losses_identical": true,
+      "warmup_history": [
+        {
+          "step": 1,
+          "train_kd_loss": 0.677532434463501,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 2,
+          "train_kd_loss": 0.3944666087627411,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 3,
+          "train_kd_loss": 0.31321078538894653,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 4,
+          "train_kd_loss": 0.23403024673461914,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 5,
+          "train_kd_loss": 0.2073221206665039,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 6,
+          "train_kd_loss": 0.18685810267925262,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 7,
+          "train_kd_loss": 0.17358289659023285,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 8,
+          "train_kd_loss": 0.16474513709545135,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 9,
+          "train_kd_loss": 0.15395799279212952,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 10,
+          "train_kd_loss": 0.14453662931919098,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 11,
+          "train_kd_loss": 0.1341911256313324,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 12,
+          "train_kd_loss": 0.12660473585128784,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 13,
+          "train_kd_loss": 0.1215931698679924,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        }
+      ],
+      "SD_postwarmup_history": [
+        {
+          "step": 14,
+          "train_kd_loss": 0.11752359569072723,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 15,
+          "train_kd_loss": 0.11566007882356644,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 16,
+          "train_kd_loss": 0.11409451067447662,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 17,
+          "train_kd_loss": 0.11385568231344223,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 18,
+          "train_kd_loss": 0.11232040077447891,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 19,
+          "train_kd_loss": 0.11151894181966782,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 20,
+          "train_kd_loss": 0.11040879786014557,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 21,
+          "train_kd_loss": 0.10974377393722534,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 22,
+          "train_kd_loss": 0.1089031845331192,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 23,
+          "train_kd_loss": 0.10830048471689224,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 24,
+          "train_kd_loss": 0.1079215332865715,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 25,
+          "train_kd_loss": 0.10749558359384537,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 26,
+          "train_kd_loss": 0.10710474103689194,
+          "training_phase": "full",
+          "phase_packed_sequences": 1
+        }
+      ],
+      "JSD_postwarmup_history": [
+        {
+          "step": 14,
+          "train_kd_loss": 0.12121035903692245,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 15,
+          "train_kd_loss": 0.11760099977254868,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 16,
+          "train_kd_loss": 0.11752612888813019,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 17,
+          "train_kd_loss": 0.11509007215499878,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 18,
+          "train_kd_loss": 0.11355748027563095,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 19,
+          "train_kd_loss": 0.11173092573881149,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 20,
+          "train_kd_loss": 0.11020117253065109,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 21,
+          "train_kd_loss": 0.10912340134382248,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 22,
+          "train_kd_loss": 0.10850154608488083,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 23,
+          "train_kd_loss": 0.1085907593369484,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 24,
+          "train_kd_loss": 0.10821083933115005,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 25,
+          "train_kd_loss": 0.10756560415029526,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        },
+        {
+          "step": 26,
+          "train_kd_loss": 0.10726801306009293,
+          "training_phase": "selected",
+          "phase_packed_sequences": 1
+        }
+      ],
+      "trajectories": [
+        {
+          "index": 0,
+          "score": -0.0008386414100955232,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.012127984781567664,
+          "mean_teacher_bucket_entropy_bits": 0.7432638563689865,
+          "mean_student_bucket_entropy_bits": 0.6585276228834277,
+          "mean_teacher_rest_mass": 0.0035496986080359636,
+          "mean_student_rest_mass": 0.008061123653998296,
+          "positive_tokens": 6,
+          "negative_tokens": 3,
+          "question": "Did John return to the garden according to the evidence?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 978,
+              "char_end_in_bound_evidence": 1006
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "63f3e803cb02693274f44020a80f80968efe9969dd7643423fa5caec041633b6"
+        },
+        {
+          "index": 1,
+          "score": 0.004033650505493032,
+          "keep": true,
+          "tokens": 9,
+          "mean_jsd_bits": 0.015605403263694306,
+          "mean_teacher_bucket_entropy_bits": 0.42392915159599087,
+          "mean_student_bucket_entropy_bits": 0.6058475878820779,
+          "mean_teacher_rest_mass": 0.0025627972095459478,
+          "mean_student_rest_mass": 0.012389074586011191,
+          "positive_tokens": 9,
+          "negative_tokens": 0,
+          "question": "Is there a statement confirming John's presence in the garden?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 978,
+              "char_end_in_bound_evidence": 1006
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "63f3e803cb02693274f44020a80f80968efe9969dd7643423fa5caec041633b6"
+        },
+        {
+          "index": 2,
+          "score": -0.002728761068876442,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.024212071605329278,
+          "mean_teacher_bucket_entropy_bits": 0.8252392397268213,
+          "mean_student_bucket_entropy_bits": 0.7906200031358213,
+          "mean_teacher_rest_mass": 0.10319061839724947,
+          "mean_student_rest_mass": 0.05790487298509163,
+          "positive_tokens": 5,
+          "negative_tokens": 4,
+          "question": "What action did John take that indicates his location in the garden?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 978,
+              "char_end_in_bound_evidence": 1006
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "63f3e803cb02693274f44020a80f80968efe9969dd7643423fa5caec041633b6"
+        },
+        {
+          "index": 3,
+          "score": -0.001011200004651071,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.022710361251687444,
+          "mean_teacher_bucket_entropy_bits": 0.6041017808131178,
+          "mean_student_bucket_entropy_bits": 0.5427522192023121,
+          "mean_teacher_rest_mass": 0.002914103907944455,
+          "mean_student_rest_mass": 0.015766629889319254,
+          "positive_tokens": 6,
+          "negative_tokens": 3,
+          "question": "Can we conclude that John was in the garden based on the given statement?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 978,
+              "char_end_in_bound_evidence": 1006
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "63f3e803cb02693274f44020a80f80968efe9969dd7643423fa5caec041633b6"
+        },
+        {
+          "index": 4,
+          "score": -0.003869393796061137,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.03065846919220426,
+          "mean_teacher_bucket_entropy_bits": 0.4779852320888593,
+          "mean_student_bucket_entropy_bits": 0.3986923376918814,
+          "mean_teacher_rest_mass": 0.07839342364634258,
+          "mean_student_rest_mass": 0.029337180235366675,
+          "positive_tokens": 4,
+          "negative_tokens": 5,
+          "question": "Did John return to the garden at some point in the narrative?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 6185,
+              "char_end_in_bound_evidence": 6213
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 3344,
+              "char_end_in_bound_evidence": 3360
+            }
+          ],
+          "evidence_sha256": "0b6faa60912f9d612b4bc9d0280e47304c184f0a51f13ebdfa90bcf40348fcb3"
+        },
+        {
+          "index": 5,
+          "score": -4.4860426820753655e-05,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.008883348748720508,
+          "mean_teacher_bucket_entropy_bits": 0.7230081994346675,
+          "mean_student_bucket_entropy_bits": 0.6982884239738265,
+          "mean_teacher_rest_mass": 0.004997369823670038,
+          "mean_student_rest_mass": 0.00927412936872454,
+          "positive_tokens": 5,
+          "negative_tokens": 4,
+          "question": "Is there a direct statement indicating John's location in the garden?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 6185,
+              "char_end_in_bound_evidence": 6213
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 3344,
+              "char_end_in_bound_evidence": 3360
+            }
+          ],
+          "evidence_sha256": "0b6faa60912f9d612b4bc9d0280e47304c184f0a51f13ebdfa90bcf40348fcb3"
+        },
+        {
+          "index": 6,
+          "score": -0.01245965129235662,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.0316638134939757,
+          "mean_teacher_bucket_entropy_bits": 0.3992592849425449,
+          "mean_student_bucket_entropy_bits": 0.3269605404676652,
+          "mean_teacher_rest_mass": 0.07060103039380666,
+          "mean_student_rest_mass": 0.014189062852567491,
+          "positive_tokens": 4,
+          "negative_tokens": 5,
+          "question": "What action does the text describe that places John in the garden?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 6185,
+              "char_end_in_bound_evidence": 6213
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 3344,
+              "char_end_in_bound_evidence": 3360
+            }
+          ],
+          "evidence_sha256": "0b6faa60912f9d612b4bc9d0280e47304c184f0a51f13ebdfa90bcf40348fcb3"
+        },
+        {
+          "index": 7,
+          "score": 0.00028542702191962165,
+          "keep": true,
+          "tokens": 9,
+          "mean_jsd_bits": 0.004553195154358477,
+          "mean_teacher_bucket_entropy_bits": 0.4986886190569597,
+          "mean_student_bucket_entropy_bits": 0.5457762128705129,
+          "mean_teacher_rest_mass": 0.004130111406558896,
+          "mean_student_rest_mass": 0.00951341165380832,
+          "positive_tokens": 8,
+          "negative_tokens": 1,
+          "question": "Can you identify a sentence that confirms John's presence in the garden?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 6185,
+              "char_end_in_bound_evidence": 6213
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 3344,
+              "char_end_in_bound_evidence": 3360
+            }
+          ],
+          "evidence_sha256": "0b6faa60912f9d612b4bc9d0280e47304c184f0a51f13ebdfa90bcf40348fcb3"
+        },
+        {
+          "index": 8,
+          "score": 0.0005922710090377608,
+          "keep": true,
+          "tokens": 10,
+          "mean_jsd_bits": 0.0064406193651987825,
+          "mean_teacher_bucket_entropy_bits": 0.4539096371999424,
+          "mean_student_bucket_entropy_bits": 0.439789713706989,
+          "mean_teacher_rest_mass": 0.0028256832475213934,
+          "mean_student_rest_mass": 0.009029287421425957,
+          "positive_tokens": 8,
+          "negative_tokens": 2,
+          "question": "Is there any mention of John being present in the garden according to the provided text?",
+          "synthetic_answer": "No, John is not in the garden.",
+          "matched_source_quotes": [],
+          "evidence_sha256": "badb5058dfc2a8eabe6dcf3f9462927f6a4a3836f72e08e5f1ebc23a584d43a1"
+        },
+        {
+          "index": 9,
+          "score": 0.003924955656350032,
+          "keep": true,
+          "tokens": 10,
+          "mean_jsd_bits": 0.010400210007337898,
+          "mean_teacher_bucket_entropy_bits": 0.1312237636063201,
+          "mean_student_bucket_entropy_bits": 0.2183883735009569,
+          "mean_teacher_rest_mass": 0.0017238717742326215,
+          "mean_student_rest_mass": 0.014345456805948143,
+          "positive_tokens": 10,
+          "negative_tokens": 0,
+          "question": "Does the text describe a person named John interacting with or being located in a garden setting?",
+          "synthetic_answer": "No, John is not in the garden.",
+          "matched_source_quotes": [],
+          "evidence_sha256": "badb5058dfc2a8eabe6dcf3f9462927f6a4a3836f72e08e5f1ebc23a584d43a1"
+        },
+        {
+          "index": 10,
+          "score": 0.00046729903563733565,
+          "keep": true,
+          "tokens": 10,
+          "mean_jsd_bits": 0.016316305292030563,
+          "mean_teacher_bucket_entropy_bits": 0.29688199091695094,
+          "mean_student_bucket_entropy_bits": 0.3011324318225063,
+          "mean_teacher_rest_mass": 0.0024294247216143706,
+          "mean_student_rest_mass": 0.015735468933721,
+          "positive_tokens": 7,
+          "negative_tokens": 3,
+          "question": "What individuals are mentioned as being in or near the garden or veranda, and is John among them?",
+          "synthetic_answer": "No, John is not in the garden.",
+          "matched_source_quotes": [],
+          "evidence_sha256": "badb5058dfc2a8eabe6dcf3f9462927f6a4a3836f72e08e5f1ebc23a584d43a1"
+        },
+        {
+          "index": 11,
+          "score": 0.000910377409203451,
+          "keep": true,
+          "tokens": 10,
+          "mean_jsd_bits": 0.00872706716511348,
+          "mean_teacher_bucket_entropy_bits": 0.32598875247253706,
+          "mean_student_bucket_entropy_bits": 0.3644490304454746,
+          "mean_teacher_rest_mass": 0.002672099100392933,
+          "mean_student_rest_mass": 0.016835403066744314,
+          "positive_tokens": 9,
+          "negative_tokens": 1,
+          "question": "Based on the evidence, can you confirm whether John is present in the garden or has any connection to the garden area?",
+          "synthetic_answer": "No, John is not in the garden.",
+          "matched_source_quotes": [],
+          "evidence_sha256": "badb5058dfc2a8eabe6dcf3f9462927f6a4a3836f72e08e5f1ebc23a584d43a1"
+        },
+        {
+          "index": 12,
+          "score": 0.0015241763404534722,
+          "keep": true,
+          "tokens": 9,
+          "mean_jsd_bits": 0.010193961353743834,
+          "mean_teacher_bucket_entropy_bits": 0.42080848749359556,
+          "mean_student_bucket_entropy_bits": 0.46959553391080877,
+          "mean_teacher_rest_mass": 0.003336908335409524,
+          "mean_student_rest_mass": 0.007605611444716375,
+          "positive_tokens": 6,
+          "negative_tokens": 3,
+          "question": "Did John go to the garden after being in the kitchen?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 3941,
+              "char_end_in_bound_evidence": 3969
+            },
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 2292,
+              "char_end_in_bound_evidence": 2308
+            }
+          ],
+          "evidence_sha256": "2311fa32145e84bb2aa73d40b0e14b9050a2b40a4c071927a115752931aec720"
+        },
+        {
+          "index": 13,
+          "score": -0.004224735742677376,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.02263689600329173,
+          "mean_teacher_bucket_entropy_bits": 0.5779016591790076,
+          "mean_student_bucket_entropy_bits": 0.46939270193511706,
+          "mean_teacher_rest_mass": 0.06315203327810938,
+          "mean_student_rest_mass": 0.024565882515051304,
+          "positive_tokens": 5,
+          "negative_tokens": 4,
+          "question": "Is it true that John returned to the garden at some point?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 3941,
+              "char_end_in_bound_evidence": 3969
+            },
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 2292,
+              "char_end_in_bound_evidence": 2308
+            }
+          ],
+          "evidence_sha256": "2311fa32145e84bb2aa73d40b0e14b9050a2b40a4c071927a115752931aec720"
+        },
+        {
+          "index": 14,
+          "score": -0.012375157350869012,
+          "keep": false,
+          "tokens": 9,
+          "mean_jsd_bits": 0.05109550797890131,
+          "mean_teacher_bucket_entropy_bits": 0.8667793264106329,
+          "mean_student_bucket_entropy_bits": 0.7565541229493068,
+          "mean_teacher_rest_mass": 0.20069131688245145,
+          "mean_student_rest_mass": 0.12733689302205561,
+          "positive_tokens": 5,
+          "negative_tokens": 4,
+          "question": "Based on the movement described, where was John located at the end of the sequence?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 3941,
+              "char_end_in_bound_evidence": 3969
+            },
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 2292,
+              "char_end_in_bound_evidence": 2308
+            }
+          ],
+          "evidence_sha256": "2311fa32145e84bb2aa73d40b0e14b9050a2b40a4c071927a115752931aec720"
+        },
+        {
+          "index": 15,
+          "score": 0.0016468793199466817,
+          "keep": true,
+          "tokens": 9,
+          "mean_jsd_bits": 0.010579548750348,
+          "mean_teacher_bucket_entropy_bits": 0.4980979364416688,
+          "mean_student_bucket_entropy_bits": 0.5755501070260868,
+          "mean_teacher_rest_mass": 0.0024375075678471823,
+          "mean_student_rest_mass": 0.011827131212364636,
+          "positive_tokens": 7,
+          "negative_tokens": 2,
+          "question": "Can we confirm that John was present in the garden according to the narrative?",
+          "synthetic_answer": "Yes, John is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John went back to the garden",
+              "char_start_in_bound_evidence": 3941,
+              "char_end_in_bound_evidence": 3969
+            },
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            },
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 2292,
+              "char_end_in_bound_evidence": 2308
+            }
+          ],
+          "evidence_sha256": "2311fa32145e84bb2aa73d40b0e14b9050a2b40a4c071927a115752931aec720"
+        },
+        {
+          "index": 16,
+          "score": -3.111810862775371e-05,
+          "keep": false,
+          "tokens": 21,
+          "mean_jsd_bits": 0.010431294951548644,
+          "mean_teacher_bucket_entropy_bits": 0.6311856615528733,
+          "mean_student_bucket_entropy_bits": 0.6332231460363901,
+          "mean_teacher_rest_mass": 0.003915380336738582,
+          "mean_student_rest_mass": 0.013050516292909426,
+          "positive_tokens": 13,
+          "negative_tokens": 8,
+          "question": "Is John Fleming associated with the garden based on the given information?",
+          "synthetic_answer": "John is mentioned as John Fleming, but there is no information confirming whether he is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            }
+          ],
+          "evidence_sha256": "87b8aa413a7d3bd6c38c662a748c0e25139fe718da5ad87df7a89201f229a257"
+        },
+        {
+          "index": 17,
+          "score": -0.0003656140661445241,
+          "keep": false,
+          "tokens": 21,
+          "mean_jsd_bits": 0.009447446841874247,
+          "mean_teacher_bucket_entropy_bits": 0.5283827098110396,
+          "mean_student_bucket_entropy_bits": 0.49207609220053716,
+          "mean_teacher_rest_mass": 0.004928162504912422,
+          "mean_student_rest_mass": 0.013279040117280332,
+          "positive_tokens": 9,
+          "negative_tokens": 12,
+          "question": "Does the statement 'I don't think he will want to; but it's John Fleming' indicate John's location in the garden?",
+          "synthetic_answer": "John is mentioned as John Fleming, but there is no information confirming whether he is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            }
+          ],
+          "evidence_sha256": "87b8aa413a7d3bd6c38c662a748c0e25139fe718da5ad87df7a89201f229a257"
+        },
+        {
+          "index": 18,
+          "score": 0.004496735396000883,
+          "keep": true,
+          "tokens": 21,
+          "mean_jsd_bits": 0.024736749313295066,
+          "mean_teacher_bucket_entropy_bits": 0.5656905989842781,
+          "mean_student_bucket_entropy_bits": 0.7065376048834386,
+          "mean_teacher_rest_mass": 0.003966346326679857,
+          "mean_student_rest_mass": 0.0373963813015038,
+          "positive_tokens": 18,
+          "negative_tokens": 3,
+          "question": "Can we determine from the evidence whether John is present in the garden?",
+          "synthetic_answer": "John is mentioned as John Fleming, but there is no information confirming whether he is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            }
+          ],
+          "evidence_sha256": "87b8aa413a7d3bd6c38c662a748c0e25139fe718da5ad87df7a89201f229a257"
+        },
+        {
+          "index": 19,
+          "score": 0.0029628496515189126,
+          "keep": true,
+          "tokens": 21,
+          "mean_jsd_bits": 0.020172252887853032,
+          "mean_teacher_bucket_entropy_bits": 0.5022656339300677,
+          "mean_student_bucket_entropy_bits": 0.5234322956733432,
+          "mean_teacher_rest_mass": 0.00447583371466325,
+          "mean_student_rest_mass": 0.023709865824529146,
+          "positive_tokens": 10,
+          "negative_tokens": 11,
+          "question": "What is known about John's location in relation to the garden according to the provided text?",
+          "synthetic_answer": "John is mentioned as John Fleming, but there is no information confirming whether he is in the garden.",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "John Fleming",
+              "char_start_in_bound_evidence": 878,
+              "char_end_in_bound_evidence": 890
+            }
+          ],
+          "evidence_sha256": "87b8aa413a7d3bd6c38c662a748c0e25139fe718da5ad87df7a89201f229a257"
+        },
+        {
+          "index": 20,
+          "score": 0.0012930015050549059,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.0014339276969681928,
+          "mean_teacher_bucket_entropy_bits": 0.0015458320650609248,
+          "mean_student_bucket_entropy_bits": 0.02991405736512735,
+          "mean_teacher_rest_mass": 0.00011417642263322758,
+          "mean_student_rest_mass": 0.0034755401218937165,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "Was John mentioned in a location related to a garden according to the statement 'Allee same, John,' said Ah Fe plaintively?",
+          "synthetic_answer": "No",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "9631c30f8489aae4492b374b8f8fee255f6744e7c8ae730bd2c06fb9b0100270"
+        },
+        {
+          "index": 21,
+          "score": 0.00015070704706716324,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.00015905094630924084,
+          "mean_teacher_bucket_entropy_bits": 0.00011482820718352585,
+          "mean_student_bucket_entropy_bits": 0.00426402372442084,
+          "mean_teacher_rest_mass": 6.496821779944373e-06,
+          "mean_student_rest_mass": 0.00035856280844115407,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "Does the phrase 'Allee same, John' provide any indication that John is present in a garden?",
+          "synthetic_answer": "No",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "9631c30f8489aae4492b374b8f8fee255f6744e7c8ae730bd2c06fb9b0100270"
+        },
+        {
+          "index": 22,
+          "score": 0.0018019563802603579,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 0.0018052694890780998,
+          "mean_teacher_bucket_entropy_bits": 2.8406635938456116e-05,
+          "mean_student_bucket_entropy_bits": 0.030946285206115694,
+          "mean_teacher_rest_mass": 1.430507381883217e-06,
+          "mean_student_rest_mass": 0.0036178826200334857,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "Is there any reference in the text to John being in or near a garden when Ah Fe says 'Allee same, John,' plaintively?",
+          "synthetic_answer": "No",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "9631c30f8489aae4492b374b8f8fee255f6744e7c8ae730bd2c06fb9b0100270"
+        },
+        {
+          "index": 23,
+          "score": 4.969202061069822e-06,
+          "keep": true,
+          "tokens": 2,
+          "mean_jsd_bits": 8.541954581278452e-06,
+          "mean_teacher_bucket_entropy_bits": 0.0001818590618913448,
+          "mean_student_bucket_entropy_bits": 0.0006844670458222625,
+          "mean_teacher_rest_mass": 1.0728605449150663e-05,
+          "mean_student_rest_mass": 4.601057320230417e-05,
+          "positive_tokens": 2,
+          "negative_tokens": 0,
+          "question": "Can John's location be determined as being in a garden based solely on the statement 'Allee same, John,' said Ah Fe plaintively?",
+          "synthetic_answer": "No",
+          "matched_source_quotes": [
+            {
+              "exact_quote": "Allee same, John",
+              "char_start_in_bound_evidence": 343,
+              "char_end_in_bound_evidence": 359
+            }
+          ],
+          "evidence_sha256": "9631c30f8489aae4492b374b8f8fee255f6744e7c8ae730bd2c06fb9b0100270"
+        }
+      ],
+      "source_files_sha256": {
+        "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_ed_jsd_devel6_20261111_v1/babilong/results/cases/babilong-64-qa6-300147.json": "b13653c8d4b2feed56aa090e696d463c55fdbea4eb106e214088e9aeec81741c",
+        "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_ed_jsd_devel6_20261111_v1/babilong/cases/babilong-64-qa6-300147/input.json": "ec4ac64fa838f97d643a08b9ffd9db3a2def051435d081952594602c41bd1856",
+        "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_ed_jsd_devel6_20261111_v1/babilong/cases/babilong-64-qa6-300147/baselines.json": "f12d3b74aee9be07a19173da16f56e5ccb0188e18de1540e4cf8392f2aeed34c"
+      }
+    }
+  ],
+  "gate_is_correctness_oracle": false,
+  "single_trajectory_causal_ablation_available": false,
+  "training_modified": false
+}

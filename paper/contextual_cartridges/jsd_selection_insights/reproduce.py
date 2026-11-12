@@ -234,7 +234,7 @@ def density_contours(points, mask, grid, bandwidth):
     return z, thresholds
 
 
-def draw(output, trajectories, cases, summary):
+def draw(output, trajectories, cases, summary, *, distribution_only=False):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -294,13 +294,15 @@ def draw(output, trajectories, cases, summary):
         ax.spines[['top', 'right']].set_visible(False)
         ax.tick_params(length=3, pad=3)
         ax.legend(handles=[
-            Line2D([0], [0], color=BLUE, ls='--', lw=1.5, label=f'SD: all {len(points)}'),
-            Line2D([0], [0], color=ORANGE, lw=1.6, label=f'JSD-SD: {int(keep.sum())} retained'),
+            Line2D([0], [0], color=BLUE, ls='--', lw=1.5, label='Vanilla SD'),
+            Line2D([0], [0], color=ORANGE, lw=1.6, label='JSD-SD'),
             Line2D([0], [0], color=INK, marker='x', ls='none', markersize=4,
-                   label=f'{int((~keep).sum())} blocked')],
+                   label='Blocked')],
             loc='upper left', frameon=False, fontsize=7.7, handlelength=2.2,
             labelspacing=.38, borderaxespad=.25)
         export(fig, 'jsd_training_distribution')
+        if distribution_only:
+            return
 
         fig = plt.figure(figsize=(3.6, 3.6))
         ax = fig.add_axes([.25, .19, .69, .69])

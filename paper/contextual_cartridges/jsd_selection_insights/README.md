@@ -48,6 +48,8 @@ Query-specific 下，JSD 对 SD 的观察增益是 **+6.25 个百分点**；quer
 这批实验使用历史的 $J_i>0$ 门控，未使用后来新增的 Teacher 绝对置信度阈值；
 不把这些观测作为尚未运行的新配置结果。
 
+[**两个纠错案例：完整问题、门控过程与原始输出**](JSD_CORRECTION_CASES.zh-CN.md) · [两例原始记录 JSON](correction_cases.json)
+
 ## 哪些请求、哪些题被屏蔽
 
 全部被屏蔽轨迹见 [blocked_trajectories.csv](blocked_trajectories.csv)，包含请求 ID、练习问题、
