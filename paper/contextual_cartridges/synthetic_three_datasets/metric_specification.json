@@ -78,8 +78,8 @@
   "query_term_focus": "At least one non-stopword shared between query and exercise question",
   "disjoint_source_context": "At least two source intervals after merging overlapping or touching intervals",
   "estimator": "Within-request fraction, followed by an unweighted mean over requests, multiplied by 100",
-  "fallback_question_policy": "Use the actual query rather than instructions/options in its wrapper",
-  "vanilla_selection": "First N saved questions, exactly as used by the current training protocol",
+  "fallback_question_policy": "Use the saved synthetic question verbatim; no substitution with the real query.",
+  "vanilla_selection": "First 15 saved questions",
   "confidence_intervals": null,
   "smoothing": null,
   "missing_records": 0,
@@ -87,5 +87,12 @@
   "plotted_label": "Query-term coverage (%)",
   "dilution_proxy": "100 minus query-term coverage in percent; zero-overlap exercise fraction",
   "semantic_relevance_measured": false,
-  "fragmentation_plotted": false
+  "fragmentation_plotted": false,
+  "schema": "threeway-existing-min15-coverage-v3",
+  "requests": 100,
+  "questions_per_arm_per_request": 15,
+  "exposures_per_arm": 1500,
+  "sample": "First 15 saved questions of every shared complete request; same source inputs as the existing relevance audit",
+  "historical_definition_unchanged": true,
+  "historical_cohort_and_values_updated": true
 }

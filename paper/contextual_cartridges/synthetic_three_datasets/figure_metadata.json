@@ -1,0 +1,43 @@
+{
+  "synthetic_dilution_coverage": {
+    "pixels": [
+      1420,
+      1420
+    ],
+    "dpi": [
+      399.9992,
+      399.9992
+    ],
+    "square": true,
+    "opaque": true,
+    "width_inches": 3.55,
+    "height_inches": 3.55
+  },
+  "synthetic_off_target_bubbles": {
+    "pixels": [
+      1420,
+      1420
+    ],
+    "dpi": [
+      399.9992,
+      399.9992
+    ],
+    "square": true,
+    "opaque": true,
+    "width_inches": 3.55,
+    "height_inches": 3.55
+  },
+  "matplotlib_version": "3.11.1",
+  "colors": {
+    "agnostic": "#3180A8",
+    "evidence_only": "#6EC1D8",
+    "specific": "#E36A1C"
+  },
+  "ink": "#0B2A3A",
+  "figure_count": 2,
+  "bubble_count": 9,
+  "bubble_area_points_squared": "8 * off_target_percentage",
+  "confidence_intervals": null,
+  "coverage_axis_minimum": 0,
+  "smoothing": null
+}

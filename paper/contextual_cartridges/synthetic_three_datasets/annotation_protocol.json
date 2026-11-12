@@ -1,0 +1,53 @@
+{
+  "seed": "off-target-20261112-v1",
+  "requests": 100,
+  "questions_per_arm_per_request": 3,
+  "question_budget_considered": 15,
+  "reviewed_questions": 900,
+  "reviewer": "current assistant; no independent human or model validation",
+  "review_inputs": [
+    "real_query",
+    "query_options_if_provided_to_generation",
+    "synthetic_question",
+    "official_reference_translation_for_MTOB_only"
+  ],
+  "excluded_review_inputs": [
+    "pseudo answer",
+    "why_useful",
+    "teacher answer",
+    "benchmark answers for LongHealth/QASPER"
+  ],
+  "labels": {
+    "D": "Direct: asks for the target fact, relation, decision, or translation.",
+    "P": "Prerequisite: asks for a specific fact or rule with an identifiable role in answering the query. This includes facts needed to evaluate any supplied multiple-choice option.",
+    "O": "Off-target: no identifiable contribution to the query or its necessary prerequisites; shared patient/paper/topic alone is insufficient.",
+    "U": "Unclear: relevance cannot be established or rejected from these two questions."
+  },
+  "mtob_rule": "A word/root in the requested sentence or a construction instantiated in that sentence can be a prerequisite. General grammar with no demonstrated connection is unclear or off-target.",
+  "primary_metric": "Number labeled O / all sampled questions, with U reported separately.",
+  "limits": [
+    "Relevance does not establish answer correctness, evidence support, multi-hop necessity, or final accuracy.",
+    "Original review omitted explicit method labels, but writing style could reveal them; the agnostic extension was not blinded. The assistant knew the research hypothesis throughout.",
+    "Evidence-only generation is conditioned on retrieved evidence but not explicitly on q; this does not isolate the pseudo-answer stage from query conditioning.",
+    "Only 3 of the first 15 questions per arm and request are sampled.",
+    "Shared query/source documents induce dependence between questions.",
+    "No ambiguity is automatically counted as off-target."
+  ],
+  "input_inventory": "/nfs/roberts/project/pi_mg269/shared/da839/Query_Cart/analysis/synthetic_target_answer_leakage_20261112/target_inventory.json",
+  "inventory_sha256": "634106df645dd82a94c261058fb39647cab21c446272a3166ffac04a5759b7c3",
+  "pre_annotation_amendment": "Included original multiple-choice options before any labels were assigned. Sample IDs/indices unchanged; options have no gold-answer marker.",
+  "code_sha256": "af808bcdfebefe065e9303d8e65315e4b43a0b9632cdcc90e191491eb7485012",
+  "mtob_pre_annotation_amendment": "Before any MTOB annotations, include its official English reference translation to interpret the Kalamang query. This is evaluation-only, shared between arms; never use generated pseudo-answers as references.",
+  "extension": "Add agnostic arm using the same 100 requests, 3 positions per request, unchanged prior labels. No generated data added.",
+  "additional_review_items": 300,
+  "existing_review_items": 600,
+  "new_annotations_reviewed_by": "current assistant, method known; no independent human validation",
+  "new_annotation_labels_not_yet_written": false,
+  "annotation_status": "complete",
+  "new_annotations_method_label_blinded": false,
+  "existing_labels_unchanged": true,
+  "review_inputs_by_phase": {
+    "existing_evidence_only_and_specific": "Original 600 labels kept unchanged; method label omitted from presented items, style could reveal it.",
+    "new_agnostic": "300 questions at the same sampled positions; the assistant knew the method. Not independently validated."
+  }
+}

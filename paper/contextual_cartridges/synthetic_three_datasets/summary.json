@@ -1,98 +1,246 @@
 {
-  "longhealth": {
-    "requests": 36,
-    "documents": 2,
-    "matched_exercise_exposures_per_arm": 169,
-    "query_fallback_requests": 13,
-    "arms": {
-      "vanilla": {
-        "query_term_focus": 61.24338624338625,
-        "disjoint_source_context": 0,
-        "query_term_recall": 15.89261355010363,
-        "exact_query_copy": 0,
-        "unique_source_records": 21,
-        "excluding_query_fallback": {
-          "requests": 23,
-          "query_term_focus": 65.42443064182194,
-          "disjoint_source_context": 0
-        }
-      },
-      "specific": {
-        "query_term_focus": 100,
-        "disjoint_source_context": 44.78835978835979,
-        "query_term_recall": 72.92659004377025,
-        "exact_query_copy": 36.11111111111111,
-        "unique_source_records": 169,
-        "excluding_query_fallback": {
-          "requests": 23,
-          "query_term_focus": 100,
-          "disjoint_source_context": 47.27743271221532
-        }
-      }
+  "coverage": [
+    {
+      "dataset": "longhealth",
+      "arm": "agnostic",
+      "requests": 33,
+      "questions": 495,
+      "query_term_coverage_pct": 74.14141414141415,
+      "lexical_dilution_pct": 25.858585858585855
+    },
+    {
+      "dataset": "longhealth",
+      "arm": "evidence_only",
+      "requests": 33,
+      "questions": 495,
+      "query_term_coverage_pct": 64.84848484848484,
+      "lexical_dilution_pct": 35.151515151515156
+    },
+    {
+      "dataset": "longhealth",
+      "arm": "specific",
+      "requests": 33,
+      "questions": 495,
+      "query_term_coverage_pct": 98.58585858585859,
+      "lexical_dilution_pct": 1.4141414141414117
+    },
+    {
+      "dataset": "mtob_ke",
+      "arm": "agnostic",
+      "requests": 36,
+      "questions": 540,
+      "query_term_coverage_pct": 2.2222222222222223,
+      "lexical_dilution_pct": 97.77777777777777
+    },
+    {
+      "dataset": "mtob_ke",
+      "arm": "evidence_only",
+      "requests": 36,
+      "questions": 540,
+      "query_term_coverage_pct": 6.481481481481482,
+      "lexical_dilution_pct": 93.51851851851852
+    },
+    {
+      "dataset": "mtob_ke",
+      "arm": "specific",
+      "requests": 36,
+      "questions": 540,
+      "query_term_coverage_pct": 86.48148148148148,
+      "lexical_dilution_pct": 13.518518518518519
+    },
+    {
+      "dataset": "qasper",
+      "arm": "agnostic",
+      "requests": 31,
+      "questions": 465,
+      "query_term_coverage_pct": 90.3225806451613,
+      "lexical_dilution_pct": 9.677419354838705
+    },
+    {
+      "dataset": "qasper",
+      "arm": "evidence_only",
+      "requests": 31,
+      "questions": 465,
+      "query_term_coverage_pct": 89.03225806451613,
+      "lexical_dilution_pct": 10.967741935483872
+    },
+    {
+      "dataset": "qasper",
+      "arm": "specific",
+      "requests": 31,
+      "questions": 465,
+      "query_term_coverage_pct": 99.35483870967742,
+      "lexical_dilution_pct": 0.6451612903225765
+    },
+    {
+      "dataset": "all",
+      "arm": "agnostic",
+      "requests": 100,
+      "questions": 1500,
+      "query_term_coverage_pct": 53.266666666666666,
+      "lexical_dilution_pct": 46.733333333333334
+    },
+    {
+      "dataset": "all",
+      "arm": "evidence_only",
+      "requests": 100,
+      "questions": 1500,
+      "query_term_coverage_pct": 51.33333333333333,
+      "lexical_dilution_pct": 48.66666666666667
+    },
+    {
+      "dataset": "all",
+      "arm": "specific",
+      "requests": 100,
+      "questions": 1500,
+      "query_term_coverage_pct": 94.46666666666667,
+      "lexical_dilution_pct": 5.533333333333331
     }
-  },
-  "mtob_ke": {
-    "requests": 36,
-    "documents": 1,
-    "matched_exercise_exposures_per_arm": 164,
-    "query_fallback_requests": 7,
-    "arms": {
-      "vanilla": {
-        "query_term_focus": 3.3895502645502646,
-        "disjoint_source_context": 0,
-        "query_term_recall": 0.6492504409171076,
-        "exact_query_copy": 0,
-        "unique_source_records": 8,
-        "excluding_query_fallback": {
-          "requests": 29,
-          "query_term_focus": 4.207717569786535,
-          "disjoint_source_context": 0
-        }
-      },
-      "specific": {
-        "query_term_focus": 84.48743386243386,
-        "disjoint_source_context": 62.66203703703703,
-        "query_term_recall": 47.36607142857142,
-        "exact_query_copy": 19.444444444444446,
-        "unique_source_records": 164,
-        "excluding_query_fallback": {
-          "requests": 29,
-          "query_term_focus": 80.74302134646962,
-          "disjoint_source_context": 67.44252873563218
-        }
-      }
+  ],
+  "off_target": [
+    {
+      "dataset": "longhealth",
+      "arm": "agnostic",
+      "questions": 99,
+      "requests": 33,
+      "direct": 0,
+      "prerequisite": 8,
+      "off_target": 79,
+      "unclear": 12,
+      "off_target_pct": 79.79797979797979,
+      "unclear_pct": 12.121212121212121
+    },
+    {
+      "dataset": "longhealth",
+      "arm": "evidence_only",
+      "questions": 99,
+      "requests": 33,
+      "direct": 0,
+      "prerequisite": 8,
+      "off_target": 90,
+      "unclear": 1,
+      "off_target_pct": 90.9090909090909,
+      "unclear_pct": 1.0101010101010102
+    },
+    {
+      "dataset": "longhealth",
+      "arm": "specific",
+      "questions": 99,
+      "requests": 33,
+      "direct": 62,
+      "prerequisite": 31,
+      "off_target": 5,
+      "unclear": 1,
+      "off_target_pct": 5.05050505050505,
+      "unclear_pct": 1.0101010101010102
+    },
+    {
+      "dataset": "mtob_ke",
+      "arm": "agnostic",
+      "questions": 108,
+      "requests": 36,
+      "direct": 0,
+      "prerequisite": 6,
+      "off_target": 83,
+      "unclear": 19,
+      "off_target_pct": 76.85185185185185,
+      "unclear_pct": 17.59259259259259
+    },
+    {
+      "dataset": "mtob_ke",
+      "arm": "evidence_only",
+      "questions": 108,
+      "requests": 36,
+      "direct": 0,
+      "prerequisite": 10,
+      "off_target": 86,
+      "unclear": 12,
+      "off_target_pct": 79.62962962962963,
+      "unclear_pct": 11.11111111111111
+    },
+    {
+      "dataset": "mtob_ke",
+      "arm": "specific",
+      "questions": 108,
+      "requests": 36,
+      "direct": 41,
+      "prerequisite": 52,
+      "off_target": 8,
+      "unclear": 7,
+      "off_target_pct": 7.407407407407407,
+      "unclear_pct": 6.481481481481482
+    },
+    {
+      "dataset": "qasper",
+      "arm": "agnostic",
+      "questions": 93,
+      "requests": 31,
+      "direct": 8,
+      "prerequisite": 11,
+      "off_target": 58,
+      "unclear": 16,
+      "off_target_pct": 62.365591397849464,
+      "unclear_pct": 17.204301075268816
+    },
+    {
+      "dataset": "qasper",
+      "arm": "evidence_only",
+      "questions": 93,
+      "requests": 31,
+      "direct": 1,
+      "prerequisite": 10,
+      "off_target": 71,
+      "unclear": 11,
+      "off_target_pct": 76.34408602150538,
+      "unclear_pct": 11.827956989247312
+    },
+    {
+      "dataset": "qasper",
+      "arm": "specific",
+      "questions": 93,
+      "requests": 31,
+      "direct": 67,
+      "prerequisite": 20,
+      "off_target": 3,
+      "unclear": 3,
+      "off_target_pct": 3.225806451612903,
+      "unclear_pct": 3.225806451612903
+    },
+    {
+      "dataset": "all",
+      "arm": "agnostic",
+      "questions": 300,
+      "requests": 100,
+      "direct": 8,
+      "prerequisite": 25,
+      "off_target": 220,
+      "unclear": 47,
+      "off_target_pct": 73.33333333333333,
+      "unclear_pct": 15.666666666666666
+    },
+    {
+      "dataset": "all",
+      "arm": "evidence_only",
+      "questions": 300,
+      "requests": 100,
+      "direct": 1,
+      "prerequisite": 28,
+      "off_target": 247,
+      "unclear": 24,
+      "off_target_pct": 82.33333333333333,
+      "unclear_pct": 8.0
+    },
+    {
+      "dataset": "all",
+      "arm": "specific",
+      "questions": 300,
+      "requests": 100,
+      "direct": 170,
+      "prerequisite": 103,
+      "off_target": 16,
+      "unclear": 11,
+      "off_target_pct": 5.333333333333333,
+      "unclear_pct": 3.6666666666666665
     }
-  },
-  "qasper": {
-    "requests": 35,
-    "documents": 6,
-    "matched_exercise_exposures_per_arm": 309,
-    "query_fallback_requests": 2,
-    "arms": {
-      "vanilla": {
-        "query_term_focus": 90.57142857142857,
-        "disjoint_source_context": 0,
-        "query_term_recall": 20.774994834383854,
-        "exact_query_copy": 0,
-        "unique_source_records": 71,
-        "excluding_query_fallback": {
-          "requests": 33,
-          "query_term_focus": 90.0,
-          "disjoint_source_context": 0
-        }
-      },
-      "specific": {
-        "query_term_focus": 99.24242424242425,
-        "disjoint_source_context": 16.330241187384047,
-        "query_term_recall": 33.525794239592656,
-        "exact_query_copy": 5.714285714285714,
-        "unique_source_records": 309,
-        "excluding_query_fallback": {
-          "requests": 33,
-          "query_term_focus": 99.19651056014692,
-          "disjoint_source_context": 16.562377016922472
-        }
-      }
-    }
-  }
+  ]
 }
