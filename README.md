@@ -32,5 +32,23 @@ selection differ, so this is not a controlled end-to-end speedup claim.
 [Figure PDF/SVG, raw timing CSV, definitions and reproduction code](paper/contextual_cartridges/synthesis_time/README.md).
 <!-- /synthesis-time-violin -->
 
+<!-- synthetic-three-datasets-records -->
+## Synthetic-record diagnostics: LongHealth, MTOB (KE), QASPER
+
+![Matched query-term focus and non-adjacent source exposure for the synthetic datasets used by Vanilla and Contextual Cartridges](paper/contextual_cartridges/synthetic_three_datasets/synthetic_dilution_fragmentation.png)
+
+**107 fixed requests; 642 matched exercise exposures per method.** These two panels describe
+lexical query focus and source organization in the saved records, not model accuracy or verified
+multi-hop reasoning. Vanilla's zero in the second panel follows from this run's contiguous-window
+construction. Existing query fallbacks are included; a paired analysis excluding their 22 requests
+is also reported. This cohort is separate from the historical BABILong timing comparison above.
+
+[Definitions, tables, fallback sensitivity and limitations](paper/contextual_cartridges/synthetic_three_datasets/README.md) ·
+[PDF](paper/contextual_cartridges/synthetic_three_datasets/synthetic_dilution_fragmentation.pdf) ·
+[Record JSONL (gzip)](paper/contextual_cartridges/synthetic_three_datasets/records.jsonl.gz) ·
+[Reproduction script](paper/contextual_cartridges/synthetic_three_datasets/reproduce.py).
+<!-- /synthetic-three-datasets-records -->
+
 <!-- previous-report -->
 [Historical report (previous protocols)](archive/README_before_acl_20261111.md)
+

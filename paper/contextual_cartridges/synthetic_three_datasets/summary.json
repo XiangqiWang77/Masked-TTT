@@ -1,0 +1,98 @@
+{
+  "longhealth": {
+    "requests": 36,
+    "documents": 2,
+    "matched_exercise_exposures_per_arm": 169,
+    "query_fallback_requests": 13,
+    "arms": {
+      "vanilla": {
+        "query_term_focus": 61.24338624338625,
+        "disjoint_source_context": 0,
+        "query_term_recall": 15.89261355010363,
+        "exact_query_copy": 0,
+        "unique_source_records": 21,
+        "excluding_query_fallback": {
+          "requests": 23,
+          "query_term_focus": 65.42443064182194,
+          "disjoint_source_context": 0
+        }
+      },
+      "specific": {
+        "query_term_focus": 100,
+        "disjoint_source_context": 44.78835978835979,
+        "query_term_recall": 72.92659004377025,
+        "exact_query_copy": 36.11111111111111,
+        "unique_source_records": 169,
+        "excluding_query_fallback": {
+          "requests": 23,
+          "query_term_focus": 100,
+          "disjoint_source_context": 47.27743271221532
+        }
+      }
+    }
+  },
+  "mtob_ke": {
+    "requests": 36,
+    "documents": 1,
+    "matched_exercise_exposures_per_arm": 164,
+    "query_fallback_requests": 7,
+    "arms": {
+      "vanilla": {
+        "query_term_focus": 3.3895502645502646,
+        "disjoint_source_context": 0,
+        "query_term_recall": 0.6492504409171076,
+        "exact_query_copy": 0,
+        "unique_source_records": 8,
+        "excluding_query_fallback": {
+          "requests": 29,
+          "query_term_focus": 4.207717569786535,
+          "disjoint_source_context": 0
+        }
+      },
+      "specific": {
+        "query_term_focus": 84.48743386243386,
+        "disjoint_source_context": 62.66203703703703,
+        "query_term_recall": 47.36607142857142,
+        "exact_query_copy": 19.444444444444446,
+        "unique_source_records": 164,
+        "excluding_query_fallback": {
+          "requests": 29,
+          "query_term_focus": 80.74302134646962,
+          "disjoint_source_context": 67.44252873563218
+        }
+      }
+    }
+  },
+  "qasper": {
+    "requests": 35,
+    "documents": 6,
+    "matched_exercise_exposures_per_arm": 309,
+    "query_fallback_requests": 2,
+    "arms": {
+      "vanilla": {
+        "query_term_focus": 90.57142857142857,
+        "disjoint_source_context": 0,
+        "query_term_recall": 20.774994834383854,
+        "exact_query_copy": 0,
+        "unique_source_records": 71,
+        "excluding_query_fallback": {
+          "requests": 33,
+          "query_term_focus": 90.0,
+          "disjoint_source_context": 0
+        }
+      },
+      "specific": {
+        "query_term_focus": 99.24242424242425,
+        "disjoint_source_context": 16.330241187384047,
+        "query_term_recall": 33.525794239592656,
+        "exact_query_copy": 5.714285714285714,
+        "unique_source_records": 309,
+        "excluding_query_fallback": {
+          "requests": 33,
+          "query_term_focus": 99.19651056014692,
+          "disjoint_source_context": 16.562377016922472
+        }
+      }
+    }
+  }
+}

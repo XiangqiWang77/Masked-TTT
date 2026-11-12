@@ -4,6 +4,21 @@
 
 [ACL paper PDF](paper.pdf) · [LaTeX source](paper.tex) · [完整中文方法：是什么、为什么、怎么做](METHOD.zh-CN.md) · [English method source](method.tex) · [BABILong tables](RESULTS.md) · [data and reproduction](REPRODUCE.md)
 
+<!-- synthetic-three-datasets-records -->
+## New record-only comparison (12 November 2026)
+
+[**LongHealth / MTOB (KE) / QASPER synthetic-record diagnostics**](synthetic_three_datasets/README.md)
+adds a square two-panel bar figure and a fully reproducible record audit: 107 fixed requests,
+642 matched exercise exposures per method. The measurements are lexical query-term focus and
+non-adjacent source co-presentation. Neither measures answer correctness, necessary multi-hop
+reasoning, or SD/JSD effects; all query fallbacks and the construction-induced Vanilla zeros are
+disclosed. This comparison is separate from the historical BABILong figures and method snapshot below.
+
+[Figure PDF](synthetic_three_datasets/synthetic_dilution_fragmentation.pdf) ·
+[Source records and verification](synthetic_three_datasets/README.md#reproduce-and-inspect) ·
+[Earlier synthesis-time violin](synthesis_time/README.md).
+<!-- /synthetic-three-datasets-records -->
+
 Contextual Cartridges learns a query-specific native KV memory with two techniques: answer-guided synthetic question construction and conservative TracIn-guided selective self-distillation. The model and attention mechanism remain unchanged. The completed evidence below concerns synthetic source coverage and organization; the downstream accuracy and cache curves remain to be filled.
 
 **Matched synthetic-data comparison.** Qwen3-4B-Instruct-2507; the same 1,000 BABILong document–query pairs; qa1–qa10; 250 requests at each of 8K, 16K, 32K, and 64K. Each method has **26,451 exercises**, matched within request and saved split. Figures are separate PDF/SVG/PNG files, using blue–cyan and yellow–orange, with no bars or confidence intervals.
@@ -49,3 +64,4 @@ These are request-macro means. They support more concentrated and better-covered
 [Nine-panel PDF](figures/figure4_cache_grid_pending.pdf) · [Qwen3-4B panels](figures/cache_qwen3_4b_pending.pdf) · [OLMo-3-7B panels](figures/cache_olmo3_7b_pending.pdf) · [GPT-OSS-20B panels](figures/cache_gpt_oss_20b_pending.pdf) · [36 pending source rows](data/cache_results.json)
 
 The paper draft uses the [official ACL style](https://acl-org.github.io/ACLPUB/formatting.html) with embedded figure fonts. It is a working draft with incomplete experiments, not a submission-ready claim of improved downstream performance. Figures and integrity checks were prepared with the scientific-visualization workflow; the software reference is recorded in [REPRODUCE.md](REPRODUCE.md).
+

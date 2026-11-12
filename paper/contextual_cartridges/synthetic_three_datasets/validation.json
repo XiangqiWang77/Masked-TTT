@@ -1,0 +1,22 @@
+{
+  "verified_request_pairs": 107,
+  "matched_exercise_exposures_per_arm": 642,
+  "all_1284_source_contexts_matched_document": true,
+  "bar_values_recomputed_from_per_request_csv": true,
+  "visual_review": "No clipped labels, legend overlaps, or nonzero bar baselines; both metric panels retain all three datasets.",
+  "png_size": [
+    2240,
+    2240
+  ],
+  "fully_opaque": true,
+  "svg_dimensions": {
+    "width": "403.2pt",
+    "height": "403.2pt",
+    "viewBox": "0 0 403.2 403.2"
+  },
+  "pdf_pages": 1,
+  "pdf_page_points": [
+    403.2,
+    403.2
+  ]
+}
