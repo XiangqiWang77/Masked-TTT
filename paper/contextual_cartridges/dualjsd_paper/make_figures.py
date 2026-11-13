@@ -34,10 +34,11 @@ SIGN = {'longhealth': 1, 'mtob_ke': 1, 'qasper': -1}
 SCALE = {'longhealth': 100, 'mtob_ke': 1, 'qasper': 1}
 SD_AGN, SD_SPEC = 'Vanilla Cartridges (agnostic SD)', 'Specific Cartridges (specific SD)'
 DJ_AGN, DJ_SPEC = 'Agnostic + DualJSD (running)', 'Specific + DualJSD (running)'
-LINES = [(DJ_SPEC, 'Specific + DualJSD (ours)', C[0], 'o'), (DJ_AGN, 'Agnostic + DualJSD', C[1], 's'),
+LINES = [(DJ_SPEC, 'Specific + DualJSD (ours)', C[0], 'o'), (DJ_AGN, 'Vanilla + DualJSD', C[1], 's'),
          (SD_SPEC, 'Specific + SD', C[2], 'D'), (SD_AGN, 'Vanilla Cartridges', C[3], '^'),
-         ('SnapKV', 'SnapKV', C[4], 'v')]
-INVALID = {('mtob_ke', 'Whole KV'), ('mtob_ke', 'SnapKV')}
+         ('SnapKV', 'SnapKV', C[4], 'v'), ('FastKV (attention matching)', 'FastKV (attention matching)', C[5], 'P')]
+INVALID = {('mtob_ke', 'Whole KV'), ('mtob_ke', 'SnapKV'), ('mtob_ke', 'FastKV (attention matching)')}
+OPTIONAL = {'FastKV (attention matching)'}
 
 data = defaultdict(dict)  # (dataset, budget, method) -> {case: value}
 for row in csv.DictReader(CSV.open()):
@@ -109,8 +110,9 @@ for ax, d in zip(axes, DS):
     style(ax)
     entry = {}
     for bud, pct in zip(BUD, PCT):
-        shared = set.intersection(*(set(data.get((d, bud, m), {})) for m in main_methods)) if all(
-            data.get((d, bud, m)) for m in main_methods) else set()
+        req = [m for m in main_methods if m not in OPTIONAL]
+        shared = set.intersection(*(set(data.get((d, bud, m), {})) for m in req)) if all(
+            data.get((d, bud, m)) for m in req) else set()
         entry[bud] = {'n': len(shared)}
         for m in main_methods + ['Whole KV', 'Evidence Teacher']:
             vals = [data[(d, bud, m)][c] for c in shared if c in data.get((d, bud, m), {})]
@@ -118,6 +120,8 @@ for ax, d in zip(axes, DS):
     stats['main'][d] = entry
     for m, label, color, marker in LINES:
         ys = [entry[b][m] for b in BUD]
+        if (d, m) in INVALID:
+            ys = [float('nan')] * len(BUD)
         ax.plot(PCT, ys, color=color, lw=1.4 if m == DJ_SPEC else 1.1, marker=marker, ms=3.6,
                 label=label, zorder=4 if m == DJ_SPEC else 3, mec=SURFACE, mew=.5)
     placed = []
@@ -126,10 +130,11 @@ for ax, d in zip(axes, DS):
         y = st.mean([entry[b][ref] for b in BUD if not math.isnan(entry[b][ref])] or [float('nan')])
         if (d, ref) in INVALID or math.isnan(y):
             continue
-        name = 'Whole KV' if ref == 'Whole KV' else 'Evid. Teacher'
+        name = 'Whole KV' if ref == 'Whole KV' else 'Evid. ICL'
         if not (min(lo, hi) - .15 * span <= y <= max(lo, hi) + .15 * span):
-            ax.text(.98, .2, f'{name}: {y:.2f} (off axis)', transform=ax.transAxes,
-                    fontsize=5.8, color=INK2, ha='right', va='bottom')
+            pos = (.55, .03, 'center') if d == 'mtob_ke' else (.98, .2, 'right')
+            ax.text(pos[0], pos[1], f'{name}: {y:.2f} (off axis)', transform=ax.transAxes,
+                    fontsize=5.8, color=INK2, ha=pos[2], va='bottom')
             continue
         ax.axhline(y, color=NEUTRAL, lw=.9, ls=ls, zorder=2)
         ty = y
@@ -145,7 +150,7 @@ for ax, d in zip(axes, DS):
     if d == 'qasper':
         ax.invert_yaxis()
 handles, labels = axes[0].get_legend_handles_labels()
-fig.legend(handles, labels, loc='lower center', ncol=5, frameon=False, bbox_to_anchor=(.5, -.1))
+fig.legend(handles, labels, loc='upper center', ncol=3, frameon=False, bbox_to_anchor=(.5, -.01), fontsize=6.3, columnspacing=1.4)
 fig.tight_layout(w_pad=2.2)
 save(fig, 'fig2_main_results')
 

@@ -1,20 +1,20 @@
-\begin{tabular}{llrrrrrrrr}
+\begin{tabular}{llrrrrrrrrr}
 \toprule
- & Budget & $n$ & Whole KV & Evid.\ Teacher & SnapKV & Vanilla Cart. & Spec.+SD & Agn.+DualJSD & Spec.+DualJSD \\
+ & Budget & $n$ & Whole KV & Evid.\ ICL & SnapKV & FastKV (AM) & Vanilla Cart. & Vanilla+DualJSD & Spec.+SD & Spec.+DualJSD (ours) \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{LongHealth Acc.\,$\uparrow$}} & 5\% & 15 & 86.7 & 80.0 & \textbf{86.7} & 33.3 & 53.3 & 40.0 & 60.0 \\
- & 10\% & 14 & 85.7 & 78.6 & \textbf{85.7} & 64.3 & 64.3 & 57.1 & 64.3 \\
- & 15\% & 14 & 85.7 & 78.6 & \textbf{85.7} & 50.0 & 71.4 & 50.0 & 71.4 \\
- & 20\% & 14 & 85.7 & 78.6 & \textbf{85.7} & 42.9 & 57.1 & 71.4 & 71.4 \\
+\multirow{4}{*}{\shortstack[l]{LongHealth Acc.\,$\uparrow$}} & 5\% & 15 & 86.7 & 80.0 & \textbf{86.7} & 60.0 & 33.3 & 40.0 & 53.3 & 60.0 \\
+ & 10\% & 14 & 85.7 & 78.6 & \textbf{85.7} & 78.6 & 64.3 & 57.1 & 64.3 & 64.3 \\
+ & 15\% & 14 & 85.7 & 78.6 & \textbf{85.7} & 85.7 & 50.0 & 50.0 & 71.4 & 71.4 \\
+ & 20\% & 14 & 85.7 & 78.6 & \textbf{85.7} & 85.7 & 42.9 & 71.4 & 57.1 & 71.4 \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{MTOB chrF\,$\uparrow$}} & 5\% & 15 & 6.0$^\dagger$ & 27.3 & 5.8$^\dagger$ & 13.9 & \textbf{19.7} & 18.6 & 17.5 \\
- & 10\% & 14 & 6.0$^\dagger$ & 27.7 & 5.7$^\dagger$ & 17.0 & \textbf{20.0} & 17.3 & 17.1 \\
- & 15\% & 14 & 6.0$^\dagger$ & 27.7 & 5.8$^\dagger$ & 17.4 & 17.5 & 17.0 & \textbf{18.9} \\
- & 20\% & 14 & 6.0$^\dagger$ & 27.7 & 5.8$^\dagger$ & 17.0 & \textbf{19.2} & 13.8 & 15.0 \\
+\multirow{4}{*}{\shortstack[l]{MTOB chrF\,$\uparrow$}} & 5\% & 15 & 6.0$^\dagger$ & 27.3 & 5.8$^\dagger$ & 4.1$^\dagger$ & 13.9 & 18.6 & \textbf{19.7} & 17.5 \\
+ & 10\% & 14 & 6.0$^\dagger$ & 27.7 & 5.7$^\dagger$ & 4.1$^\dagger$ & 17.0 & 17.3 & \textbf{20.0} & 17.1 \\
+ & 15\% & 14 & 6.0$^\dagger$ & 27.7 & 5.8$^\dagger$ & 6.4$^\dagger$ & 17.4 & 17.0 & 17.5 & \textbf{18.9} \\
+ & 20\% & 14 & 6.0$^\dagger$ & 27.7 & 5.8$^\dagger$ & -- & 17.0 & 13.8 & \textbf{19.2} & 15.0 \\
 \midrule
-\multirow{4}{*}{\shortstack[l]{QASPER log-PPL\,$\downarrow$}} & 5\% & 15 & 2.77 & 3.76 & 2.82 & 2.02 & 1.83 & 1.90 & \textbf{1.64} \\
- & 10\% & 14 & 2.80 & 3.86 & 2.76 & 1.93 & 1.78 & 1.90 & \textbf{1.57} \\
- & 15\% & 14 & 2.80 & 3.86 & 2.81 & 2.09 & 1.88 & 1.84 & \textbf{1.29} \\
- & 20\% & 14 & 2.80 & 3.86 & 2.77 & 1.97 & 1.62 & 1.89 & \textbf{1.30} \\
+\multirow{4}{*}{\shortstack[l]{QASPER log-PPL\,$\downarrow$}} & 5\% & 15 & 2.77 & 3.76 & 2.82 & 2.75 & 2.02 & 1.90 & 1.83 & \textbf{1.64} \\
+ & 10\% & 14 & 2.80 & 3.86 & 2.76 & 2.63 & 1.93 & 1.90 & 1.78 & \textbf{1.57} \\
+ & 15\% & 14 & 2.80 & 3.86 & 2.81 & 2.68 & 2.09 & 1.84 & 1.88 & \textbf{1.29} \\
+ & 20\% & 14 & 2.80 & 3.86 & 2.77 & 2.60 & 1.97 & 1.89 & 1.62 & \textbf{1.30} \\
 \bottomrule
 \end{tabular}

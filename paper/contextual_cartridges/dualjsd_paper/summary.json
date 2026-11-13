@@ -1,0 +1,601 @@
+{
+  "longhealth/r05": {
+    "matched_core_cases": 15,
+    "methods": {
+      "Whole KV": {
+        "n": 15,
+        "mean": 0.8666666666666667,
+        "available_total": 36
+      },
+      "Evidence Teacher": {
+        "n": 15,
+        "mean": 0.8,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 15,
+        "mean": 0.8666666666666667,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 15,
+        "mean": 0.3333333333333333,
+        "available_total": 15
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 15,
+        "mean": 0.5333333333333333,
+        "available_total": 15
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 15,
+        "mean": 0.5333333333333333,
+        "available_total": 15
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 15,
+        "mean": 0.4,
+        "available_total": 24
+      },
+      "Specific + DualJSD (running)": {
+        "n": 15,
+        "mean": 0.6,
+        "available_total": 24
+      },
+      "FastKV (attention matching)": {
+        "n": 15,
+        "mean": 0.6,
+        "available_total": 36
+      }
+    }
+  },
+  "longhealth/r10": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 0.7857142857142857,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 0.6428571428571429,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 0.6428571428571429,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 0.7142857142857143,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 0.5714285714285714,
+        "available_total": 24
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 0.6428571428571429,
+        "available_total": 24
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 0.7857142857142857,
+        "available_total": 36
+      }
+    }
+  },
+  "longhealth/r15": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 0.7857142857142857,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 0.5,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 0.7142857142857143,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 0.5714285714285714,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 0.5,
+        "available_total": 24
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 0.7142857142857143,
+        "available_total": 24
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      }
+    }
+  },
+  "longhealth/r20": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 0.7857142857142857,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 0.42857142857142855,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 0.5714285714285714,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 0.6428571428571429,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 0.7142857142857143,
+        "available_total": 24
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 0.7142857142857143,
+        "available_total": 24
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 0.8571428571428571,
+        "available_total": 36
+      }
+    }
+  },
+  "mtob_ke/r05": {
+    "matched_core_cases": 15,
+    "methods": {
+      "Whole KV": {
+        "n": 15,
+        "mean": 6.049476324956503,
+        "available_total": 15
+      },
+      "Evidence Teacher": {
+        "n": 15,
+        "mean": 27.255554087727884,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 15,
+        "mean": 5.784515386287145,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 15,
+        "mean": 13.860129561985124,
+        "available_total": 15
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 15,
+        "mean": 19.741886803751868,
+        "available_total": 15
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 15,
+        "mean": 15.22509851423713,
+        "available_total": 15
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 15,
+        "mean": 18.59728640120497,
+        "available_total": 26
+      },
+      "Specific + DualJSD (running)": {
+        "n": 15,
+        "mean": 17.45333193729356,
+        "available_total": 26
+      },
+      "FastKV (attention matching)": {
+        "n": 15,
+        "mean": 4.0535266867691915,
+        "available_total": 36
+      }
+    }
+  },
+  "mtob_ke/r10": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 6.00983002750177,
+        "available_total": 15
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 27.659864952924313,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 5.720033614858593,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 17.028457677468605,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 19.982361669375113,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 22.464271278042936,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 17.33659457174522,
+        "available_total": 26
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 17.087155654167404,
+        "available_total": 26
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 4.105317609976528,
+        "available_total": 36
+      }
+    }
+  },
+  "mtob_ke/r15": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 6.00983002750177,
+        "available_total": 15
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 27.659864952924313,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 5.819240764709265,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 17.43388423263007,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 17.451363585233736,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 17.080676982155474,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 17.01993386461419,
+        "available_total": 25
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 18.882636663916337,
+        "available_total": 25
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 6.439717946330797,
+        "available_total": 36
+      }
+    }
+  },
+  "mtob_ke/r20": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 6.00983002750177,
+        "available_total": 15
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 27.659864952924313,
+        "available_total": 36
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 5.832243208446366,
+        "available_total": 36
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 16.967925733585936,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 19.21163860369311,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 13,
+        "mean": 16.661378354020414,
+        "available_total": 13
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 13.776109686121965,
+        "available_total": 25
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 15.035450915077398,
+        "available_total": 25
+      },
+      "FastKV (attention matching)": {
+        "n": 0,
+        "available_total": 0
+      }
+    }
+  },
+  "qasper/r05": {
+    "matched_core_cases": 15,
+    "methods": {
+      "Whole KV": {
+        "n": 15,
+        "mean": 2.773550335566203,
+        "available_total": 35
+      },
+      "Evidence Teacher": {
+        "n": 15,
+        "mean": 3.7612099091211957,
+        "available_total": 35
+      },
+      "SnapKV": {
+        "n": 15,
+        "mean": 2.81822882493337,
+        "available_total": 35
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 15,
+        "mean": 2.0165032664934794,
+        "available_total": 15
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 15,
+        "mean": 1.826142704486847,
+        "available_total": 15
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 15,
+        "mean": 1.9079140663146972,
+        "available_total": 15
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 15,
+        "mean": 1.897121054927508,
+        "available_total": 23
+      },
+      "Specific + DualJSD (running)": {
+        "n": 15,
+        "mean": 1.6393147826194763,
+        "available_total": 23
+      },
+      "FastKV (attention matching)": {
+        "n": 15,
+        "mean": 2.747845721244812,
+        "available_total": 35
+      }
+    }
+  },
+  "qasper/r10": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 2.800587160246713,
+        "available_total": 35
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 3.864010921546391,
+        "available_total": 35
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 2.7621730055127824,
+        "available_total": 35
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 1.9326141476631165,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 1.777397177049092,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 1.81996331683227,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 1.9035557838422912,
+        "available_total": 23
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 1.5697197509663445,
+        "available_total": 23
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 2.6296737619808743,
+        "available_total": 35
+      }
+    }
+  },
+  "qasper/r15": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 2.800587160246713,
+        "available_total": 35
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 3.864010921546391,
+        "available_total": 35
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 2.805923214980534,
+        "available_total": 35
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 2.0850108798061098,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 1.882620734827859,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 1.7617308284555162,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 1.8425112281526839,
+        "available_total": 23
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 1.2905622592994146,
+        "available_total": 23
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 2.683339144502367,
+        "available_total": 35
+      }
+    }
+  },
+  "qasper/r20": {
+    "matched_core_cases": 14,
+    "methods": {
+      "Whole KV": {
+        "n": 14,
+        "mean": 2.800587160246713,
+        "available_total": 35
+      },
+      "Evidence Teacher": {
+        "n": 14,
+        "mean": 3.864010921546391,
+        "available_total": 35
+      },
+      "SnapKV": {
+        "n": 14,
+        "mean": 2.768079706600734,
+        "available_total": 35
+      },
+      "Vanilla Cartridges (agnostic SD)": {
+        "n": 14,
+        "mean": 1.9683997886521476,
+        "available_total": 14
+      },
+      "Specific Cartridges (specific SD)": {
+        "n": 14,
+        "mean": 1.6234383625643594,
+        "available_total": 14
+      },
+      "Contextual (specific + ED-JSD)": {
+        "n": 14,
+        "mean": 2.02942099741527,
+        "available_total": 14
+      },
+      "Agnostic + DualJSD (running)": {
+        "n": 14,
+        "mean": 1.891484837446894,
+        "available_total": 22
+      },
+      "Specific + DualJSD (running)": {
+        "n": 14,
+        "mean": 1.3030874580144882,
+        "available_total": 22
+      },
+      "FastKV (attention matching)": {
+        "n": 14,
+        "mean": 2.5951001133237566,
+        "available_total": 35
+      }
+    }
+  }
+}

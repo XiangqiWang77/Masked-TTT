@@ -112,6 +112,7 @@
         "Specific Cartridges (specific SD)": 53.333333333333336,
         "Vanilla Cartridges (agnostic SD)": 33.33333333333333,
         "SnapKV": 86.66666666666667,
+        "FastKV (attention matching)": 60.0,
         "Whole KV": 86.66666666666667,
         "Evidence Teacher": 80.0
       },
@@ -122,6 +123,7 @@
         "Specific Cartridges (specific SD)": 64.28571428571429,
         "Vanilla Cartridges (agnostic SD)": 64.28571428571429,
         "SnapKV": 85.71428571428571,
+        "FastKV (attention matching)": 78.57142857142857,
         "Whole KV": 85.71428571428571,
         "Evidence Teacher": 78.57142857142857
       },
@@ -132,6 +134,7 @@
         "Specific Cartridges (specific SD)": 71.42857142857143,
         "Vanilla Cartridges (agnostic SD)": 50.0,
         "SnapKV": 85.71428571428571,
+        "FastKV (attention matching)": 85.71428571428571,
         "Whole KV": 85.71428571428571,
         "Evidence Teacher": 78.57142857142857
       },
@@ -142,6 +145,7 @@
         "Specific Cartridges (specific SD)": 57.14285714285714,
         "Vanilla Cartridges (agnostic SD)": 42.857142857142854,
         "SnapKV": 85.71428571428571,
+        "FastKV (attention matching)": 85.71428571428571,
         "Whole KV": 85.71428571428571,
         "Evidence Teacher": 78.57142857142857
       }
@@ -154,6 +158,7 @@
         "Specific Cartridges (specific SD)": 19.741886803751868,
         "Vanilla Cartridges (agnostic SD)": 13.860129561985124,
         "SnapKV": 5.784515386287145,
+        "FastKV (attention matching)": 4.0535266867691915,
         "Whole KV": 6.049476324956503,
         "Evidence Teacher": 27.255554087727884
       },
@@ -164,6 +169,7 @@
         "Specific Cartridges (specific SD)": 19.982361669375113,
         "Vanilla Cartridges (agnostic SD)": 17.028457677468605,
         "SnapKV": 5.720033614858593,
+        "FastKV (attention matching)": 4.105317609976528,
         "Whole KV": 6.00983002750177,
         "Evidence Teacher": 27.659864952924313
       },
@@ -174,6 +180,7 @@
         "Specific Cartridges (specific SD)": 17.451363585233736,
         "Vanilla Cartridges (agnostic SD)": 17.43388423263007,
         "SnapKV": 5.819240764709265,
+        "FastKV (attention matching)": 6.439717946330797,
         "Whole KV": 6.00983002750177,
         "Evidence Teacher": 27.659864952924313
       },
@@ -184,6 +191,7 @@
         "Specific Cartridges (specific SD)": 19.21163860369311,
         "Vanilla Cartridges (agnostic SD)": 16.967925733585936,
         "SnapKV": 5.832243208446366,
+        "FastKV (attention matching)": NaN,
         "Whole KV": 6.00983002750177,
         "Evidence Teacher": 27.659864952924313
       }
@@ -196,6 +204,7 @@
         "Specific Cartridges (specific SD)": 1.826142704486847,
         "Vanilla Cartridges (agnostic SD)": 2.0165032664934794,
         "SnapKV": 2.81822882493337,
+        "FastKV (attention matching)": 2.747845721244812,
         "Whole KV": 2.773550335566203,
         "Evidence Teacher": 3.7612099091211957
       },
@@ -206,6 +215,7 @@
         "Specific Cartridges (specific SD)": 1.777397177049092,
         "Vanilla Cartridges (agnostic SD)": 1.9326141476631165,
         "SnapKV": 2.7621730055127824,
+        "FastKV (attention matching)": 2.6296737619808743,
         "Whole KV": 2.800587160246713,
         "Evidence Teacher": 3.864010921546391
       },
@@ -216,6 +226,7 @@
         "Specific Cartridges (specific SD)": 1.882620734827859,
         "Vanilla Cartridges (agnostic SD)": 2.0850108798061098,
         "SnapKV": 2.805923214980534,
+        "FastKV (attention matching)": 2.683339144502367,
         "Whole KV": 2.800587160246713,
         "Evidence Teacher": 3.864010921546391
       },
@@ -226,6 +237,7 @@
         "Specific Cartridges (specific SD)": 1.6234383625643594,
         "Vanilla Cartridges (agnostic SD)": 1.9683997886521476,
         "SnapKV": 2.768079706600734,
+        "FastKV (attention matching)": 2.5951001133237566,
         "Whole KV": 2.800587160246713,
         "Evidence Teacher": 3.864010921546391
       }

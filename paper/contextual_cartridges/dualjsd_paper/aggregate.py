@@ -18,6 +18,7 @@ DATA = '/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_cartridges_figu
 NINE = '/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/contextual_nine_methods_devel6_20261111_v1'
 SNAP = '/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cartridges_ratio_baselines_20261112_v1/snapkv/results/snapkv'
 FAST = '/nfs/roberts/project/pi_mg269/shared/da839/Query_Cart/results/cartridges_ratio_syn15_fast_20261112_v2/results'
+FASTKV = '/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/cartridges_fastkv_ratio_continuation_20261113_v1/results/fast_kv'
 DUAL = '/nfs/roberts/project/pi_mg269/shared/da839/Query_Cart/results/cartridges_ratio_syn15_dual_view_jsd_20261112_v1/results'
 OUT = Path(__file__).resolve().parent
 DATASETS = ('longhealth', 'mtob_ke', 'qasper')
@@ -46,7 +47,8 @@ methods_budget = {'SnapKV': f'{SNAP}/{{d}}/{{b}}/*.json',
                   'Specific Cartridges (specific SD)': f'{FAST}/specific_sd/{{d}}/{{b}}/*.json',
                   'Contextual (specific + ED-JSD)': f'{FAST}/contextual_cartridges/{{d}}/{{b}}/*.json',
                   'Agnostic + DualJSD (running)': f'{DUAL}/agnostic_dual_jsd/{{d}}/{{b}}/*.json',
-                  'Specific + DualJSD (running)': f'{DUAL}/specific_dual_jsd/{{d}}/{{b}}/*.json'}
+                  'Specific + DualJSD (running)': f'{DUAL}/specific_dual_jsd/{{d}}/{{b}}/*.json',
+                  'FastKV (attention matching)': f'{FASTKV}/{{d}}/{{b}}/*.json'}
 CORE = ['Whole KV', 'Evidence Teacher', 'SnapKV', 'Vanilla Cartridges (agnostic SD)',
         'Specific Cartridges (specific SD)']
 

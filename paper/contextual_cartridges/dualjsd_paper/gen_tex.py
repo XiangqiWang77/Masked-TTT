@@ -40,9 +40,10 @@ for d, tag in (('longhealth', 'LH'), ('qasper', 'QA')):
 a = S['audit']['mtob_ke/specific']; macro('AudMTW', f"{a['lpw']:.2f}"); macro('AudMTE', f"{a['lpe']:.2f}")
 (HERE / 'macros.tex').write_text('\n'.join(lines) + '\n')
 
-COLS = [('Whole KV', 'Whole KV'), ('Evidence Teacher', 'Evid.\\ Teacher'), ('SnapKV', 'SnapKV'),
-        ('Vanilla Cartridges (agnostic SD)', 'Vanilla Cart.'), ('Specific Cartridges (specific SD)', 'Spec.+SD'),
-        ('Agnostic + DualJSD (running)', 'Agn.+DualJSD'), ('Specific + DualJSD (running)', 'Spec.+DualJSD')]
+COLS = [('Whole KV', 'Whole KV'), ('Evidence Teacher', 'Evid.\\ ICL'), ('SnapKV', 'SnapKV'),
+        ('FastKV (attention matching)', 'FastKV (AM)'),
+        ('Vanilla Cartridges (agnostic SD)', 'Vanilla Cart.'), ('Agnostic + DualJSD (running)', 'Vanilla+DualJSD'),
+        ('Specific Cartridges (specific SD)', 'Spec.+SD'), ('Specific + DualJSD (running)', 'Spec.+DualJSD (ours)')]
 NAME = {'longhealth': 'LongHealth Acc.\\,$\\uparrow$', 'mtob_ke': 'MTOB chrF\\,$\\uparrow$', 'qasper': 'QASPER log-PPL\\,$\\downarrow$'}
 SIGN = {'longhealth': 1, 'mtob_ke': 1, 'qasper': -1}
 rows = []
@@ -50,14 +51,14 @@ for d in DS:
     for b, pct in zip(('r05', 'r10', 'r15', 'r20'), (5, 10, 15, 20)):
         e = S['main'][d][b]
         vals = {m: e.get(m, float('nan')) for m, _ in COLS}
-        learned = [m for m, _ in COLS[2:] if not math.isnan(vals[m])]
+        learned = [m for m, _ in COLS[2:] if not math.isnan(vals[m]) and not (d == 'mtob_ke' and m in ('SnapKV', 'FastKV (attention matching)'))]
         best = max(learned, key=lambda m: SIGN[d] * vals[m]) if learned else None
         cells = []
         for m, _ in COLS:
             v = vals[m]
             if math.isnan(v): cells.append('--'); continue
             text = f'{v:.1f}' if d != 'qasper' else f'{v:.2f}'
-            if d == 'mtob_ke' and m in ('Whole KV', 'SnapKV'): text += '$^\\dagger$'
+            if d == 'mtob_ke' and m in ('Whole KV', 'SnapKV', 'FastKV (attention matching)'): text += '$^\\dagger$'
             if m == best: text = f'\\textbf{{{text}}}'
             cells.append(text)
         head = f'\\multirow{{4}}{{*}}{{\\shortstack[l]{{{NAME[d]}}}}}' if pct == 5 else ''

@@ -48,20 +48,20 @@ where $S_t$ is the student's distribution with the trainable KV. When the views 
 \paragraph{What is guaranteed.} For any token $y$, $M_t(y)\ge \tfrac12 \max(P_{E,t}(y),P_{W,t}(y))$, so $-\log_2 M_t(y)$ is at most one bit worse than either view and, by Jensen, no worse than their average. This bounds the \emph{target}; it does not guarantee that a small student exceeds either view, because $E$ and $W$ are the same model and their errors correlate.
 
 \section{Experimental setup}
-Qwen3-4B-Instruct-2507, frozen. LongHealth (accuracy), MTOB Kalamang$\to$English (chrF) and QASPER (reference log-perplexity, lower is better). Native KV budgets are 5/10/15/20\% of the measured Whole-KV prefix. All Cartridge arms share the request's initialization, seed, 15 trajectories, learning rate 0.04, accumulated batch 4, at most 32 updates and the same training-loss plateau rule; arms are compared \emph{cell by cell} on identical requests and budgets. Baselines: Whole KV (full document in context), Evidence Teacher (evidence only, no compression), SnapKV at the same byte budget. FastKV (attention matching) at the same budgets is running and not yet included. LongHealth predictions are re-scored by one unique-option extractor.
+Qwen3-4B-Instruct-2507, frozen. LongHealth (accuracy), MTOB Kalamang$\to$English (chrF) and QASPER (reference log-perplexity, lower is better). Native KV budgets are 5/10/15/20\% of the measured Whole-KV prefix. All Cartridge arms share the request's initialization, seed, 15 trajectories, learning rate 0.04, accumulated batch 4, at most 32 updates and the same training-loss plateau rule; arms are compared \emph{cell by cell} on identical requests and budgets. Baselines: Whole KV (full document in context), Evidence ICL (evidence in context, no compression), SnapKV and FastKV (attention matching) at the same byte budget (FastKV MTOB 20\% did not finish). LongHealth predictions are re-scored by one unique-option extractor.
 
 \section{Results}
 \begin{table*}[t]
 \centering\small\setlength{\tabcolsep}{4pt}
 \resizebox{\textwidth}{!}{\input{table_main}}
-\caption{Matched results on the cases every listed method completed ($n$ per cell). Bold: best compressed method. $^\dagger$MTOB Whole KV and SnapKV produce garbled text at the 261K-token window (a baseline-pipeline failure: the same context yields coherent distributions in our scorer) and are not valid comparisons. QASPER log-PPL rewards the answer format that trained Cartridges learn from synthetic data, so values below Whole KV partly reflect format adaptation.}
+\caption{Matched results on the cases every listed method completed ($n$ per cell). Bold: best compressed method. $^\dagger$MTOB Whole KV, SnapKV and FastKV produce garbled text at the 261K-token window (a baseline-pipeline failure: the same context yields coherent distributions in our scorer) and are not valid comparisons. QASPER log-PPL rewards the answer format that trained Cartridges learn from synthetic data, so values below Whole KV partly reflect format adaptation.}
 \label{tab:main}
 \end{table*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/fig2_main_results.pdf}
-\caption{Quality versus native KV budget on matched cases. Dashed/dotted lines: Whole KV and Evidence Teacher (no compression). QASPER axis inverted so that up is better.}
+\caption{Quality versus native KV budget on matched cases. Dashed/dotted lines: Whole KV and Evidence ICL (no compression). MTOB Whole KV, SnapKV and FastKV are omitted (garbled outputs, see Table~\ref{tab:main}). QASPER axis inverted so that up is better.}
 \label{fig:main}
 \end{figure*}
 
@@ -88,7 +88,7 @@ The two views genuinely disagree: on specific data, \JsdLHSpec\%, \JsdMTSpec\% a
 \end{figure*}
 
 \section{Limitations}
-Results cover the requests completed within fixed six-hour allocations, ordered by request index rather than sampled at random; cells at different budgets of one request share training targets and are correlated, so the effective sample size is the number of requests. No significance tests are claimed. DualJSD hurts MTOB with specific data. MTOB Whole KV and SnapKV baselines must be re-run; FastKV results are not yet included. QASPER log-PPL partly measures answer-format adaptation. Gold-evidence audits use annotations only for evaluation and exist only for LongHealth and QASPER.
+Results cover the requests completed within fixed six-hour allocations, ordered by request index rather than sampled at random; cells at different budgets of one request share training targets and are correlated, so the effective sample size is the number of requests. No significance tests are claimed. DualJSD hurts MTOB with specific data. MTOB Whole KV, SnapKV and FastKV baselines must be re-run. QASPER log-PPL partly measures answer-format adaptation. Gold-evidence audits use annotations only for evaluation and exist only for LongHealth and QASPER.
 
 \begin{thebibliography}{1}
 \bibitem[{Eyuboglu et~al.(2025)}]{eyuboglu2025cartridges}

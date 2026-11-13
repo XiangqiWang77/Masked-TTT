@@ -119,6 +119,21 @@ longhealth,r05,patient_01-q12,Specific + DualJSD (running),0.0
 longhealth,r05,patient_01-q13,Specific + DualJSD (running),1.0
 longhealth,r05,patient_01-q14,Specific + DualJSD (running),0.0
 longhealth,r05,patient_01-q15,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q00,FastKV (attention matching),0.0
+longhealth,r05,patient_01-q01,FastKV (attention matching),0.0
+longhealth,r05,patient_01-q02,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q03,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q04,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q05,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q06,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q07,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q08,FastKV (attention matching),0.0
+longhealth,r05,patient_01-q09,FastKV (attention matching),0.0
+longhealth,r05,patient_01-q10,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q12,FastKV (attention matching),1.0
+longhealth,r05,patient_01-q13,FastKV (attention matching),0.0
+longhealth,r05,patient_01-q14,FastKV (attention matching),0.0
+longhealth,r05,patient_01-q15,FastKV (attention matching),1.0
 longhealth,r10,patient_01-q00,Whole KV,1.0
 longhealth,r10,patient_01-q01,Whole KV,1.0
 longhealth,r10,patient_01-q02,Whole KV,1.0
@@ -231,6 +246,20 @@ longhealth,r10,patient_01-q10,Specific + DualJSD (running),0.0
 longhealth,r10,patient_01-q12,Specific + DualJSD (running),1.0
 longhealth,r10,patient_01-q13,Specific + DualJSD (running),1.0
 longhealth,r10,patient_01-q14,Specific + DualJSD (running),0.0
+longhealth,r10,patient_01-q00,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q01,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q02,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q03,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q04,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q05,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q06,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q07,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q08,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q09,FastKV (attention matching),0.0
+longhealth,r10,patient_01-q10,FastKV (attention matching),0.0
+longhealth,r10,patient_01-q12,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q13,FastKV (attention matching),1.0
+longhealth,r10,patient_01-q14,FastKV (attention matching),0.0
 longhealth,r15,patient_01-q00,Whole KV,1.0
 longhealth,r15,patient_01-q01,Whole KV,1.0
 longhealth,r15,patient_01-q02,Whole KV,1.0
@@ -343,6 +372,20 @@ longhealth,r15,patient_01-q10,Specific + DualJSD (running),0.0
 longhealth,r15,patient_01-q12,Specific + DualJSD (running),1.0
 longhealth,r15,patient_01-q13,Specific + DualJSD (running),0.0
 longhealth,r15,patient_01-q14,Specific + DualJSD (running),0.0
+longhealth,r15,patient_01-q00,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q01,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q02,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q03,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q04,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q05,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q06,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q07,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q08,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q09,FastKV (attention matching),0.0
+longhealth,r15,patient_01-q10,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q12,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q13,FastKV (attention matching),1.0
+longhealth,r15,patient_01-q14,FastKV (attention matching),0.0
 longhealth,r20,patient_01-q00,Whole KV,1.0
 longhealth,r20,patient_01-q01,Whole KV,1.0
 longhealth,r20,patient_01-q02,Whole KV,1.0
@@ -455,6 +498,20 @@ longhealth,r20,patient_01-q10,Specific + DualJSD (running),0.0
 longhealth,r20,patient_01-q12,Specific + DualJSD (running),1.0
 longhealth,r20,patient_01-q13,Specific + DualJSD (running),0.0
 longhealth,r20,patient_01-q14,Specific + DualJSD (running),0.0
+longhealth,r20,patient_01-q00,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q01,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q02,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q03,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q04,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q05,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q06,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q07,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q08,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q09,FastKV (attention matching),0.0
+longhealth,r20,patient_01-q10,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q12,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q13,FastKV (attention matching),1.0
+longhealth,r20,patient_01-q14,FastKV (attention matching),0.0
 mtob_ke,r05,mtob-ke-001,Whole KV,8.99627682745302
 mtob_ke,r05,mtob-ke-002,Whole KV,7.629342899466177
 mtob_ke,r05,mtob-ke-003,Whole KV,8.942770957006365
@@ -575,6 +632,21 @@ mtob_ke,r05,mtob-ke-012,Specific + DualJSD (running),32.02398416353169
 mtob_ke,r05,mtob-ke-013,Specific + DualJSD (running),9.703433358684283
 mtob_ke,r05,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
 mtob_ke,r05,mtob-ke-015,Specific + DualJSD (running),10.644771521398711
+mtob_ke,r05,mtob-ke-001,FastKV (attention matching),5.530672853134729
+mtob_ke,r05,mtob-ke-002,FastKV (attention matching),4.801695106339648
+mtob_ke,r05,mtob-ke-003,FastKV (attention matching),4.597928778256646
+mtob_ke,r05,mtob-ke-004,FastKV (attention matching),3.2739723397925
+mtob_ke,r05,mtob-ke-005,FastKV (attention matching),3.3511923046806764
+mtob_ke,r05,mtob-ke-006,FastKV (attention matching),2.9585798816568047
+mtob_ke,r05,mtob-ke-007,FastKV (attention matching),4.831854533168481
+mtob_ke,r05,mtob-ke-008,FastKV (attention matching),3.7603661089049543
+mtob_ke,r05,mtob-ke-009,FastKV (attention matching),4.500898028137862
+mtob_ke,r05,mtob-ke-010,FastKV (attention matching),5.629500254289462
+mtob_ke,r05,mtob-ke-011,FastKV (attention matching),2.344401269717137
+mtob_ke,r05,mtob-ke-012,FastKV (attention matching),5.020950358589681
+mtob_ke,r05,mtob-ke-013,FastKV (attention matching),4.98461099531122
+mtob_ke,r05,mtob-ke-014,FastKV (attention matching),2.677448337825696
+mtob_ke,r05,mtob-ke-015,FastKV (attention matching),2.5388291517323776
 mtob_ke,r10,mtob-ke-001,Whole KV,8.99627682745302
 mtob_ke,r10,mtob-ke-002,Whole KV,7.629342899466177
 mtob_ke,r10,mtob-ke-003,Whole KV,8.942770957006365
@@ -687,6 +759,20 @@ mtob_ke,r10,mtob-ke-011,Specific + DualJSD (running),16.05009245121464
 mtob_ke,r10,mtob-ke-012,Specific + DualJSD (running),16.515295698557207
 mtob_ke,r10,mtob-ke-013,Specific + DualJSD (running),12.222836806771696
 mtob_ke,r10,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
+mtob_ke,r10,mtob-ke-001,FastKV (attention matching),4.5365267464175725
+mtob_ke,r10,mtob-ke-002,FastKV (attention matching),3.991514399366828
+mtob_ke,r10,mtob-ke-003,FastKV (attention matching),5.999548187536927
+mtob_ke,r10,mtob-ke-004,FastKV (attention matching),3.1521701568871383
+mtob_ke,r10,mtob-ke-005,FastKV (attention matching),3.3651606893339547
+mtob_ke,r10,mtob-ke-006,FastKV (attention matching),2.6421480332557805
+mtob_ke,r10,mtob-ke-007,FastKV (attention matching),6.108297220586561
+mtob_ke,r10,mtob-ke-008,FastKV (attention matching),4.300495710919338
+mtob_ke,r10,mtob-ke-009,FastKV (attention matching),6.612212728943553
+mtob_ke,r10,mtob-ke-010,FastKV (attention matching),5.697956148165588
+mtob_ke,r10,mtob-ke-011,FastKV (attention matching),2.1726989741967064
+mtob_ke,r10,mtob-ke-012,FastKV (attention matching),2.502453026375526
+mtob_ke,r10,mtob-ke-013,FastKV (attention matching),3.979201703167614
+mtob_ke,r10,mtob-ke-014,FastKV (attention matching),2.4140628145183087
 mtob_ke,r15,mtob-ke-001,Whole KV,8.99627682745302
 mtob_ke,r15,mtob-ke-002,Whole KV,7.629342899466177
 mtob_ke,r15,mtob-ke-003,Whole KV,8.942770957006365
@@ -799,6 +885,20 @@ mtob_ke,r15,mtob-ke-011,Specific + DualJSD (running),16.05009245121464
 mtob_ke,r15,mtob-ke-012,Specific + DualJSD (running),33.68117294714493
 mtob_ke,r15,mtob-ke-013,Specific + DualJSD (running),9.388016704684954
 mtob_ke,r15,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
+mtob_ke,r15,mtob-ke-001,FastKV (attention matching),5.78790191548637
+mtob_ke,r15,mtob-ke-002,FastKV (attention matching),5.801265603587084
+mtob_ke,r15,mtob-ke-003,FastKV (attention matching),10.056587055821055
+mtob_ke,r15,mtob-ke-004,FastKV (attention matching),3.718222677020005
+mtob_ke,r15,mtob-ke-005,FastKV (attention matching),3.641893347775701
+mtob_ke,r15,mtob-ke-006,FastKV (attention matching),6.212603804713638
+mtob_ke,r15,mtob-ke-007,FastKV (attention matching),11.022235065713822
+mtob_ke,r15,mtob-ke-008,FastKV (attention matching),5.7532251352476065
+mtob_ke,r15,mtob-ke-009,FastKV (attention matching),6.060264082063333
+mtob_ke,r15,mtob-ke-010,FastKV (attention matching),6.986582788706561
+mtob_ke,r15,mtob-ke-011,FastKV (attention matching),5.903849940829416
+mtob_ke,r15,mtob-ke-012,FastKV (attention matching),7.21061522916039
+mtob_ke,r15,mtob-ke-013,FastKV (attention matching),6.422389956999788
+mtob_ke,r15,mtob-ke-014,FastKV (attention matching),5.578414645506381
 mtob_ke,r20,mtob-ke-001,Whole KV,8.99627682745302
 mtob_ke,r20,mtob-ke-002,Whole KV,7.629342899466177
 mtob_ke,r20,mtob-ke-003,Whole KV,8.942770957006365
@@ -1030,6 +1130,21 @@ qasper,r05,qasper-015-1703.04617,Specific + DualJSD (running),4.020887851715088
 qasper,r05,qasper-016-1703.04617,Specific + DualJSD (running),0.6672096252441406
 qasper,r05,qasper-017-1704.05572,Specific + DualJSD (running),3.0216877460479736
 qasper,r05,qasper-018-1704.05572,Specific + DualJSD (running),1.67471444606781
+qasper,r05,qasper-000-1908.06606,FastKV (attention matching),3.0416672229766846
+qasper,r05,qasper-001-1908.06606,FastKV (attention matching),3.471733570098877
+qasper,r05,qasper-003-1908.06606,FastKV (attention matching),1.9142566919326782
+qasper,r05,qasper-004-1908.06606,FastKV (attention matching),1.8292502164840698
+qasper,r05,qasper-005-1908.06606,FastKV (attention matching),3.069624662399292
+qasper,r05,qasper-007-1908.06606,FastKV (attention matching),2.363154888153076
+qasper,r05,qasper-010-1909.00542,FastKV (attention matching),3.9863836765289307
+qasper,r05,qasper-011-1909.00542,FastKV (attention matching),3.4265146255493164
+qasper,r05,qasper-012-1909.00542,FastKV (attention matching),2.529982566833496
+qasper,r05,qasper-013-1703.04617,FastKV (attention matching),2.8487017154693604
+qasper,r05,qasper-014-1703.04617,FastKV (attention matching),1.491786003112793
+qasper,r05,qasper-015-1703.04617,FastKV (attention matching),4.620401382446289
+qasper,r05,qasper-016-1703.04617,FastKV (attention matching),1.7425864934921265
+qasper,r05,qasper-017-1704.05572,FastKV (attention matching),2.4249963760375977
+qasper,r05,qasper-018-1704.05572,FastKV (attention matching),2.4566457271575928
 qasper,r10,qasper-000-1908.06606,Whole KV,2.969276189804077
 qasper,r10,qasper-001-1908.06606,Whole KV,2.974559783935547
 qasper,r10,qasper-003-1908.06606,Whole KV,2.6636366844177246
@@ -1142,6 +1257,20 @@ qasper,r10,qasper-014-1703.04617,Specific + DualJSD (running),1.3359278440475464
 qasper,r10,qasper-015-1703.04617,Specific + DualJSD (running),3.318297863006592
 qasper,r10,qasper-016-1703.04617,Specific + DualJSD (running),0.9492248892784119
 qasper,r10,qasper-017-1704.05572,Specific + DualJSD (running),1.7223289012908936
+qasper,r10,qasper-000-1908.06606,FastKV (attention matching),3.0058979988098145
+qasper,r10,qasper-001-1908.06606,FastKV (attention matching),2.515031576156616
+qasper,r10,qasper-003-1908.06606,FastKV (attention matching),1.1550182104110718
+qasper,r10,qasper-004-1908.06606,FastKV (attention matching),1.752921462059021
+qasper,r10,qasper-005-1908.06606,FastKV (attention matching),2.9639499187469482
+qasper,r10,qasper-007-1908.06606,FastKV (attention matching),2.0072314739227295
+qasper,r10,qasper-010-1909.00542,FastKV (attention matching),3.251640796661377
+qasper,r10,qasper-011-1909.00542,FastKV (attention matching),3.018857717514038
+qasper,r10,qasper-012-1909.00542,FastKV (attention matching),2.466365098953247
+qasper,r10,qasper-013-1703.04617,FastKV (attention matching),3.871891736984253
+qasper,r10,qasper-014-1703.04617,FastKV (attention matching),1.5929509401321411
+qasper,r10,qasper-015-1703.04617,FastKV (attention matching),5.232244491577148
+qasper,r10,qasper-016-1703.04617,FastKV (attention matching),1.535231590270996
+qasper,r10,qasper-017-1704.05572,FastKV (attention matching),2.446199655532837
 qasper,r15,qasper-000-1908.06606,Whole KV,2.969276189804077
 qasper,r15,qasper-001-1908.06606,Whole KV,2.974559783935547
 qasper,r15,qasper-003-1908.06606,Whole KV,2.6636366844177246
@@ -1254,6 +1383,20 @@ qasper,r15,qasper-014-1703.04617,Specific + DualJSD (running),1.5946718454360962
 qasper,r15,qasper-015-1703.04617,Specific + DualJSD (running),1.7541295289993286
 qasper,r15,qasper-016-1703.04617,Specific + DualJSD (running),0.4780676066875458
 qasper,r15,qasper-017-1704.05572,Specific + DualJSD (running),1.6370645761489868
+qasper,r15,qasper-000-1908.06606,FastKV (attention matching),2.5843286514282227
+qasper,r15,qasper-001-1908.06606,FastKV (attention matching),3.3231184482574463
+qasper,r15,qasper-003-1908.06606,FastKV (attention matching),1.627523422241211
+qasper,r15,qasper-004-1908.06606,FastKV (attention matching),2.0568292140960693
+qasper,r15,qasper-005-1908.06606,FastKV (attention matching),2.7059097290039062
+qasper,r15,qasper-007-1908.06606,FastKV (attention matching),1.3876711130142212
+qasper,r15,qasper-010-1909.00542,FastKV (attention matching),3.346597194671631
+qasper,r15,qasper-011-1909.00542,FastKV (attention matching),3.382413625717163
+qasper,r15,qasper-012-1909.00542,FastKV (attention matching),2.54193115234375
+qasper,r15,qasper-013-1703.04617,FastKV (attention matching),3.6546719074249268
+qasper,r15,qasper-014-1703.04617,FastKV (attention matching),1.5434240102767944
+qasper,r15,qasper-015-1703.04617,FastKV (attention matching),5.909175872802734
+qasper,r15,qasper-016-1703.04617,FastKV (attention matching),1.2206090688705444
+qasper,r15,qasper-017-1704.05572,FastKV (attention matching),2.2825446128845215
 qasper,r20,qasper-000-1908.06606,Whole KV,2.969276189804077
 qasper,r20,qasper-001-1908.06606,Whole KV,2.974559783935547
 qasper,r20,qasper-003-1908.06606,Whole KV,2.6636366844177246
@@ -1366,3 +1509,17 @@ qasper,r20,qasper-014-1703.04617,Specific + DualJSD (running),1.512824296951294
 qasper,r20,qasper-015-1703.04617,Specific + DualJSD (running),2.149594783782959
 qasper,r20,qasper-016-1703.04617,Specific + DualJSD (running),0.4866220951080322
 qasper,r20,qasper-017-1704.05572,Specific + DualJSD (running),1.8650349378585815
+qasper,r20,qasper-000-1908.06606,FastKV (attention matching),2.447969913482666
+qasper,r20,qasper-001-1908.06606,FastKV (attention matching),2.876195192337036
+qasper,r20,qasper-003-1908.06606,FastKV (attention matching),1.82868230342865
+qasper,r20,qasper-004-1908.06606,FastKV (attention matching),2.0532610416412354
+qasper,r20,qasper-005-1908.06606,FastKV (attention matching),2.786281108856201
+qasper,r20,qasper-007-1908.06606,FastKV (attention matching),1.459625005722046
+qasper,r20,qasper-010-1909.00542,FastKV (attention matching),3.5035624504089355
+qasper,r20,qasper-011-1909.00542,FastKV (attention matching),3.314516544342041
+qasper,r20,qasper-012-1909.00542,FastKV (attention matching),2.0287959575653076
+qasper,r20,qasper-013-1703.04617,FastKV (attention matching),3.811478853225708
+qasper,r20,qasper-014-1703.04617,FastKV (attention matching),1.7160965204238892
+qasper,r20,qasper-015-1703.04617,FastKV (attention matching),5.2742919921875
+qasper,r20,qasper-016-1703.04617,FastKV (attention matching),1.0638759136199951
+qasper,r20,qasper-017-1704.05572,FastKV (attention matching),2.166768789291382
