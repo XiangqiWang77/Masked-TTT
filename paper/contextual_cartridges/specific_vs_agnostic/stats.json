@@ -1,0 +1,52 @@
+{
+ "relevance/agnostic": {
+  "strong": 0.07133333333333333,
+  "partial": 0.4613333333333333,
+  "none": 0.4673333333333333
+ },
+ "relevance/specific": {
+  "strong": 0.44533333333333336,
+  "partial": 0.49933333333333335,
+  "none": 0.05533333333333333
+ },
+ "answer_density/longhealth": {
+  "agnostic": 2.253530388951325,
+  "specific": 16.807844614888246
+ },
+ "answer_density/mtob_ke": {
+  "agnostic": 0.13333277560071155,
+  "specific": 11.581488542483784
+ },
+ "answer_density/qasper": {
+  "agnostic": 8.16148808791019,
+  "specific": 20.696830795666795
+ },
+ "gold/longhealth": {
+  "agnostic": 26.458333333333336,
+  "specific": 45.22569444444444,
+  "n": 32
+ },
+ "gold/qasper": {
+  "agnostic": 47.12643678160919,
+  "specific": 41.0344827586207,
+  "n": 29
+ },
+ "outcome/qasper": {
+  "mean": 0.213443106909593,
+  "win": 0.7333333333333333,
+  "lose": 0.26666666666666666,
+  "n": 15
+ },
+ "outcome/mtob_ke": {
+  "mean": 2.682393646073023,
+  "win": 0.5333333333333333,
+  "lose": 0.4666666666666667,
+  "n": 15
+ },
+ "outcome/longhealth": {
+  "mean": 18.333333333333332,
+  "win": 0.3333333333333333,
+  "lose": 0.2,
+  "n": 15
+ }
+}
