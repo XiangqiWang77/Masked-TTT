@@ -143,7 +143,7 @@
     "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/answer_guided_query_anchored_v3_20261109/config.json": "d73355dbf37690034de58ede3677632422bbd41bd49b0f2f934a71d81cd58312"
   },
   "figure_semantics": {
-    "violin": "Two violins: Scott KDE, 256 evaluation points, truncated to observed range; equal maximum widths; all eligible observations used.",
+    "violin": "Four violins: Qwen3-4B BABILong pair and OLMo-3-7B LongHealth pair; Scott KDE, 256 points, truncated to observed range; equal maximum widths.",
     "center_line": "One horizontal sample median per violin.",
     "individual_points_displayed": false,
     "intervals_displayed": false,
@@ -171,6 +171,58 @@
       "path": "/home/da839/Query_Cart/figures/synthesis_time_20261111/violin_only/synthesis_time_violin.svg",
       "sha256": "377c09535f1b5edf7542987897a912214ce9090637e784e4b65ebe423c5a8ed8",
       "bytes": 33048
+    }
+  ],
+  "olmo3": {
+    "backbone": "OLMo-3-7B-Instruct",
+    "dataset": "LongHealth",
+    "hardware": "NVIDIA H200 (gpu_devel), vLLM",
+    "campaign": "olmo3_full_table_20261113",
+    "n": 124,
+    "in_175_request_table": 64,
+    "questions_per_arm": 15,
+    "vanilla": {
+      "n": 124,
+      "mean_seconds": 75.12670284701932,
+      "p10_seconds": 42.47576916217804,
+      "p25_seconds": 54.08032548427582,
+      "p50_seconds": 70.47700071334839,
+      "p75_seconds": 91.70362710952759,
+      "p90_seconds": 113.25817320346832,
+      "p95_seconds": 121.68078355789183,
+      "min_seconds": 29.00742197036743,
+      "max_seconds": 161.12367987632751
+    },
+    "query_specific": {
+      "n": 124,
+      "mean_seconds": 133.7888213184572,
+      "p10_seconds": 78.1667114019394,
+      "p25_seconds": 92.63620728254318,
+      "p50_seconds": 116.92269122600555,
+      "p75_seconds": 166.2897070646286,
+      "p90_seconds": 200.02218074798586,
+      "p95_seconds": 223.19256970882412,
+      "min_seconds": 55.89003896713257,
+      "max_seconds": 424.37359142303467
+    },
+    "specific_faster_requests": 17,
+    "timing_method": "see olmo_synthesis_time.py docstring (segment start and per-arm target-file mtimes)"
+  },
+  "figure_outputs": [
+    {
+      "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/masked_ttt_synth_time_olmo_20261113/paper/contextual_cartridges/synthesis_time/synthesis_time_violin.png",
+      "sha256": "a308ed0328153f50588600bdc8c3fb7f45ee25dfc858434e2c4a8b604f35e00a",
+      "bytes": 253344
+    },
+    {
+      "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/masked_ttt_synth_time_olmo_20261113/paper/contextual_cartridges/synthesis_time/synthesis_time_violin.pdf",
+      "sha256": "ea15f47519550b597fd9f429325cad4692e82ed37e82035dba17eb9d84731d0d",
+      "bytes": 32848
+    },
+    {
+      "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/masked_ttt_synth_time_olmo_20261113/paper/contextual_cartridges/synthesis_time/synthesis_time_violin.svg",
+      "sha256": "138a4bd203a35e69de4765b8ac0b60905df4c2592611a7e7d86bcfc5b9a079c3",
+      "bytes": 60979
     }
   ]
 }
