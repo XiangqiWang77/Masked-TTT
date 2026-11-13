@@ -42,8 +42,7 @@ with plt.rc_context(style):
     vp['cmedians'].set_color(INK); vp['cmedians'].set_linewidth(2.3); vp['cmedians'].set_zorder(3)
     limit = max(float(x.max()) for x in data) * 1.05
     ax.set(xticks=[.5, 3.1], ylabel='Synthesis time per request (s)', xlim=(-.6, 4.2), ylim=(0, limit))
-    ax.set_xticklabels([f'Qwen3-4B · BABILong\n(n = {len(qwen_rows)}, matched QA counts)',
-                        f'OLMo-3-7B · LongHealth\n(n = {len(olmo_rows)}, 15 QA / arm)'])
+    ax.set_xticklabels(['Qwen3-4B · BABILong', 'OLMo-3-7B · LongHealth'])
     ax.axvline(1.8, color=INK, linewidth=.6, alpha=.25)
     ax.legend(handles=[Patch(facecolor=matplotlib.colors.to_rgba(ORANGE, .30), edgecolor=ORANGE, label='Vanilla synthesis'),
                        Patch(facecolor=matplotlib.colors.to_rgba(BLUE, .30), edgecolor=BLUE, label='Query-specific synthesis'),

@@ -211,18 +211,18 @@
   "figure_outputs": [
     {
       "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/masked_ttt_synth_time_olmo_20261113/paper/contextual_cartridges/synthesis_time/synthesis_time_violin.png",
-      "sha256": "a308ed0328153f50588600bdc8c3fb7f45ee25dfc858434e2c4a8b604f35e00a",
-      "bytes": 253344
+      "sha256": "e5435b069053447c9ea83d475f07e2df1331a157a95e9cf950de923732a2e046",
+      "bytes": 229505
     },
     {
       "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/masked_ttt_synth_time_olmo_20261113/paper/contextual_cartridges/synthesis_time/synthesis_time_violin.pdf",
-      "sha256": "ea15f47519550b597fd9f429325cad4692e82ed37e82035dba17eb9d84731d0d",
-      "bytes": 32848
+      "sha256": "ddb54a4c9756ad474c217640c91e4cb625d2e1edb044f0cb517790555768d9c9",
+      "bytes": 32391
     },
     {
       "path": "/nfs/roberts/scratch/pi_mg269/da839/stack_ttt/github_publications/masked_ttt_synth_time_olmo_20261113/paper/contextual_cartridges/synthesis_time/synthesis_time_violin.svg",
-      "sha256": "138a4bd203a35e69de4765b8ac0b60905df4c2592611a7e7d86bcfc5b9a079c3",
-      "bytes": 60979
+      "sha256": "c9da2edeeb41547f0470df626178bd7cdebe6adb23af18fc50efff4136ccab71",
+      "bytes": 60673
     }
   ]
 }
