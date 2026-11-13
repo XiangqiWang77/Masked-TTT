@@ -4,6 +4,17 @@
 
 [ACL paper PDF](paper.pdf) · [LaTeX source](paper.tex) · [完整中文方法：是什么、为什么、怎么做](METHOD.zh-CN.md) · [English method source](method.tex) · [BABILong tables](RESULTS.md) · [data and reproduction](REPRODUCE.md)
 
+<!-- reranker-evidence-accuracy -->
+## Qwen3-Reranker-0.6B evidence extraction accuracy (12 November 2026)
+
+[**是什么、怎么做、准不准（中文说明与图）**](reranker_evidence/README.md)
+audits the label-free evidence extraction against LongHealth `answer_location` and QASPER annotated evidence (labels used only for this audit; MTOB has no evidence labels).
+Gold chunk ranked first: LongHealth 62% (lexical 31%, random 10%), QASPER 24% (lexical 14%, random 15%); within top 5: 91% and 86%.
+Only 45% / 40% of the 15 query-specific Teacher contexts contain gold evidence, because 32 evidence groups dilute 1–2 gold chunks.
+
+[Figure PDF](reranker_evidence/reranker_evidence_accuracy.pdf) · [Per-request CSV](reranker_evidence/per_request.csv) · [Audit script](reranker_evidence/analyze.py)
+<!-- /reranker-evidence-accuracy -->
+
 <!-- jsd-selection-insights -->
 ## ED-JSD selection diagnostics (12 November 2026)
 
