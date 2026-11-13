@@ -41,83 +41,79 @@ def split_violin(ax, a, b, pos, width=.36, bw=.35):
         ax.plot([pos, pos + side * width * .9], [np.median(v)] * 2, color=color, lw=1.6)
 
 
-fig = plt.figure(figsize=(6.9, 4.9))
-gs = fig.add_gridspec(2, 2, hspace=.55, wspace=.32)
+fig = plt.figure(figsize=(7.0, 2.85))
+gs = fig.add_gridspec(1, 4, width_ratios=[.62, 1.15, .62, 1.35], wspace=.5)
 
-# (a) two donuts: query relevance of practice questions
-cats = [('strong', 'shares ≥ half of the query\'s content terms', BLUE),
-        ('partial', 'shares some query terms', '#86b6ef'),
+# (a) stacked donuts: query relevance of practice questions
+cats = [('strong', 'related (≥ half of query terms)', BLUE),
+        ('partial', 'partly related', '#86b6ef'),
         ('none', 'unrelated to the query', '#d6d5d0')]
 q['cat'] = pd.cut(q.recall, [-1, 0, .4999, 1.01], labels=['none', 'partial', 'strong'])
-sub = gs[0, 0].subgridspec(1, 2, wspace=.05)
-for j, (arm, name) in enumerate((('agnostic', 'query-agnostic'), ('specific', 'query-specific'))):
+sub = gs[0].subgridspec(2, 1, hspace=.55)
+for j, (arm, name, color) in enumerate((('agnostic', 'query-agnostic', ORANGE), ('specific', 'query-specific', BLUE))):
     ax = fig.add_subplot(sub[j])
     share = q[q.arm == arm].cat.value_counts(normalize=True)
     vals = [share.get(c, 0) for c, *_ in cats]
     stats[f'relevance/{arm}'] = dict(zip([c for c, *_ in cats], map(float, vals)))
     ax.pie(vals, colors=[c for *_, c in cats], startangle=90, counterclock=False,
-           wedgeprops=dict(width=.42, edgecolor=SURFACE, linewidth=1.2))
-    ax.text(0, 0, f'{vals[0]*100:.0f}%\nstrong', ha='center', va='center', fontsize=8, color=INK)
-    ax.set_title(name, fontsize=7.5, color=ORANGE if arm == 'agnostic' else BLUE)
+           wedgeprops=dict(width=.4, edgecolor=SURFACE, linewidth=1.0))
+    ax.text(0, 0, f'{vals[0]*100:.0f}%', ha='center', va='center', fontsize=8.5, color=INK)
+    ax.text(0, -1.3, name + f'\n{vals[2]*100:.0f}% unrelated', ha='center', va='top', fontsize=6.2, color=color)
     if j == 0:
-        ax.text(-1.3, 1.75, '(a) Query relevance of the practice questions', fontsize=8, color=INK)
-fig.legend(handles=[plt.Rectangle((0, 0), 1, 1, color=c) for *_, c in cats], labels=[l for _, l, _ in cats],
-           loc='upper left', bbox_to_anchor=(.08, .565), frameon=False, fontsize=6.3, ncol=1)
+        ax.set_title('(a) Practice questions\n     related to the query', loc='left', fontsize=7.8, x=-.25)
 
-# (b) token level: share of training-answer words that are query terms
-ax = fig.add_subplot(gs[0, 1]); clean(ax)
+# (b) token level
+ax = fig.add_subplot(gs[1]); clean(ax)
 for i, d in enumerate(DS):
     a = q[(q.dataset == d) & (q.arm == 'agnostic')].answer_query_density * 100
     b = q[(q.dataset == d) & (q.arm == 'specific')].answer_query_density * 100
     split_violin(ax, a, b, i, bw=.3)
-    ax.text(i, max(a.max(), b.max()) + 2, f'×{b.mean() / max(a.mean(), 1e-3):.0f}' if a.mean() > 0.05 else f'{b.mean():.0f}% vs {a.mean():.1f}%',
-            ha='center', fontsize=6.6, color=INK2)
+    ax.text(i + .2, b.quantile(.97) + 3, f'×{b.mean() / max(a.mean(), 1e-3):.0f}', ha='center', fontsize=7, color=BLUE)
     stats[f'answer_density/{d}'] = dict(agnostic=float(a.mean()), specific=float(b.mean()))
-ax.set_xticks(range(3)); ax.set_xticklabels([DSN[d] for d in DS])
-ax.set_ylabel('query terms / answer words (%)')
-ax.set_title('(b) Query terms in the training answers', loc='left', fontsize=8)
-ax.set_xlabel('violin left half: query-agnostic · right half: query-specific', fontsize=6.6, color=INK2)
-ax.set_xlim(-.6, 2.6)
+ax.set_xticks(range(3)); ax.set_xticklabels(['LongH.', 'MTOB', 'QASPER']); ax.set_xlim(-.55, 2.55)
+ax.set_ylim(-2, 75)
+ax.set_ylabel('query terms in answer (%)')
+ax.set_title('(b) Training answers focus on\n     the query (per answer)', loc='left', fontsize=7.8)
 
-# (c) teacher contexts that contain gold evidence
-ax = fig.add_subplot(gs[1, 0]); clean(ax)
-for i, d in enumerate(['longhealth', 'qasper']):
-    e = ev[ev.dataset == d]
-    a = e.agnostic_with_gold / e.agnostic_trajectories * 100
-    b = e.specific_with_gold / e.specific_trajectories * 100
-    for v, off, color in ((a, -.13, ORANGE), (b, .13, BLUE)):
-        ax.scatter(i + off + rng.uniform(-.06, .06, len(v)), v, s=10, color=color, alpha=.7, lw=0, zorder=3)
-        ax.plot([i + off - .1, i + off + .1], [v.mean()] * 2, color=color, lw=2, zorder=4)
-        ax.text(i + off, -9, f'{v.mean():.0f}%', ha='center', fontsize=6.4, color=color)
-    stats[f'gold/{d}'] = dict(agnostic=float(a.mean()), specific=float(b.mean()), n=len(e))
-ax.set_xticks([0, 1]); ax.set_xticklabels(['LongHealth', 'QASPER']); ax.set_ylim(-14, 105)
-ax.set_ylabel('teacher contexts with gold evidence (%)')
-ax.set_title('(c) Teacher contexts containing gold evidence', loc='left', fontsize=8)
-ax.scatter([], [], color=ORANGE, label='query-agnostic'); ax.scatter([], [], color=BLUE, label='query-specific')
-ax.legend(frameon=False, fontsize=6.4, loc='upper right')
+# (c) LongHealth: teacher contexts with gold evidence
+ax = fig.add_subplot(gs[2]); clean(ax)
+e = ev[ev.dataset == 'longhealth']
+for i, (col_w, col_n, color, name) in enumerate((('agnostic_with_gold', 'agnostic_trajectories', ORANGE, 'agn.'),
+                                                 ('specific_with_gold', 'specific_trajectories', BLUE, 'spec.'))):
+    v = e[col_w] / e[col_n] * 100
+    ax.scatter(i + rng.uniform(-.14, .14, len(v)), v, s=9, color=color, alpha=.7, lw=0, zorder=3)
+    ax.plot([i - .22, i + .22], [v.mean()] * 2, color=color, lw=2.2, zorder=4)
+    ax.text(i, v.mean() + 4, f'{v.mean():.0f}%', ha='center', fontsize=7, color=color, zorder=5,
+            bbox=dict(fc=SURFACE, ec='none', pad=.5, alpha=.85))
+    stats[f'gold/longhealth/{name}'] = float(v.mean())
+ax.set_xticks([0, 1]); ax.set_xticklabels(['agn.', 'spec.'], fontsize=7); ax.set_xlim(-.6, 1.6); ax.set_ylim(-3, 103)
+ax.set_ylabel('teacher contexts with gold (%)')
+ax.set_title('(c) Teacher sees the\n     evidence (LongHealth)', loc='left', fontsize=7.8)
 
-# (d) paired outcome under identical SD
-ax = fig.add_subplot(gs[1, 1]); clean(ax, grid='x')
+# (d) outcome
+ax = fig.add_subplot(gs[3]); clean(ax, grid='x')
 sign = {'longhealth': 100, 'mtob_ke': 1, 'qasper': -1}
-unit = {'longhealth': 'acc. pts', 'mtob_ke': 'chrF', 'qasper': '−log-PPL'}
+unit = {'longhealth': 'acc. pts', 'mtob_ke': 'chrF', 'qasper': 'log-PPL ↓'}
 for i, d in enumerate(DS[::-1]):
     g = o[o.dataset == d].assign(gain=lambda x: sign[d] * (x.specific - x.agnostic)).groupby('case').gain.mean()
     z = g / np.abs(g).max()
-    k = gaussian_kde(z, bw_method=.4); grid = np.linspace(-1.05, 1.05, 200); dens = k(grid); dens = dens / dens.max() * .38
-    ax.fill_between(grid, i + .05, i + .05 + dens, color=BLUE, alpha=.3, lw=0); ax.plot(grid, i + .05 + dens, color=BLUE, lw=.9)
-    ax.scatter(z, i - .12 + rng.uniform(-.06, .06, len(z)), s=10, color=BLUE, alpha=.8, lw=0, zorder=3)
+    grid = np.linspace(-1.05, 1.05, 200); dens = gaussian_kde(z, bw_method=.4)(grid); dens = dens / dens.max() * .36
+    ax.fill_between(grid, i + .04, i + .04 + dens, color=BLUE, alpha=.3, lw=0); ax.plot(grid, i + .04 + dens, color=BLUE, lw=.9)
+    ax.scatter(z, i - .12 + rng.uniform(-.06, .06, len(z)), s=8, color=BLUE, alpha=.8, lw=0, zorder=3)
     win, lose = (g > 1e-9).mean(), (g < -1e-9).mean()
-    ax.text(1.06, i, f'{DSN[d]}\nmean {g.mean():+.2f} {unit[d]}\nbetter {win*100:.0f}% · worse {lose*100:.0f}%',
-            fontsize=6.1, color=INK2, va='center', transform=ax.get_yaxis_transform())
+    shown = g.mean() if d != 'qasper' else -g.mean()
+    ax.text(-1.08, i + .5, f'{DSN[d]}: {shown:+.2f} {unit[d]} · better {win*100:.0f}% / worse {lose*100:.0f}%',
+            fontsize=5.9, color=INK2)
     stats[f'outcome/{d}'] = dict(mean=float(g.mean()), win=float(win), lose=float(lose), n=len(g))
 ax.axvline(0, color=INK2, lw=.8, ls=(0, (3, 2)))
-ax.set_yticks([]); ax.spines['left'].set_visible(False); ax.set_xlim(-1.1, 1.1)
-ax.set_xlabel('specific − agnostic (scaled per dataset; avg. over 4 budgets)')
-ax.text(.01, .985, '← agnostic better', transform=ax.transAxes, fontsize=6, color=INK2, va='top')
-ax.text(.99, .985, 'specific better →', transform=ax.transAxes, fontsize=6, color=INK2, va='top', ha='right')
-ax.set_title('(d) Paired gain per request, same SD', loc='left', fontsize=8)
-fig.text(.07, 1.0, 'Why query-specific practice data beats query-agnostic data (Qwen3-4B, same SD, 15 requests per dataset)',
-         fontsize=8.6, color=INK)
+ax.set_yticks([]); ax.spines['left'].set_visible(False); ax.set_xlim(-1.1, 1.1); ax.set_ylim(-.35, 2.78)
+ax.set_xticks([-1, 0, 1]); ax.set_xticklabels(['← agnostic better', '0', 'specific better →'], fontsize=6.3)
+ax.set_xlabel('paired gain per request (scaled per dataset)', fontsize=6.6)
+ax.set_title('(d) Result: specific vs agnostic,\n     same SD', loc='left', fontsize=7.8)
+fig.legend(handles=[plt.Rectangle((0, 0), 1, 1, color=c) for *_, c in cats] +
+                   [plt.Rectangle((0, 0), 1, 1, color=ORANGE, alpha=.6), plt.Rectangle((0, 0), 1, 1, color=BLUE, alpha=.6)],
+           labels=[l for _, l, _ in cats] + ['query-agnostic data', 'query-specific data'],
+           loc='upper center', bbox_to_anchor=(.5, -.06), ncol=5, frameon=False, fontsize=6.5, handlelength=1.1)
 for ext in ('png', 'pdf', 'svg'):
     fig.savefig(HERE / f'specific_vs_agnostic.{ext}', bbox_inches='tight', dpi=300)
 (HERE / 'stats.json').write_text(json.dumps(stats, indent=1))

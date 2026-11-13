@@ -9,10 +9,7 @@
   - query-agnostic：只有 7% 达到这个程度，47% 与问题完全无关。
   - 结论：agnostic 数据有近一半的训练预算花在与测试问题无关的内容上。
 - **(b) 训练 token 用在哪里。** 统计 teacher 答案中属于测试问题实词的比例。query-specific 是 agnostic 的 7 倍（LongHealth，16.8% 对 2.3%）、87 倍（MTOB，11.6% 对 0.13%）、3 倍（QASPER，20.7% 对 8.2%）。另外，specific 答案更短（约 100 词对 200 词），内容更集中。
-- **(c) teacher 能否看到 gold 证据。**
-  - LongHealth：query-specific 的 teacher 上下文中有 45% 含 gold 证据，agnostic 只有 26%。
-  - QASPER：论文较短，两者接近（41% 对 47%）。
-  - 所以在 QASPER 上，specific 的优势主要来自问题本身更相关，而不是更常看到 gold 证据。
+- **(c) teacher 能否看到 gold 证据（只画 LongHealth）。** query-specific 的 teacher 上下文中有 45% 含 gold 证据，agnostic 只有 26%。QASPER 没有放进图里：它的论文很短，两种数据看到 gold 证据的比例相近（41% 对 47%）。因此 QASPER 上的优势来自 (a) 和 (b)，也就是问题更对口，而不是更常看到证据。
 - **(d) 结果。** 同一请求的配对比较（4 个预算取平均）：
   - QASPER：73% 的请求 specific 更好，平均 log-PPL 低 0.21。
   - LongHealth：平均高 18.3 个准确率点（更好 33%，更差 20%，其余持平）。

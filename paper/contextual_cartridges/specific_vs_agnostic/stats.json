@@ -21,16 +21,8 @@
   "agnostic": 8.16148808791019,
   "specific": 20.696830795666795
  },
- "gold/longhealth": {
-  "agnostic": 26.458333333333336,
-  "specific": 45.22569444444444,
-  "n": 32
- },
- "gold/qasper": {
-  "agnostic": 47.12643678160919,
-  "specific": 41.0344827586207,
-  "n": 29
- },
+ "gold/longhealth/agn.": 26.458333333333336,
+ "gold/longhealth/spec.": 45.22569444444444,
  "outcome/qasper": {
   "mean": 0.213443106909593,
   "win": 0.7333333333333333,
