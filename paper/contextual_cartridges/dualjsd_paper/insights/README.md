@@ -1,5 +1,18 @@
 # DualJSD 为什么、怎样比 vanilla SD 好（Qwen3-4B，11/12 配对实验）
 
+## QASPER：和 SD、Evidence ICL（证据 teacher）、Whole KV（全文 teacher）的分布对比
+
+![QASPER distributions](fig_qasper_distributions.png)
+
+图中蓝色曲线是本文方法 Contextual Cartridges（query-specific 数据 + DualJSD），覆盖 15 个请求 × 4 个预算，共 57 个格子。log-PPL 越低越好。
+- **对 SD：** 平均从 1.78 降到 1.45，75% 的格子更低。
+- **对 Evidence ICL**（证据放在上下文里，不压缩）：平均从 3.76 降到 1.45，89% 的格子更低。
+- **对 Whole KV**（全文放在上下文里，不压缩）：平均从 2.77 降到 1.45，86% 的格子更低。
+
+注意：训练出的 Cartridge 同时也学到了答案格式，所以它和两个不压缩的 teacher 之间的差距里，有一部分来自格式适配，并不全是更好的理解。和 SD 的对比没有这个问题：两边都经过训练，只有 target 不同。
+
+[PDF](fig_qasper_distributions.pdf) · [统计](qasper_stats.json) · [作图](make_fig_qasper.py)
+
 ## 角度一：两个视角的分布如何合成一个更好的 target（teacher 侧）
 
 ![two views](fig_dualjsd_two_views.png)

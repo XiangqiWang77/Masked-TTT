@@ -1,0 +1,23 @@
+{
+ "sd": {
+  "mean_other": 1.7782548843768604,
+  "mean_ours": 1.4539806016704493,
+  "ours_better_cells": 0.7543859649122807,
+  "n_cells": 57,
+  "n_requests_other": 57
+ },
+ "Evidence Teacher": {
+  "mean_other": 3.7612099091211957,
+  "mean_ours": 1.4539806016704493,
+  "ours_better_cells": 0.8947368421052632,
+  "n_cells": 57,
+  "n_requests_other": 15
+ },
+ "Whole KV": {
+  "mean_other": 2.773550335566203,
+  "mean_ours": 1.4539806016704493,
+  "ours_better_cells": 0.8596491228070176,
+  "n_cells": 57,
+  "n_requests_other": 15
+ }
+}
