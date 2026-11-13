@@ -4,6 +4,14 @@
 
 [ACL paper PDF](paper.pdf) · [LaTeX source](paper.tex) · [完整中文方法：是什么、为什么、怎么做](METHOD.zh-CN.md) · [English method source](method.tex) · [BABILong tables](RESULTS.md) · [data and reproduction](REPRODUCE.md)
 
+<!-- dualjsd-paper -->
+## Query-specific data + Dual-View JSD: paper draft (13 November 2026)
+
+[**ACL-style draft PDF**](dualjsd_paper/main.pdf) · [中文摘要与结果](dualjsd_paper/README.md) · [LaTeX](dualjsd_paper/main.tex)
+Paired over 57 cells from 15 requests per dataset at 5–20% native KV. With the same SD, query-specific data beats agnostic data: LongHealth 13/5/39 (+14.0 pts), MTOB 35/21/1 (+2.8 chrF), QASPER 40/17/0.
+DualJSD vs SD on specific data: QASPER 43/14/0 (−0.32 log-PPL), LongHealth 8/5/44 (+5.3 pts), **MTOB 24/28/5 (−2.0 chrF, hurts)**. FastKV (attention matching) is running.
+<!-- /dualjsd-paper -->
+
 <!-- reranker-evidence-accuracy -->
 ## Qwen3-Reranker-0.6B evidence extraction accuracy (12 November 2026)
 

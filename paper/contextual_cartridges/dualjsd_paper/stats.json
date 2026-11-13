@@ -1,0 +1,284 @@
+{
+  "paired": {
+    "longhealth": {
+      "specific_vs_agnostic_SD": {
+        "wins": 13,
+        "losses": 5,
+        "ties": 39,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 14.035087719298245
+      },
+      "dualjsd_vs_SD_agnostic": {
+        "wins": 6,
+        "losses": 2,
+        "ties": 49,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 7.017543859649122
+      },
+      "dualjsd_vs_SD_specific": {
+        "wins": 8,
+        "losses": 5,
+        "ties": 44,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 5.2631578947368425
+      },
+      "specific_dualjsd_vs_vanilla": {
+        "wins": 17,
+        "losses": 6,
+        "ties": 34,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 19.29824561403509
+      }
+    },
+    "mtob_ke": {
+      "specific_vs_agnostic_SD": {
+        "wins": 35,
+        "losses": 21,
+        "ties": 1,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 2.828731677739369
+      },
+      "dualjsd_vs_SD_agnostic": {
+        "wins": 29,
+        "losses": 27,
+        "ties": 1,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 0.43667612792021643
+      },
+      "dualjsd_vs_SD_specific": {
+        "wins": 24,
+        "losses": 28,
+        "ties": 5,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": -1.9875440657692303
+      },
+      "specific_dualjsd_vs_vanilla": {
+        "wins": 28,
+        "losses": 28,
+        "ties": 1,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 0.8411876119701386
+      }
+    },
+    "qasper": {
+      "specific_vs_agnostic_SD": {
+        "wins": 40,
+        "losses": 17,
+        "ties": 0,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 0.2226555791863224
+      },
+      "dualjsd_vs_SD_agnostic": {
+        "wins": 35,
+        "losses": 22,
+        "ties": 0,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 0.11700622292987087
+      },
+      "dualjsd_vs_SD_specific": {
+        "wins": 43,
+        "losses": 14,
+        "ties": 0,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 0.3242742827064113
+      },
+      "specific_dualjsd_vs_vanilla": {
+        "wins": 47,
+        "losses": 10,
+        "ties": 0,
+        "cells": 57,
+        "requests": 15,
+        "mean_gain": 0.5469298618927336
+      }
+    }
+  },
+  "main": {
+    "longhealth": {
+      "r05": {
+        "n": 15,
+        "Specific + DualJSD (running)": 60.0,
+        "Agnostic + DualJSD (running)": 40.0,
+        "Specific Cartridges (specific SD)": 53.333333333333336,
+        "Vanilla Cartridges (agnostic SD)": 33.33333333333333,
+        "SnapKV": 86.66666666666667,
+        "Whole KV": 86.66666666666667,
+        "Evidence Teacher": 80.0
+      },
+      "r10": {
+        "n": 14,
+        "Specific + DualJSD (running)": 64.28571428571429,
+        "Agnostic + DualJSD (running)": 57.14285714285714,
+        "Specific Cartridges (specific SD)": 64.28571428571429,
+        "Vanilla Cartridges (agnostic SD)": 64.28571428571429,
+        "SnapKV": 85.71428571428571,
+        "Whole KV": 85.71428571428571,
+        "Evidence Teacher": 78.57142857142857
+      },
+      "r15": {
+        "n": 14,
+        "Specific + DualJSD (running)": 71.42857142857143,
+        "Agnostic + DualJSD (running)": 50.0,
+        "Specific Cartridges (specific SD)": 71.42857142857143,
+        "Vanilla Cartridges (agnostic SD)": 50.0,
+        "SnapKV": 85.71428571428571,
+        "Whole KV": 85.71428571428571,
+        "Evidence Teacher": 78.57142857142857
+      },
+      "r20": {
+        "n": 14,
+        "Specific + DualJSD (running)": 71.42857142857143,
+        "Agnostic + DualJSD (running)": 71.42857142857143,
+        "Specific Cartridges (specific SD)": 57.14285714285714,
+        "Vanilla Cartridges (agnostic SD)": 42.857142857142854,
+        "SnapKV": 85.71428571428571,
+        "Whole KV": 85.71428571428571,
+        "Evidence Teacher": 78.57142857142857
+      }
+    },
+    "mtob_ke": {
+      "r05": {
+        "n": 15,
+        "Specific + DualJSD (running)": 17.45333193729356,
+        "Agnostic + DualJSD (running)": 18.59728640120497,
+        "Specific Cartridges (specific SD)": 19.741886803751868,
+        "Vanilla Cartridges (agnostic SD)": 13.860129561985124,
+        "SnapKV": 5.784515386287145,
+        "Whole KV": 6.049476324956503,
+        "Evidence Teacher": 27.255554087727884
+      },
+      "r10": {
+        "n": 14,
+        "Specific + DualJSD (running)": 17.087155654167404,
+        "Agnostic + DualJSD (running)": 17.33659457174522,
+        "Specific Cartridges (specific SD)": 19.982361669375113,
+        "Vanilla Cartridges (agnostic SD)": 17.028457677468605,
+        "SnapKV": 5.720033614858593,
+        "Whole KV": 6.00983002750177,
+        "Evidence Teacher": 27.659864952924313
+      },
+      "r15": {
+        "n": 14,
+        "Specific + DualJSD (running)": 18.882636663916337,
+        "Agnostic + DualJSD (running)": 17.01993386461419,
+        "Specific Cartridges (specific SD)": 17.451363585233736,
+        "Vanilla Cartridges (agnostic SD)": 17.43388423263007,
+        "SnapKV": 5.819240764709265,
+        "Whole KV": 6.00983002750177,
+        "Evidence Teacher": 27.659864952924313
+      },
+      "r20": {
+        "n": 14,
+        "Specific + DualJSD (running)": 15.035450915077398,
+        "Agnostic + DualJSD (running)": 13.776109686121965,
+        "Specific Cartridges (specific SD)": 19.21163860369311,
+        "Vanilla Cartridges (agnostic SD)": 16.967925733585936,
+        "SnapKV": 5.832243208446366,
+        "Whole KV": 6.00983002750177,
+        "Evidence Teacher": 27.659864952924313
+      }
+    },
+    "qasper": {
+      "r05": {
+        "n": 15,
+        "Specific + DualJSD (running)": 1.6393147826194763,
+        "Agnostic + DualJSD (running)": 1.897121054927508,
+        "Specific Cartridges (specific SD)": 1.826142704486847,
+        "Vanilla Cartridges (agnostic SD)": 2.0165032664934794,
+        "SnapKV": 2.81822882493337,
+        "Whole KV": 2.773550335566203,
+        "Evidence Teacher": 3.7612099091211957
+      },
+      "r10": {
+        "n": 14,
+        "Specific + DualJSD (running)": 1.5697197509663445,
+        "Agnostic + DualJSD (running)": 1.9035557838422912,
+        "Specific Cartridges (specific SD)": 1.777397177049092,
+        "Vanilla Cartridges (agnostic SD)": 1.9326141476631165,
+        "SnapKV": 2.7621730055127824,
+        "Whole KV": 2.800587160246713,
+        "Evidence Teacher": 3.864010921546391
+      },
+      "r15": {
+        "n": 14,
+        "Specific + DualJSD (running)": 1.2905622592994146,
+        "Agnostic + DualJSD (running)": 1.8425112281526839,
+        "Specific Cartridges (specific SD)": 1.882620734827859,
+        "Vanilla Cartridges (agnostic SD)": 2.0850108798061098,
+        "SnapKV": 2.805923214980534,
+        "Whole KV": 2.800587160246713,
+        "Evidence Teacher": 3.864010921546391
+      },
+      "r20": {
+        "n": 14,
+        "Specific + DualJSD (running)": 1.3030874580144882,
+        "Agnostic + DualJSD (running)": 1.891484837446894,
+        "Specific Cartridges (specific SD)": 1.6234383625643594,
+        "Vanilla Cartridges (agnostic SD)": 1.9683997886521476,
+        "SnapKV": 2.768079706600734,
+        "Whole KV": 2.800587160246713,
+        "Evidence Teacher": 3.864010921546391
+      }
+    }
+  },
+  "audit": {
+    "longhealth/agnostic": {
+      "agree": 89.43215997787057,
+      "frac": 6.49541954491829,
+      "weight": 0.9400604961646928,
+      "lpe": -0.10906196700978196,
+      "lpw": -0.402638432621542,
+      "trajectories": 360
+    },
+    "longhealth/specific": {
+      "agree": 83.89351795208931,
+      "frac": 11.856452419810974,
+      "weight": 0.8997280402315988,
+      "lpe": -0.12280341709313992,
+      "lpw": -0.636912727376653,
+      "trajectories": 360
+    },
+    "mtob_ke/agnostic": {
+      "agree": 76.3072081197157,
+      "frac": 19.339954491408946,
+      "weight": 0.8362181825515551,
+      "lpe": -0.16844093170851313,
+      "lpw": -0.943427559465934,
+      "trajectories": 390
+    },
+    "mtob_ke/specific": {
+      "agree": 77.63329273767143,
+      "frac": 17.769971368772612,
+      "weight": 0.850016934138078,
+      "lpe": -0.15983957986029568,
+      "lpw": -0.8698207060878094,
+      "trajectories": 390
+    },
+    "qasper/agnostic": {
+      "agree": 91.51286304904932,
+      "frac": 3.9773644577078895,
+      "weight": 0.9595667578171992,
+      "lpe": -0.12639646640307256,
+      "lpw": -0.3327273259114852,
+      "trajectories": 345
+    },
+    "qasper/specific": {
+      "agree": 81.96833343568167,
+      "frac": 14.130408553834856,
+      "weight": 0.8824866317320561,
+      "lpe": -0.12899574185375703,
+      "lpw": -0.7145683861998976,
+      "trajectories": 345
+    }
+  }
+}

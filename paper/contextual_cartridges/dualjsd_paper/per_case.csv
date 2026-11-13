@@ -1,0 +1,1368 @@
+dataset,budget,case,method,value
+longhealth,r05,patient_01-q00,Whole KV,1.0
+longhealth,r05,patient_01-q01,Whole KV,1.0
+longhealth,r05,patient_01-q02,Whole KV,1.0
+longhealth,r05,patient_01-q03,Whole KV,1.0
+longhealth,r05,patient_01-q04,Whole KV,1.0
+longhealth,r05,patient_01-q05,Whole KV,1.0
+longhealth,r05,patient_01-q06,Whole KV,1.0
+longhealth,r05,patient_01-q07,Whole KV,1.0
+longhealth,r05,patient_01-q08,Whole KV,1.0
+longhealth,r05,patient_01-q09,Whole KV,0.0
+longhealth,r05,patient_01-q10,Whole KV,1.0
+longhealth,r05,patient_01-q12,Whole KV,1.0
+longhealth,r05,patient_01-q13,Whole KV,1.0
+longhealth,r05,patient_01-q14,Whole KV,0.0
+longhealth,r05,patient_01-q15,Whole KV,1.0
+longhealth,r05,patient_01-q00,Evidence Teacher,1.0
+longhealth,r05,patient_01-q01,Evidence Teacher,1.0
+longhealth,r05,patient_01-q02,Evidence Teacher,1.0
+longhealth,r05,patient_01-q03,Evidence Teacher,1.0
+longhealth,r05,patient_01-q04,Evidence Teacher,1.0
+longhealth,r05,patient_01-q05,Evidence Teacher,1.0
+longhealth,r05,patient_01-q06,Evidence Teacher,1.0
+longhealth,r05,patient_01-q07,Evidence Teacher,1.0
+longhealth,r05,patient_01-q08,Evidence Teacher,1.0
+longhealth,r05,patient_01-q09,Evidence Teacher,1.0
+longhealth,r05,patient_01-q10,Evidence Teacher,1.0
+longhealth,r05,patient_01-q12,Evidence Teacher,0.0
+longhealth,r05,patient_01-q13,Evidence Teacher,0.0
+longhealth,r05,patient_01-q14,Evidence Teacher,0.0
+longhealth,r05,patient_01-q15,Evidence Teacher,1.0
+longhealth,r05,patient_01-q00,SnapKV,1.0
+longhealth,r05,patient_01-q01,SnapKV,1.0
+longhealth,r05,patient_01-q02,SnapKV,1.0
+longhealth,r05,patient_01-q03,SnapKV,1.0
+longhealth,r05,patient_01-q04,SnapKV,1.0
+longhealth,r05,patient_01-q05,SnapKV,1.0
+longhealth,r05,patient_01-q06,SnapKV,1.0
+longhealth,r05,patient_01-q07,SnapKV,1.0
+longhealth,r05,patient_01-q08,SnapKV,1.0
+longhealth,r05,patient_01-q09,SnapKV,0.0
+longhealth,r05,patient_01-q10,SnapKV,1.0
+longhealth,r05,patient_01-q12,SnapKV,1.0
+longhealth,r05,patient_01-q13,SnapKV,1.0
+longhealth,r05,patient_01-q14,SnapKV,0.0
+longhealth,r05,patient_01-q15,SnapKV,1.0
+longhealth,r05,patient_01-q00,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q01,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q02,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r05,patient_01-q03,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q04,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r05,patient_01-q05,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r05,patient_01-q06,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q07,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q08,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q09,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q10,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r05,patient_01-q12,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q13,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r05,patient_01-q14,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q15,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r05,patient_01-q00,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q01,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q02,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q03,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q04,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q05,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q06,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q07,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q08,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q09,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q10,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q12,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q13,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q14,Specific Cartridges (specific SD),0.0
+longhealth,r05,patient_01-q15,Specific Cartridges (specific SD),1.0
+longhealth,r05,patient_01-q00,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q01,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q02,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q03,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q04,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q05,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q06,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q07,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q08,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q09,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q10,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q12,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q13,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q14,Contextual (specific + ED-JSD),0.0
+longhealth,r05,patient_01-q15,Contextual (specific + ED-JSD),1.0
+longhealth,r05,patient_01-q00,Agnostic + DualJSD (running),1.0
+longhealth,r05,patient_01-q01,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q02,Agnostic + DualJSD (running),1.0
+longhealth,r05,patient_01-q03,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q04,Agnostic + DualJSD (running),1.0
+longhealth,r05,patient_01-q05,Agnostic + DualJSD (running),1.0
+longhealth,r05,patient_01-q06,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q07,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q08,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q09,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q10,Agnostic + DualJSD (running),1.0
+longhealth,r05,patient_01-q12,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q13,Agnostic + DualJSD (running),1.0
+longhealth,r05,patient_01-q14,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q15,Agnostic + DualJSD (running),0.0
+longhealth,r05,patient_01-q00,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q01,Specific + DualJSD (running),0.0
+longhealth,r05,patient_01-q02,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q03,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q04,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q05,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q06,Specific + DualJSD (running),0.0
+longhealth,r05,patient_01-q07,Specific + DualJSD (running),0.0
+longhealth,r05,patient_01-q08,Specific + DualJSD (running),0.0
+longhealth,r05,patient_01-q09,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q10,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q12,Specific + DualJSD (running),0.0
+longhealth,r05,patient_01-q13,Specific + DualJSD (running),1.0
+longhealth,r05,patient_01-q14,Specific + DualJSD (running),0.0
+longhealth,r05,patient_01-q15,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q00,Whole KV,1.0
+longhealth,r10,patient_01-q01,Whole KV,1.0
+longhealth,r10,patient_01-q02,Whole KV,1.0
+longhealth,r10,patient_01-q03,Whole KV,1.0
+longhealth,r10,patient_01-q04,Whole KV,1.0
+longhealth,r10,patient_01-q05,Whole KV,1.0
+longhealth,r10,patient_01-q06,Whole KV,1.0
+longhealth,r10,patient_01-q07,Whole KV,1.0
+longhealth,r10,patient_01-q08,Whole KV,1.0
+longhealth,r10,patient_01-q09,Whole KV,0.0
+longhealth,r10,patient_01-q10,Whole KV,1.0
+longhealth,r10,patient_01-q12,Whole KV,1.0
+longhealth,r10,patient_01-q13,Whole KV,1.0
+longhealth,r10,patient_01-q14,Whole KV,0.0
+longhealth,r10,patient_01-q00,Evidence Teacher,1.0
+longhealth,r10,patient_01-q01,Evidence Teacher,1.0
+longhealth,r10,patient_01-q02,Evidence Teacher,1.0
+longhealth,r10,patient_01-q03,Evidence Teacher,1.0
+longhealth,r10,patient_01-q04,Evidence Teacher,1.0
+longhealth,r10,patient_01-q05,Evidence Teacher,1.0
+longhealth,r10,patient_01-q06,Evidence Teacher,1.0
+longhealth,r10,patient_01-q07,Evidence Teacher,1.0
+longhealth,r10,patient_01-q08,Evidence Teacher,1.0
+longhealth,r10,patient_01-q09,Evidence Teacher,1.0
+longhealth,r10,patient_01-q10,Evidence Teacher,1.0
+longhealth,r10,patient_01-q12,Evidence Teacher,0.0
+longhealth,r10,patient_01-q13,Evidence Teacher,0.0
+longhealth,r10,patient_01-q14,Evidence Teacher,0.0
+longhealth,r10,patient_01-q00,SnapKV,1.0
+longhealth,r10,patient_01-q01,SnapKV,1.0
+longhealth,r10,patient_01-q02,SnapKV,1.0
+longhealth,r10,patient_01-q03,SnapKV,1.0
+longhealth,r10,patient_01-q04,SnapKV,1.0
+longhealth,r10,patient_01-q05,SnapKV,1.0
+longhealth,r10,patient_01-q06,SnapKV,1.0
+longhealth,r10,patient_01-q07,SnapKV,1.0
+longhealth,r10,patient_01-q08,SnapKV,1.0
+longhealth,r10,patient_01-q09,SnapKV,0.0
+longhealth,r10,patient_01-q10,SnapKV,1.0
+longhealth,r10,patient_01-q12,SnapKV,1.0
+longhealth,r10,patient_01-q13,SnapKV,1.0
+longhealth,r10,patient_01-q14,SnapKV,0.0
+longhealth,r10,patient_01-q00,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q01,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q02,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q03,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q04,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q05,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q06,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q07,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r10,patient_01-q08,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r10,patient_01-q09,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r10,patient_01-q10,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q12,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r10,patient_01-q13,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r10,patient_01-q14,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r10,patient_01-q00,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q01,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q02,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q03,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q04,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q05,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q06,Specific Cartridges (specific SD),0.0
+longhealth,r10,patient_01-q07,Specific Cartridges (specific SD),0.0
+longhealth,r10,patient_01-q08,Specific Cartridges (specific SD),0.0
+longhealth,r10,patient_01-q09,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q10,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q12,Specific Cartridges (specific SD),1.0
+longhealth,r10,patient_01-q13,Specific Cartridges (specific SD),0.0
+longhealth,r10,patient_01-q14,Specific Cartridges (specific SD),0.0
+longhealth,r10,patient_01-q00,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q01,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q02,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q03,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q04,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q05,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q06,Contextual (specific + ED-JSD),0.0
+longhealth,r10,patient_01-q07,Contextual (specific + ED-JSD),0.0
+longhealth,r10,patient_01-q08,Contextual (specific + ED-JSD),0.0
+longhealth,r10,patient_01-q09,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q10,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q12,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q13,Contextual (specific + ED-JSD),1.0
+longhealth,r10,patient_01-q14,Contextual (specific + ED-JSD),0.0
+longhealth,r10,patient_01-q00,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q01,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q02,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q03,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q04,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q05,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q06,Agnostic + DualJSD (running),0.0
+longhealth,r10,patient_01-q07,Agnostic + DualJSD (running),0.0
+longhealth,r10,patient_01-q08,Agnostic + DualJSD (running),0.0
+longhealth,r10,patient_01-q09,Agnostic + DualJSD (running),0.0
+longhealth,r10,patient_01-q10,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q12,Agnostic + DualJSD (running),0.0
+longhealth,r10,patient_01-q13,Agnostic + DualJSD (running),1.0
+longhealth,r10,patient_01-q14,Agnostic + DualJSD (running),0.0
+longhealth,r10,patient_01-q00,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q01,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q02,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q03,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q04,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q05,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q06,Specific + DualJSD (running),0.0
+longhealth,r10,patient_01-q07,Specific + DualJSD (running),0.0
+longhealth,r10,patient_01-q08,Specific + DualJSD (running),0.0
+longhealth,r10,patient_01-q09,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q10,Specific + DualJSD (running),0.0
+longhealth,r10,patient_01-q12,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q13,Specific + DualJSD (running),1.0
+longhealth,r10,patient_01-q14,Specific + DualJSD (running),0.0
+longhealth,r15,patient_01-q00,Whole KV,1.0
+longhealth,r15,patient_01-q01,Whole KV,1.0
+longhealth,r15,patient_01-q02,Whole KV,1.0
+longhealth,r15,patient_01-q03,Whole KV,1.0
+longhealth,r15,patient_01-q04,Whole KV,1.0
+longhealth,r15,patient_01-q05,Whole KV,1.0
+longhealth,r15,patient_01-q06,Whole KV,1.0
+longhealth,r15,patient_01-q07,Whole KV,1.0
+longhealth,r15,patient_01-q08,Whole KV,1.0
+longhealth,r15,patient_01-q09,Whole KV,0.0
+longhealth,r15,patient_01-q10,Whole KV,1.0
+longhealth,r15,patient_01-q12,Whole KV,1.0
+longhealth,r15,patient_01-q13,Whole KV,1.0
+longhealth,r15,patient_01-q14,Whole KV,0.0
+longhealth,r15,patient_01-q00,Evidence Teacher,1.0
+longhealth,r15,patient_01-q01,Evidence Teacher,1.0
+longhealth,r15,patient_01-q02,Evidence Teacher,1.0
+longhealth,r15,patient_01-q03,Evidence Teacher,1.0
+longhealth,r15,patient_01-q04,Evidence Teacher,1.0
+longhealth,r15,patient_01-q05,Evidence Teacher,1.0
+longhealth,r15,patient_01-q06,Evidence Teacher,1.0
+longhealth,r15,patient_01-q07,Evidence Teacher,1.0
+longhealth,r15,patient_01-q08,Evidence Teacher,1.0
+longhealth,r15,patient_01-q09,Evidence Teacher,1.0
+longhealth,r15,patient_01-q10,Evidence Teacher,1.0
+longhealth,r15,patient_01-q12,Evidence Teacher,0.0
+longhealth,r15,patient_01-q13,Evidence Teacher,0.0
+longhealth,r15,patient_01-q14,Evidence Teacher,0.0
+longhealth,r15,patient_01-q00,SnapKV,1.0
+longhealth,r15,patient_01-q01,SnapKV,1.0
+longhealth,r15,patient_01-q02,SnapKV,1.0
+longhealth,r15,patient_01-q03,SnapKV,1.0
+longhealth,r15,patient_01-q04,SnapKV,1.0
+longhealth,r15,patient_01-q05,SnapKV,1.0
+longhealth,r15,patient_01-q06,SnapKV,1.0
+longhealth,r15,patient_01-q07,SnapKV,1.0
+longhealth,r15,patient_01-q08,SnapKV,1.0
+longhealth,r15,patient_01-q09,SnapKV,0.0
+longhealth,r15,patient_01-q10,SnapKV,1.0
+longhealth,r15,patient_01-q12,SnapKV,1.0
+longhealth,r15,patient_01-q13,SnapKV,1.0
+longhealth,r15,patient_01-q14,SnapKV,0.0
+longhealth,r15,patient_01-q00,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q01,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q02,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q03,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q04,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q05,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q06,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q07,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q08,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q09,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q10,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q12,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q13,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r15,patient_01-q14,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r15,patient_01-q00,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q01,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q02,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q03,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q04,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q05,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q06,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q07,Specific Cartridges (specific SD),0.0
+longhealth,r15,patient_01-q08,Specific Cartridges (specific SD),0.0
+longhealth,r15,patient_01-q09,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q10,Specific Cartridges (specific SD),0.0
+longhealth,r15,patient_01-q12,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q13,Specific Cartridges (specific SD),1.0
+longhealth,r15,patient_01-q14,Specific Cartridges (specific SD),0.0
+longhealth,r15,patient_01-q00,Contextual (specific + ED-JSD),0.0
+longhealth,r15,patient_01-q01,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q02,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q03,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q04,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q05,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q06,Contextual (specific + ED-JSD),0.0
+longhealth,r15,patient_01-q07,Contextual (specific + ED-JSD),0.0
+longhealth,r15,patient_01-q08,Contextual (specific + ED-JSD),0.0
+longhealth,r15,patient_01-q09,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q10,Contextual (specific + ED-JSD),0.0
+longhealth,r15,patient_01-q12,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q13,Contextual (specific + ED-JSD),1.0
+longhealth,r15,patient_01-q14,Contextual (specific + ED-JSD),0.0
+longhealth,r15,patient_01-q00,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q01,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q02,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q03,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q04,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q05,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q06,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q07,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q08,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q09,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q10,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q12,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q13,Agnostic + DualJSD (running),1.0
+longhealth,r15,patient_01-q14,Agnostic + DualJSD (running),0.0
+longhealth,r15,patient_01-q00,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q01,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q02,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q03,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q04,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q05,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q06,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q07,Specific + DualJSD (running),0.0
+longhealth,r15,patient_01-q08,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q09,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q10,Specific + DualJSD (running),0.0
+longhealth,r15,patient_01-q12,Specific + DualJSD (running),1.0
+longhealth,r15,patient_01-q13,Specific + DualJSD (running),0.0
+longhealth,r15,patient_01-q14,Specific + DualJSD (running),0.0
+longhealth,r20,patient_01-q00,Whole KV,1.0
+longhealth,r20,patient_01-q01,Whole KV,1.0
+longhealth,r20,patient_01-q02,Whole KV,1.0
+longhealth,r20,patient_01-q03,Whole KV,1.0
+longhealth,r20,patient_01-q04,Whole KV,1.0
+longhealth,r20,patient_01-q05,Whole KV,1.0
+longhealth,r20,patient_01-q06,Whole KV,1.0
+longhealth,r20,patient_01-q07,Whole KV,1.0
+longhealth,r20,patient_01-q08,Whole KV,1.0
+longhealth,r20,patient_01-q09,Whole KV,0.0
+longhealth,r20,patient_01-q10,Whole KV,1.0
+longhealth,r20,patient_01-q12,Whole KV,1.0
+longhealth,r20,patient_01-q13,Whole KV,1.0
+longhealth,r20,patient_01-q14,Whole KV,0.0
+longhealth,r20,patient_01-q00,Evidence Teacher,1.0
+longhealth,r20,patient_01-q01,Evidence Teacher,1.0
+longhealth,r20,patient_01-q02,Evidence Teacher,1.0
+longhealth,r20,patient_01-q03,Evidence Teacher,1.0
+longhealth,r20,patient_01-q04,Evidence Teacher,1.0
+longhealth,r20,patient_01-q05,Evidence Teacher,1.0
+longhealth,r20,patient_01-q06,Evidence Teacher,1.0
+longhealth,r20,patient_01-q07,Evidence Teacher,1.0
+longhealth,r20,patient_01-q08,Evidence Teacher,1.0
+longhealth,r20,patient_01-q09,Evidence Teacher,1.0
+longhealth,r20,patient_01-q10,Evidence Teacher,1.0
+longhealth,r20,patient_01-q12,Evidence Teacher,0.0
+longhealth,r20,patient_01-q13,Evidence Teacher,0.0
+longhealth,r20,patient_01-q14,Evidence Teacher,0.0
+longhealth,r20,patient_01-q00,SnapKV,1.0
+longhealth,r20,patient_01-q01,SnapKV,1.0
+longhealth,r20,patient_01-q02,SnapKV,1.0
+longhealth,r20,patient_01-q03,SnapKV,1.0
+longhealth,r20,patient_01-q04,SnapKV,1.0
+longhealth,r20,patient_01-q05,SnapKV,1.0
+longhealth,r20,patient_01-q06,SnapKV,1.0
+longhealth,r20,patient_01-q07,SnapKV,1.0
+longhealth,r20,patient_01-q08,SnapKV,1.0
+longhealth,r20,patient_01-q09,SnapKV,0.0
+longhealth,r20,patient_01-q10,SnapKV,1.0
+longhealth,r20,patient_01-q12,SnapKV,1.0
+longhealth,r20,patient_01-q13,SnapKV,1.0
+longhealth,r20,patient_01-q14,SnapKV,0.0
+longhealth,r20,patient_01-q00,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q01,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r20,patient_01-q02,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r20,patient_01-q03,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q04,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r20,patient_01-q05,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r20,patient_01-q06,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q07,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q08,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q09,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q10,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r20,patient_01-q12,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q13,Vanilla Cartridges (agnostic SD),1.0
+longhealth,r20,patient_01-q14,Vanilla Cartridges (agnostic SD),0.0
+longhealth,r20,patient_01-q00,Specific Cartridges (specific SD),0.0
+longhealth,r20,patient_01-q01,Specific Cartridges (specific SD),0.0
+longhealth,r20,patient_01-q02,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q03,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q04,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q05,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q06,Specific Cartridges (specific SD),0.0
+longhealth,r20,patient_01-q07,Specific Cartridges (specific SD),0.0
+longhealth,r20,patient_01-q08,Specific Cartridges (specific SD),0.0
+longhealth,r20,patient_01-q09,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q10,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q12,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q13,Specific Cartridges (specific SD),1.0
+longhealth,r20,patient_01-q14,Specific Cartridges (specific SD),0.0
+longhealth,r20,patient_01-q00,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q01,Contextual (specific + ED-JSD),0.0
+longhealth,r20,patient_01-q02,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q03,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q04,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q05,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q06,Contextual (specific + ED-JSD),0.0
+longhealth,r20,patient_01-q07,Contextual (specific + ED-JSD),0.0
+longhealth,r20,patient_01-q08,Contextual (specific + ED-JSD),0.0
+longhealth,r20,patient_01-q09,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q10,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q12,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q13,Contextual (specific + ED-JSD),1.0
+longhealth,r20,patient_01-q14,Contextual (specific + ED-JSD),0.0
+longhealth,r20,patient_01-q00,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q01,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q02,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q03,Agnostic + DualJSD (running),0.0
+longhealth,r20,patient_01-q04,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q05,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q06,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q07,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q08,Agnostic + DualJSD (running),0.0
+longhealth,r20,patient_01-q09,Agnostic + DualJSD (running),0.0
+longhealth,r20,patient_01-q10,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q12,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q13,Agnostic + DualJSD (running),1.0
+longhealth,r20,patient_01-q14,Agnostic + DualJSD (running),0.0
+longhealth,r20,patient_01-q00,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q01,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q02,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q03,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q04,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q05,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q06,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q07,Specific + DualJSD (running),0.0
+longhealth,r20,patient_01-q08,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q09,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q10,Specific + DualJSD (running),0.0
+longhealth,r20,patient_01-q12,Specific + DualJSD (running),1.0
+longhealth,r20,patient_01-q13,Specific + DualJSD (running),0.0
+longhealth,r20,patient_01-q14,Specific + DualJSD (running),0.0
+mtob_ke,r05,mtob-ke-001,Whole KV,8.99627682745302
+mtob_ke,r05,mtob-ke-002,Whole KV,7.629342899466177
+mtob_ke,r05,mtob-ke-003,Whole KV,8.942770957006365
+mtob_ke,r05,mtob-ke-004,Whole KV,3.843755923206277
+mtob_ke,r05,mtob-ke-005,Whole KV,3.4153869680269575
+mtob_ke,r05,mtob-ke-006,Whole KV,4.43335543176985
+mtob_ke,r05,mtob-ke-007,Whole KV,7.8322294017262415
+mtob_ke,r05,mtob-ke-008,Whole KV,4.144963875107552
+mtob_ke,r05,mtob-ke-009,Whole KV,5.304034480889627
+mtob_ke,r05,mtob-ke-010,Whole KV,7.384086621931062
+mtob_ke,r05,mtob-ke-011,Whole KV,4.070335232662344
+mtob_ke,r05,mtob-ke-012,Whole KV,5.790066685678959
+mtob_ke,r05,mtob-ke-013,Whole KV,6.32034557004458
+mtob_ke,r05,mtob-ke-014,Whole KV,6.030669510055766
+mtob_ke,r05,mtob-ke-015,Whole KV,6.604524489322766
+mtob_ke,r05,mtob-ke-001,Evidence Teacher,22.194471592924504
+mtob_ke,r05,mtob-ke-002,Evidence Teacher,15.93511158663229
+mtob_ke,r05,mtob-ke-003,Evidence Teacher,25.653080451166684
+mtob_ke,r05,mtob-ke-004,Evidence Teacher,33.268255985908645
+mtob_ke,r05,mtob-ke-005,Evidence Teacher,24.287170653449564
+mtob_ke,r05,mtob-ke-006,Evidence Teacher,32.33112105290634
+mtob_ke,r05,mtob-ke-007,Evidence Teacher,20.79838260211541
+mtob_ke,r05,mtob-ke-008,Evidence Teacher,29.486106734373447
+mtob_ke,r05,mtob-ke-009,Evidence Teacher,10.355413713960228
+mtob_ke,r05,mtob-ke-010,Evidence Teacher,40.513163115641845
+mtob_ke,r05,mtob-ke-011,Evidence Teacher,18.09343989342192
+mtob_ke,r05,mtob-ke-012,Evidence Teacher,50.812648664744536
+mtob_ke,r05,mtob-ke-013,Evidence Teacher,41.28560245338339
+mtob_ke,r05,mtob-ke-014,Evidence Teacher,22.224140840311588
+mtob_ke,r05,mtob-ke-015,Evidence Teacher,21.59520197497787
+mtob_ke,r05,mtob-ke-001,SnapKV,10.035370802453418
+mtob_ke,r05,mtob-ke-002,SnapKV,6.934142109042938
+mtob_ke,r05,mtob-ke-003,SnapKV,8.604382405418594
+mtob_ke,r05,mtob-ke-004,SnapKV,2.77743856597812
+mtob_ke,r05,mtob-ke-005,SnapKV,3.171700252102262
+mtob_ke,r05,mtob-ke-006,SnapKV,4.014804206685469
+mtob_ke,r05,mtob-ke-007,SnapKV,7.953527098174249
+mtob_ke,r05,mtob-ke-008,SnapKV,4.004050777911128
+mtob_ke,r05,mtob-ke-009,SnapKV,5.813344954318076
+mtob_ke,r05,mtob-ke-010,SnapKV,6.353213050597511
+mtob_ke,r05,mtob-ke-011,SnapKV,3.834388896980944
+mtob_ke,r05,mtob-ke-012,SnapKV,6.119835767695072
+mtob_ke,r05,mtob-ke-013,SnapKV,5.9008977903007285
+mtob_ke,r05,mtob-ke-014,SnapKV,5.773873310384745
+mtob_ke,r05,mtob-ke-015,SnapKV,5.476760806263925
+mtob_ke,r05,mtob-ke-001,Vanilla Cartridges (agnostic SD),9.942794628885704
+mtob_ke,r05,mtob-ke-002,Vanilla Cartridges (agnostic SD),9.456091311437225
+mtob_ke,r05,mtob-ke-003,Vanilla Cartridges (agnostic SD),15.72869309681124
+mtob_ke,r05,mtob-ke-004,Vanilla Cartridges (agnostic SD),11.161965253129084
+mtob_ke,r05,mtob-ke-005,Vanilla Cartridges (agnostic SD),2.4365810975324247
+mtob_ke,r05,mtob-ke-006,Vanilla Cartridges (agnostic SD),8.778953720466047
+mtob_ke,r05,mtob-ke-007,Vanilla Cartridges (agnostic SD),22.291135839170952
+mtob_ke,r05,mtob-ke-008,Vanilla Cartridges (agnostic SD),15.679394157836889
+mtob_ke,r05,mtob-ke-009,Vanilla Cartridges (agnostic SD),16.34170748138465
+mtob_ke,r05,mtob-ke-010,Vanilla Cartridges (agnostic SD),25.17752472365645
+mtob_ke,r05,mtob-ke-011,Vanilla Cartridges (agnostic SD),10.63817663817664
+mtob_ke,r05,mtob-ke-012,Vanilla Cartridges (agnostic SD),12.325015216068168
+mtob_ke,r05,mtob-ke-013,Vanilla Cartridges (agnostic SD),22.785801913366782
+mtob_ke,r05,mtob-ke-014,Vanilla Cartridges (agnostic SD),11.36456476530006
+mtob_ke,r05,mtob-ke-015,Vanilla Cartridges (agnostic SD),13.79354358655455
+mtob_ke,r05,mtob-ke-001,Specific Cartridges (specific SD),23.381325348162083
+mtob_ke,r05,mtob-ke-002,Specific Cartridges (specific SD),20.352477392535373
+mtob_ke,r05,mtob-ke-003,Specific Cartridges (specific SD),11.090970682855014
+mtob_ke,r05,mtob-ke-004,Specific Cartridges (specific SD),30.76599082838308
+mtob_ke,r05,mtob-ke-005,Specific Cartridges (specific SD),3.812733635568281
+mtob_ke,r05,mtob-ke-006,Specific Cartridges (specific SD),37.857112489013296
+mtob_ke,r05,mtob-ke-007,Specific Cartridges (specific SD),18.907046303334415
+mtob_ke,r05,mtob-ke-008,Specific Cartridges (specific SD),6.405461290518762
+mtob_ke,r05,mtob-ke-009,Specific Cartridges (specific SD),17.852507649033964
+mtob_ke,r05,mtob-ke-010,Specific Cartridges (specific SD),39.80419826819202
+mtob_ke,r05,mtob-ke-011,Specific Cartridges (specific SD),25.35577886606592
+mtob_ke,r05,mtob-ke-012,Specific Cartridges (specific SD),12.973157512909145
+mtob_ke,r05,mtob-ke-013,Specific Cartridges (specific SD),14.689417853678565
+mtob_ke,r05,mtob-ke-014,Specific Cartridges (specific SD),19.184609305061095
+mtob_ke,r05,mtob-ke-015,Specific Cartridges (specific SD),13.695514630966995
+mtob_ke,r05,mtob-ke-001,Contextual (specific + ED-JSD),14.09015936491552
+mtob_ke,r05,mtob-ke-002,Contextual (specific + ED-JSD),11.864281721469647
+mtob_ke,r05,mtob-ke-003,Contextual (specific + ED-JSD),9.105753293760669
+mtob_ke,r05,mtob-ke-004,Contextual (specific + ED-JSD),30.76599082838308
+mtob_ke,r05,mtob-ke-005,Contextual (specific + ED-JSD),3.812733635568281
+mtob_ke,r05,mtob-ke-006,Contextual (specific + ED-JSD),37.857112489013296
+mtob_ke,r05,mtob-ke-007,Contextual (specific + ED-JSD),7.964982778415614
+mtob_ke,r05,mtob-ke-008,Contextual (specific + ED-JSD),12.110947373307953
+mtob_ke,r05,mtob-ke-009,Contextual (specific + ED-JSD),12.716629695485308
+mtob_ke,r05,mtob-ke-010,Contextual (specific + ED-JSD),31.821911826195144
+mtob_ke,r05,mtob-ke-011,Contextual (specific + ED-JSD),8.734555386936009
+mtob_ke,r05,mtob-ke-012,Contextual (specific + ED-JSD),12.973157512909145
+mtob_ke,r05,mtob-ke-013,Contextual (specific + ED-JSD),10.71245497381657
+mtob_ke,r05,mtob-ke-014,Contextual (specific + ED-JSD),10.150292202413734
+mtob_ke,r05,mtob-ke-015,Contextual (specific + ED-JSD),13.695514630966995
+mtob_ke,r05,mtob-ke-001,Agnostic + DualJSD (running),14.630730548744802
+mtob_ke,r05,mtob-ke-002,Agnostic + DualJSD (running),17.490098129217298
+mtob_ke,r05,mtob-ke-003,Agnostic + DualJSD (running),23.580219247774213
+mtob_ke,r05,mtob-ke-004,Agnostic + DualJSD (running),30.76599082838308
+mtob_ke,r05,mtob-ke-005,Agnostic + DualJSD (running),12.671605076190554
+mtob_ke,r05,mtob-ke-006,Agnostic + DualJSD (running),11.862852190634847
+mtob_ke,r05,mtob-ke-007,Agnostic + DualJSD (running),20.770479650633387
+mtob_ke,r05,mtob-ke-008,Agnostic + DualJSD (running),12.601926523297491
+mtob_ke,r05,mtob-ke-009,Agnostic + DualJSD (running),14.76647157357201
+mtob_ke,r05,mtob-ke-010,Agnostic + DualJSD (running),17.187835562654588
+mtob_ke,r05,mtob-ke-011,Agnostic + DualJSD (running),17.289181894445054
+mtob_ke,r05,mtob-ke-012,Agnostic + DualJSD (running),20.193534882731495
+mtob_ke,r05,mtob-ke-013,Agnostic + DualJSD (running),10.764985729147105
+mtob_ke,r05,mtob-ke-014,Agnostic + DualJSD (running),23.52918229768734
+mtob_ke,r05,mtob-ke-015,Agnostic + DualJSD (running),30.854201882961252
+mtob_ke,r05,mtob-ke-001,Specific + DualJSD (running),12.383306751727803
+mtob_ke,r05,mtob-ke-002,Specific + DualJSD (running),15.565356451777502
+mtob_ke,r05,mtob-ke-003,Specific + DualJSD (running),22.37527085274021
+mtob_ke,r05,mtob-ke-004,Specific + DualJSD (running),30.76599082838308
+mtob_ke,r05,mtob-ke-005,Specific + DualJSD (running),20.22429456136901
+mtob_ke,r05,mtob-ke-006,Specific + DualJSD (running),11.862852190634847
+mtob_ke,r05,mtob-ke-007,Specific + DualJSD (running),19.291991570514597
+mtob_ke,r05,mtob-ke-008,Specific + DualJSD (running),12.628152360996781
+mtob_ke,r05,mtob-ke-009,Specific + DualJSD (running),14.15956327057524
+mtob_ke,r05,mtob-ke-010,Specific + DualJSD (running),10.591736428167653
+mtob_ke,r05,mtob-ke-011,Specific + DualJSD (running),16.05009245121464
+mtob_ke,r05,mtob-ke-012,Specific + DualJSD (running),32.02398416353169
+mtob_ke,r05,mtob-ke-013,Specific + DualJSD (running),9.703433358684283
+mtob_ke,r05,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
+mtob_ke,r05,mtob-ke-015,Specific + DualJSD (running),10.644771521398711
+mtob_ke,r10,mtob-ke-001,Whole KV,8.99627682745302
+mtob_ke,r10,mtob-ke-002,Whole KV,7.629342899466177
+mtob_ke,r10,mtob-ke-003,Whole KV,8.942770957006365
+mtob_ke,r10,mtob-ke-004,Whole KV,3.843755923206277
+mtob_ke,r10,mtob-ke-005,Whole KV,3.4153869680269575
+mtob_ke,r10,mtob-ke-006,Whole KV,4.43335543176985
+mtob_ke,r10,mtob-ke-007,Whole KV,7.8322294017262415
+mtob_ke,r10,mtob-ke-008,Whole KV,4.144963875107552
+mtob_ke,r10,mtob-ke-009,Whole KV,5.304034480889627
+mtob_ke,r10,mtob-ke-010,Whole KV,7.384086621931062
+mtob_ke,r10,mtob-ke-011,Whole KV,4.070335232662344
+mtob_ke,r10,mtob-ke-012,Whole KV,5.790066685678959
+mtob_ke,r10,mtob-ke-013,Whole KV,6.32034557004458
+mtob_ke,r10,mtob-ke-014,Whole KV,6.030669510055766
+mtob_ke,r10,mtob-ke-001,Evidence Teacher,22.194471592924504
+mtob_ke,r10,mtob-ke-002,Evidence Teacher,15.93511158663229
+mtob_ke,r10,mtob-ke-003,Evidence Teacher,25.653080451166684
+mtob_ke,r10,mtob-ke-004,Evidence Teacher,33.268255985908645
+mtob_ke,r10,mtob-ke-005,Evidence Teacher,24.287170653449564
+mtob_ke,r10,mtob-ke-006,Evidence Teacher,32.33112105290634
+mtob_ke,r10,mtob-ke-007,Evidence Teacher,20.79838260211541
+mtob_ke,r10,mtob-ke-008,Evidence Teacher,29.486106734373447
+mtob_ke,r10,mtob-ke-009,Evidence Teacher,10.355413713960228
+mtob_ke,r10,mtob-ke-010,Evidence Teacher,40.513163115641845
+mtob_ke,r10,mtob-ke-011,Evidence Teacher,18.09343989342192
+mtob_ke,r10,mtob-ke-012,Evidence Teacher,50.812648664744536
+mtob_ke,r10,mtob-ke-013,Evidence Teacher,41.28560245338339
+mtob_ke,r10,mtob-ke-014,Evidence Teacher,22.224140840311588
+mtob_ke,r10,mtob-ke-001,SnapKV,9.14734703679685
+mtob_ke,r10,mtob-ke-002,SnapKV,8.132132188020819
+mtob_ke,r10,mtob-ke-003,SnapKV,7.979916340015283
+mtob_ke,r10,mtob-ke-004,SnapKV,2.9919746830896083
+mtob_ke,r10,mtob-ke-005,SnapKV,3.266107236117172
+mtob_ke,r10,mtob-ke-006,SnapKV,4.054314329738059
+mtob_ke,r10,mtob-ke-007,SnapKV,7.556916402605363
+mtob_ke,r10,mtob-ke-008,SnapKV,4.043262219000732
+mtob_ke,r10,mtob-ke-009,SnapKV,5.306571052880336
+mtob_ke,r10,mtob-ke-010,SnapKV,5.739137945942962
+mtob_ke,r10,mtob-ke-011,SnapKV,3.955371757503132
+mtob_ke,r10,mtob-ke-012,SnapKV,6.192187529998447
+mtob_ke,r10,mtob-ke-013,SnapKV,6.809945226808065
+mtob_ke,r10,mtob-ke-014,SnapKV,4.905286659503476
+mtob_ke,r10,mtob-ke-001,Vanilla Cartridges (agnostic SD),15.884215772263543
+mtob_ke,r10,mtob-ke-002,Vanilla Cartridges (agnostic SD),19.63187181186083
+mtob_ke,r10,mtob-ke-003,Vanilla Cartridges (agnostic SD),14.698228745730221
+mtob_ke,r10,mtob-ke-004,Vanilla Cartridges (agnostic SD),13.6023478527098
+mtob_ke,r10,mtob-ke-005,Vanilla Cartridges (agnostic SD),17.07978454887201
+mtob_ke,r10,mtob-ke-006,Vanilla Cartridges (agnostic SD),26.165352218593267
+mtob_ke,r10,mtob-ke-007,Vanilla Cartridges (agnostic SD),17.588029035056554
+mtob_ke,r10,mtob-ke-008,Vanilla Cartridges (agnostic SD),10.491257906671441
+mtob_ke,r10,mtob-ke-009,Vanilla Cartridges (agnostic SD),10.609756097560975
+mtob_ke,r10,mtob-ke-010,Vanilla Cartridges (agnostic SD),21.76525316180411
+mtob_ke,r10,mtob-ke-011,Vanilla Cartridges (agnostic SD),17.132874157734943
+mtob_ke,r10,mtob-ke-012,Vanilla Cartridges (agnostic SD),10.99328418997411
+mtob_ke,r10,mtob-ke-013,Vanilla Cartridges (agnostic SD),18.10612332493106
+mtob_ke,r10,mtob-ke-014,Vanilla Cartridges (agnostic SD),24.650028660797634
+mtob_ke,r10,mtob-ke-001,Specific Cartridges (specific SD),10.124419309446106
+mtob_ke,r10,mtob-ke-002,Specific Cartridges (specific SD),22.27079753531844
+mtob_ke,r10,mtob-ke-003,Specific Cartridges (specific SD),9.249510847579094
+mtob_ke,r10,mtob-ke-004,Specific Cartridges (specific SD),30.76599082838308
+mtob_ke,r10,mtob-ke-005,Specific Cartridges (specific SD),17.63488046088786
+mtob_ke,r10,mtob-ke-006,Specific Cartridges (specific SD),36.986642116824704
+mtob_ke,r10,mtob-ke-007,Specific Cartridges (specific SD),19.066936106965898
+mtob_ke,r10,mtob-ke-008,Specific Cartridges (specific SD),13.943095290824255
+mtob_ke,r10,mtob-ke-009,Specific Cartridges (specific SD),12.529843058067236
+mtob_ke,r10,mtob-ke-010,Specific Cartridges (specific SD),42.014786853520796
+mtob_ke,r10,mtob-ke-011,Specific Cartridges (specific SD),16.05009245121464
+mtob_ke,r10,mtob-ke-012,Specific Cartridges (specific SD),24.970693316035682
+mtob_ke,r10,mtob-ke-013,Specific Cartridges (specific SD),18.87025199653228
+mtob_ke,r10,mtob-ke-014,Specific Cartridges (specific SD),5.2751231996515004
+mtob_ke,r10,mtob-ke-001,Contextual (specific + ED-JSD),12.166856535277587
+mtob_ke,r10,mtob-ke-002,Contextual (specific + ED-JSD),19.104051912136594
+mtob_ke,r10,mtob-ke-003,Contextual (specific + ED-JSD),10.030672164105603
+mtob_ke,r10,mtob-ke-004,Contextual (specific + ED-JSD),30.76599082838308
+mtob_ke,r10,mtob-ke-005,Contextual (specific + ED-JSD),17.63488046088786
+mtob_ke,r10,mtob-ke-006,Contextual (specific + ED-JSD),36.986642116824704
+mtob_ke,r10,mtob-ke-007,Contextual (specific + ED-JSD),21.517166057394874
+mtob_ke,r10,mtob-ke-008,Contextual (specific + ED-JSD),14.737494923813053
+mtob_ke,r10,mtob-ke-009,Contextual (specific + ED-JSD),9.854959890177206
+mtob_ke,r10,mtob-ke-010,Contextual (specific + ED-JSD),55.41345740947662
+mtob_ke,r10,mtob-ke-011,Contextual (specific + ED-JSD),16.05009245121464
+mtob_ke,r10,mtob-ke-012,Contextual (specific + ED-JSD),27.71293643237378
+mtob_ke,r10,mtob-ke-013,Contextual (specific + ED-JSD),23.33998740547442
+mtob_ke,r10,mtob-ke-014,Contextual (specific + ED-JSD),19.184609305061095
+mtob_ke,r10,mtob-ke-001,Agnostic + DualJSD (running),21.566206671087016
+mtob_ke,r10,mtob-ke-002,Agnostic + DualJSD (running),11.949358005252627
+mtob_ke,r10,mtob-ke-003,Agnostic + DualJSD (running),17.250433843457024
+mtob_ke,r10,mtob-ke-004,Agnostic + DualJSD (running),30.76599082838308
+mtob_ke,r10,mtob-ke-005,Agnostic + DualJSD (running),10.250896057347669
+mtob_ke,r10,mtob-ke-006,Agnostic + DualJSD (running),19.33187319216731
+mtob_ke,r10,mtob-ke-007,Agnostic + DualJSD (running),24.671570284003863
+mtob_ke,r10,mtob-ke-008,Agnostic + DualJSD (running),21.98563890530734
+mtob_ke,r10,mtob-ke-009,Agnostic + DualJSD (running),13.462663067926227
+mtob_ke,r10,mtob-ke-010,Agnostic + DualJSD (running),15.69245669562431
+mtob_ke,r10,mtob-ke-011,Agnostic + DualJSD (running),16.05009245121464
+mtob_ke,r10,mtob-ke-012,Agnostic + DualJSD (running),12.973157512909145
+mtob_ke,r10,mtob-ke-013,Agnostic + DualJSD (running),10.68768532718822
+mtob_ke,r10,mtob-ke-014,Agnostic + DualJSD (running),16.074301162564584
+mtob_ke,r10,mtob-ke-001,Specific + DualJSD (running),12.166856535277587
+mtob_ke,r10,mtob-ke-002,Specific + DualJSD (running),17.35162966653535
+mtob_ke,r10,mtob-ke-003,Specific + DualJSD (running),17.897504121015757
+mtob_ke,r10,mtob-ke-004,Specific + DualJSD (running),30.76599082838308
+mtob_ke,r10,mtob-ke-005,Specific + DualJSD (running),24.287170653449564
+mtob_ke,r10,mtob-ke-006,Specific + DualJSD (running),10.465410844457642
+mtob_ke,r10,mtob-ke-007,Specific + DualJSD (running),19.291991570514597
+mtob_ke,r10,mtob-ke-008,Specific + DualJSD (running),15.242426019874975
+mtob_ke,r10,mtob-ke-009,Specific + DualJSD (running),12.842055236436567
+mtob_ke,r10,mtob-ke-010,Specific + DualJSD (running),10.591736428167653
+mtob_ke,r10,mtob-ke-011,Specific + DualJSD (running),16.05009245121464
+mtob_ke,r10,mtob-ke-012,Specific + DualJSD (running),16.515295698557207
+mtob_ke,r10,mtob-ke-013,Specific + DualJSD (running),12.222836806771696
+mtob_ke,r10,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
+mtob_ke,r15,mtob-ke-001,Whole KV,8.99627682745302
+mtob_ke,r15,mtob-ke-002,Whole KV,7.629342899466177
+mtob_ke,r15,mtob-ke-003,Whole KV,8.942770957006365
+mtob_ke,r15,mtob-ke-004,Whole KV,3.843755923206277
+mtob_ke,r15,mtob-ke-005,Whole KV,3.4153869680269575
+mtob_ke,r15,mtob-ke-006,Whole KV,4.43335543176985
+mtob_ke,r15,mtob-ke-007,Whole KV,7.8322294017262415
+mtob_ke,r15,mtob-ke-008,Whole KV,4.144963875107552
+mtob_ke,r15,mtob-ke-009,Whole KV,5.304034480889627
+mtob_ke,r15,mtob-ke-010,Whole KV,7.384086621931062
+mtob_ke,r15,mtob-ke-011,Whole KV,4.070335232662344
+mtob_ke,r15,mtob-ke-012,Whole KV,5.790066685678959
+mtob_ke,r15,mtob-ke-013,Whole KV,6.32034557004458
+mtob_ke,r15,mtob-ke-014,Whole KV,6.030669510055766
+mtob_ke,r15,mtob-ke-001,Evidence Teacher,22.194471592924504
+mtob_ke,r15,mtob-ke-002,Evidence Teacher,15.93511158663229
+mtob_ke,r15,mtob-ke-003,Evidence Teacher,25.653080451166684
+mtob_ke,r15,mtob-ke-004,Evidence Teacher,33.268255985908645
+mtob_ke,r15,mtob-ke-005,Evidence Teacher,24.287170653449564
+mtob_ke,r15,mtob-ke-006,Evidence Teacher,32.33112105290634
+mtob_ke,r15,mtob-ke-007,Evidence Teacher,20.79838260211541
+mtob_ke,r15,mtob-ke-008,Evidence Teacher,29.486106734373447
+mtob_ke,r15,mtob-ke-009,Evidence Teacher,10.355413713960228
+mtob_ke,r15,mtob-ke-010,Evidence Teacher,40.513163115641845
+mtob_ke,r15,mtob-ke-011,Evidence Teacher,18.09343989342192
+mtob_ke,r15,mtob-ke-012,Evidence Teacher,50.812648664744536
+mtob_ke,r15,mtob-ke-013,Evidence Teacher,41.28560245338339
+mtob_ke,r15,mtob-ke-014,Evidence Teacher,22.224140840311588
+mtob_ke,r15,mtob-ke-001,SnapKV,9.186875935793887
+mtob_ke,r15,mtob-ke-002,SnapKV,8.631402412252184
+mtob_ke,r15,mtob-ke-003,SnapKV,8.421515779369763
+mtob_ke,r15,mtob-ke-004,SnapKV,2.2746348459624453
+mtob_ke,r15,mtob-ke-005,SnapKV,2.992476952837773
+mtob_ke,r15,mtob-ke-006,SnapKV,3.769556549519146
+mtob_ke,r15,mtob-ke-007,SnapKV,7.11252463022111
+mtob_ke,r15,mtob-ke-008,SnapKV,4.786148371778585
+mtob_ke,r15,mtob-ke-009,SnapKV,6.60833958703454
+mtob_ke,r15,mtob-ke-010,SnapKV,6.228139320964947
+mtob_ke,r15,mtob-ke-011,SnapKV,4.252816329730568
+mtob_ke,r15,mtob-ke-012,SnapKV,5.748063742186699
+mtob_ke,r15,mtob-ke-013,SnapKV,6.583864082228871
+mtob_ke,r15,mtob-ke-014,SnapKV,4.873012166049196
+mtob_ke,r15,mtob-ke-001,Vanilla Cartridges (agnostic SD),15.116810407565
+mtob_ke,r15,mtob-ke-002,Vanilla Cartridges (agnostic SD),12.978329069367755
+mtob_ke,r15,mtob-ke-003,Vanilla Cartridges (agnostic SD),22.38357896635911
+mtob_ke,r15,mtob-ke-004,Vanilla Cartridges (agnostic SD),18.94420277341617
+mtob_ke,r15,mtob-ke-005,Vanilla Cartridges (agnostic SD),21.543194236400314
+mtob_ke,r15,mtob-ke-006,Vanilla Cartridges (agnostic SD),20.89820514896134
+mtob_ke,r15,mtob-ke-007,Vanilla Cartridges (agnostic SD),19.409279211264707
+mtob_ke,r15,mtob-ke-008,Vanilla Cartridges (agnostic SD),12.200126262626263
+mtob_ke,r15,mtob-ke-009,Vanilla Cartridges (agnostic SD),11.018419545567069
+mtob_ke,r15,mtob-ke-010,Vanilla Cartridges (agnostic SD),10.591736428167653
+mtob_ke,r15,mtob-ke-011,Vanilla Cartridges (agnostic SD),15.21422395571801
+mtob_ke,r15,mtob-ke-012,Vanilla Cartridges (agnostic SD),12.973157512909145
+mtob_ke,r15,mtob-ke-013,Vanilla Cartridges (agnostic SD),22.019357270962345
+mtob_ke,r15,mtob-ke-014,Vanilla Cartridges (agnostic SD),28.783758467536117
+mtob_ke,r15,mtob-ke-001,Specific Cartridges (specific SD),26.242330295789284
+mtob_ke,r15,mtob-ke-002,Specific Cartridges (specific SD),19.104051912136594
+mtob_ke,r15,mtob-ke-003,Specific Cartridges (specific SD),14.757501344254543
+mtob_ke,r15,mtob-ke-004,Specific Cartridges (specific SD),30.76599082838308
+mtob_ke,r15,mtob-ke-005,Specific Cartridges (specific SD),24.287170653449564
+mtob_ke,r15,mtob-ke-006,Specific Cartridges (specific SD),15.544158718164901
+mtob_ke,r15,mtob-ke-007,Specific Cartridges (specific SD),4.278267927352455
+mtob_ke,r15,mtob-ke-008,Specific Cartridges (specific SD),12.073715949261798
+mtob_ke,r15,mtob-ke-009,Specific Cartridges (specific SD),12.842055236436567
+mtob_ke,r15,mtob-ke-010,Specific Cartridges (specific SD),42.63433400501225
+mtob_ke,r15,mtob-ke-011,Specific Cartridges (specific SD),5.931894034209428
+mtob_ke,r15,mtob-ke-012,Specific Cartridges (specific SD),12.973157512909145
+mtob_ke,r15,mtob-ke-013,Specific Cartridges (specific SD),13.177004134987328
+mtob_ke,r15,mtob-ke-014,Specific Cartridges (specific SD),9.707457640925384
+mtob_ke,r15,mtob-ke-001,Contextual (specific + ED-JSD),12.912828344207426
+mtob_ke,r15,mtob-ke-002,Contextual (specific + ED-JSD),22.043121457030534
+mtob_ke,r15,mtob-ke-003,Contextual (specific + ED-JSD),14.874630602751987
+mtob_ke,r15,mtob-ke-004,Contextual (specific + ED-JSD),30.76599082838308
+mtob_ke,r15,mtob-ke-005,Contextual (specific + ED-JSD),24.287170653449564
+mtob_ke,r15,mtob-ke-006,Contextual (specific + ED-JSD),15.544158718164901
+mtob_ke,r15,mtob-ke-007,Contextual (specific + ED-JSD),23.4829027437073
+mtob_ke,r15,mtob-ke-008,Contextual (specific + ED-JSD),0.7716049382716049
+mtob_ke,r15,mtob-ke-009,Contextual (specific + ED-JSD),10.704510661619722
+mtob_ke,r15,mtob-ke-010,Contextual (specific + ED-JSD),37.61838049687996
+mtob_ke,r15,mtob-ke-011,Contextual (specific + ED-JSD),12.394507589101755
+mtob_ke,r15,mtob-ke-012,Contextual (specific + ED-JSD),12.973157512909145
+mtob_ke,r15,mtob-ke-013,Contextual (specific + ED-JSD),13.177004134987328
+mtob_ke,r15,mtob-ke-014,Contextual (specific + ED-JSD),7.579509068712345
+mtob_ke,r15,mtob-ke-001,Agnostic + DualJSD (running),22.994061091348502
+mtob_ke,r15,mtob-ke-002,Agnostic + DualJSD (running),29.097368577359234
+mtob_ke,r15,mtob-ke-003,Agnostic + DualJSD (running),15.121143021729845
+mtob_ke,r15,mtob-ke-004,Agnostic + DualJSD (running),30.76599082838308
+mtob_ke,r15,mtob-ke-005,Agnostic + DualJSD (running),13.834897816655074
+mtob_ke,r15,mtob-ke-006,Agnostic + DualJSD (running),17.806122916170654
+mtob_ke,r15,mtob-ke-007,Agnostic + DualJSD (running),11.216063247588998
+mtob_ke,r15,mtob-ke-008,Agnostic + DualJSD (running),16.642141801988352
+mtob_ke,r15,mtob-ke-009,Agnostic + DualJSD (running),17.775761750678257
+mtob_ke,r15,mtob-ke-010,Agnostic + DualJSD (running),10.386593054115176
+mtob_ke,r15,mtob-ke-011,Agnostic + DualJSD (running),5.059435814068269
+mtob_ke,r15,mtob-ke-012,Agnostic + DualJSD (running),19.28937815786588
+mtob_ke,r15,mtob-ke-013,Agnostic + DualJSD (running),9.650470475829328
+mtob_ke,r15,mtob-ke-014,Agnostic + DualJSD (running),18.639645550818045
+mtob_ke,r15,mtob-ke-001,Specific + DualJSD (running),23.74452936552432
+mtob_ke,r15,mtob-ke-002,Specific + DualJSD (running),17.35162966653535
+mtob_ke,r15,mtob-ke-003,Specific + DualJSD (running),7.483938772396724
+mtob_ke,r15,mtob-ke-004,Specific + DualJSD (running),30.76599082838308
+mtob_ke,r15,mtob-ke-005,Specific + DualJSD (running),24.287170653449564
+mtob_ke,r15,mtob-ke-006,Specific + DualJSD (running),15.79283483551401
+mtob_ke,r15,mtob-ke-007,Specific + DualJSD (running),18.82657048958499
+mtob_ke,r15,mtob-ke-008,Specific + DualJSD (running),12.368068382211243
+mtob_ke,r15,mtob-ke-009,Specific + DualJSD (running),16.831631640883547
+mtob_ke,r15,mtob-ke-010,Specific + DualJSD (running),14.256084259614036
+mtob_ke,r15,mtob-ke-011,Specific + DualJSD (running),16.05009245121464
+mtob_ke,r15,mtob-ke-012,Specific + DualJSD (running),33.68117294714493
+mtob_ke,r15,mtob-ke-013,Specific + DualJSD (running),9.388016704684954
+mtob_ke,r15,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
+mtob_ke,r20,mtob-ke-001,Whole KV,8.99627682745302
+mtob_ke,r20,mtob-ke-002,Whole KV,7.629342899466177
+mtob_ke,r20,mtob-ke-003,Whole KV,8.942770957006365
+mtob_ke,r20,mtob-ke-004,Whole KV,3.843755923206277
+mtob_ke,r20,mtob-ke-005,Whole KV,3.4153869680269575
+mtob_ke,r20,mtob-ke-006,Whole KV,4.43335543176985
+mtob_ke,r20,mtob-ke-007,Whole KV,7.8322294017262415
+mtob_ke,r20,mtob-ke-008,Whole KV,4.144963875107552
+mtob_ke,r20,mtob-ke-009,Whole KV,5.304034480889627
+mtob_ke,r20,mtob-ke-010,Whole KV,7.384086621931062
+mtob_ke,r20,mtob-ke-011,Whole KV,4.070335232662344
+mtob_ke,r20,mtob-ke-012,Whole KV,5.790066685678959
+mtob_ke,r20,mtob-ke-013,Whole KV,6.32034557004458
+mtob_ke,r20,mtob-ke-014,Whole KV,6.030669510055766
+mtob_ke,r20,mtob-ke-001,Evidence Teacher,22.194471592924504
+mtob_ke,r20,mtob-ke-002,Evidence Teacher,15.93511158663229
+mtob_ke,r20,mtob-ke-003,Evidence Teacher,25.653080451166684
+mtob_ke,r20,mtob-ke-004,Evidence Teacher,33.268255985908645
+mtob_ke,r20,mtob-ke-005,Evidence Teacher,24.287170653449564
+mtob_ke,r20,mtob-ke-006,Evidence Teacher,32.33112105290634
+mtob_ke,r20,mtob-ke-007,Evidence Teacher,20.79838260211541
+mtob_ke,r20,mtob-ke-008,Evidence Teacher,29.486106734373447
+mtob_ke,r20,mtob-ke-009,Evidence Teacher,10.355413713960228
+mtob_ke,r20,mtob-ke-010,Evidence Teacher,40.513163115641845
+mtob_ke,r20,mtob-ke-011,Evidence Teacher,18.09343989342192
+mtob_ke,r20,mtob-ke-012,Evidence Teacher,50.812648664744536
+mtob_ke,r20,mtob-ke-013,Evidence Teacher,41.28560245338339
+mtob_ke,r20,mtob-ke-014,Evidence Teacher,22.224140840311588
+mtob_ke,r20,mtob-ke-001,SnapKV,9.454713594979388
+mtob_ke,r20,mtob-ke-002,SnapKV,7.61298385556859
+mtob_ke,r20,mtob-ke-003,SnapKV,7.799562889897527
+mtob_ke,r20,mtob-ke-004,SnapKV,2.676892712650241
+mtob_ke,r20,mtob-ke-005,SnapKV,3.0266635984179557
+mtob_ke,r20,mtob-ke-006,SnapKV,4.153921450834329
+mtob_ke,r20,mtob-ke-007,SnapKV,7.212491623863514
+mtob_ke,r20,mtob-ke-008,SnapKV,4.415254841480799
+mtob_ke,r20,mtob-ke-009,SnapKV,6.527709304616574
+mtob_ke,r20,mtob-ke-010,SnapKV,6.623089002622122
+mtob_ke,r20,mtob-ke-011,SnapKV,3.6692724945736988
+mtob_ke,r20,mtob-ke-012,SnapKV,6.643436932106597
+mtob_ke,r20,mtob-ke-013,SnapKV,6.63933196366535
+mtob_ke,r20,mtob-ke-014,SnapKV,5.196080652972441
+mtob_ke,r20,mtob-ke-001,Vanilla Cartridges (agnostic SD),21.437976201136436
+mtob_ke,r20,mtob-ke-002,Vanilla Cartridges (agnostic SD),27.740776134424994
+mtob_ke,r20,mtob-ke-003,Vanilla Cartridges (agnostic SD),7.86796699534444
+mtob_ke,r20,mtob-ke-004,Vanilla Cartridges (agnostic SD),13.670084187713597
+mtob_ke,r20,mtob-ke-005,Vanilla Cartridges (agnostic SD),16.878203120609538
+mtob_ke,r20,mtob-ke-006,Vanilla Cartridges (agnostic SD),21.4162658899501
+mtob_ke,r20,mtob-ke-007,Vanilla Cartridges (agnostic SD),11.216063247588998
+mtob_ke,r20,mtob-ke-008,Vanilla Cartridges (agnostic SD),17.62565049921326
+mtob_ke,r20,mtob-ke-009,Vanilla Cartridges (agnostic SD),11.437349983289279
+mtob_ke,r20,mtob-ke-010,Vanilla Cartridges (agnostic SD),17.644174857955512
+mtob_ke,r20,mtob-ke-011,Vanilla Cartridges (agnostic SD),13.591174983352696
+mtob_ke,r20,mtob-ke-012,Vanilla Cartridges (agnostic SD),12.973157512909145
+mtob_ke,r20,mtob-ke-013,Vanilla Cartridges (agnostic SD),17.14426710537165
+mtob_ke,r20,mtob-ke-014,Vanilla Cartridges (agnostic SD),26.907849551343443
+mtob_ke,r20,mtob-ke-001,Specific Cartridges (specific SD),15.281124936186737
+mtob_ke,r20,mtob-ke-002,Specific Cartridges (specific SD),13.024256609739426
+mtob_ke,r20,mtob-ke-003,Specific Cartridges (specific SD),15.602789686970189
+mtob_ke,r20,mtob-ke-004,Specific Cartridges (specific SD),25.29399990204709
+mtob_ke,r20,mtob-ke-005,Specific Cartridges (specific SD),12.518521746709666
+mtob_ke,r20,mtob-ke-006,Specific Cartridges (specific SD),37.857112489013296
+mtob_ke,r20,mtob-ke-007,Specific Cartridges (specific SD),19.93240255250007
+mtob_ke,r20,mtob-ke-008,Specific Cartridges (specific SD),17.672901869730087
+mtob_ke,r20,mtob-ke-009,Specific Cartridges (specific SD),16.245548449697516
+mtob_ke,r20,mtob-ke-010,Specific Cartridges (specific SD),40.1161201139667
+mtob_ke,r20,mtob-ke-011,Specific Cartridges (specific SD),3.8717948717948723
+mtob_ke,r20,mtob-ke-012,Specific Cartridges (specific SD),26.966071961361568
+mtob_ke,r20,mtob-ke-013,Specific Cartridges (specific SD),17.94315876111236
+mtob_ke,r20,mtob-ke-014,Specific Cartridges (specific SD),6.637136500873988
+mtob_ke,r20,mtob-ke-001,Contextual (specific + ED-JSD),10.124419309446106
+mtob_ke,r20,mtob-ke-002,Contextual (specific + ED-JSD),18.027107625811475
+mtob_ke,r20,mtob-ke-003,Contextual (specific + ED-JSD),7.510046386122089
+mtob_ke,r20,mtob-ke-004,Contextual (specific + ED-JSD),24.048752662490145
+mtob_ke,r20,mtob-ke-005,Contextual (specific + ED-JSD),12.518521746709666
+mtob_ke,r20,mtob-ke-006,Contextual (specific + ED-JSD),13.939297282865104
+mtob_ke,r20,mtob-ke-007,Contextual (specific + ED-JSD),8.553293313844636
+mtob_ke,r20,mtob-ke-008,Contextual (specific + ED-JSD),18.609231457745064
+mtob_ke,r20,mtob-ke-009,Contextual (specific + ED-JSD),12.886033499636142
+mtob_ke,r20,mtob-ke-010,Contextual (specific + ED-JSD),28.66164783314909
+mtob_ke,r20,mtob-ke-011,Contextual (specific + ED-JSD),16.05009245121464
+mtob_ke,r20,mtob-ke-012,Contextual (specific + ED-JSD),27.72631627211888
+mtob_ke,r20,mtob-ke-013,Contextual (specific + ED-JSD),17.94315876111236
+mtob_ke,r20,mtob-ke-001,Agnostic + DualJSD (running),25.771601114346666
+mtob_ke,r20,mtob-ke-002,Agnostic + DualJSD (running),9.48580604814425
+mtob_ke,r20,mtob-ke-003,Agnostic + DualJSD (running),12.450242434098051
+mtob_ke,r20,mtob-ke-004,Agnostic + DualJSD (running),21.438893248274592
+mtob_ke,r20,mtob-ke-005,Agnostic + DualJSD (running),7.749888108670831
+mtob_ke,r20,mtob-ke-006,Agnostic + DualJSD (running),19.915925085725394
+mtob_ke,r20,mtob-ke-007,Agnostic + DualJSD (running),11.216063247588998
+mtob_ke,r20,mtob-ke-008,Agnostic + DualJSD (running),15.254910164066239
+mtob_ke,r20,mtob-ke-009,Agnostic + DualJSD (running),12.488896550247558
+mtob_ke,r20,mtob-ke-010,Agnostic + DualJSD (running),10.331993943712357
+mtob_ke,r20,mtob-ke-011,Agnostic + DualJSD (running),16.05009245121464
+mtob_ke,r20,mtob-ke-012,Agnostic + DualJSD (running),19.052788060902007
+mtob_ke,r20,mtob-ke-013,Agnostic + DualJSD (running),10.764985729147105
+mtob_ke,r20,mtob-ke-014,Agnostic + DualJSD (running),0.8934494195688226
+mtob_ke,r20,mtob-ke-001,Specific + DualJSD (running),10.918846411804155
+mtob_ke,r20,mtob-ke-002,Specific + DualJSD (running),11.949358005252627
+mtob_ke,r20,mtob-ke-003,Specific + DualJSD (running),7.483938772396724
+mtob_ke,r20,mtob-ke-004,Specific + DualJSD (running),30.76599082838308
+mtob_ke,r20,mtob-ke-005,Specific + DualJSD (running),15.850761138404847
+mtob_ke,r20,mtob-ke-006,Specific + DualJSD (running),15.79283483551401
+mtob_ke,r20,mtob-ke-007,Specific + DualJSD (running),11.216063247588998
+mtob_ke,r20,mtob-ke-008,Specific + DualJSD (running),14.013918837923192
+mtob_ke,r20,mtob-ke-009,Specific + DualJSD (running),13.954580207177292
+mtob_ke,r20,mtob-ke-010,Specific + DualJSD (running),10.591736428167653
+mtob_ke,r20,mtob-ke-011,Specific + DualJSD (running),12.864546443100506
+mtob_ke,r20,mtob-ke-012,Specific + DualJSD (running),18.284202093978056
+mtob_ke,r20,mtob-ke-013,Specific + DualJSD (running),13.280353263705093
+mtob_ke,r20,mtob-ke-014,Specific + DualJSD (running),23.52918229768734
+qasper,r05,qasper-000-1908.06606,Whole KV,2.969276189804077
+qasper,r05,qasper-001-1908.06606,Whole KV,2.974559783935547
+qasper,r05,qasper-003-1908.06606,Whole KV,2.6636366844177246
+qasper,r05,qasper-004-1908.06606,Whole KV,1.9691789150238037
+qasper,r05,qasper-005-1908.06606,Whole KV,3.471994161605835
+qasper,r05,qasper-007-1908.06606,Whole KV,1.5023795366287231
+qasper,r05,qasper-010-1909.00542,Whole KV,4.424252510070801
+qasper,r05,qasper-011-1909.00542,Whole KV,3.1236679553985596
+qasper,r05,qasper-012-1909.00542,Whole KV,1.7766004800796509
+qasper,r05,qasper-013-1703.04617,Whole KV,3.985546827316284
+qasper,r05,qasper-014-1703.04617,Whole KV,1.556257724761963
+qasper,r05,qasper-015-1703.04617,Whole KV,5.226224422454834
+qasper,r05,qasper-016-1703.04617,Whole KV,1.107797622680664
+qasper,r05,qasper-017-1704.05572,Whole KV,2.4568474292755127
+qasper,r05,qasper-018-1704.05572,Whole KV,2.3950347900390625
+qasper,r05,qasper-000-1908.06606,Evidence Teacher,6.375122547149658
+qasper,r05,qasper-001-1908.06606,Evidence Teacher,6.606568813323975
+qasper,r05,qasper-003-1908.06606,Evidence Teacher,3.9200456142425537
+qasper,r05,qasper-004-1908.06606,Evidence Teacher,3.255096912384033
+qasper,r05,qasper-005-1908.06606,Evidence Teacher,6.018021583557129
+qasper,r05,qasper-007-1908.06606,Evidence Teacher,1.2310086488723755
+qasper,r05,qasper-010-1909.00542,Evidence Teacher,4.684972286224365
+qasper,r05,qasper-011-1909.00542,Evidence Teacher,3.133810520172119
+qasper,r05,qasper-012-1909.00542,Evidence Teacher,1.6694414615631104
+qasper,r05,qasper-013-1703.04617,Evidence Teacher,4.56323766708374
+qasper,r05,qasper-014-1703.04617,Evidence Teacher,1.802767276763916
+qasper,r05,qasper-015-1703.04617,Evidence Teacher,5.237665176391602
+qasper,r05,qasper-016-1703.04617,Evidence Teacher,1.6093862056732178
+qasper,r05,qasper-017-1704.05572,Evidence Teacher,3.9890081882476807
+qasper,r05,qasper-018-1704.05572,Evidence Teacher,2.321995735168457
+qasper,r05,qasper-000-1908.06606,SnapKV,3.2057442665100098
+qasper,r05,qasper-001-1908.06606,SnapKV,2.6596336364746094
+qasper,r05,qasper-003-1908.06606,SnapKV,2.2075681686401367
+qasper,r05,qasper-004-1908.06606,SnapKV,1.9727122783660889
+qasper,r05,qasper-005-1908.06606,SnapKV,2.807809352874756
+qasper,r05,qasper-007-1908.06606,SnapKV,1.3660402297973633
+qasper,r05,qasper-010-1909.00542,SnapKV,4.835874557495117
+qasper,r05,qasper-011-1909.00542,SnapKV,4.099816799163818
+qasper,r05,qasper-012-1909.00542,SnapKV,1.7509076595306396
+qasper,r05,qasper-013-1703.04617,SnapKV,3.9837186336517334
+qasper,r05,qasper-014-1703.04617,SnapKV,1.7100974321365356
+qasper,r05,qasper-015-1703.04617,SnapKV,5.509945392608643
+qasper,r05,qasper-016-1703.04617,SnapKV,1.113119125366211
+qasper,r05,qasper-017-1704.05572,SnapKV,2.7364728450775146
+qasper,r05,qasper-018-1704.05572,SnapKV,2.313971996307373
+qasper,r05,qasper-000-1908.06606,Vanilla Cartridges (agnostic SD),2.4669723510742188
+qasper,r05,qasper-001-1908.06606,Vanilla Cartridges (agnostic SD),2.3054144382476807
+qasper,r05,qasper-003-1908.06606,Vanilla Cartridges (agnostic SD),1.076680302619934
+qasper,r05,qasper-004-1908.06606,Vanilla Cartridges (agnostic SD),1.263377070426941
+qasper,r05,qasper-005-1908.06606,Vanilla Cartridges (agnostic SD),1.845607876777649
+qasper,r05,qasper-007-1908.06606,Vanilla Cartridges (agnostic SD),2.079939603805542
+qasper,r05,qasper-010-1909.00542,Vanilla Cartridges (agnostic SD),3.3176627159118652
+qasper,r05,qasper-011-1909.00542,Vanilla Cartridges (agnostic SD),3.0138533115386963
+qasper,r05,qasper-012-1909.00542,Vanilla Cartridges (agnostic SD),0.15053033828735352
+qasper,r05,qasper-013-1703.04617,Vanilla Cartridges (agnostic SD),0.6495493054389954
+qasper,r05,qasper-014-1703.04617,Vanilla Cartridges (agnostic SD),1.4074935913085938
+qasper,r05,qasper-015-1703.04617,Vanilla Cartridges (agnostic SD),4.074321746826172
+qasper,r05,qasper-016-1703.04617,Vanilla Cartridges (agnostic SD),1.9935195446014404
+qasper,r05,qasper-017-1704.05572,Vanilla Cartridges (agnostic SD),2.5792508125305176
+qasper,r05,qasper-018-1704.05572,Vanilla Cartridges (agnostic SD),2.023375988006592
+qasper,r05,qasper-000-1908.06606,Specific Cartridges (specific SD),1.7977848052978516
+qasper,r05,qasper-001-1908.06606,Specific Cartridges (specific SD),2.8059134483337402
+qasper,r05,qasper-003-1908.06606,Specific Cartridges (specific SD),0.9693575501441956
+qasper,r05,qasper-004-1908.06606,Specific Cartridges (specific SD),1.17186439037323
+qasper,r05,qasper-005-1908.06606,Specific Cartridges (specific SD),3.0060982704162598
+qasper,r05,qasper-007-1908.06606,Specific Cartridges (specific SD),1.936008334159851
+qasper,r05,qasper-010-1909.00542,Specific Cartridges (specific SD),1.261638879776001
+qasper,r05,qasper-011-1909.00542,Specific Cartridges (specific SD),2.398103713989258
+qasper,r05,qasper-012-1909.00542,Specific Cartridges (specific SD),0.6596243977546692
+qasper,r05,qasper-013-1703.04617,Specific Cartridges (specific SD),0.9485451579093933
+qasper,r05,qasper-014-1703.04617,Specific Cartridges (specific SD),1.6535372734069824
+qasper,r05,qasper-015-1703.04617,Specific Cartridges (specific SD),3.9577250480651855
+qasper,r05,qasper-016-1703.04617,Specific Cartridges (specific SD),1.0095512866973877
+qasper,r05,qasper-017-1704.05572,Specific Cartridges (specific SD),1.8314181566238403
+qasper,r05,qasper-018-1704.05572,Specific Cartridges (specific SD),1.9849698543548584
+qasper,r05,qasper-000-1908.06606,Contextual (specific + ED-JSD),1.505631446838379
+qasper,r05,qasper-001-1908.06606,Contextual (specific + ED-JSD),2.865206003189087
+qasper,r05,qasper-003-1908.06606,Contextual (specific + ED-JSD),0.9693575501441956
+qasper,r05,qasper-004-1908.06606,Contextual (specific + ED-JSD),1.3074778318405151
+qasper,r05,qasper-005-1908.06606,Contextual (specific + ED-JSD),3.0060982704162598
+qasper,r05,qasper-007-1908.06606,Contextual (specific + ED-JSD),1.936008334159851
+qasper,r05,qasper-010-1909.00542,Contextual (specific + ED-JSD),1.6746419668197632
+qasper,r05,qasper-011-1909.00542,Contextual (specific + ED-JSD),2.6354503631591797
+qasper,r05,qasper-012-1909.00542,Contextual (specific + ED-JSD),1.267746090888977
+qasper,r05,qasper-013-1703.04617,Contextual (specific + ED-JSD),0.9478724002838135
+qasper,r05,qasper-014-1703.04617,Contextual (specific + ED-JSD),1.9662343263626099
+qasper,r05,qasper-015-1703.04617,Contextual (specific + ED-JSD),3.6851255893707275
+qasper,r05,qasper-016-1703.04617,Contextual (specific + ED-JSD),0.8880732655525208
+qasper,r05,qasper-017-1704.05572,Contextual (specific + ED-JSD),1.9788177013397217
+qasper,r05,qasper-018-1704.05572,Contextual (specific + ED-JSD),1.9849698543548584
+qasper,r05,qasper-000-1908.06606,Agnostic + DualJSD (running),1.5488284826278687
+qasper,r05,qasper-001-1908.06606,Agnostic + DualJSD (running),2.705718994140625
+qasper,r05,qasper-003-1908.06606,Agnostic + DualJSD (running),0.7127053737640381
+qasper,r05,qasper-004-1908.06606,Agnostic + DualJSD (running),1.2788951396942139
+qasper,r05,qasper-005-1908.06606,Agnostic + DualJSD (running),2.6796624660491943
+qasper,r05,qasper-007-1908.06606,Agnostic + DualJSD (running),1.8310415744781494
+qasper,r05,qasper-010-1909.00542,Agnostic + DualJSD (running),2.5682260990142822
+qasper,r05,qasper-011-1909.00542,Agnostic + DualJSD (running),2.9484682083129883
+qasper,r05,qasper-012-1909.00542,Agnostic + DualJSD (running),0.07316325604915619
+qasper,r05,qasper-013-1703.04617,Agnostic + DualJSD (running),1.3358296155929565
+qasper,r05,qasper-014-1703.04617,Agnostic + DualJSD (running),1.1434874534606934
+qasper,r05,qasper-015-1703.04617,Agnostic + DualJSD (running),3.8196163177490234
+qasper,r05,qasper-016-1703.04617,Agnostic + DualJSD (running),1.0075350999832153
+qasper,r05,qasper-017-1704.05572,Agnostic + DualJSD (running),2.7701497077941895
+qasper,r05,qasper-018-1704.05572,Agnostic + DualJSD (running),2.0334880352020264
+qasper,r05,qasper-000-1908.06606,Specific + DualJSD (running),0.7202699780464172
+qasper,r05,qasper-001-1908.06606,Specific + DualJSD (running),1.381171464920044
+qasper,r05,qasper-003-1908.06606,Specific + DualJSD (running),0.9779791235923767
+qasper,r05,qasper-004-1908.06606,Specific + DualJSD (running),0.937584638595581
+qasper,r05,qasper-005-1908.06606,Specific + DualJSD (running),1.3209036588668823
+qasper,r05,qasper-007-1908.06606,Specific + DualJSD (running),1.9593950510025024
+qasper,r05,qasper-010-1909.00542,Specific + DualJSD (running),1.6460434198379517
+qasper,r05,qasper-011-1909.00542,Specific + DualJSD (running),2.2283129692077637
+qasper,r05,qasper-012-1909.00542,Specific + DualJSD (running),1.737714409828186
+qasper,r05,qasper-013-1703.04617,Specific + DualJSD (running),0.7138573527336121
+qasper,r05,qasper-014-1703.04617,Specific + DualJSD (running),1.5819900035858154
+qasper,r05,qasper-015-1703.04617,Specific + DualJSD (running),4.020887851715088
+qasper,r05,qasper-016-1703.04617,Specific + DualJSD (running),0.6672096252441406
+qasper,r05,qasper-017-1704.05572,Specific + DualJSD (running),3.0216877460479736
+qasper,r05,qasper-018-1704.05572,Specific + DualJSD (running),1.67471444606781
+qasper,r10,qasper-000-1908.06606,Whole KV,2.969276189804077
+qasper,r10,qasper-001-1908.06606,Whole KV,2.974559783935547
+qasper,r10,qasper-003-1908.06606,Whole KV,2.6636366844177246
+qasper,r10,qasper-004-1908.06606,Whole KV,1.9691789150238037
+qasper,r10,qasper-005-1908.06606,Whole KV,3.471994161605835
+qasper,r10,qasper-007-1908.06606,Whole KV,1.5023795366287231
+qasper,r10,qasper-010-1909.00542,Whole KV,4.424252510070801
+qasper,r10,qasper-011-1909.00542,Whole KV,3.1236679553985596
+qasper,r10,qasper-012-1909.00542,Whole KV,1.7766004800796509
+qasper,r10,qasper-013-1703.04617,Whole KV,3.985546827316284
+qasper,r10,qasper-014-1703.04617,Whole KV,1.556257724761963
+qasper,r10,qasper-015-1703.04617,Whole KV,5.226224422454834
+qasper,r10,qasper-016-1703.04617,Whole KV,1.107797622680664
+qasper,r10,qasper-017-1704.05572,Whole KV,2.4568474292755127
+qasper,r10,qasper-000-1908.06606,Evidence Teacher,6.375122547149658
+qasper,r10,qasper-001-1908.06606,Evidence Teacher,6.606568813323975
+qasper,r10,qasper-003-1908.06606,Evidence Teacher,3.9200456142425537
+qasper,r10,qasper-004-1908.06606,Evidence Teacher,3.255096912384033
+qasper,r10,qasper-005-1908.06606,Evidence Teacher,6.018021583557129
+qasper,r10,qasper-007-1908.06606,Evidence Teacher,1.2310086488723755
+qasper,r10,qasper-010-1909.00542,Evidence Teacher,4.684972286224365
+qasper,r10,qasper-011-1909.00542,Evidence Teacher,3.133810520172119
+qasper,r10,qasper-012-1909.00542,Evidence Teacher,1.6694414615631104
+qasper,r10,qasper-013-1703.04617,Evidence Teacher,4.56323766708374
+qasper,r10,qasper-014-1703.04617,Evidence Teacher,1.802767276763916
+qasper,r10,qasper-015-1703.04617,Evidence Teacher,5.237665176391602
+qasper,r10,qasper-016-1703.04617,Evidence Teacher,1.6093862056732178
+qasper,r10,qasper-017-1704.05572,Evidence Teacher,3.9890081882476807
+qasper,r10,qasper-000-1908.06606,SnapKV,3.067613363265991
+qasper,r10,qasper-001-1908.06606,SnapKV,2.70568585395813
+qasper,r10,qasper-003-1908.06606,SnapKV,2.3784825801849365
+qasper,r10,qasper-004-1908.06606,SnapKV,2.003591775894165
+qasper,r10,qasper-005-1908.06606,SnapKV,2.7576851844787598
+qasper,r10,qasper-007-1908.06606,SnapKV,1.4107798337936401
+qasper,r10,qasper-010-1909.00542,SnapKV,4.802412509918213
+qasper,r10,qasper-011-1909.00542,SnapKV,3.752580404281616
+qasper,r10,qasper-012-1909.00542,SnapKV,1.6550822257995605
+qasper,r10,qasper-013-1703.04617,SnapKV,4.045640468597412
+qasper,r10,qasper-014-1703.04617,SnapKV,1.73466956615448
+qasper,r10,qasper-015-1703.04617,SnapKV,4.790869235992432
+qasper,r10,qasper-016-1703.04617,SnapKV,1.1493632793426514
+qasper,r10,qasper-017-1704.05572,SnapKV,2.4159657955169678
+qasper,r10,qasper-000-1908.06606,Vanilla Cartridges (agnostic SD),2.4905781745910645
+qasper,r10,qasper-001-1908.06606,Vanilla Cartridges (agnostic SD),2.265511989593506
+qasper,r10,qasper-003-1908.06606,Vanilla Cartridges (agnostic SD),0.837310254573822
+qasper,r10,qasper-004-1908.06606,Vanilla Cartridges (agnostic SD),1.4685139656066895
+qasper,r10,qasper-005-1908.06606,Vanilla Cartridges (agnostic SD),1.907593011856079
+qasper,r10,qasper-007-1908.06606,Vanilla Cartridges (agnostic SD),2.2758421897888184
+qasper,r10,qasper-010-1909.00542,Vanilla Cartridges (agnostic SD),2.6913490295410156
+qasper,r10,qasper-011-1909.00542,Vanilla Cartridges (agnostic SD),2.896474599838257
+qasper,r10,qasper-012-1909.00542,Vanilla Cartridges (agnostic SD),0.20939356088638306
+qasper,r10,qasper-013-1703.04617,Vanilla Cartridges (agnostic SD),1.2857128381729126
+qasper,r10,qasper-014-1703.04617,Vanilla Cartridges (agnostic SD),1.4346213340759277
+qasper,r10,qasper-015-1703.04617,Vanilla Cartridges (agnostic SD),3.587998628616333
+qasper,r10,qasper-016-1703.04617,Vanilla Cartridges (agnostic SD),1.1058170795440674
+qasper,r10,qasper-017-1704.05572,Vanilla Cartridges (agnostic SD),2.599881410598755
+qasper,r10,qasper-000-1908.06606,Specific Cartridges (specific SD),1.6650135517120361
+qasper,r10,qasper-001-1908.06606,Specific Cartridges (specific SD),3.4680068492889404
+qasper,r10,qasper-003-1908.06606,Specific Cartridges (specific SD),1.2628448009490967
+qasper,r10,qasper-004-1908.06606,Specific Cartridges (specific SD),0.9791965484619141
+qasper,r10,qasper-005-1908.06606,Specific Cartridges (specific SD),1.3246296644210815
+qasper,r10,qasper-007-1908.06606,Specific Cartridges (specific SD),2.1369194984436035
+qasper,r10,qasper-010-1909.00542,Specific Cartridges (specific SD),1.739518642425537
+qasper,r10,qasper-011-1909.00542,Specific Cartridges (specific SD),2.3922345638275146
+qasper,r10,qasper-012-1909.00542,Specific Cartridges (specific SD),1.0562444925308228
+qasper,r10,qasper-013-1703.04617,Specific Cartridges (specific SD),0.6521428227424622
+qasper,r10,qasper-014-1703.04617,Specific Cartridges (specific SD),1.2806425094604492
+qasper,r10,qasper-015-1703.04617,Specific Cartridges (specific SD),3.6112687587738037
+qasper,r10,qasper-016-1703.04617,Specific Cartridges (specific SD),1.3073537349700928
+qasper,r10,qasper-017-1704.05572,Specific Cartridges (specific SD),2.0075440406799316
+qasper,r10,qasper-000-1908.06606,Contextual (specific + ED-JSD),1.2595031261444092
+qasper,r10,qasper-001-1908.06606,Contextual (specific + ED-JSD),3.8119938373565674
+qasper,r10,qasper-003-1908.06606,Contextual (specific + ED-JSD),1.2628448009490967
+qasper,r10,qasper-004-1908.06606,Contextual (specific + ED-JSD),1.0822484493255615
+qasper,r10,qasper-005-1908.06606,Contextual (specific + ED-JSD),1.3246296644210815
+qasper,r10,qasper-007-1908.06606,Contextual (specific + ED-JSD),2.1369194984436035
+qasper,r10,qasper-010-1909.00542,Contextual (specific + ED-JSD),2.0303523540496826
+qasper,r10,qasper-011-1909.00542,Contextual (specific + ED-JSD),2.748260021209717
+qasper,r10,qasper-012-1909.00542,Contextual (specific + ED-JSD),0.4723837077617645
+qasper,r10,qasper-013-1703.04617,Contextual (specific + ED-JSD),1.2634934186935425
+qasper,r10,qasper-014-1703.04617,Contextual (specific + ED-JSD),1.354892373085022
+qasper,r10,qasper-015-1703.04617,Contextual (specific + ED-JSD),3.8825321197509766
+qasper,r10,qasper-016-1703.04617,Contextual (specific + ED-JSD),0.7049828767776489
+qasper,r10,qasper-017-1704.05572,Contextual (specific + ED-JSD),2.1444501876831055
+qasper,r10,qasper-000-1908.06606,Agnostic + DualJSD (running),2.653867244720459
+qasper,r10,qasper-001-1908.06606,Agnostic + DualJSD (running),1.88004469871521
+qasper,r10,qasper-003-1908.06606,Agnostic + DualJSD (running),0.5811272263526917
+qasper,r10,qasper-004-1908.06606,Agnostic + DualJSD (running),1.3632605075836182
+qasper,r10,qasper-005-1908.06606,Agnostic + DualJSD (running),1.881245493888855
+qasper,r10,qasper-007-1908.06606,Agnostic + DualJSD (running),2.0635366439819336
+qasper,r10,qasper-010-1909.00542,Agnostic + DualJSD (running),2.6541197299957275
+qasper,r10,qasper-011-1909.00542,Agnostic + DualJSD (running),2.80631160736084
+qasper,r10,qasper-012-1909.00542,Agnostic + DualJSD (running),0.14138071238994598
+qasper,r10,qasper-013-1703.04617,Agnostic + DualJSD (running),1.3065348863601685
+qasper,r10,qasper-014-1703.04617,Agnostic + DualJSD (running),1.3422237634658813
+qasper,r10,qasper-015-1703.04617,Agnostic + DualJSD (running),3.6748740673065186
+qasper,r10,qasper-016-1703.04617,Agnostic + DualJSD (running),1.5767704248428345
+qasper,r10,qasper-017-1704.05572,Agnostic + DualJSD (running),2.7244839668273926
+qasper,r10,qasper-000-1908.06606,Specific + DualJSD (running),0.5246537327766418
+qasper,r10,qasper-001-1908.06606,Specific + DualJSD (running),1.6060818433761597
+qasper,r10,qasper-003-1908.06606,Specific + DualJSD (running),0.6168615818023682
+qasper,r10,qasper-004-1908.06606,Specific + DualJSD (running),3.7072741985321045
+qasper,r10,qasper-005-1908.06606,Specific + DualJSD (running),1.0548468828201294
+qasper,r10,qasper-007-1908.06606,Specific + DualJSD (running),1.8031526803970337
+qasper,r10,qasper-010-1909.00542,Specific + DualJSD (running),2.0130555629730225
+qasper,r10,qasper-011-1909.00542,Specific + DualJSD (running),2.357630968093872
+qasper,r10,qasper-012-1909.00542,Specific + DualJSD (running),0.513176679611206
+qasper,r10,qasper-013-1703.04617,Specific + DualJSD (running),0.4535628855228424
+qasper,r10,qasper-014-1703.04617,Specific + DualJSD (running),1.3359278440475464
+qasper,r10,qasper-015-1703.04617,Specific + DualJSD (running),3.318297863006592
+qasper,r10,qasper-016-1703.04617,Specific + DualJSD (running),0.9492248892784119
+qasper,r10,qasper-017-1704.05572,Specific + DualJSD (running),1.7223289012908936
+qasper,r15,qasper-000-1908.06606,Whole KV,2.969276189804077
+qasper,r15,qasper-001-1908.06606,Whole KV,2.974559783935547
+qasper,r15,qasper-003-1908.06606,Whole KV,2.6636366844177246
+qasper,r15,qasper-004-1908.06606,Whole KV,1.9691789150238037
+qasper,r15,qasper-005-1908.06606,Whole KV,3.471994161605835
+qasper,r15,qasper-007-1908.06606,Whole KV,1.5023795366287231
+qasper,r15,qasper-010-1909.00542,Whole KV,4.424252510070801
+qasper,r15,qasper-011-1909.00542,Whole KV,3.1236679553985596
+qasper,r15,qasper-012-1909.00542,Whole KV,1.7766004800796509
+qasper,r15,qasper-013-1703.04617,Whole KV,3.985546827316284
+qasper,r15,qasper-014-1703.04617,Whole KV,1.556257724761963
+qasper,r15,qasper-015-1703.04617,Whole KV,5.226224422454834
+qasper,r15,qasper-016-1703.04617,Whole KV,1.107797622680664
+qasper,r15,qasper-017-1704.05572,Whole KV,2.4568474292755127
+qasper,r15,qasper-000-1908.06606,Evidence Teacher,6.375122547149658
+qasper,r15,qasper-001-1908.06606,Evidence Teacher,6.606568813323975
+qasper,r15,qasper-003-1908.06606,Evidence Teacher,3.9200456142425537
+qasper,r15,qasper-004-1908.06606,Evidence Teacher,3.255096912384033
+qasper,r15,qasper-005-1908.06606,Evidence Teacher,6.018021583557129
+qasper,r15,qasper-007-1908.06606,Evidence Teacher,1.2310086488723755
+qasper,r15,qasper-010-1909.00542,Evidence Teacher,4.684972286224365
+qasper,r15,qasper-011-1909.00542,Evidence Teacher,3.133810520172119
+qasper,r15,qasper-012-1909.00542,Evidence Teacher,1.6694414615631104
+qasper,r15,qasper-013-1703.04617,Evidence Teacher,4.56323766708374
+qasper,r15,qasper-014-1703.04617,Evidence Teacher,1.802767276763916
+qasper,r15,qasper-015-1703.04617,Evidence Teacher,5.237665176391602
+qasper,r15,qasper-016-1703.04617,Evidence Teacher,1.6093862056732178
+qasper,r15,qasper-017-1704.05572,Evidence Teacher,3.9890081882476807
+qasper,r15,qasper-000-1908.06606,SnapKV,3.1246414184570312
+qasper,r15,qasper-001-1908.06606,SnapKV,2.6666367053985596
+qasper,r15,qasper-003-1908.06606,SnapKV,2.457075357437134
+qasper,r15,qasper-004-1908.06606,SnapKV,2.1903076171875
+qasper,r15,qasper-005-1908.06606,SnapKV,3.312406063079834
+qasper,r15,qasper-007-1908.06606,SnapKV,1.4252837896347046
+qasper,r15,qasper-010-1909.00542,SnapKV,4.471624851226807
+qasper,r15,qasper-011-1909.00542,SnapKV,3.643659830093384
+qasper,r15,qasper-012-1909.00542,SnapKV,1.6818201541900635
+qasper,r15,qasper-013-1703.04617,SnapKV,3.9519195556640625
+qasper,r15,qasper-014-1703.04617,SnapKV,1.677050232887268
+qasper,r15,qasper-015-1703.04617,SnapKV,5.130649089813232
+qasper,r15,qasper-016-1703.04617,SnapKV,1.2246376276016235
+qasper,r15,qasper-017-1704.05572,SnapKV,2.3252127170562744
+qasper,r15,qasper-000-1908.06606,Vanilla Cartridges (agnostic SD),2.241793394088745
+qasper,r15,qasper-001-1908.06606,Vanilla Cartridges (agnostic SD),3.2911345958709717
+qasper,r15,qasper-003-1908.06606,Vanilla Cartridges (agnostic SD),0.999851405620575
+qasper,r15,qasper-004-1908.06606,Vanilla Cartridges (agnostic SD),1.824133038520813
+qasper,r15,qasper-005-1908.06606,Vanilla Cartridges (agnostic SD),2.428457498550415
+qasper,r15,qasper-007-1908.06606,Vanilla Cartridges (agnostic SD),2.1519181728363037
+qasper,r15,qasper-010-1909.00542,Vanilla Cartridges (agnostic SD),3.367476224899292
+qasper,r15,qasper-011-1909.00542,Vanilla Cartridges (agnostic SD),2.9809114933013916
+qasper,r15,qasper-012-1909.00542,Vanilla Cartridges (agnostic SD),0.427083820104599
+qasper,r15,qasper-013-1703.04617,Vanilla Cartridges (agnostic SD),1.9704169034957886
+qasper,r15,qasper-014-1703.04617,Vanilla Cartridges (agnostic SD),1.2716037034988403
+qasper,r15,qasper-015-1703.04617,Vanilla Cartridges (agnostic SD),2.1833629608154297
+qasper,r15,qasper-016-1703.04617,Vanilla Cartridges (agnostic SD),1.473951816558838
+qasper,r15,qasper-017-1704.05572,Vanilla Cartridges (agnostic SD),2.578057289123535
+qasper,r15,qasper-000-1908.06606,Specific Cartridges (specific SD),0.7251646518707275
+qasper,r15,qasper-001-1908.06606,Specific Cartridges (specific SD),3.1799511909484863
+qasper,r15,qasper-003-1908.06606,Specific Cartridges (specific SD),1.9037076234817505
+qasper,r15,qasper-004-1908.06606,Specific Cartridges (specific SD),2.680311441421509
+qasper,r15,qasper-005-1908.06606,Specific Cartridges (specific SD),1.5385278463363647
+qasper,r15,qasper-007-1908.06606,Specific Cartridges (specific SD),1.9177219867706299
+qasper,r15,qasper-010-1909.00542,Specific Cartridges (specific SD),1.718299388885498
+qasper,r15,qasper-011-1909.00542,Specific Cartridges (specific SD),2.5985281467437744
+qasper,r15,qasper-012-1909.00542,Specific Cartridges (specific SD),1.328122854232788
+qasper,r15,qasper-013-1703.04617,Specific Cartridges (specific SD),1.9523628950119019
+qasper,r15,qasper-014-1703.04617,Specific Cartridges (specific SD),1.4650394916534424
+qasper,r15,qasper-015-1703.04617,Specific Cartridges (specific SD),2.0138919353485107
+qasper,r15,qasper-016-1703.04617,Specific Cartridges (specific SD),1.4514429569244385
+qasper,r15,qasper-017-1704.05572,Specific Cartridges (specific SD),1.883617877960205
+qasper,r15,qasper-000-1908.06606,Contextual (specific + ED-JSD),1.1073743104934692
+qasper,r15,qasper-001-1908.06606,Contextual (specific + ED-JSD),2.866791248321533
+qasper,r15,qasper-003-1908.06606,Contextual (specific + ED-JSD),1.9037076234817505
+qasper,r15,qasper-004-1908.06606,Contextual (specific + ED-JSD),0.8851771950721741
+qasper,r15,qasper-005-1908.06606,Contextual (specific + ED-JSD),1.5385278463363647
+qasper,r15,qasper-007-1908.06606,Contextual (specific + ED-JSD),1.9177219867706299
+qasper,r15,qasper-010-1909.00542,Contextual (specific + ED-JSD),2.193277597427368
+qasper,r15,qasper-011-1909.00542,Contextual (specific + ED-JSD),2.6475446224212646
+qasper,r15,qasper-012-1909.00542,Contextual (specific + ED-JSD),1.0002262592315674
+qasper,r15,qasper-013-1703.04617,Contextual (specific + ED-JSD),1.3725272417068481
+qasper,r15,qasper-014-1703.04617,Contextual (specific + ED-JSD),1.557337760925293
+qasper,r15,qasper-015-1703.04617,Contextual (specific + ED-JSD),1.9331096410751343
+qasper,r15,qasper-016-1703.04617,Contextual (specific + ED-JSD),1.3465384244918823
+qasper,r15,qasper-017-1704.05572,Contextual (specific + ED-JSD),2.3943698406219482
+qasper,r15,qasper-000-1908.06606,Agnostic + DualJSD (running),2.7174160480499268
+qasper,r15,qasper-001-1908.06606,Agnostic + DualJSD (running),2.5360043048858643
+qasper,r15,qasper-003-1908.06606,Agnostic + DualJSD (running),1.3883956670761108
+qasper,r15,qasper-004-1908.06606,Agnostic + DualJSD (running),0.8276496529579163
+qasper,r15,qasper-005-1908.06606,Agnostic + DualJSD (running),2.383211612701416
+qasper,r15,qasper-007-1908.06606,Agnostic + DualJSD (running),2.163058042526245
+qasper,r15,qasper-010-1909.00542,Agnostic + DualJSD (running),2.7324469089508057
+qasper,r15,qasper-011-1909.00542,Agnostic + DualJSD (running),3.4481496810913086
+qasper,r15,qasper-012-1909.00542,Agnostic + DualJSD (running),0.3554418385028839
+qasper,r15,qasper-013-1703.04617,Agnostic + DualJSD (running),0.3346240818500519
+qasper,r15,qasper-014-1703.04617,Agnostic + DualJSD (running),1.1575915813446045
+qasper,r15,qasper-015-1703.04617,Agnostic + DualJSD (running),1.8850009441375732
+qasper,r15,qasper-016-1703.04617,Agnostic + DualJSD (running),1.125197410583496
+qasper,r15,qasper-017-1704.05572,Agnostic + DualJSD (running),2.74096941947937
+qasper,r15,qasper-000-1908.06606,Specific + DualJSD (running),1.0927923917770386
+qasper,r15,qasper-001-1908.06606,Specific + DualJSD (running),1.6093677282333374
+qasper,r15,qasper-003-1908.06606,Specific + DualJSD (running),0.44876745343208313
+qasper,r15,qasper-004-1908.06606,Specific + DualJSD (running),0.7470541596412659
+qasper,r15,qasper-005-1908.06606,Specific + DualJSD (running),1.2516570091247559
+qasper,r15,qasper-007-1908.06606,Specific + DualJSD (running),1.6353579759597778
+qasper,r15,qasper-010-1909.00542,Specific + DualJSD (running),2.3560469150543213
+qasper,r15,qasper-011-1909.00542,Specific + DualJSD (running),2.24629282951355
+qasper,r15,qasper-012-1909.00542,Specific + DualJSD (running),0.5189330577850342
+qasper,r15,qasper-013-1703.04617,Specific + DualJSD (running),0.6976685523986816
+qasper,r15,qasper-014-1703.04617,Specific + DualJSD (running),1.5946718454360962
+qasper,r15,qasper-015-1703.04617,Specific + DualJSD (running),1.7541295289993286
+qasper,r15,qasper-016-1703.04617,Specific + DualJSD (running),0.4780676066875458
+qasper,r15,qasper-017-1704.05572,Specific + DualJSD (running),1.6370645761489868
+qasper,r20,qasper-000-1908.06606,Whole KV,2.969276189804077
+qasper,r20,qasper-001-1908.06606,Whole KV,2.974559783935547
+qasper,r20,qasper-003-1908.06606,Whole KV,2.6636366844177246
+qasper,r20,qasper-004-1908.06606,Whole KV,1.9691789150238037
+qasper,r20,qasper-005-1908.06606,Whole KV,3.471994161605835
+qasper,r20,qasper-007-1908.06606,Whole KV,1.5023795366287231
+qasper,r20,qasper-010-1909.00542,Whole KV,4.424252510070801
+qasper,r20,qasper-011-1909.00542,Whole KV,3.1236679553985596
+qasper,r20,qasper-012-1909.00542,Whole KV,1.7766004800796509
+qasper,r20,qasper-013-1703.04617,Whole KV,3.985546827316284
+qasper,r20,qasper-014-1703.04617,Whole KV,1.556257724761963
+qasper,r20,qasper-015-1703.04617,Whole KV,5.226224422454834
+qasper,r20,qasper-016-1703.04617,Whole KV,1.107797622680664
+qasper,r20,qasper-017-1704.05572,Whole KV,2.4568474292755127
+qasper,r20,qasper-000-1908.06606,Evidence Teacher,6.375122547149658
+qasper,r20,qasper-001-1908.06606,Evidence Teacher,6.606568813323975
+qasper,r20,qasper-003-1908.06606,Evidence Teacher,3.9200456142425537
+qasper,r20,qasper-004-1908.06606,Evidence Teacher,3.255096912384033
+qasper,r20,qasper-005-1908.06606,Evidence Teacher,6.018021583557129
+qasper,r20,qasper-007-1908.06606,Evidence Teacher,1.2310086488723755
+qasper,r20,qasper-010-1909.00542,Evidence Teacher,4.684972286224365
+qasper,r20,qasper-011-1909.00542,Evidence Teacher,3.133810520172119
+qasper,r20,qasper-012-1909.00542,Evidence Teacher,1.6694414615631104
+qasper,r20,qasper-013-1703.04617,Evidence Teacher,4.56323766708374
+qasper,r20,qasper-014-1703.04617,Evidence Teacher,1.802767276763916
+qasper,r20,qasper-015-1703.04617,Evidence Teacher,5.237665176391602
+qasper,r20,qasper-016-1703.04617,Evidence Teacher,1.6093862056732178
+qasper,r20,qasper-017-1704.05572,Evidence Teacher,3.9890081882476807
+qasper,r20,qasper-000-1908.06606,SnapKV,3.236675262451172
+qasper,r20,qasper-001-1908.06606,SnapKV,2.473491668701172
+qasper,r20,qasper-003-1908.06606,SnapKV,2.3319437503814697
+qasper,r20,qasper-004-1908.06606,SnapKV,2.2082042694091797
+qasper,r20,qasper-005-1908.06606,SnapKV,3.2186033725738525
+qasper,r20,qasper-007-1908.06606,SnapKV,1.5208384990692139
+qasper,r20,qasper-010-1909.00542,SnapKV,4.339840888977051
+qasper,r20,qasper-011-1909.00542,SnapKV,3.44921612739563
+qasper,r20,qasper-012-1909.00542,SnapKV,1.7182263135910034
+qasper,r20,qasper-013-1703.04617,SnapKV,3.9211902618408203
+qasper,r20,qasper-014-1703.04617,SnapKV,1.6689308881759644
+qasper,r20,qasper-015-1703.04617,SnapKV,5.142913818359375
+qasper,r20,qasper-016-1703.04617,SnapKV,1.2319293022155762
+qasper,r20,qasper-017-1704.05572,SnapKV,2.291111469268799
+qasper,r20,qasper-000-1908.06606,Vanilla Cartridges (agnostic SD),1.8684227466583252
+qasper,r20,qasper-001-1908.06606,Vanilla Cartridges (agnostic SD),2.5235018730163574
+qasper,r20,qasper-003-1908.06606,Vanilla Cartridges (agnostic SD),2.3888351917266846
+qasper,r20,qasper-004-1908.06606,Vanilla Cartridges (agnostic SD),0.9541184902191162
+qasper,r20,qasper-005-1908.06606,Vanilla Cartridges (agnostic SD),2.39646577835083
+qasper,r20,qasper-007-1908.06606,Vanilla Cartridges (agnostic SD),2.582508087158203
+qasper,r20,qasper-010-1909.00542,Vanilla Cartridges (agnostic SD),2.653975486755371
+qasper,r20,qasper-011-1909.00542,Vanilla Cartridges (agnostic SD),3.124739170074463
+qasper,r20,qasper-012-1909.00542,Vanilla Cartridges (agnostic SD),0.3666929006576538
+qasper,r20,qasper-013-1703.04617,Vanilla Cartridges (agnostic SD),1.1152704954147339
+qasper,r20,qasper-014-1703.04617,Vanilla Cartridges (agnostic SD),1.6882729530334473
+qasper,r20,qasper-015-1703.04617,Vanilla Cartridges (agnostic SD),2.071531295776367
+qasper,r20,qasper-016-1703.04617,Vanilla Cartridges (agnostic SD),1.514983057975769
+qasper,r20,qasper-017-1704.05572,Vanilla Cartridges (agnostic SD),2.308279514312744
+qasper,r20,qasper-000-1908.06606,Specific Cartridges (specific SD),1.4510009288787842
+qasper,r20,qasper-001-1908.06606,Specific Cartridges (specific SD),2.5958192348480225
+qasper,r20,qasper-003-1908.06606,Specific Cartridges (specific SD),1.1375735998153687
+qasper,r20,qasper-004-1908.06606,Specific Cartridges (specific SD),1.0063261985778809
+qasper,r20,qasper-005-1908.06606,Specific Cartridges (specific SD),1.5978758335113525
+qasper,r20,qasper-007-1908.06606,Specific Cartridges (specific SD),2.3829379081726074
+qasper,r20,qasper-010-1909.00542,Specific Cartridges (specific SD),1.8767430782318115
+qasper,r20,qasper-011-1909.00542,Specific Cartridges (specific SD),2.4460597038269043
+qasper,r20,qasper-012-1909.00542,Specific Cartridges (specific SD),1.1305116415023804
+qasper,r20,qasper-013-1703.04617,Specific Cartridges (specific SD),0.7988108992576599
+qasper,r20,qasper-014-1703.04617,Specific Cartridges (specific SD),1.576140284538269
+qasper,r20,qasper-015-1703.04617,Specific Cartridges (specific SD),1.8474189043045044
+qasper,r20,qasper-016-1703.04617,Specific Cartridges (specific SD),0.6192938089370728
+qasper,r20,qasper-017-1704.05572,Specific Cartridges (specific SD),2.261625051498413
+qasper,r20,qasper-000-1908.06606,Contextual (specific + ED-JSD),1.8011986017227173
+qasper,r20,qasper-001-1908.06606,Contextual (specific + ED-JSD),7.630983829498291
+qasper,r20,qasper-003-1908.06606,Contextual (specific + ED-JSD),1.1375735998153687
+qasper,r20,qasper-004-1908.06606,Contextual (specific + ED-JSD),1.2309218645095825
+qasper,r20,qasper-005-1908.06606,Contextual (specific + ED-JSD),1.5978758335113525
+qasper,r20,qasper-007-1908.06606,Contextual (specific + ED-JSD),2.3829379081726074
+qasper,r20,qasper-010-1909.00542,Contextual (specific + ED-JSD),2.089155435562134
+qasper,r20,qasper-011-1909.00542,Contextual (specific + ED-JSD),2.7612226009368896
+qasper,r20,qasper-012-1909.00542,Contextual (specific + ED-JSD),0.8377482891082764
+qasper,r20,qasper-013-1703.04617,Contextual (specific + ED-JSD),0.7158203721046448
+qasper,r20,qasper-014-1703.04617,Contextual (specific + ED-JSD),1.7077529430389404
+qasper,r20,qasper-015-1703.04617,Contextual (specific + ED-JSD),1.7826951742172241
+qasper,r20,qasper-016-1703.04617,Contextual (specific + ED-JSD),0.42229896783828735
+qasper,r20,qasper-017-1704.05572,Contextual (specific + ED-JSD),2.313708543777466
+qasper,r20,qasper-000-1908.06606,Agnostic + DualJSD (running),2.5056309700012207
+qasper,r20,qasper-001-1908.06606,Agnostic + DualJSD (running),2.736238956451416
+qasper,r20,qasper-003-1908.06606,Agnostic + DualJSD (running),1.3962868452072144
+qasper,r20,qasper-004-1908.06606,Agnostic + DualJSD (running),0.8261519074440002
+qasper,r20,qasper-005-1908.06606,Agnostic + DualJSD (running),1.9009449481964111
+qasper,r20,qasper-007-1908.06606,Agnostic + DualJSD (running),1.8336129188537598
+qasper,r20,qasper-010-1909.00542,Agnostic + DualJSD (running),2.5626957416534424
+qasper,r20,qasper-011-1909.00542,Agnostic + DualJSD (running),2.884300947189331
+qasper,r20,qasper-012-1909.00542,Agnostic + DualJSD (running),0.39035680890083313
+qasper,r20,qasper-013-1703.04617,Agnostic + DualJSD (running),1.762860894203186
+qasper,r20,qasper-014-1703.04617,Agnostic + DualJSD (running),1.4451285600662231
+qasper,r20,qasper-015-1703.04617,Agnostic + DualJSD (running),1.7691618204116821
+qasper,r20,qasper-016-1703.04617,Agnostic + DualJSD (running),1.6242119073867798
+qasper,r20,qasper-017-1704.05572,Agnostic + DualJSD (running),2.8432044982910156
+qasper,r20,qasper-000-1908.06606,Specific + DualJSD (running),0.8529316186904907
+qasper,r20,qasper-001-1908.06606,Specific + DualJSD (running),1.366829514503479
+qasper,r20,qasper-003-1908.06606,Specific + DualJSD (running),0.5666866898536682
+qasper,r20,qasper-004-1908.06606,Specific + DualJSD (running),0.9298384189605713
+qasper,r20,qasper-005-1908.06606,Specific + DualJSD (running),1.0241987705230713
+qasper,r20,qasper-007-1908.06606,Specific + DualJSD (running),2.1571412086486816
+qasper,r20,qasper-010-1909.00542,Specific + DualJSD (running),2.0814828872680664
+qasper,r20,qasper-011-1909.00542,Specific + DualJSD (running),2.427088499069214
+qasper,r20,qasper-012-1909.00542,Specific + DualJSD (running),0.5089237689971924
+qasper,r20,qasper-013-1703.04617,Specific + DualJSD (running),0.31402692198753357
+qasper,r20,qasper-014-1703.04617,Specific + DualJSD (running),1.512824296951294
+qasper,r20,qasper-015-1703.04617,Specific + DualJSD (running),2.149594783782959
+qasper,r20,qasper-016-1703.04617,Specific + DualJSD (running),0.4866220951080322
+qasper,r20,qasper-017-1704.05572,Specific + DualJSD (running),1.8650349378585815
