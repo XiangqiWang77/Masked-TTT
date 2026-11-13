@@ -1,5 +1,29 @@
 # DualJSD 为什么、怎样比 vanilla SD 好（Qwen3-4B，11/12 配对实验）
 
+## 角度一：两个视角的分布如何合成一个更好的 target（teacher 侧）
+
+![two views](fig_dualjsd_two_views.png)
+
+以下三个例子都是真实训练 token。绿色是证据视角的分布 $P_E$，也就是 SD 直接拿来训练的 target；紫色是全文视角的分布 $P_W$；蓝色是 DualJSD 实际训练用的 target $w\cdot M$。
+
+1. **E 拿不准、W 很确定：** E 把概率分散在 "per"、"themselves"、"directly"（0.41、0.25、0.25），W 以 0.91 选 "themselves"。DualJSD 的 target 集中到两个视角都支持的 "themselves"，SD 则会学到 E 那种摇摆的分布。
+2. **两个视角确定地互相矛盾：** E 以 1.0 认定下一个词是 "Source"。这是因为只有证据视角看到了 "[Source 0]" 这样的标签，属于伪影；全文视角认为是 "the"（0.65）。这时 $w=0$，这个 token 不学，SD 则会把这个伪影学进去。
+3. **两个视角一致：** "Liver" 中的 "iver" 两边都是 1.0，target 和 SD 完全相同。
+
+$P_W$ 是从存储的 target 用 $2M-P_E$ 恢复出来的：在 E 的 top-20 支撑之外，$P_E$ 记为 0。
+
+## 角度二：训练出的 Cartridge 在真实测试题上的分布（student 侧）
+
+![outcome distributions](fig_dualjsd_outcome_dist.png)
+
+同一批 15 个请求 × 4 个预算，只比较训练 target 不同的两种方法：
+- **QASPER：** 测试参考答案的 log-PPL 整体左移，平均从 1.78 降到 1.45。
+- **LongHealth：** 4 个预算全答对的题从 6 题增加到 7 题，平均准确率从 63% 升到 68%。
+- **MTOB：** chrF 分布整体左移，平均从 19.1 降到 17.1。这和下面 (b) 一致：MTOB 的专名和语法细节被稀释了。
+
+[两个视角的图 PDF](fig_dualjsd_two_views.pdf) · [测试分布图 PDF](fig_dualjsd_outcome_dist.pdf) · [例子数据](examples.json) · [作图脚本](make_fig4.py)
+
+## 附：定量热力图与时间成本
 ![DualJSD insights](fig_dualjsd_insights.png)
 
 [PDF](fig_dualjsd_insights.pdf) · [SVG](fig_dualjsd_insights.svg) · [统计](insights_stats.json) · [作图](make_fig.py) · 数据：[token 级](tokens.py)、[cell 级](collect.py)、[时间](collect_time.py)

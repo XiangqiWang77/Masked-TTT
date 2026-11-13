@@ -1,0 +1,116 @@
+{
+ "resolve": {
+  "dataset": "longhealth",
+  "case": "patient_01-q13",
+  "traj": 14,
+  "t": 137,
+  "w": 0.5832963585853577,
+  "question": "Which antibodies showed a positive reaction on the blastic tumor cells in Mrs. Sample's immunohistochemical test, and what was the Ki-67 proliferation index for",
+  "context": " Positive in residual germinal centers (not in the blastic tumor cells",
+  "candidates": [
+   {
+    "token": " themselves",
+    "p_e": 0.2487156093120575,
+    "p_w": 0.9076486951613638,
+    "target": 0.33725154399871826
+   },
+   {
+    "token": " per",
+    "p_e": 0.4100627303123474,
+    "p_w": 0.0,
+    "target": 0.10479458421468735
+   },
+   {
+    "token": " directly",
+    "p_e": 0.2487156093120575,
+    "p_w": 0.031737516548539124,
+    "target": 0.0817936435341835
+   },
+   {
+    "token": " specifically",
+    "p_e": 0.05549595132470131,
+    "p_w": 0.032520932897381685,
+    "target": 0.025669964030385017
+   },
+   {
+    "token": ").\n",
+    "p_e": 0.02041582018136978,
+    "p_w": 0.04089015072283925,
+    "target": 0.017879774793982506
+   },
+   {
+    "token": ").\n\n",
+    "p_e": 0.008510580286383629,
+    "p_w": 0.04603052009600611,
+    "target": 0.015906812623143196
+   }
+  ],
+  "written": " per"
+ },
+ "conflict": {
+  "dataset": "longhealth",
+  "case": "patient_02-q02",
+  "traj": 9,
+  "t": 9,
+  "w": 8.620510925538838e-06,
+  "question": "Which of the following lists includes all the confirmed sites of metastases in Mrs. Done based on her CT scan findings?",
+  "context": "Based on the CT scan findings described in **",
+  "candidates": [
+   {
+    "token": "Source",
+    "p_e": 0.9999465942382812,
+    "p_w": 0.009460842835167904,
+    "target": 4.350803919805913e-06
+   },
+   {
+    "token": "the",
+    "p_e": 0.0,
+    "p_w": 0.6485391658803134,
+    "target": 2.795369482555543e-06
+   },
+   {
+    "token": "\"",
+    "p_e": 0.0,
+    "p_w": 0.21054986668568546,
+    "target": 9.075237130673486e-07
+   },
+   {
+    "token": "Mrs",
+    "p_e": 0.0,
+    "p_w": 0.05323534552736594,
+    "target": 2.294579388717466e-07
+   },
+   {
+    "token": "multiple",
+    "p_e": 0.0,
+    "p_w": 0.028494826948819794,
+    "target": 1.2281998351681978e-07
+   },
+   {
+    "token": "two",
+    "p_e": 0.0,
+    "p_w": 0.011878410699718685,
+    "target": 5.119898460748118e-08
+   }
+  ],
+  "written": "Source"
+ },
+ "agree": {
+  "dataset": "longhealth",
+  "case": "patient_01-q17",
+  "traj": 5,
+  "t": 126,
+  "w": 0.999995231628418,
+  "question": "What area of the body was imaged in Mrs. Sample's last radiological examination?",
+  "context": "4. **Liver** – via **PET scan** and **l",
+  "candidates": [
+   {
+    "token": "iver",
+    "p_e": 0.9999982118606567,
+    "p_w": 1.0000017881393433,
+    "target": 0.999995231628418
+   }
+  ],
+  "written": "iver"
+ }
+}
