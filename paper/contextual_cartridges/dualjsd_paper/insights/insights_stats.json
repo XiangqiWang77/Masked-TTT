@@ -1,0 +1,157 @@
+{
+ "a": {
+  "retarget": {
+   "longhealth": {
+    ">0.95": 0.0026,
+    "0.8\u20130.95": 0.0405,
+    "0.5\u20130.8": 0.1707,
+    "<0.5": 0.4235
+   },
+   "mtob_ke": {
+    ">0.95": 0.0016,
+    "0.8\u20130.95": 0.0286,
+    "0.5\u20130.8": 0.1545,
+    "<0.5": 0.3996
+   },
+   "qasper": {
+    ">0.95": 0.0034,
+    "0.8\u20130.95": 0.0427,
+    "0.5\u20130.8": 0.1955,
+    "<0.5": 0.4553
+   }
+  },
+  "weight": {
+   "longhealth": {
+    ">0.95": 0.957,
+    "0.8\u20130.95": 0.825,
+    "0.5\u20130.8": 0.804,
+    "<0.5": 0.763
+   },
+   "mtob_ke": {
+    ">0.95": 0.916,
+    "0.8\u20130.95": 0.813,
+    "0.5\u20130.8": 0.792,
+    "<0.5": 0.758
+   },
+   "qasper": {
+    ">0.95": 0.946,
+    "0.8\u20130.95": 0.81,
+    "0.5\u20130.8": 0.78,
+    "<0.5": 0.731
+   }
+  },
+  "share": {
+   "longhealth": {
+    ">0.95": 0.659,
+    "0.8\u20130.95": 0.118,
+    "0.5\u20130.8": 0.154,
+    "<0.5": 0.069
+   },
+   "mtob_ke": {
+    ">0.95": 0.57,
+    "0.8\u20130.95": 0.136,
+    "0.5\u20130.8": 0.191,
+    "<0.5": 0.103
+   },
+   "qasper": {
+    ">0.95": 0.621,
+    "0.8\u20130.95": 0.134,
+    "0.5\u20130.8": 0.173,
+    "<0.5": 0.072
+   }
+  }
+ },
+ "b": {
+  "longhealth": {
+   "number": 0.024,
+   "capitalized/entity": 0.167,
+   "other word": 0.125,
+   "function word": 0.109,
+   "punct/format": 0.094
+  },
+  "mtob_ke": {
+   "number": 0.342,
+   "capitalized/entity": 0.304,
+   "other word": 0.176,
+   "function word": 0.124,
+   "punct/format": 0.127
+  },
+  "qasper": {
+   "number": 0.026,
+   "capitalized/entity": 0.151,
+   "other word": 0.161,
+   "function word": 0.118,
+   "punct/format": 0.109
+  }
+ },
+ "c": {
+  "specific/longhealth": {
+   "r05": 0.067,
+   "r10": 0.0,
+   "r15": 0.0,
+   "r20": 0.143
+  },
+  "specific/mtob_ke": {
+   "r05": -0.133,
+   "r10": 0.143,
+   "r15": 0.143,
+   "r20": -0.429
+  },
+  "specific/qasper": {
+   "r05": 0.2,
+   "r10": 0.571,
+   "r15": 0.571,
+   "r20": 0.714
+  },
+  "agnostic/longhealth": {
+   "r05": 0.067,
+   "r10": -0.071,
+   "r15": 0.0,
+   "r20": 0.286
+  },
+  "agnostic/mtob_ke": {
+   "r05": 0.333,
+   "r10": 0.0,
+   "r15": -0.143,
+   "r20": -0.071
+  },
+  "agnostic/qasper": {
+   "r05": 0.2,
+   "r10": 0.286,
+   "r15": 0.286,
+   "r20": 0.143
+  }
+ },
+ "d": [
+  {
+   "dataset": "longhealth",
+   "sd_train": 18.64,
+   "dj_train": 17.68,
+   "scoring_per_cell": 1.72,
+   "sd_updates": 30.56,
+   "dj_updates": 28.98,
+   "sec_per_update": 0.61,
+   "scoring_per_request": 6.87
+  },
+  {
+   "dataset": "mtob_ke",
+   "sd_train": 79.44,
+   "dj_train": 64.85,
+   "scoring_per_cell": 76.03,
+   "sd_updates": 28.07,
+   "dj_updates": 22.91,
+   "sec_per_update": 2.83,
+   "scoring_per_request": 304.13
+  },
+  {
+   "dataset": "qasper",
+   "sd_train": 12.79,
+   "dj_train": 12.78,
+   "scoring_per_cell": 1.2,
+   "sd_updates": 30.32,
+   "dj_updates": 30.28,
+   "sec_per_update": 0.42,
+   "scoring_per_request": 4.79
+  }
+ ]
+}
