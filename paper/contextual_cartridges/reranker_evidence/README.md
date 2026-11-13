@@ -1,8 +1,8 @@
 # 基于 Qwen3-Reranker-0.6B 的 evidence chunk 提取：是什么、怎么做、准不准
 
-![Reranker evidence extraction](reranker_evidence_accuracy.png)
+![LongHealth Hit@k](reranker_hit_at_k.png)
 
-[PDF](reranker_evidence_accuracy.pdf) · [SVG](reranker_evidence_accuracy.svg) · [逐请求结果 CSV](per_request.csv) · [汇总 JSON](summary.json) · [评测脚本](analyze.py) · [作图脚本](plot.py)
+LongHealth（n=32）：金标准证据进入 reranker 前 k 名的请求比例；虚线为随机排序。[PDF](reranker_hit_at_k.pdf) · [SVG](reranker_hit_at_k.svg) · [四联完整图](reranker_evidence_accuracy.png)（[PDF](reranker_evidence_accuracy.pdf) · [SVG](reranker_evidence_accuracy.svg)） · [逐请求结果 CSV](per_request.csv) · [汇总 JSON](summary.json) · [评测脚本](analyze.py) · [作图脚本](plot.py)
 
 ## 是什么
 
