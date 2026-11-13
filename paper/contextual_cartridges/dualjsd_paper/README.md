@@ -61,3 +61,7 @@ Specific+DualJSD 对比 Vanilla Cartridges：LongHealth 17/6/34（+19.3 分）�
 MTOB 上 W 对 E 的答案更没把握（答案平均 log-prob 为 −0.87 vs −0.16），把 W 混进 target 会稀释翻译需要的局部语法细节，所以 DualJSD 在这里变差。
 
 注意：MTOB 的 Whole KV 和 SnapKV 输出是乱码（baseline pipeline 的问题），不能作为有效对比；本文没有做显著性检验；FastKV 的 MTOB 输出同样是乱码。
+
+## DualJSD 机制与时间成本
+
+[**为什么、怎样比 vanilla SD 好（热力图 + 时间）**](insights/README.md)：DualJSD 只在证据视角没把握的 token 上改 target（P_E<0.5 时 40–46% 改 top-1，>0.95 时 0.3%）；LongHealth/QASPER 的数字几乎不动，MTOB 的专名/数字被稀释，与 MTOB 变差一致；LongHealth/QASPER 每 cell 多 1–2 秒，MTOB 每 cell 多约 60 秒（全文打分）。
